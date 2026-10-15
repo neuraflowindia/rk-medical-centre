@@ -9,4 +9,12 @@ export function requireHostingProfile(project){
   if(!project.sender?.email||project.sender.email.endsWith('@example.invalid'))throw Error('The verified sender is not configured.');
   return project;
 }
-if(process.argv[1]===fileURLToPath(import.meta.url))requireHostingProfile(JSON.parse(readFileSync(new URL('../appointment-settings/project.json',import.meta.url))));
+export function requireHostingDependencies(root=new URL('../',import.meta.url)){
+  const expected=readFileSync(new URL('appointment-system/requirements.txt',root));
+  const actual=readFileSync(new URL('requirements.txt',root));
+  if(!actual.equals(expected))throw Error('Hosting dependencies must exactly match the contained appointment release. Regenerate the root requirements.txt from appointment-system/requirements.txt.');
+}
+if(process.argv[1]===fileURLToPath(import.meta.url)){
+  requireHostingProfile(JSON.parse(readFileSync(new URL('../appointment-settings/project.json',import.meta.url))));
+  requireHostingDependencies();
+}

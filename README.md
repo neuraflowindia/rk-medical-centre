@@ -8,7 +8,7 @@ Use Node.js with npm. Run `npm ci`, then `npm run dev`. Run `npm run build` to c
 
 ## Vercel configuration
 
-Framework: Vite. Application root: repository root. Install: `npm ci`. Build: `npm run build:hosting`. Output: `dist`. The root `vercel.json` and `middleware.ts` connect the contained Python backend and signed booking-state routing. Do not replace these with a generic all-path Home rewrite.
+Framework: Vite. Application root: repository root. Install: `npm ci`. Build: `npm run build:hosting`. Output: `dist`. The root `vercel.json` and `middleware.ts` connect the contained Python backend and signed booking-state routing. Do not replace these with a generic all-path Home rewrite. The root `requirements.txt` is an exact generated copy of the sealed package requirements because Vercel's Python manifest discovery cannot follow its nested `-r` file reference. The hosting build refuses any mismatch. `/tests` in `.vercelignore` excludes only a top-level website test folder; every sealed package file remains included for its runtime integrity check.
 
 ## Production setup status
 
