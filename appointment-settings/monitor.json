@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "installation_id": "526b57e7-3932-4ee1-9799-3071fd03210a",
+  "environment": "production",
+  "repository": "neuraflowindia/rk-medical-centre",
+  "cron": "8,23,38,53 * * * *"
+}

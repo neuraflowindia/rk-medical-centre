@@ -6,6 +6,7 @@
     ".vercelignore",
     "api/index.py",
     "appointment-settings/business-settings.json",
+    "appointment-settings/monitor.json",
     "appointment-settings/project.json",
     "appointment-settings/worker.json",
     "index.html",
