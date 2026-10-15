@@ -1,0 +1,310 @@
+{
+  "version": 2,
+  "timezone": "Asia/Kolkata",
+  "resources": [
+    {
+      "id": "dr-sanjay-gupta",
+      "name": "Dr. Sanjay Gupta",
+      "weekly_windows": [
+        {
+          "weekday": 0,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 0,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 1,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 1,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 2,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 2,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 3,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 3,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 4,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 4,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 5,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 5,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 6,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dr-parul-gupta",
+      "name": "Dr. Parul Gupta",
+      "weekly_windows": [
+        {
+          "weekday": 0,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 0,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 1,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 1,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 2,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 2,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 3,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 3,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 4,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 4,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 5,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        },
+        {
+          "weekday": 5,
+          "start": "18:00",
+          "end": "20:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "20:30"
+          ]
+        },
+        {
+          "weekday": 6,
+          "start": "10:00",
+          "end": "13:00",
+          "start_grace_minutes": 30,
+          "extra_starts": [
+            "13:30"
+          ]
+        }
+      ]
+    }
+  ],
+  "services": [
+    {
+      "id": "dr-sanjay-gupta",
+      "name": "Dr. Sanjay Gupta",
+      "enabled": true,
+      "resource_id": "dr-sanjay-gupta",
+      "duration_minutes": 20,
+      "pricing": {
+        "kind": "fixed",
+        "amount_paise": 80000,
+        "maximum_questions": 1
+      },
+      "required_preparation": []
+    },
+    {
+      "id": "dr-parul-gupta",
+      "name": "Dr. Parul Gupta",
+      "enabled": true,
+      "resource_id": "dr-parul-gupta",
+      "duration_minutes": 20,
+      "pricing": {
+        "kind": "fixed",
+        "amount_paise": 80000,
+        "maximum_questions": 1
+      },
+      "required_preparation": []
+    }
+  ],
+  "slot_step_minutes": 20,
+  "notice_minutes": 30,
+  "horizon_days": 30,
+  "buffer_before_minutes": 0,
+  "buffer_after_minutes": 0,
+  "booking_verification": {
+    "email": false,
+    "sms": false
+  },
+  "required_contacts": [
+    "phone"
+  ],
+  "meeting": "in_person",
+  "payment_methods": [
+    "online",
+    "at_clinic"
+  ],
+  "display_duration": false,
+  "location": {
+    "name": "R. K. Medical Centre",
+    "address": "18/469/1, Tedhi Pulia Ring Road, Sector 18, Indira Nagar, Lucknow, UP - 226016",
+    "maps_url": "https://maps.app.goo.gl/dcU6nhMtEiZTQdBo9"
+  },
+  "email_budget": {
+    "daily": 100,
+    "rolling": 3000,
+    "verification_daily": 0,
+    "verification_rolling": 0
+  },
+  "appointment_changes": "staff_discretion"
+}

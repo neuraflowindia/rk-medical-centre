@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "installation_id": "526b57e7-3932-4ee1-9799-3071fd03210a",
+  "project_id": "rk-medical-centre",
+  "label": "R. K. Medical Centre",
+  "environment": "test",
+  "origin": "http://127.0.0.1:4200",
+  "aliases": [],
+  "database_targets": {
+    "web": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "appointment_system_web",
+      "port": 5432,
+      "pooling": false
+    },
+    "staff": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_staff",
+      "port": 5432,
+      "pooling": false
+    },
+    "worker": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_worker",
+      "port": 5432,
+      "pooling": false
+    },
+    "company": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_company",
+      "port": 5432,
+      "pooling": false
+    },
+    "backup": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_backup",
+      "port": 5432,
+      "pooling": false
+    },
+    "maintenance": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_maintenance",
+      "port": 5432,
+      "pooling": false
+    },
+    "journal": {
+      "host": "localhost",
+      "database": "rk_medical_centre_test",
+      "role": "abs_journal",
+      "port": 5432,
+      "pooling": false
+    }
+  },
+  "owners": {
+    "client_email": "drsanjayguptamd@gmail.com",
+    "agency_email": "neuraflowindia@gmail.com"
+  },
+  "resource_notifications": {
+    "dr-sanjay-gupta": "drsanjayguptamd@gmail.com",
+    "dr-parul-gupta": "dr.parulgupta23@gmail.com"
+  },
+  "schedule_management": [
+    "agency"
+  ],
+  "sender": {
+    "name": "R. K. Medical Centre",
+    "email": "unconfigured@example.invalid",
+    "reply_to": "drsanjayguptamd@gmail.com"
+  },
+  "providers": {
+    "payment": "razorpay",
+    "calendar": "internal",
+    "email": "resend",
+    "sms": null
+  },
+  "worker": {
+    "name": "rk-medical-centre-test",
+    "origin": "https://unconfigured.example.invalid"
+  },
+  "surfaces": [
+    {
+      "path": "/",
+      "class": "general"
+    },
+    {
+      "path": "/treatment",
+      "class": "general"
+    },
+    {
+      "path": "/about-clinic",
+      "class": "general"
+    },
+    {
+      "path": "/meet-doctor",
+      "class": "general"
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "class": "general"
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "class": "general"
+    },
+    {
+      "path": "/contact",
+      "class": "enquiry"
+    },
+    {
+      "path": "/booking",
+      "class": "booking"
+    },
+    {
+      "path": "/booking-details",
+      "class": "booking"
+    },
+    {
+      "path": "/booking-help",
+      "class": "booking"
+    },
+    {
+      "path": "/studio",
+      "class": "booking"
+    },
+    {
+      "path": "/company",
+      "class": "company"
+    }
+  ],
+  "public_contacts": [
+    {
+      "label": "Dr. Sanjay Gupta",
+      "phone": "+919415049410"
+    },
+    {
+      "label": "Dr. Parul Gupta",
+      "phone": "+919838655095"
+    }
+  ]
+}
