@@ -3,56 +3,65 @@
   "installation_id": "526b57e7-3932-4ee1-9799-3071fd03210a",
   "project_id": "rk-medical-centre",
   "label": "R. K. Medical Centre",
-  "environment": "test",
-  "origin": "http://127.0.0.1:4200",
-  "aliases": [],
+  "environment": "production",
+  "origin": "https://www.rkmedicalcentre.com",
+  "aliases": [
+    "https://rkmedicalcentre.com"
+  ],
   "database_targets": {
     "web": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "appointment_system_web",
+      "host": "ep-falling-river-aoyydz1e-pooler.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_web",
       "port": 5432,
-      "pooling": false
+      "pooling": true
     },
     "staff": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_staff",
+      "host": "ep-falling-river-aoyydz1e-pooler.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_staff",
       "port": 5432,
-      "pooling": false
+      "pooling": true
     },
     "worker": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_worker",
+      "host": "ep-falling-river-aoyydz1e-pooler.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_worker",
       "port": 5432,
-      "pooling": false
+      "pooling": true
     },
     "company": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_company",
+      "host": "ep-falling-river-aoyydz1e-pooler.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_company",
       "port": 5432,
-      "pooling": false
+      "pooling": true
     },
     "backup": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_backup",
+      "host": "ep-falling-river-aoyydz1e.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_backup",
       "port": 5432,
       "pooling": false
     },
     "maintenance": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_maintenance",
+      "host": "ep-falling-river-aoyydz1e.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_maintenance",
       "port": 5432,
       "pooling": false
     },
     "journal": {
-      "host": "localhost",
-      "database": "rk_medical_centre_test",
-      "role": "abs_journal",
+      "host": "ep-falling-river-aoyydz1e-pooler.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "rk_booking_journal",
+      "port": 5432,
+      "pooling": true
+    },
+    "migration": {
+      "host": "ep-falling-river-aoyydz1e.c-2.ap-southeast-1.aws.neon.tech",
+      "database": "neondb",
+      "role": "neondb_owner",
       "port": 5432,
       "pooling": false
     }
@@ -70,7 +79,7 @@
   ],
   "sender": {
     "name": "R. K. Medical Centre",
-    "email": "unconfigured@example.invalid",
+    "email": "bookings@mail.rkmedicalcentre.com",
     "reply_to": "drsanjayguptamd@gmail.com"
   },
   "providers": {
@@ -80,8 +89,8 @@
     "sms": null
   },
   "worker": {
-    "name": "rk-medical-centre-test",
-    "origin": "https://unconfigured.example.invalid"
+    "name": "rk-medical-centre-production",
+    "origin": "https://rk-medical-centre-production.neuraflowindia.workers.dev"
   },
   "surfaces": [
     {

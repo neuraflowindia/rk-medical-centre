@@ -7,6 +7,7 @@
     "api/index.py",
     "appointment-settings/business-settings.json",
     "appointment-settings/project.json",
+    "appointment-settings/worker.json",
     "index.html",
     "middleware.ts",
     "package-lock.json",

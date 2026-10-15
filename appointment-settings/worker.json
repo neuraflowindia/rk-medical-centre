@@ -1,0 +1,67 @@
+{
+  "name": "rk-medical-centre-production",
+  "account_id": "162c1ab1ba0619c1c78d9495f3260f18",
+  "main": "../appointment-system/worker/index.mjs",
+  "compatibility_date": "2026-10-15",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "BOOKING_INSTALLATION_ID": "526b57e7-3932-4ee1-9799-3071fd03210a",
+    "BOOKING_PROJECT_ID": "rk-medical-centre",
+    "BOOKING_ENVIRONMENT": "production",
+    "BOOKING_PUBLIC_ORIGIN": "https://www.rkmedicalcentre.com",
+    "BOOKING_RELEASE_DIGEST": "9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e"
+  },
+  "triggers": {
+    "crons": [
+      "*/15 * * * *"
+    ]
+  },
+  "queues": {
+    "producers": [
+      {
+        "binding": "BOOKING_WAKE_QUEUE",
+        "queue": "rk-medical-centre-production-wake"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "rk-medical-centre-production-wake",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 5,
+        "retry_delay": 60,
+        "max_concurrency": 1
+      }
+    ]
+  },
+  "observability": {
+    "enabled": true
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BOOKING_PRODUCT_STATE",
+        "class_name": "BookingProductState"
+      },
+      {
+        "name": "BOOKING_RECOVERY_STATE",
+        "class_name": "BookingRecoveryState"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "booking-product-sqlite-v1",
+      "new_sqlite_classes": [
+        "BookingProductState"
+      ]
+    },
+    {
+      "tag": "appointment-recovery-sqlite-v1",
+      "new_sqlite_classes": [
+        "BookingRecoveryState"
+      ]
+    }
+  ]
+}

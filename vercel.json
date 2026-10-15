@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build:hosting",
   "outputDirectory": "dist",
+  "regions": ["sin1"],
   "functions": {"api/index.py": {"includeFiles": "{appointment-system,appointment-settings}/**"}},
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },
