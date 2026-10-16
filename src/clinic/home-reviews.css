@@ -41,3 +41,13 @@
 @media(max-width:767px){.home-review-tools{gap:12px;margin-bottom:16px}.home-review-count{font-size:16px}.home-review-count .solid-icon{width:23px;height:23px}.home-review-card{width:min(320px,calc(100vw - 56px))}.home-review-surface{padding:23px 20px;border-radius:22px}.home-review-group{gap:18px;padding-right:18px}.home-review-identity{margin-bottom:22px;gap:10px;min-height:60px}.home-review-avatar{width:48px;height:48px;flex-basis:48px;border-radius:16px;font-size:17px}.home-review-avatar img{border-radius:13px}.home-review-identity strong{font-size:17px}.home-review-context{font-size:14px}.home-review-quote{flex-basis:16px}.home-review-quote .solid-icon{width:16px;height:16px}.home-review-card blockquote{font-size:17px;line-height:1.6}.home-review-details{padding-top:22px}.home-review-topic{font-size:14px;padding:8px 10px}.home-review-list{grid-template-columns:minmax(0,1fr);gap:20px}.home-review-toggle{min-height:48px}.home-review-viewport{padding-bottom:24px}}
 @media(prefers-reduced-motion:reduce){.home-review-viewport,.home-review-toggle{display:none}.home-review-list.home-review-list-collapsed{position:static!important;width:auto!important;height:auto!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important;margin:0!important}.home-review-surface{transition:none;transform:none!important}}
 @media(max-width:767px){.home-review-rating,.home-review-location{font-size:14px}}
+
+/* Profile/directory collections share the complete identity and metadata parts. */
+.profile-review{border-color:#abc8bb;box-shadow:0 14px 28px -18px rgba(27,54,93,.28)}
+.profile-review .home-review-identity{margin:0 0 24px;padding-top:18px;align-items:center;min-height:78px}
+.profile-review .home-review-avatar{border-radius:18px}
+.profile-review .home-review-person{min-width:0}
+.profile-review .home-review-person strong{font-size:18px;line-height:1.35}
+.profile-review blockquote{margin-bottom:0}
+.profile-review .home-review-details{position:relative;z-index:2;padding-top:24px;flex-direction:column;align-items:flex-start;gap:0}
+@media(max-width:767px){.profile-review .home-review-person strong{font-size:17px}.profile-review .home-review-avatar{border-radius:16px}.profile-review .home-review-identity{min-height:74px;gap:10px}.profile-review .home-review-details{padding-top:22px}}

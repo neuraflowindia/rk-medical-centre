@@ -1,0 +1,114 @@
+/* Catalogue-led care navigation and confirmed About credentials only. */
+.treatment-overview{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px}
+.treatment-overview-group{min-width:0;border:1px solid #b4cbd0;border-radius:24px;background:var(--blue);box-shadow:0 12px 24px -19px rgba(27,54,93,.3)}
+.treatment-overview-women{border-color:#b4d1c4;background:var(--mint)}
+.treatment-overview .chapter-link{grid-template-columns:44px minmax(0,1fr) 20px;gap:16px;min-height:0;padding:25px 26px 22px;border:0;border-radius:23px 23px 0 0;background:none;align-items:center}
+.treatment-overview .chapter-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--warm)}
+.treatment-overview .chapter-icon .solid-icon{width:28px;height:28px}
+.treatment-overview .chapter-link strong{display:block;font:600 22px/1.35 Lora,Georgia,serif;letter-spacing:-.015em;overflow-wrap:normal}
+.treatment-overview .chapter-link small{font-size:16px;line-height:1.4;margin-top:7px}
+.treatment-overview-topics{list-style:none;padding:0 26px 12px;margin:0}
+.treatment-overview-topics>li{min-width:0;border-top:1px solid #c4d7d9}
+.treatment-overview-women .treatment-overview-topics>li{border-color:#c3dace}
+.treatment-overview-link{display:grid;grid-template-columns:36px minmax(0,1fr) 18px;align-items:center;gap:12px;min-height:80px;padding:15px 0;color:var(--ink);border-radius:10px;transition:color 180ms ease}
+.treatment-overview-symbol{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--warm);box-shadow:0 4px 9px -7px rgba(27,54,93,.25)}
+.treatment-overview-symbol>.solid-icon{width:23px;height:23px;color:var(--teal)}
+.treatment-overview-copy{display:grid;gap:5px;min-width:0}
+.treatment-overview-copy>strong{font-size:17px;font-weight:700;line-height:1.35;color:var(--navy)}
+.treatment-overview-copy>span{font-size:15px;line-height:1.5;color:var(--body)}
+.treatment-overview-link>[aria-hidden]:last-child{font-size:19px;color:var(--teal);text-align:right;transition:translate 180ms cubic-bezier(.23,1,.32,1)}
+.treatment-overview a:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
+.treatment-overview a:focus-visible .treatment-overview-copy>strong{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.care-chapter .topic-buttons{gap:10px 12px}
+.care-chapter .topic-buttons button{display:grid;grid-template-columns:20px minmax(0,1fr) 17px;gap:9px;max-width:100%;min-height:48px;padding:10px 13px;border:1px solid #9dbbb8;border-radius:13px;background:rgba(255,251,244,.7);text-align:left;font-size:16px;font-weight:700;line-height:1.4;box-shadow:0 4px 8px -7px rgba(27,54,93,.26);transition:background 180ms ease,border-color 180ms ease,box-shadow 180ms ease}
+.care-chapter .topic-buttons button>.solid-icon{width:20px;height:20px;color:var(--teal)}
+.care-chapter .topic-buttons .selected-mark{width:17px;height:17px;visibility:hidden}
+.care-chapter .topic-buttons .selected-mark>.solid-icon{width:17px;height:17px;color:var(--warm)}
+.care-chapter .topic-buttons button[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:var(--warm);box-shadow:0 6px 12px -7px rgba(10,112,107,.45)}
+.care-chapter .topic-buttons button[aria-pressed=true]>.solid-icon{color:var(--warm)}
+.care-chapter .topic-buttons button[aria-pressed=true] .selected-mark{visibility:visible}
+.care-chapter .topic-detail>.treatment-topic-title{display:flex;align-items:center;gap:13px;margin:0 0 18px;font-size:28px;line-height:1.3}
+.care-chapter .treatment-topic-title>.solid-icon{width:29px;height:29px;flex:none;color:var(--teal)}
+.care-chapter .treatment-doctor-match{display:inline-grid;grid-template-columns:24px minmax(0,1fr) 18px;align-items:center;gap:11px;max-width:100%;min-height:54px;padding:10px 13px;border:1px solid #b4d1c4;border-radius:14px;background:var(--warm);font-size:17px;line-height:1.4;color:var(--navy)}
+.care-chapter .treatment-doctor-match>.solid-icon{width:24px;height:24px;flex:none;color:var(--teal)}
+.care-chapter .treatment-doctor-match>span:not([aria-hidden]){min-width:0}
+.care-chapter .treatment-doctor-match strong{display:block;font-size:17px;font-weight:700}
+.care-chapter .treatment-doctor-label{display:block;margin-bottom:3px;font-size:14px;font-weight:400;color:var(--body)}
+.care-chapter .treatment-description{max-width:65ch;font-size:17px;line-height:1.65}
+.care-chapter .topic-detail>.topic-takeaways{gap:0;margin:16px 0 24px;padding:0;list-style:none}
+.care-chapter .topic-takeaways>li{align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid #c1d6d1}
+.care-chapter .topic-takeaways>li:last-child{border:0}
+.care-chapter .topic-takeaways .topic-item-icon{display:grid;place-items:center;width:40px;height:40px;margin:0;border-radius:13px;background:var(--warm)}
+.care-chapter .topic-takeaways .topic-item-icon>.solid-icon{width:24px;height:24px;color:var(--teal)}
+.care-chapter .topic-takeaway-copy{display:grid;gap:4px;min-width:0}
+.care-chapter .topic-takeaway-copy>strong{font-size:16px;font-weight:700;line-height:1.4;color:var(--navy)}
+.care-chapter .topic-takeaway-copy>span{font-size:17px;line-height:1.55;color:var(--body)}
+.about-credentials>h3{font-size:28px;line-height:1.3}
+.about-credentials>.about-credentials-intro{margin-top:12px;font-size:17px;line-height:1.6;max-width:65ch}
+.about-credentials>.credential-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:24px 0 0;padding:0;border:0}
+.about-credentials .credential-rows>.about-credential-feature{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:20px;min-width:0;min-height:156px;margin:0;padding:27px;border:1px solid #b4d1c4;border-radius:24px;background:var(--warm);box-shadow:0 12px 24px -19px rgba(27,54,93,.28);transition:transform 180ms cubic-bezier(.23,1,.32,1),box-shadow 180ms ease,border-color 180ms ease}
+.about-credentials .credential-rows>.about-credential-iso{background:#f4faf6}
+.about-credentials .about-credential-icon{display:grid;place-items:center;width:54px;height:54px;border-radius:17px;background:#d6e9df}
+.about-credentials .about-credential-icon>.solid-icon{width:32px;height:32px;color:var(--teal)}
+.about-credentials .about-credential-iso .about-credential-icon{background:#e4edf6}
+.about-credentials .about-credential-iso .about-credential-icon>.solid-icon{color:var(--navy)}
+.about-credentials .about-credential-copy{display:grid;gap:10px;min-width:0}
+.about-credentials .about-credential-copy>strong{font:600 24px/1.3 Lora,Georgia,serif;letter-spacing:-.015em;color:var(--navy)}
+.about-credentials .about-credential-copy>span{font-size:17px;line-height:1.5;color:var(--body)}
+@media(hover:hover) and (pointer:fine){
+ .treatment-overview-link:hover .treatment-overview-copy>strong{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+ .treatment-overview-link:hover>[aria-hidden]:last-child{translate:2px -2px}
+ .care-chapter .topic-buttons button:hover:not([aria-pressed=true]){border-color:var(--teal);background:var(--warm);box-shadow:0 6px 12px -7px rgba(10,112,107,.25)}
+ .about-credentials .credential-rows>.about-credential-feature:hover{transform:translateY(-2px);border-color:#8eb5a4;box-shadow:0 15px 25px -18px rgba(27,54,93,.35)}
+}
+@media(max-width:1023px){
+ .treatment-overview{gap:22px}
+ .treatment-overview .chapter-link{padding:22px 20px 20px;gap:12px}
+ .treatment-overview .chapter-link strong{font-size:20px}
+ .treatment-overview-topics{padding-inline:20px}
+ .treatment-overview-link{grid-template-columns:32px minmax(0,1fr) 16px;gap:10px}
+ .treatment-overview-symbol{width:32px;height:32px;border-radius:11px}
+ .treatment-overview-symbol>.solid-icon{width:21px;height:21px}
+ .about-credentials .credential-rows>.about-credential-feature{grid-template-columns:46px minmax(0,1fr);gap:16px;padding:24px}
+ .about-credentials .about-credential-icon{width:46px;height:46px;border-radius:15px}
+ .about-credentials .about-credential-icon>.solid-icon{width:29px;height:29px}
+ .about-credentials .about-credential-copy>strong{font-size:22px}
+}
+@media(max-width:767px){
+ .treatment-overview{grid-template-columns:minmax(0,1fr);gap:22px}
+ .treatment-overview .chapter-link{grid-template-columns:40px minmax(0,1fr) 18px;padding:23px 20px 20px;min-height:0}
+ .treatment-overview .chapter-icon{width:40px;height:40px;border-radius:13px}
+ .treatment-overview .chapter-icon .solid-icon{width:26px;height:26px}
+ .treatment-overview .chapter-link strong{font-size:21px}
+ .treatment-overview .chapter-link small{font-size:15px}
+ .treatment-overview-link{min-height:78px}
+ .treatment-overview-copy>strong{font-size:17px}
+ .care-chapter .topic-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .care-chapter .topic-buttons button{width:100%;min-height:64px;font-size:15px;padding:10px 11px;gap:8px}
+ .care-chapter .topic-detail>.treatment-topic-title{font-size:26px;gap:11px}
+ .care-chapter .treatment-topic-title>.solid-icon{width:26px;height:26px}
+ .care-chapter .treatment-doctor-match{gap:10px;padding:10px 11px}
+ .care-chapter .topic-takeaways>li{gap:12px}
+ .care-chapter .topic-takeaways .topic-item-icon{width:38px;height:38px;border-radius:12px}
+ .about-credentials>h3{font-size:26px}
+ .about-credentials>.credential-rows{grid-template-columns:minmax(0,1fr);gap:18px}
+ .about-credentials .credential-rows>.about-credential-feature{min-height:140px;padding:23px 21px;border-radius:23px}
+ .about-credentials .about-credential-copy>span{font-size:16px}
+}
+@media(max-width:359px){
+ .care-chapter .topic-buttons{grid-template-columns:minmax(0,1fr)}
+ .care-chapter .topic-buttons button{min-height:48px}
+ .treatment-overview .chapter-link{padding-inline:17px;grid-template-columns:36px minmax(0,1fr) 16px;gap:10px}
+ .treatment-overview .chapter-icon{width:36px;height:36px}
+ .treatment-overview .chapter-link strong{font-size:20px}
+ .treatment-overview-topics{padding-inline:17px}
+ .treatment-overview-link{grid-template-columns:30px minmax(0,1fr) 16px;gap:9px}
+ .treatment-overview-symbol{width:30px;height:30px}
+ .about-credentials .credential-rows>.about-credential-feature{grid-template-columns:42px minmax(0,1fr);gap:13px;padding-inline:18px}
+ .about-credentials .about-credential-icon{width:42px;height:42px;border-radius:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .treatment-overview-link,.treatment-overview-link>[aria-hidden]:last-child,.care-chapter .topic-buttons button,.about-credentials .credential-rows>.about-credential-feature{transition:none}
+ .treatment-overview-link:hover>[aria-hidden]:last-child{translate:none}
+ .about-credentials .credential-rows>.about-credential-feature:hover{transform:none}
+}

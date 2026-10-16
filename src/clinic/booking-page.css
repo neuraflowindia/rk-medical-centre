@@ -1,0 +1,37 @@
+.booking-layout{grid-template-columns:minmax(280px,.76fr) minmax(0,1.24fr);gap:48px;align-items:start}
+.booking-layout #clinic-booking-root.form-panel{display:block;max-width:none;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent}
+.booking-layout .clinic-booking-unavailable{padding:28px;border:1px solid var(--border);border-radius:22px;background:var(--warm);box-shadow:0 12px 32px rgba(27,54,93,.06);font-size:17px;line-height:1.5}
+.booking-layout .clinic-booking-unavailable h2{font-size:clamp(22px,2.1vw,28px);line-height:1.25;margin-bottom:16px}
+.booking-help{min-width:0;padding:28px;border:1px solid var(--border);border-radius:22px;background:var(--warm)}
+.booking-help h2{font-size:28px;line-height:1.25;margin:0 0 16px}
+.booking-help p{font-size:17px;line-height:1.5}
+.booking-help>.text-link{margin-top:16px;min-height:48px}
+.booking-help .booking-steps{margin:28px 0 12px;gap:20px}
+.booking-help .booking-steps li{font-size:17px;line-height:1.45}
+.booking-help .art-scene{height:260px;max-width:320px;margin:0 auto 24px}
+.booking-help-contact,.booking-help .appointment-schedule,.booking-preparation{padding-top:24px;margin-top:24px;border-top:1px solid var(--border)}
+.booking-help-contact h3,.booking-help .appointment-schedule h3,.booking-preparation>h3{font:700 22px/1.35 Lato,Arial,sans-serif;letter-spacing:0;color:var(--navy)}
+.booking-help-contact h3{display:flex;align-items:center;gap:12px}
+.booking-help-contact h3>span{display:block;flex:none;color:var(--teal)}
+.booking-help-contact h3 svg,.booking-help .appointment-schedule h3 svg{width:24px;height:24px}
+.booking-help-contact>p{margin-top:12px}
+.booking-help-calls{display:grid;gap:16px;margin-top:20px}
+.booking-help-calls a{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:48px;color:var(--teal);line-height:1.45}
+.booking-help-calls strong{font-size:17px;font-weight:700}
+.booking-help-calls a>span{font-size:18px;font-variant-numeric:tabular-nums}
+.booking-help-calls a:focus-visible{outline:3px solid var(--teal);outline-offset:5px;border-radius:4px}
+.booking-help .appointment-schedule h3{gap:12px;align-items:flex-start}
+.booking-help .appointment-schedule h3 .fact-icon{margin-top:3px;flex:none}
+.booking-help .appointment-schedule ul{margin:16px 0;padding-left:20px;font-size:17px;line-height:1.5}
+.booking-help .appointment-schedule li+li{margin-top:12px}
+.booking-help .preparation{grid-template-columns:1fr;gap:22px;margin-top:20px}
+.booking-help .preparation article{align-items:flex-start;gap:14px}
+.booking-help .preparation .prep-art{width:28px;height:28px;margin-top:3px}
+.booking-help .preparation h3{font:700 18px/1.4 Lato,Arial,sans-serif;letter-spacing:0;margin-bottom:6px}
+.booking-help .preparation p{font-size:17px;line-height:1.5}
+.booking-help-actions{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.booking-help-actions .text-link{min-height:48px;font-size:17px}
+@media(hover:hover) and (pointer:fine){.booking-help-calls a:hover{color:var(--hover);text-decoration:underline;text-underline-offset:4px}}
+@media(max-width:1023px){.booking-layout{grid-template-columns:1fr;gap:32px}.booking-layout .booking-help{max-width:800px;width:100%;order:2}.booking-layout #clinic-booking-root.form-panel{max-width:800px}.booking-help .art-scene{margin-left:0}}
+@media(max-width:767px){.booking-layout .clinic-booking-unavailable,.booking-help{padding:24px}.booking-help h2{font-size:26px}.booking-help .art-scene{height:150px;width:180px;margin:12px 0 24px}}
+@media(max-width:359px){.booking-layout .clinic-booking-unavailable,.booking-help{padding:20px}.booking-help h2{font-size:24px}.booking-help-contact h3,.booking-help .appointment-schedule h3,.booking-preparation>h3{font-size:22px}}

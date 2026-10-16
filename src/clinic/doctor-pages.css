@@ -1,0 +1,145 @@
+/* Directory, About doctor cards and doctor profiles; Home has its own features. */
+.doctor-card-doctors .doctor-page-facts,.doctor-card-about .doctor-page-facts,.doctor-profile-page .doctor-page-facts{display:flex;flex-wrap:wrap;gap:10px 12px;list-style:none;padding:0;border:0;margin:20px 0}
+.doctor-card-doctors .doctor-page-facts li,.doctor-card-about .doctor-page-facts li,.doctor-profile-page .doctor-page-facts li{display:flex;align-items:center;gap:9px;min-height:44px;max-width:100%;padding:6px 12px 6px 7px;margin:0;border:1px solid #b4d1c4;border-radius:16px;background:#e7f4ef;color:var(--navy);font-size:15px;line-height:1.4;box-shadow:0 7px 13px -10px rgba(27,54,93,.23);transition:transform 180ms var(--ease-out),box-shadow 180ms var(--ease-out),border-color 180ms ease}
+.doctor-card-doctors .doctor-page-facts strong,.doctor-card-about .doctor-page-facts strong,.doctor-profile-page .doctor-page-facts strong{min-width:0;font-weight:700}
+.doctor-page-fact-symbol{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:#d4e9df}
+.doctor-card-doctors .doctor-page-facts .fact-icon,.doctor-card-about .doctor-page-facts .fact-icon,.doctor-profile-page .doctor-page-facts .fact-icon{width:20px;height:20px;margin:0;color:var(--teal)}
+.doctor-card-doctors .doctor-page-facts .doctor-page-medal,.doctor-card-about .doctor-page-facts .doctor-page-medal,.doctor-profile-page .doctor-page-facts .doctor-page-medal{border-color:#d9c69d;background:var(--warm)}
+.doctor-page-medal .doctor-page-fact-symbol{background:#f3e8d0}
+.doctor-card-doctors .doctor-page-medal .fact-icon,.doctor-card-about .doctor-page-medal .fact-icon,.doctor-profile-page .doctor-page-medal .fact-icon{width:23px;height:23px;color:#9a6517}
+.doctor-card-doctors .doctor-education-full{margin:0;color:var(--body);font-size:16px;line-height:1.55;max-width:64ch}
+.doctor-card-doctors .doctor-education-full>strong{color:var(--navy)}
+.doctor-card-doctors .doctor-page-visit,.doctor-card-about .doctor-page-visit{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin-top:20px}
+.doctor-card-doctors .doctor-page-visit .doctor-fee,.doctor-card-about .doctor-page-visit .doctor-fee{margin:0!important;padding:10px 13px;border:1px solid #b4d1c4;border-radius:14px;background:#e7f4ef;color:var(--navy);font-size:16px;line-height:1.4}
+.doctor-card-doctors .doctor-page-visit .doctor-visit,.doctor-card-about .doctor-page-visit .doctor-visit{margin:0!important;font-size:16px;line-height:1.5;color:var(--body)}
+.doctor-card-doctors .doctor-actions,.doctor-card-about .doctor-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:0;padding-top:18px;border:0}
+.doctor-card-doctors .doctor-actions .button,.doctor-card-about .doctor-actions .button{font-size:15px;min-height:48px;padding:11px 14px;gap:9px}
+.doctor-card-doctors .doctor-actions .button-label,.doctor-card-about .doctor-actions .button-label{gap:10px}
+.doctor-card-doctors .doctor-page-call>.solid-icon,.doctor-card-about .doctor-page-call>.solid-icon{width:20px;height:20px;color:currentColor}
+.doctor-card-doctors .doctor-role{display:flex;align-items:center;gap:10px;width:fit-content;max-width:100%;margin:0!important;padding:8px 12px;border:1px solid #b4d1c4;border-radius:14px;background:#e7f4ef;color:var(--navy);font-size:17px!important;line-height:1.4}
+.doctor-card-doctors .doctor-role>.solid-icon{width:24px;height:24px;color:var(--teal)}
+.doctor-card-doctors .doctor-summary{margin:24px 0 0!important;font-size:18px!important;line-height:1.65}
+.doctor-card-doctors .doctor-detail-groups{display:block;margin-top:22px}
+.doctor-card-doctors .doctor-detail-groups h3{font:700 19px/1.4 Lato,Arial,sans-serif;letter-spacing:0;margin:0}
+.doctor-card-doctors .doctor-page-care,.doctor-card-about .doctor-page-care,.doctor-profile-information .doctor-page-care{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;list-style:none;padding:0;margin:14px 0 0;min-width:0}
+.doctor-card-doctors .doctor-page-care li,.doctor-card-about .doctor-page-care li,.doctor-profile-information .doctor-page-care li{margin:0;min-width:0}
+.doctor-card-doctors .doctor-page-care a,.doctor-card-about .doctor-page-care a,.doctor-profile-information .doctor-page-care a{display:grid;grid-template-columns:32px minmax(0,1fr) 18px;align-items:center;gap:10px;min-height:48px;padding:7px 8px 7px 0;border-radius:12px;color:var(--teal);font-size:16px;line-height:1.45;font-weight:700;text-decoration:none;transition:background 180ms ease,transform 180ms var(--ease-out)}
+.doctor-care-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#d8eae4}
+.doctor-care-icon .solid-icon{width:20px;height:20px;color:var(--teal)}
+.doctor-card-doctors .doctor-page-care a>span:last-child,.doctor-card-about .doctor-page-care a>span:last-child,.doctor-profile-information .doctor-page-care a>span:last-child{font-size:17px;text-align:right}
+.doctor-card-doctors .doctor-page-care strong,.doctor-card-about .doctor-page-care strong,.doctor-profile-information .doctor-page-care strong{font-weight:700;min-width:0}
+.doctor-card-doctors .doctor-page-care a:focus-visible,.doctor-card-about .doctor-page-care a:focus-visible,.doctor-profile-information .doctor-page-care a:focus-visible{outline:3px solid var(--teal);outline-offset:4px;background:#e7f4ef}
+.doctor-card-about{border:1px solid #b3c7ca;box-shadow:0 15px 28px -20px rgba(27,54,93,.3)}
+.doctor-card-about .doctor-summary{font-size:17px!important;line-height:1.65}
+.doctor-card-about .doctor-actions{margin-top:auto;padding-top:22px}
+.doctor-card-about[data-doctor="parul"] .doctor-name-mark{background:#f3e8d0}
+.doctor-card-about[data-doctor="parul"] .doctor-name-mark .solid-icon{color:#9a6517}
+.doctor-directory-page .appointment-schedule{padding:26px 28px;margin-top:36px;border:1px solid #b4d1c4;border-radius:24px;background:#e7f4ef}
+.doctor-directory-page .appointment-schedule h3{font-size:22px}
+.doctor-directory-page .appointment-schedule ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;padding:0;margin:18px 0;list-style:none}
+.doctor-directory-page .appointment-schedule li,.doctor-directory-page .appointment-schedule li+li{margin:0;font-size:17px;line-height:1.55}
+.doctor-directory-page .appointment-schedule p{font-size:16px;line-height:1.5}
+
+.doctor-profile-page .profile-intro{align-items:center}
+.doctor-profile-page .profile-identity-copy{min-width:0}
+.doctor-profile-page .profile-identity-copy>h1{font-size:48px;line-height:1.2}
+.doctor-profile-page .profile-speciality{display:flex;align-items:center;gap:12px;margin-top:20px;font-size:18px;line-height:1.5}
+.doctor-profile-page .profile-speciality>.solid-icon{width:28px;height:28px;color:#c5e5d8}
+.doctor-profile-page .profile-visit-fee{display:flex;align-items:center;flex-wrap:wrap;gap:7px 16px;margin:22px 0 0!important;font-size:18px;line-height:1.5;color:#fffbf4}
+.doctor-profile-page .profile-visit-fee>span{font-size:16px;color:#d1e3e1}
+.doctor-profile-page .profile-contact-actions{margin-top:20px;gap:12px}
+.doctor-profile-page .profile-contact-actions .button{min-height:48px;padding:12px 16px;gap:10px;font-size:16px}
+.doctor-profile-page .profile-contact-actions .button-label{gap:12px}
+.doctor-profile-page .profile-contact-actions .solid-icon{width:20px;height:20px;color:currentColor}
+.doctor-profile-page .profile-appointment-times{max-width:640px;margin-top:24px;padding-top:20px;border-top:1px solid #698b94}
+.doctor-profile-page .profile-time-heading{display:flex;align-items:center;gap:10px;margin:0;font-size:17px;line-height:1.45;color:#fffbf4}
+.doctor-profile-page .profile-time-heading>.solid-icon{width:22px;height:22px;color:#c5e5d8}
+.doctor-profile-page .profile-appointment-times dl{display:grid;gap:12px;margin-top:14px}
+.doctor-profile-page .profile-appointment-times dl>div{display:grid;grid-template-columns:154px minmax(0,1fr);gap:12px}
+.doctor-profile-page .profile-appointment-times dt,.doctor-profile-page .profile-appointment-times dd{margin:0;font-size:16px;line-height:1.5;color:#e0e9ed}
+.doctor-profile-page .profile-appointment-times dt{font-weight:700;color:#fffbf4}
+.doctor-profile-page .profile-art-column{min-width:0;max-width:460px;width:100%;justify-self:center}
+.doctor-profile-page .profile-art-column>.art-scene{width:100%;margin:0 auto}
+.doctor-profile-page .profile-art-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;list-style:none;padding:0;margin:18px 0 0}
+.doctor-profile-page .profile-art-notes li{display:flex;flex-direction:column;align-items:center;gap:10px;margin:0;color:#e0e9ed;text-align:center;font-size:15px;line-height:1.45}
+.doctor-profile-page .profile-art-note-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#2b4a67}
+.doctor-profile-page .profile-art-note-icon .solid-icon{width:23px;height:23px;color:#c5e5d8}
+.doctor-profile-information .profile-background{display:grid;gap:12px;margin-top:24px;margin-bottom:22px}
+.doctor-profile-information .profile-background p{margin:0;padding:14px 16px;border:1px solid #b4d1c4;border-radius:16px;background:#e7f4ef;color:var(--navy);font-size:17px;line-height:1.6}
+.doctor-profile-information .profile-background .fact-icon{width:24px;height:24px;flex:none;margin-top:2px;color:var(--teal)}
+.doctor-profile-information[data-section-scene="P2"] .profile-education{border-color:#d9c69d;background:var(--warm)}
+.doctor-profile-information[data-section-scene="P2"] .profile-education>.fact-icon{color:#9a6517}
+.doctor-profile-information .profile-care-choices{grid-template-columns:minmax(0,1fr);gap:8px;margin-top:16px}
+.doctor-profile-information .profile-care-choices a{padding-block:9px;font-size:17px}
+.doctor-profile-information .profile-related{min-width:0}
+.doctor-profile-information .care-list{margin-top:22px}
+.doctor-profile-information .care-list a{grid-template-columns:36px minmax(0,1fr) 20px;gap:14px;min-height:72px;padding:12px 0;border-radius:10px;font-size:17px;line-height:1.5}
+.doctor-profile-information .care-list-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#d8eae4}
+.doctor-profile-information .care-list-icon .solid-icon{width:22px;height:22px;color:var(--teal)}
+.doctor-profile-information .care-list a:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
+.doctor-profile-information .profile-prep .preparation,.doctor-directory-preparation .preparation{margin-top:26px;gap:24px}
+.doctor-profile-information .profile-prep .preparation h3,.doctor-directory-preparation .preparation h3{font-size:19px;line-height:1.4}
+.doctor-profile-information .profile-prep .preparation p,.doctor-directory-preparation .preparation p{font-size:17px;line-height:1.55}
+
+@media(hover:hover) and (pointer:fine){
+ .doctor-card-doctors .doctor-page-facts li:hover,.doctor-card-about .doctor-page-facts li:hover,.doctor-profile-page .doctor-page-facts li:hover{transform:translateY(-2px);border-color:#91bda8;box-shadow:0 10px 16px -10px rgba(27,54,93,.3)}
+ .doctor-card-doctors .doctor-page-care a:hover,.doctor-card-about .doctor-page-care a:hover,.doctor-profile-information .doctor-page-care a:hover{background:#e7f4ef;transform:translateY(-2px)}
+ .doctor-card-doctors .doctor-page-care a:hover strong,.doctor-card-about .doctor-page-care a:hover strong,.doctor-profile-information .doctor-page-care a:hover strong,.doctor-profile-information .care-list a:hover>span:nth-child(2){text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+}
+@media(max-width:1199px){
+ .doctor-card-doctors .doctor-page-care{grid-template-columns:minmax(0,1fr)}
+ .doctor-profile-page .profile-identity-copy>h1{font-size:44px}
+ .doctor-profile-page .profile-art-column{max-width:340px}
+ .doctor-profile-page .profile-art-notes{gap:10px}
+ .doctor-profile-page .profile-appointment-times dl>div{grid-template-columns:minmax(0,1fr);gap:3px}
+}
+@media(max-width:1023px) and (min-width:768px){
+ .doctor-card-doctors{grid-template-columns:200px minmax(0,1fr);gap:24px}
+ .doctor-card-about .doctor-actions{align-items:stretch;flex-direction:column}
+ .doctor-card-about .doctor-actions .button{width:100%}
+ .doctor-profile-page .profile-intro{grid-template-columns:minmax(0,1fr);gap:32px}
+ .doctor-profile-page .profile-identity-copy{max-width:680px}
+ .doctor-profile-page .profile-art-column{max-width:460px}
+ .doctor-profile-page .profile-art-column>.art-scene{height:400px;max-width:460px}
+ .doctor-profile-page .profile-appointment-times dl>div{grid-template-columns:154px minmax(0,1fr);gap:12px}
+}
+@media(max-width:767px){
+ .doctor-card-doctors .doctor-page-facts,.doctor-card-about .doctor-page-facts,.doctor-profile-page .doctor-page-facts{gap:9px;margin:20px 0}
+ .doctor-card-doctors .doctor-page-facts li,.doctor-card-about .doctor-page-facts li,.doctor-profile-page .doctor-page-facts li{font-size:15px;padding:6px 10px 6px 7px}
+ .doctor-card-doctors .doctor-actions,.doctor-card-about .doctor-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+ .doctor-card-doctors .doctor-actions .button,.doctor-card-about .doctor-actions .button{width:100%;font-size:16px}
+ .doctor-card-doctors .doctor-summary{font-size:17px!important;margin-top:22px!important}
+ .doctor-card-doctors .doctor-role{font-size:16px!important}
+ .doctor-card-doctors .doctor-page-care a,.doctor-card-about .doctor-page-care a{font-size:16px}
+ .doctor-card-doctors .doctor-page-care,.doctor-card-about .doctor-page-care{grid-template-columns:minmax(0,1fr)}
+ .doctor-card-doctors .doctor-education-full{font-size:16px}
+ .doctor-card-doctors .doctor-page-visit,.doctor-card-about .doctor-page-visit{align-items:flex-start;flex-direction:column;gap:10px}
+ .doctor-directory-page .appointment-schedule{padding:22px 20px;border-radius:22px}
+ .doctor-directory-page .appointment-schedule h3{font-size:21px}
+ .doctor-directory-page .appointment-schedule ul{grid-template-columns:minmax(0,1fr);gap:16px}
+ .doctor-profile-page .profile-identity-copy>h1{font-size:36px}
+ .doctor-profile-page .profile-speciality{font-size:17px;gap:10px}
+ .doctor-profile-page .profile-speciality>.solid-icon{width:25px;height:25px}
+ .doctor-profile-page .profile-visit-fee{font-size:17px}
+ .doctor-profile-page .profile-contact-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ .doctor-profile-page .profile-contact-actions .button{width:100%}
+ .doctor-profile-page .profile-appointment-times{margin-top:24px}
+ .doctor-profile-page .profile-appointment-times dl>div{grid-template-columns:minmax(0,1fr);gap:3px}
+ .doctor-profile-page .profile-art-column{max-width:340px}
+ .doctor-profile-page .profile-art-notes{gap:12px;margin-top:16px}
+ .doctor-profile-information .profile-background p{padding:13px 14px;font-size:17px}
+ .doctor-profile-information .profile-care-choices a{font-size:16px}
+ .doctor-profile-information .care-list a{font-size:17px;min-height:68px;gap:12px}
+}
+@media(max-width:359px){
+ .doctor-profile-page .profile-identity-copy>h1{font-size:34px}
+ .doctor-profile-page .profile-art-notes{grid-template-columns:minmax(0,1fr);gap:10px}
+ .doctor-profile-page .profile-art-notes li{flex-direction:row;text-align:left;gap:12px}
+ .doctor-profile-page .profile-art-note-icon{width:34px;height:34px;flex:0 0 34px;border-radius:11px}
+ .doctor-profile-page .profile-art-note-icon .solid-icon{width:20px;height:20px}
+ .doctor-profile-page .profile-contact-actions .button{padding-inline:12px;font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+ .doctor-card-doctors .doctor-page-facts li,.doctor-card-about .doctor-page-facts li,.doctor-profile-page .doctor-page-facts li,.doctor-card-doctors .doctor-page-care a,.doctor-card-about .doctor-page-care a,.doctor-profile-information .doctor-page-care a{transition:none}
+ .doctor-card-doctors .doctor-page-facts li:hover,.doctor-card-about .doctor-page-facts li:hover,.doctor-profile-page .doctor-page-facts li:hover,.doctor-card-doctors .doctor-page-care a:hover,.doctor-card-about .doctor-page-care a:hover,.doctor-profile-information .doctor-page-care a:hover{transform:none}
+}

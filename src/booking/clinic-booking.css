@@ -1,40 +1,78 @@
-.clinic-booking,.clinic-booking-unavailable{font-size:16px;line-height:1.6;min-width:0;color:#183b40}
-.clinic-booking h2,.clinic-booking-unavailable h2{font-size:clamp(22px,2.1vw,30px);line-height:1.25;margin:0 0 16px}
-.clinic-booking input,.clinic-booking select,.clinic-booking textarea{font:inherit;width:100%;min-height:46px;border:1px solid #a6b9b6;border-radius:12px;background:#fffefa;padding:10px 12px;color:inherit}
-.clinic-booking input[type=radio],.clinic-booking input[type=checkbox]{width:20px;height:20px;min-height:20px;accent-color:#17675e;flex:0 0 20px;margin:2px 0;position:static;opacity:1}
-.clinic-booking input:focus-visible,.clinic-booking textarea:focus-visible,.clinic-booking button:focus-visible,.clinic-booking a:focus-visible{outline:3px solid #398b7a;outline-offset:3px}
-.clinic-booking label{display:block;font-weight:650;margin-bottom:14px}.clinic-booking label>span{font-weight:450}
-.clinic-booking label input,.clinic-booking label textarea{display:block;margin-top:6px}
-.clinic-booking fieldset{border:0;padding:0;margin:20px 0;min-width:0}.clinic-booking legend{font-weight:750;margin-bottom:10px;font-size:17px}
+.clinic-booking,.clinic-booking-unavailable{--booking-field:#fffefa;--booking-border:#a6b9b6;min-width:0;color:var(--ink,#16324d);font-size:17px;line-height:1.5;font-kerning:normal;text-rendering:optimizeLegibility}
+.clinic-booking h2,.clinic-booking-unavailable h2{font-size:clamp(22px,2.1vw,28px);line-height:1.25;margin:0 0 16px}
+.clinic-booking .booking-form{display:grid;gap:24px;min-width:0}
+.clinic-booking .booking-stage{min-width:0;margin:0;padding:28px;border:1px solid var(--border,#cad8d5);border-radius:22px;scroll-margin-top:112px}
+.clinic-booking .booking-stage-time{background:#fff}
+.clinic-booking .booking-stage-details{background:var(--warm,#fffbf4)}
+.clinic-booking .booking-stage-payment{background:var(--mint,#e7f4ef)}
+.clinic-booking .booking-stage-heading{align-items:flex-start;gap:16px;margin-bottom:24px}
+.clinic-booking .booking-stage-heading .mini-number{width:40px;height:40px;border-radius:12px;background:var(--navy,#1b365d);color:#fff;font-size:18px;font-variant-numeric:tabular-nums}
+.clinic-booking .booking-stage-heading>div{min-width:0}
+.clinic-booking .booking-stage-heading h2{margin:2px 0 0}
+.clinic-booking .booking-stage-heading p{margin-top:10px;font-size:17px;line-height:1.5;max-width:50ch}
+.clinic-booking input,.clinic-booking select,.clinic-booking textarea{font:inherit;width:100%;min-height:48px;border:1px solid var(--booking-border);border-radius:12px;background:var(--booking-field);padding:11px 12px;color:inherit}
+.clinic-booking textarea{min-height:112px;resize:vertical}
+.clinic-booking input[type=radio],.clinic-booking input[type=checkbox]{width:20px;height:20px;min-height:20px;padding:0;accent-color:var(--teal,#0a706b);flex:0 0 20px;margin:2px 0;position:static;opacity:1}
+.clinic-booking input:focus-visible,.clinic-booking textarea:focus-visible,.clinic-booking button:focus-visible,.clinic-booking a:focus-visible{outline:3px solid var(--teal,#0a706b);outline-offset:3px}
+.clinic-booking label{display:block;font-weight:700;font-size:17px;margin-bottom:16px}
+.clinic-booking label>span{font-weight:400}
+.clinic-booking label input,.clinic-booking label textarea{display:block;margin-top:8px}
+.clinic-booking .field-pair{gap:20px;margin-bottom:16px}
+.clinic-booking .field-pair label{margin:0}
+.clinic-booking fieldset{border:0;padding:0;margin:24px 0;min-width:0}
+.clinic-booking legend{font-weight:700;margin-bottom:12px;font-size:17px}
 .clinic-booking .doctor-choices,.clinic-booking .payment-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.clinic-booking .doctor-choices label,.clinic-booking .payment-choices label{display:flex;gap:10px;margin:0;border:1px solid #abc1bc;border-radius:16px;padding:16px;background:#fffefa;cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s}
-.clinic-booking label.selected{border-color:#17675e;background:#edf5ef;box-shadow:inset 0 0 0 1px #17675e}
-.clinic-booking fieldset label>span{display:block;min-height:0;padding:0;border:0;border-radius:0;background:transparent;font-size:16px!important;font-weight:450!important;color:inherit!important}
+.clinic-booking .doctor-choices label,.clinic-booking .payment-choices label{display:flex;align-items:flex-start;gap:12px;margin:0;min-height:80px;border:1px solid var(--booking-border);border-radius:16px;padding:16px;background:var(--booking-field);cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s}
+.clinic-booking label.selected{border-color:var(--teal,#0a706b);background:var(--mint,#e7f4ef);box-shadow:0 4px 12px rgba(10,112,107,.08)}
+.clinic-booking fieldset label>span{display:block;min-width:0;min-height:0;padding:0;border:0;border-radius:0;background:transparent;font-size:17px!important;font-weight:400!important;color:inherit!important}
 .clinic-booking fieldset input:checked+span{border:0;background:transparent;color:inherit!important}
 .clinic-booking fieldset input:focus-visible+span{outline:none}
-.clinic-booking fieldset label>span strong{display:block}
-.clinic-booking label small{display:block;font-size:14px;line-height:1.45;margin-top:6px;font-weight:450}
-.clinic-booking .slot-choices{display:flex;flex-wrap:wrap;gap:10px}.clinic-booking .slot-choices label{display:flex;align-items:center;gap:8px;margin:0;border:1px solid #abc1bc;border-radius:12px;padding:10px 12px;cursor:pointer}
-.clinic-booking .slot-choices p{flex-basis:100%}.clinic-booking .slot-choices input{margin:0}
-.clinic-booking .field-hint{font-size:14px;line-height:1.5;color:#436263;margin:8px 0 24px}
-.clinic-booking .booking-ack{display:flex;align-items:flex-start;gap:12px;margin:22px 0}.clinic-booking .booking-ack input{margin-top:3px}
-.clinic-booking .appointment-summary{padding:18px 20px;border-left:3px solid #17675e;background:#f5f2e9;border-radius:0 14px 14px 0}.clinic-booking .appointment-summary p{margin:8px 0 0;overflow-wrap:anywhere}
-.clinic-booking .booking-error{padding:14px;border-radius:12px;background:#fff0e8;color:#7c301b;border:1px solid #e5b6a4}
-.clinic-booking .booking-find{display:inline-flex;margin-top:28px}.booking-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}
+.clinic-booking fieldset label>span strong{display:block;line-height:1.4}
+.clinic-booking label small{display:block;font-size:15px;line-height:1.45;margin-top:8px;font-weight:400}
+.clinic-booking .slot-choices{display:flex;flex-wrap:wrap;gap:10px}
+.clinic-booking .slot-choices label{display:flex;align-items:center;gap:10px;margin:0;min-height:48px;border:1px solid var(--booking-border);border-radius:12px;padding:10px 12px;cursor:pointer}
+.clinic-booking .slot-choices p{flex-basis:100%}
+.clinic-booking .slot-choices input{margin:0}
+.clinic-booking .field-hint{font-size:15px;line-height:1.5;color:var(--body,#455865);margin:12px 0 24px;max-width:65ch}
+.clinic-booking .booking-ack{display:flex;align-items:flex-start;gap:12px;min-height:48px;margin:24px 0}
+.clinic-booking .booking-ack input{margin-top:3px}
+.clinic-booking .booking-ack>span{font-size:17px;color:var(--ink,#16324d);line-height:1.5}
+.clinic-booking .appointment-summary{padding:0 0 24px;border:0;border-bottom:1px solid var(--border,#cad8d5);background:transparent;border-radius:0}
+.clinic-booking .appointment-summary h3{font-size:22px;line-height:1.3;margin:0 0 20px}
+.clinic-booking .booking-selection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px;margin:0}
+.clinic-booking .booking-selection>div:first-child,.clinic-booking .booking-selection>div:last-child{grid-column:1/-1}
+.clinic-booking .booking-selection dt{margin:0;color:var(--body,#455865);font-size:15px;font-weight:400;line-height:1.4}
+.clinic-booking .booking-selection dd{margin:5px 0 0;color:var(--navy,#1b365d);font-size:17px;font-weight:700;line-height:1.45;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.clinic-booking .appointment-summary .booking-selection-location{margin:20px 0 0;font-size:16px;line-height:1.5;overflow-wrap:anywhere}
+.clinic-booking .appointment-summary .field-hint{margin:12px 0 0}
+.clinic-booking .booking-error{padding:16px;border-radius:16px;background:#fff0e8;color:#7c301b;border:1px solid #e5b6a4;margin:0 0 24px}
+.clinic-booking .booking-find{display:inline-flex;min-height:48px;margin-top:24px}
+.booking-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}
 .clinic-booking button:disabled,.clinic-booking fieldset:disabled{opacity:.6;cursor:default}
-.rk-booking{--abs-color:#17675e;--abs-border:#a6b9b6}.rk-booking button,.rk-booking a.abs-download{font-weight:700}
+.clinic-booking input:disabled,.clinic-booking textarea:disabled{cursor:default;background:#f0f2ee}
+.clinic-booking button{max-width:100%;min-height:48px;white-space:normal;overflow-wrap:anywhere}
+.clinic-booking .booking-stage-payment>button[type=submit]{width:100%}
+.clinic-booking .text-link,.clinic-booking-unavailable .text-link{min-height:48px}
+.rk-booking{--abs-color:#0a706b;--abs-border:#a6b9b6}
+.rk-booking button,.rk-booking a.abs-download{font-weight:700}
 .clinic-booking-unavailable .text-link{display:block;margin-top:18px}
-@media(max-width:599px){.clinic-booking .doctor-choices,.clinic-booking .payment-choices{grid-template-columns:1fr}.clinic-booking .slot-choices{gap:8px}.clinic-booking .slot-choices label{padding:9px 10px}.clinic-booking .field-pair{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){.clinic-booking label{transition:none}}
-
-.clinic-booking .booking-cancellation{margin:24px 0;padding:20px 0 0;border-top:1px solid #c7d4ce}
-.clinic-booking .booking-cancellation h3{font-size:19px;line-height:1.35;margin:0 0 10px}
+.clinic-booking .booking-cancellation{margin:24px 0;padding:24px 0 0;border-top:1px solid var(--border,#cad8d5)}
+.clinic-booking .booking-cancellation h3{font-size:22px;line-height:1.35;margin:0 0 12px}
 .clinic-booking .booking-cancellation ul{padding-left:22px;margin:12px 0}
 .clinic-booking .booking-cancellation li{margin:10px 0}
-.clinic-booking button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
-
+.clinic-booking .booking-cancellation a{font-weight:700;text-underline-offset:3px}
 .clinic-booking .abs-receipt{padding:0}
 .rk-booking .abs-lookup-results{padding-bottom:0}
 .clinic-booking .payment-choices label.payment-unavailable{background:#f0f2ee;border-color:#b8c3be;color:#52635e;cursor:not-allowed;box-shadow:none}
 .clinic-booking .payment-choices label.payment-unavailable.selected{border-style:dashed;border-color:#617e74}
-.clinic-booking .booking-cancellation a{font-weight:700;text-underline-offset:3px}
+.rk-date{--abs-bg:#fffefa;--abs-text:#16324d;--abs-border:#a6b9b6;--abs-action:#0a706b;--abs-font:Lato,Arial,sans-serif}
+.clinic-booking .abs-date-picker{font-size:17px;margin:24px 0}
+.clinic-booking .abs-field-label{font-size:17px;line-height:1.4;font-weight:700}
+.clinic-booking .abs-date-group button{width:48px;height:48px}
+.rk-date.abs-booking-picker{font-family:Lato,Arial,sans-serif;border-radius:22px}
+.rk-date.abs-booking-picker button{min-width:48px;min-height:48px}
+.rk-date .abs-calendar-cell{min-height:48px}
+@media(hover:hover) and (pointer:fine){.clinic-booking .doctor-choices:not(:disabled) label:hover,.clinic-booking .payment-choices:not(:disabled) label:not(.payment-unavailable):hover,.clinic-booking .slot-choices:not(:disabled) label:hover{border-color:var(--teal,#0a706b);box-shadow:0 6px 16px rgba(10,112,107,.1)}}
+@media(max-width:599px){.clinic-booking .booking-form{gap:20px}.clinic-booking .booking-stage{padding:20px}.clinic-booking .booking-stage-heading{gap:12px}.clinic-booking .booking-stage-heading .mini-number{width:36px;height:36px}.clinic-booking .booking-stage-heading h2{font-size:24px}.clinic-booking .doctor-choices,.clinic-booking .payment-choices,.clinic-booking .field-pair{grid-template-columns:1fr}.clinic-booking .slot-choices{gap:8px}.clinic-booking .slot-choices label{padding:10px}.clinic-booking .booking-selection{gap:16px}.clinic-booking .booking-selection>div{grid-column:1/-1}}
+@media(max-width:359px){.clinic-booking .booking-stage{padding:18px 16px}.clinic-booking .booking-stage-heading h2{font-size:22px}.clinic-booking .doctor-choices label,.clinic-booking .payment-choices label{padding:14px 12px;gap:10px}}
+@media(prefers-reduced-motion:reduce){.clinic-booking label{transition:none}}

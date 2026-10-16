@@ -2,7 +2,7 @@ import React, {useEffect, useId, useRef, useSyncExternalStore} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createUseBooking} from '../../appointment-system/browser/booking/index.mjs';
 import {productState} from '../../appointment-system/browser/product-state.mjs';
-import {dateRange, timeLabel, money, appointmentLabel} from '../../appointment-system/browser/display-formatting.mjs';
+import {dateRange, timeLabel, money} from '../../appointment-system/browser/display-formatting.mjs';
 import {ReceiptFields, BookingDetailsFields, DateField, VerificationFields} from './shared-fields.jsx';
 import './clinic-booking.css';
 import {bookingBrowser} from './browser.mjs';
@@ -48,6 +48,8 @@ function Booking({draft={}}){
   const validPolicy=p?.version===2 && p.meeting==='in_person' && p.display_duration===false;
   const methodAvailable=validPolicy&&paymentAvailable(s.policy,s.payment_method);
   const ready=flow.available&&validPolicy&&s.policyFresh&&s.slotsFresh&&s.slot&&s.quote&&methodAvailable&&s.ack&&!s.busy;
+  const selectedDay=validPolicy&&s.day?new Intl.DateTimeFormat('en-IN',{timeZone:p.timezone,dateStyle:'medium'}).format(new Date(s.day+'T12:00:00Z')):'';
+  const selectedPayment=s.payment_method==='at_clinic'?'Pay at the clinic':s.payment_method==='online'?'Pay online':'';
   const fields=[['full_name','Full name','text','name',true,100],['phone','Phone number','tel','tel-national',p?.required_contacts.includes('phone')??true,32],
     ['email','Email address','email','email',p?.required_contacts.includes('email')??false,254]];
   return <div className="clinic-booking">
@@ -61,8 +63,9 @@ function Booking({draft={}}){
     s.credential?<div role="status"><h2>Checking your booking</h2><p>We are checking the same request, so it cannot be booked twice.</p>
       <button className="button" disabled={s.busy||!flow.available} onClick={flow.check}>Check my booking</button>
       {flow.canRetryOriginal&&<button className="button secondary" disabled={s.busy||!flow.available} onClick={flow.retryOriginal}>Retry the same request</button>}</div>:
-    <form onSubmit={event=>{event.preventDefault();if(ready)void flow.start();}}>
-      <div className="form-heading"><span className="mini-number">1</span><h2>Your doctor and starting time</h2></div>
+    <form className="booking-form" aria-label="Book an appointment" onSubmit={event=>{event.preventDefault();if(ready)void flow.start();}}>
+      <section className="booking-stage booking-stage-time" aria-labelledby={id+'time-heading'}>
+      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">1</span><div><h2 id={id+'time-heading'}>Your doctor and starting time</h2><p>Choose your doctor, a date and an available starting time.</p></div></div>
       {s.loadingPolicy&&<p role="status">Checking the doctors’ schedules…</p>}
       {!s.loadingPolicy&&!validPolicy&&<p role="alert">We could not load the clinic’s appointment options. Please try again.</p>}
       {!s.policyFresh&&<button type="button" className="text-link" disabled={!flow.available||s.loadingPolicy} onClick={flow.loadPolicy}>Reload appointment options</button>}
@@ -81,7 +84,9 @@ function Booking({draft={}}){
           <span>{timeLabel(slot.starts_at,p.timezone)}</span></label>)}
       </fieldset>
       {s.slotsStatus==='error'&&<button type="button" className="text-link" disabled={disabled||s.loadingPolicy} onClick={flow.loadPolicy}>Check available times again</button>}
-      <div className="form-divider"/><div className="form-heading"><span className="mini-number">2</span><h2>Your details</h2></div>
+      </section>
+      <section className="booking-stage booking-stage-details" aria-labelledby={id+'details-heading'}>
+      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">2</span><div><h2 id={id+'details-heading'}>Your details</h2><p>Add the contact details the clinic needs for your visit.</p></div></div>
       <div className="field-pair">{fields.map(([name,label,type,auto,required,maxLength])=><label key={name} htmlFor={id+name}>
         {label} <span>({required?'required':'optional'})</span>
         <input id={id+name} type={type} autoComplete={auto} maxLength={maxLength} required={required}
@@ -92,15 +97,27 @@ function Booking({draft={}}){
       <label htmlFor={id+'notes'}>Anything you would like the doctor to know? <span>(optional)</span>
         <textarea id={id+'notes'} maxLength={2000} rows={3} value={s.details.notes} disabled={disabled} onChange={event=>detail('notes',event.target.value)}/></label>
       <VerificationFields flow={flow}/>
-      <div className="form-divider"/><div className="form-heading"><span className="mini-number">3</span><h2>Choose how to pay</h2></div>
+      </section>
+      <section className="booking-stage booking-stage-payment" aria-labelledby={id+'payment-heading'}>
+      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">3</span><div><h2 id={id+'payment-heading'}>Check your visit and payment</h2><p>Review your choices and select an available payment option.</p></div></div>
+      <div className="appointment-summary" role="group" aria-labelledby={id+'summary-heading'}>
+        <h3 id={id+'summary-heading'}>Your appointment choices</h3>
+        <dl className="booking-selection">
+          <div><dt>Doctor</dt><dd>{validPolicy&&service?service.name:'Choose your doctor'}</dd></div>
+          <div><dt>Date</dt><dd>{selectedDay||'Choose a date'}</dd></div>
+          <div><dt>Starting time</dt><dd>{validPolicy&&s.slot&&s.slotsFresh&&s.policyFresh?timeLabel(s.slot.starts_at,p.timezone):s.loadingPolicy||s.slotsStatus==='loading'?'Checking available times…':'Choose a starting time'}</dd></div>
+          <div><dt>Consultation fee</dt><dd>{validPolicy&&s.quote&&s.policyFresh&&s.slotsFresh?money(s.quote.amount_paise):s.loadingPolicy||s.slotsStatus==='loading'?'Checking the fee…':'Shown with appointment options'}</dd></div>
+          <div><dt>Payment</dt><dd>{selectedPayment?selectedPayment+(!s.policyFresh?' — checking availability':methodAvailable?'':' — currently unavailable'):'Choose a payment option'}</dd></div>
+        </dl>
+        {validPolicy&&<p className="booking-selection-location">{p.location.name} — {p.location.address}</p>}
+        <p className="field-hint">These are your current choices. Your appointment has not been confirmed yet.</p>
+      </div>
       <fieldset className="payment-choices" disabled={disabled||!validPolicy||!s.policyFresh}><legend>Payment option</legend>
         {(validPolicy?p.payment_methods:[]).map(method=><label key={method} className={`${s.payment_method===method?'selected':''} ${paymentAvailable(s.policy,method)?'':'payment-unavailable'}`}>
           <input type="radio" name={id+'payment'} disabled={!paymentAvailable(s.policy,method)} checked={s.payment_method===method} onChange={()=>edit('payment_method',method)}/>
           <span><strong>{method==='at_clinic'?'Pay at the clinic':'Pay online'}</strong><small>{!paymentAvailable(s.policy,method)?'Temporarily unavailable':method==='at_clinic'?'Reserve your visit now. Pay when you arrive.':'Continue to secure payment after checking your details.'}</small></span>
         </label>)}</fieldset>
       {s.payment_method&&!methodAvailable&&<p role="status" className="field-hint">This payment option is unavailable. Please choose another available option.</p>}
-      {validPolicy&&s.slot&&s.quote&&<div className="appointment-summary"><strong>{service?.name}</strong>
-        <p>{appointmentLabel(s.slot.starts_at,p.timezone)} · {money(s.quote.amount_paise)}</p><p>{p.location.name} — {p.location.address}</p></div>}
       <section className="booking-cancellation" aria-labelledby={id+'cancellation'}>
         <h3 id={id+'cancellation'}>If you need to change or cancel</h3>
         <ClinicContact service={s.service}/>
@@ -108,7 +125,8 @@ function Booking({draft={}}){
       </section>
       <label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled||!s.slot||!methodAvailable}
         onChange={event=>dispatch({type:'ack',value:event.target.checked})}/><span>I have checked my doctor, date, starting time and contact details.</span></label>
-      <button type="submit" className="button" disabled={!ready}>{s.busy?'Saving your request…':s.payment_method==='at_clinic'?'Confirm appointment — pay at the clinic':'Continue to payment'} ↗</button>
+      <button type="submit" className="button" disabled={!ready}>{s.busy?'Saving your request…':s.payment_method==='at_clinic'?'Confirm appointment — pay at the clinic':s.payment_method==='online'?'Continue to payment':'Choose a payment option'} ↗</button>
+      </section>
     </form>}
     <a className="text-link booking-find" data-booking-only href="/booking-details">Already booked? View your appointment ↗</a>
   </div>;

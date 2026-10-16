@@ -9,4 +9,8 @@ import './clinic/home-reviews.css';
 import './clinic/home-visit-motion.css';
 import './clinic/footer-details.css';
 import './clinic/home-booking-sections.css';
+import './clinic/care-pages.css';
+import './clinic/doctor-pages.css';
+import './clinic/contact-page.css';
+import './clinic/booking-page.css';
 import './clinic/site.js';

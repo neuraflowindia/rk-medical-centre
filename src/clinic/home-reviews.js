@@ -13,11 +13,19 @@ function reviewRating(value){
  return `<div class="home-review-rating"><span class="home-review-stars" aria-hidden="true">${stars}</span><span>${e(value.toFixed(1))} out of 5</span></div>`;
 }
 
-function reviewCard(review,index){
+export function reviewIdentityMarkup(review,{profile=false}={}){
  const portrait=review.image?`<img src="${e(review.image)}" width="56" height="56" alt="" loading="lazy" decoding="async">`:'';
  const identity=review.verified?`<span class="home-review-patient-mark">${solidIcon('check-circle')}Verified patient</span>`:'Patient feedback';
+ return `${profile?'<span class="review-author-rule" aria-hidden="true"></span>':''}<span class="home-review-avatar${profile?' author-initials':''}" aria-hidden="true"><span>${e(initials(review.name))}</span>${portrait}</span><span class="home-review-person"><strong>${e(review.name)}</strong><span class="home-review-context">${identity}</span></span><span class="home-review-quote${profile?' review-quote-slot':''}"${profile?' data-motion-slot':''} aria-hidden="true">${solidIcon('quote')}</span>`;
+}
+
+export function reviewDetailsMarkup(review){
  const locality=review.locality?`<p class="home-review-location">${solidIcon('pin')}<span>${e(review.locality)}</span></p>`:'';
- return `<div class="home-review-card" data-home-review-index="${index}"><figure class="home-review-surface"><figcaption class="home-review-identity"><span class="home-review-avatar" aria-hidden="true"><span>${e(initials(review.name))}</span>${portrait}</span><span class="home-review-person"><strong>${e(review.name)}</strong><span class="home-review-context">${identity}</span></span><span class="home-review-quote" aria-hidden="true">${solidIcon('quote')}</span></figcaption><blockquote>${e(review.text)}</blockquote><div class="home-review-details">${reviewRating(review.rating)}${locality}<span class="home-review-topic">${solidIcon(review.icon)}<span>${e(review.topic)}</span></span></div></figure></div>`;
+ return `${reviewRating(review.rating)}${locality}<span class="home-review-topic">${solidIcon(review.icon)}<span>${e(review.topic)}</span></span>`;
+}
+
+function reviewCard(review,index){
+ return `<div class="home-review-card" data-home-review-index="${index}"><figure class="home-review-surface"><figcaption class="home-review-identity">${reviewIdentityMarkup(review)}</figcaption><blockquote>${e(review.text)}</blockquote><div class="home-review-details">${reviewDetailsMarkup(review)}</div></figure></div>`;
 }
 
 export function homeReviews(){
