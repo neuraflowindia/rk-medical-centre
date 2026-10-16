@@ -1,6 +1,6 @@
 # R. K. Medical Centre
 
-The completed clinic website and contained standardized appointment system. Source imported from the approved correction candidate on 15 October 2026; earlier review versions are preserved separately.
+The published clinic website and contained standardized appointment system. Source imported from the approved correction candidate on 15 October 2026; earlier review versions are preserved separately. Client content approval and the remaining provider connections are separate unfinished items.
 
 ## Local website
 
@@ -8,11 +8,15 @@ Use Node.js with npm. Run `npm ci`, then `npm run dev`. Run `npm run build` to c
 
 ## Home refinement
 
-The Home page keeps the established hero and adds a distinct mint treatment section, six consistent paper-style care images, fuller stacked doctor profiles, calendar dates and a repeating three-step explanation. Three new compositions have 480/800/1200px WebP exports. The shared footer includes labelled doctor phone numbers, confirmed appointment times, directions and privacy choices.
+The Home page keeps the established hero, distinct mint treatment section, six consistent paper-style care images, fuller stacked doctor profiles, calendar dates and repeating three-step explanation. The doctors now have six clearly filled qualification/institution/experience pills, two specialty strips, two practice-since-1992 badges and nine icon-led care links. The shared footer includes labelled doctor phone numbers, confirmed appointment times, directions and privacy choices.
 
-Patient feedback uses 18 existing author/quotation pairs from the unchanged 26-review source collection. It moves automatically at 20px/second on computers and 14px/second on phones, pauses on hover and resumes after leaving. Read all reveals a complete still list; native reduced motion also uses that list. No invented ratings, localities, verification labels or patient-photo associations were added.
+Two additional sections retain the full reference-inspired treatments: an instrument/clipboard consultation banner and four independently illustrated benefits/preparation cards. The banner uses three responsive WebP sizes. The four vector illustrations assemble in separate stages and have small visible-only inner accent loops. Booking ON explains the supported online flow; OFF shows practical visit preparation and real Contact/Doctors/Treatments actions. Both sections remain visible OFF. No digital-prescription, zero-wait or patient self-cancellation capability is introduced.
 
-Home doctor/review components have their own small modules and styles. Per-card clocks wait until their own artwork is reached; resizing preserves Home movement rather than finishing unseen scenes. The contained booking engine, actual fees, schedules, payment rules and OFF controls are unchanged. The existing visit form remains governed by booking availability; no second capture flow or unconnected enquiry form is published.
+Patient feedback uses 18 existing author/quotation pairs from the unchanged 26-review source collection. It moves automatically at 20px/second on computers and 14px/second on phones, pauses on hover and resumes after leaving. Read all reveals a complete still list; native reduced motion also uses that list. Every review now has an explicit visit label and meaningful icon, stronger author/quote treatment, first-entry accents and an independent inner hover surface. No invented ratings, localities, verification labels or patient-photo associations are in the public application.
+
+A fully populated private Home comparison uses these same components, styles and motion, with all 18 portrait/rating/location/verification placements. It is kept outside this repository, binds only to localhost, blocks product navigation/submissions and identifies its unconfirmed examples in the outer review shell. The owner uses complete realistic examples to judge the finished design; the client then supplies, corrects and approves actual information and photographs before the website is called finished. Design completion, publication and content approval are recorded separately.
+
+Home doctor/review/booking-benefit components have their own small modules and styles. Per-card clocks wait until their own artwork is reached; resizing preserves Home movement rather than finishing unseen scenes. The two new Home scenes extend the existing catalogue from 32 to 34; all previous scene timings and eight treatment sequences are retained. The contained booking engine, actual fees, schedules, payment rules and OFF controls are unchanged. The existing visit form remains governed by booking availability; no second capture flow or unconnected enquiry form is published.
 
 The owner requested implementation, source/visual review and publication without tests. No automated test, lint, type or release suite was run for this Home refinement. Normal frontend/hosting compilation is separate from testing.
 

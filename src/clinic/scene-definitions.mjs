@@ -3,6 +3,7 @@ import {context,E} from './choreography-primitives.mjs';
 import {hero,steps,profile,booking} from './choreography-physical.mjs';
 import {treatment} from './choreography-topics.mjs';
 import {supporting} from './choreography-sections.mjs';
+import {bookingSectionScene} from './home-booking-motion.mjs';
 import {profileContact} from './choreography-profile-contact.mjs';
 export const ENTRANCE_EASE=E;
 export const IMPLEMENTED_SCENES=Object.freeze(Object.keys(sceneSpecs));
@@ -13,7 +14,8 @@ export function sceneParts(root,phone=false,id=root.dataset.sectionScene){
  if(!spec)throw new Error('Unknown choreography scene '+id);
  const c=context(root,id,phone,phone?spec.phoneDuration:spec.duration);
  try{
-  if(physical[base])physical[base](c);
+  if(base==='H8'||base==='H9')bookingSectionScene(c);
+  else if(physical[base])physical[base](c);
   else if(base==='T2'||base==='T3')treatment(c);
   else if(personal.has(base))profileContact(c);
   else supporting(c);

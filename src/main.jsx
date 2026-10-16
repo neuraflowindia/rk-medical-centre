@@ -8,4 +8,5 @@ import './clinic/home-doctors.css';
 import './clinic/home-reviews.css';
 import './clinic/home-visit-motion.css';
 import './clinic/footer-details.css';
+import './clinic/home-booking-sections.css';
 import './clinic/site.js';

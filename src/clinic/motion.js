@@ -6,8 +6,8 @@ export function createMotion({onMovementChange=()=>{}}={}){
  const measured=new WeakMap(),layoutPending=new Set(),idleTargets=new Map();
  let disposed=false,enabled=true,paneVisible=true,manualPause=false,frame=0,last=null,layoutTimer=0,windowLayout=false,phoneMode=innerWidth<768;
  const effective=()=>enabled&&!reduced.matches;
- const homeScene=s=>/^H[1-7](?:-|$)/.test(s.type);
- const localMedia=s=>['H3-card','H4-panel'].includes(s.type);
+ const homeScene=s=>/^H[1-9](?:-|$)/.test(s.type);
+ const localMedia=s=>['H3-card','H4-panel','H9-card'].includes(s.type);
  const listen=(target,name,fn)=>{target.addEventListener(name,fn);listeners.push(()=>target.removeEventListener(name,fn));};
  const formFocused=s=>!!document.activeElement?.closest('form')&&s.root.contains(document.activeElement);
  const rememberSize=root=>{const css=getComputedStyle(root);measured.set(root,[root.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight),root.clientHeight-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom)]);};
@@ -111,10 +111,10 @@ export function createMotion({onMovementChange=()=>{}}={}){
   for(const s of [...scenes])if(s.child){
    cancel(s);sizeObserver.unobserve(s.root);delete s.root.dataset.motionOwner;scenes.splice(scenes.indexOf(s),1);
   }
-  const selectors={H3:'.care-card',H4:'.doctor-card',D1:'.doctor-card',...(phoneMode?{A3:'.doctor-card',A2:'.care-explained>article'}:{})};
+  const selectors={H3:'.care-card',H4:'.doctor-card',H9:'.home-benefit-card',D1:'.doctor-card',...(phoneMode?{A3:'.doctor-card',A2:'.care-explained>article'}:{})};
   for(const s of [...scenes])if(selectors[s.type])for(const [index,root] of [...s.root.querySelectorAll(selectors[s.type])].entries()){
-   const key=s.type==='H4'?root.dataset.doctor:s.type==='H3'?(root.dataset.careKey||root.querySelector('[data-scene-id]')?.dataset.sceneId?.replace(/^care-/,'')):String(index);
-   const child=add(root,s.type+(s.type==='H3'?'-card':'-panel'),s.type+'/'+(key||index));child.child=true;
+   const key=s.type==='H9'?root.dataset.benefit:s.type==='H4'?root.dataset.doctor:s.type==='H3'?(root.dataset.careKey||root.querySelector('[data-scene-id]')?.dataset.sceneId?.replace(/^care-/,'')):String(index);
+   const child=add(root,s.type+(['H3','H9'].includes(s.type)?'-card':'-panel'),s.type+'/'+(key||index));child.child=true;
   }
  }
  function queueLayout(all=false){

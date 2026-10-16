@@ -60,8 +60,16 @@ export function supporting(c){const {id,phone:p}=c;
   if(base==='D1'){cards.forEach(card=>{const r=c.bounds(card);for(const side of[0,1]){const x=r.x+(side?r.w-8:8),dx=side?-8:8;const corner=c.draw(c.path(`M${x+dx} ${r.y+8}H${x}v8`),0,p?550:650);c.retire(corner,p?550:650,p?730:830,.65);}});partTrack(c,'A18','whole',[[500,0,5,-3,.94],[1150,0,-1,1,1],[1600,0,0]],[[420,0,5,-2,.95],[950,0,0],[1350,0,0]]);partTrack(c,'A19','fold',[[500,5,4,4,.94],[1200,-1,0,-1],[1750,0,0]],[[420,0,4,2,.95],[1000,0,0],[1450,0,0]]);partTrack(c,'A19','hands',[[700,-4,3,0,.94],[1400,1,0],[1950,0,0]],[[600,0,4,0,.95],[1200,0,0],[1650,0,0]]);}
  }else if(id==='H6'||id==='D4-new-reviews'){
   if(id==='H6'&&c.root.querySelector('[data-home-reviews]')){
-   c.stage=c.root.querySelector('.section-heading')||c.root;c.media=[];
-   c.travel(c.root.querySelector('.home-review-count svg'),0,p?420:500,[[p?0:-12,p?6:0,0,.9],[p?0:2,p?-1:0,0,1,.6],[0,0]]);return;
+   const rail=c.root.querySelector('[data-home-review-viewport]');
+   c.stage=rail&&!rail.hidden?rail:c.root.querySelector('.section-heading')||c.root;c.media=[];
+   c.travel(c.root.querySelector('.home-review-count svg'),0,p?420:500,[[p?0:-12,p?6:0,0,.9],[p?0:2,p?-1:0,0,1,.6],[0,0]]);
+   const visibleCards=[...c.root.querySelectorAll('[data-home-review-group]>.home-review-card')].slice(0,p?1:4);
+   visibleCards.forEach((card,index)=>{
+    const delay=index*70,avatar=card.querySelector('.home-review-avatar'),quote=card.querySelector('.home-review-quote svg'),topic=card.querySelector('.home-review-topic svg');
+    c.travel(avatar,200+delay,650+delay,[[0,10,0,.94],[0,-1,0,1,.72],[0,0]]);
+    c.travel(quote,500+delay,950+delay,[[8,0,-8,.9],[-1,0,1,1,.7],[0,0]]);
+    c.travel(topic,800+delay,1300+delay,[[-10,0,0,.9],[1,0,0,1,.72],[0,0]]);
+   });return;
   }
   const quotes=pick(c,'.review-grid:not([hidden])>.review-card'),d=id==='H6';quotes.forEach((el,i)=>{const r=c.bounds(el),author=el.querySelector('figcaption'),ar=c.bounds(author);if(!d){const slot=author.querySelector('.review-quote-slot');if(slot&&!slot.children.length)c.inject(slot,iconMarkup('quote'));}if(d){const backing=c.plane(r.x,r.y,r.w,r.h,{color:'white'});backing.classList.add('ch-quote-backing');const mid=quotes.length===2?(c.bounds(quotes[0]).cx+c.bounds(quotes[1]).cx)/2:r.cx;c.add(backing,[{transform:pose(p?0:mid-r.cx,p?12:0,p?0:i?-2:2,p?.96:.85),opacity:.35},{transform:pose(0,p?-2:0,0,1),opacity:1,offset:.7},{transform:'none',opacity:1}],p?350:400,p?950:1050,T);}else{for(let n=0;n<2;n++){const slot=c.bounds(author.querySelector('.review-quote-slot')||author),dot=c.dot([[r.x+r.w*(.2+n*.5),r.y-16],[slot.cx+(n?3:-3),slot.cy-4],[slot.cx,slot.cy]],p?350:400,p?950:1000,10);c.add(dot,[{opacity:.3},{opacity:1}],0,p?416.667:500);}}
    c.add(author.querySelector('.review-author-rule'),[{transform:'scaleX(.1)',transformOrigin:'0 50%'},{transform:'scaleX(1)',transformOrigin:'0 50%'}],p?800:900,d?(p?1400:1600):(p?1300:1500));

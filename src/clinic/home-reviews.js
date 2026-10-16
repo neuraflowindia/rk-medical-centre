@@ -1,37 +1,17 @@
-import {reviews} from './content.mjs';
+import {homeReviewItems} from './home-review-data.mjs';
 import {escapeHTML as e} from './model.mjs';
 import {solidIcon} from './ui.js';
-
-// These are existing quotation/author pairs, not newly written testimonials.
-// The complete source collections remain unchanged for their other consumers.
-const chosen=[...reviews.home,...reviews.doctors,...reviews.sanjay.slice(0,2),...reviews.parul.slice(0,2)];
-const seen=new Set();
-const homeReviewItems=chosen.filter(review=>{
- const key=JSON.stringify([review.name,review.text]);
- if(seen.has(key))return false;
- seen.add(key);return true;
-});
-
-function topicFor(review){
- if(/\bdiabetes\b/i.test(review.text))return 'Diabetes care';
- if(/\bpregnancy\b|\bmaternity\b|\bmaternal\b/i.test(review.text))return 'Pregnancy care';
- if(/\bultrasound\b/i.test(review.text))return 'Ultrasound';
- if(/\bblood work\b|\bHbA1c\b|\bcholesterol\b/i.test(review.text))return 'Discussing test results';
- if(/\bconsultation\b|\bconsultations\b/i.test(review.text))return 'Doctor consultation';
- return '';
-}
 
 function initials(name){return name.trim().split(/\s+/u).slice(0,2).map(part=>Array.from(part)[0]||'').join('');}
 
 function reviewCard(review,index){
- const topic=topicFor(review);
- return `<figure class="home-review-card" data-home-review-index="${index}"><figcaption class="home-review-identity"><span class="home-review-avatar" aria-hidden="true">${e(initials(review.name))}</span><span><strong>${e(review.name)}</strong>${topic?`<span class="home-review-topic">${e(topic)}</span>`:''}</span><span class="home-review-quote" aria-hidden="true">${solidIcon('quote')}</span></figcaption><blockquote>${e(review.text)}</blockquote></figure>`;
+ return `<div class="home-review-card" data-home-review-index="${index}"><figure class="home-review-surface"><figcaption class="home-review-identity"><span class="home-review-avatar" aria-hidden="true">${e(initials(review.name))}</span><span class="home-review-person"><strong>${e(review.name)}</strong><span class="home-review-context">Patient feedback</span></span><span class="home-review-quote" aria-hidden="true">${solidIcon('quote')}</span></figcaption><blockquote>${e(review.text)}</blockquote><div class="home-review-details"><span class="home-review-topic">${solidIcon(review.icon)}<span>${e(review.topic)}</span></span></div></figure></div>`;
 }
 
 export function homeReviews(){
  const count=homeReviewItems.length;
  const cards=homeReviewItems.map(reviewCard).join('');
- return `<div class="home-reviews" data-home-reviews><div class="home-review-tools"><span class="home-review-count">${solidIcon('quote')}<strong>${count} patient reviews</strong></span><button class="text-link home-review-toggle" type="button" data-home-review-toggle aria-expanded="false" aria-controls="home-review-list" aria-describedby="home-review-reading-hint">Read all ${count} reviews <span aria-hidden="true">↗</span></button><span class="home-review-accessible-note" id="home-review-reading-hint">Open all ${count} reviews in a list that stays still.</span></div><div class="home-review-viewport" data-home-review-viewport aria-hidden="true"><div class="home-review-track" data-home-review-track inert><div class="home-review-group" data-home-review-group>${cards}</div><div class="home-review-group" aria-hidden="true" inert>${cards}</div></div></div><ol class="home-review-list home-review-list-collapsed" id="home-review-list" aria-label="All ${count} patient reviews">${homeReviewItems.map((review,index)=>`<li>${reviewCard(review,index)}</li>`).join('')}</ol></div>`;
+ return `<div class="home-reviews" data-home-reviews><div class="home-review-tools"><span class="home-review-count">${solidIcon('quote')}<strong>${count} patient reviews</strong></span><button class="text-link home-review-toggle" type="button" data-home-review-toggle aria-expanded="false" aria-controls="home-review-list" aria-describedby="home-review-reading-hint">Read all ${count} reviews <span aria-hidden="true">↗</span></button><span class="home-review-accessible-note" id="home-review-reading-hint">Open all ${count} reviews in a list that stays still.</span></div><div class="home-review-viewport" data-home-review-viewport aria-hidden="true"><div class="home-review-track" data-home-review-track><div class="home-review-group" data-home-review-group>${cards}</div><div class="home-review-group" aria-hidden="true">${cards}</div></div></div><ol class="home-review-list home-review-list-collapsed" id="home-review-list" aria-label="All ${count} patient reviews">${homeReviewItems.map((review,index)=>`<li>${reviewCard(review,index)}</li>`).join('')}</ol></div>`;
 }
 
 // One component clock; every reason to pause is composed in sync().

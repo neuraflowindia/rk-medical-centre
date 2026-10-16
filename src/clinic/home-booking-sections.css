@@ -1,0 +1,107 @@
+/* Two additive Home sections. Existing Home art, content and clocks stay owned by H1–H7. */
+.home-consultation{padding-block:76px;background:var(--warm)}
+.home-consultation-band{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);min-height:360px;border:1px solid #526e8d;border-radius:26px;background:var(--navy);box-shadow:0 20px 38px -25px #1b365d66;overflow:hidden;isolation:isolate}
+.home-consultation-copy{position:relative;z-index:2;padding:40px;min-width:0;align-self:center}
+.home-consultation-copy>.eyebrow{color:#c5e5d8;font-size:15px;line-height:1.4;letter-spacing:.06em;margin-bottom:16px}
+.home-consultation-copy h2{font-size:clamp(36px,2.9vw,42px);line-height:1.18;color:#fffbf4;max-width:19ch}
+.home-consultation-intro{font-size:18px;line-height:1.6;color:#e0e9ed;margin-top:20px;max-width:58ch}
+.home-consultation-intro strong{color:#fffbf4;font-weight:700}
+.home-consultation-takeaways{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;list-style:none;margin:28px 0 0;padding:0}
+.home-consultation-takeaways li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start;min-width:0}
+.home-consultation-takeaway-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:#325877;color:#d3eee0;margin-top:2px}
+.home-consultation-takeaway-icon .solid-icon{width:19px;height:19px;color:#d3eee0}
+.home-consultation-takeaways strong{display:block;color:#fffbf4;font-size:16px;line-height:1.5;font-weight:700}
+.home-consultation-takeaways li>span:last-child>span{display:block;color:#e0e9ed;font-size:16px;line-height:1.5;margin-top:4px}
+.home-consultation-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px 24px;margin-top:30px}
+.home-consultation-actions .button{background:var(--warm);color:var(--navy);border-color:var(--warm);font-weight:700}
+.home-consultation-actions .text-link{color:#d4efe1;font-size:16px;min-height:44px;margin:0}
+.home-consultation-actions .button:focus-visible,.home-consultation-actions .text-link:focus-visible{outline-color:#c5e5d8}
+.home-consultation-art{position:relative;min-width:0;min-height:360px;display:flex;flex-direction:column;justify-content:center;isolation:isolate;overflow:hidden}
+.home-consultation-media-plane{position:absolute;inset:0;z-index:-1;background:linear-gradient(145deg,#29476c 0%,#49769a 50%,#bedbe5 100%);transform-origin:50% 70%}
+.home-consultation-image-entry{width:100%;position:relative;flex-shrink:0;transform-origin:50% 65%}
+.home-consultation-image-idle{width:100%;transform-origin:50% 65%}
+.home-consultation-art img{width:100%;height:auto;max-width:100%;aspect-ratio:1376/768;object-fit:contain;display:block;mix-blend-mode:normal}
+.home-consultation-supports{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;padding:24px 20px;position:relative;z-index:2}
+.home-consultation-support{display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:9px 12px;background:#fffbf4;color:var(--navy);border:1px solid #d3e1df;border-radius:12px;font-size:15px;line-height:1.4;font-weight:700;box-shadow:0 8px 14px -11px #1b365d66}
+.home-consultation-support .solid-icon{width:19px;height:19px;flex:none;color:var(--teal)}
+.home-consultation-support-icon,.home-consultation-support-idle{display:inline-flex;flex:none;transform-origin:center}
+.home-booking-benefits{background:var(--blue);border-top:1px solid #cad8d5;padding-block:76px 80px}
+.home-booking-benefits .section-heading{max-width:880px;margin-bottom:36px}
+.home-booking-benefits .eyebrow{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.4;letter-spacing:.06em;margin-bottom:16px}
+.home-benefit-heading-icon{display:inline-flex;width:22px;height:22px;flex:none}
+.home-benefit-heading-icon .solid-icon{width:100%;height:100%}
+.home-booking-benefits h2{font-size:clamp(36px,2.8vw,40px);line-height:1.2;max-width:30ch}
+.home-booking-benefits .home-benefits-intro{font-size:18px;line-height:1.6;max-width:65ch;margin-top:20px}
+.home-benefit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;align-items:stretch}
+.home-benefit-card{min-width:0;display:flex;flex-direction:column;background:#fffdf8;border:1px solid #b6cbc9;border-radius:24px;overflow:hidden;box-shadow:0 12px 25px -18px #1b365d45;transition:transform 200ms cubic-bezier(.23,1,.32,1),box-shadow 200ms cubic-bezier(.23,1,.32,1),border-color 200ms ease}
+.home-benefit-art{position:relative;aspect-ratio:3/2;width:100%;display:grid;place-items:center;isolation:isolate;min-width:0;background:#f0f5ef}
+.home-benefit-card:nth-child(2) .home-benefit-art{background:#edf3f7}
+.home-benefit-card:nth-child(3) .home-benefit-art{background:#f7f2e7}
+.home-benefit-card:nth-child(4) .home-benefit-art{background:#edf5f2}
+.home-benefit-illustration{display:block;width:100%;height:100%;overflow:visible}
+.home-benefit-illustration [data-benefit-part]{transform-box:fill-box;transform-origin:center}
+.home-benefit-illustration [data-benefit-idle]{transform-box:fill-box;transform-origin:center}
+.home-benefit-paper-shadow{filter:drop-shadow(0 8px 7px #1b365d1c)}
+.home-benefit-small-shadow{filter:drop-shadow(0 5px 4px #1b365d17)}
+.home-benefit-number{position:absolute;left:16px;top:16px;display:grid;place-items:center;width:52px;height:52px;z-index:2;border:1px solid #a8c4ba;border-radius:17px;background:#fffbf4;color:var(--teal);font:700 18px/1 Lato,Arial,sans-serif;box-shadow:0 7px 14px -10px #1b365d45;transition:box-shadow 200ms ease,border-color 200ms ease,color 200ms ease}
+.home-benefit-copy{display:flex;flex-direction:column;flex:1;padding:24px 22px;min-width:0}
+.home-benefit-copy h3{font-family:Lato,Arial,sans-serif;font-size:22px;font-weight:700;line-height:1.3;letter-spacing:0;color:var(--navy)}
+.home-benefit-description{font-size:17px;line-height:1.55;margin-top:14px;color:var(--body);overflow-wrap:anywhere}
+.home-benefit-takeaway{display:flex;align-items:flex-start;gap:9px;margin-top:auto;padding-top:22px;color:var(--teal)}
+.home-benefit-takeaway>.solid-icon{width:19px;height:19px;flex:none;margin-top:1px}
+.home-benefit-fact{font-size:15px;line-height:1.45;font-weight:700}
+.home-benefits-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px 24px;margin-top:32px}
+.home-benefits-actions .text-link{margin:0;min-height:48px;font-size:16px}
+@media(hover:hover) and (pointer:fine){
+ .home-benefit-card:hover{transform:translateY(-4px);border-color:var(--teal);box-shadow:0 20px 32px -18px #1b365d4d,0 0 0 3px #0a706b09}
+ .home-benefit-card:hover .home-benefit-number{border-color:var(--teal);color:var(--navy);box-shadow:0 0 0 4px #0a706b13,0 7px 17px -10px #1b365d45}
+ .home-consultation-actions .button:hover{background:#eef7ef;color:var(--navy);border-color:#eef7ef}
+}
+@media(max-width:1199px){
+ .home-consultation-copy{padding:32px}
+ .home-consultation-takeaways{grid-template-columns:minmax(0,1fr);gap:18px}
+ .home-consultation-copy h2{font-size:36px}
+ .home-benefit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-benefit-art{aspect-ratio:1.7}
+ .home-benefit-illustration{width:min(100%,360px)}
+ .home-benefit-copy{padding:26px}
+}
+@media(max-width:767px){
+ .home-consultation{padding-block:56px}
+ .home-consultation-band{grid-template-columns:minmax(0,1fr);border-radius:24px}
+ .home-consultation-copy{padding:28px 24px}
+ .home-consultation-copy h2{font-size:32px;line-height:1.22;max-width:20ch}
+ .home-consultation-copy>.eyebrow{font-size:15px;margin-bottom:14px}
+ .home-consultation-intro{font-size:17px;line-height:1.6;margin-top:18px}
+ .home-consultation-takeaways{grid-template-columns:minmax(0,1fr);margin-top:24px;gap:18px}
+ .home-consultation-actions{margin-top:26px;gap:12px 20px}
+ .home-consultation-actions .button{width:100%;min-height:48px}
+ .home-consultation-actions .text-link{font-size:16px;min-height:48px}
+ .home-consultation-art{min-height:0;padding-top:14px}
+ .home-consultation-supports{padding:18px 16px 22px;gap:9px}
+ .home-consultation-support{font-size:15px;padding:8px 10px}
+ .home-booking-benefits{padding-block:56px}
+ .home-booking-benefits h2{font-size:32px;line-height:1.22;max-width:25ch}
+ .home-booking-benefits .home-benefits-intro{font-size:17px;margin-top:18px}
+ .home-booking-benefits .section-heading{margin-bottom:28px}
+ .home-benefit-grid{grid-template-columns:minmax(0,1fr);gap:24px}
+ .home-benefit-art{aspect-ratio:1.6}
+ .home-benefit-illustration{width:min(100%,400px)}
+ .home-benefit-copy{padding:24px}
+ .home-benefit-copy h3{font-size:22px}
+ .home-benefit-description{font-size:17px}
+ .home-benefit-takeaway{padding-top:20px}
+ .home-benefits-actions{align-items:stretch;flex-direction:column;gap:12px;margin-top:28px}
+ .home-benefits-actions .button{width:100%;min-height:48px}
+ .home-benefits-actions .text-link{align-self:flex-start}
+}
+@media(max-width:359px){
+ .home-consultation-copy{padding:26px 20px}
+ .home-consultation-copy h2,.home-booking-benefits h2{font-size:30px}
+ .home-benefit-copy{padding:22px 20px}
+ .home-benefit-number{width:46px;height:46px;left:13px;top:13px;border-radius:15px;font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-benefit-card,.home-benefit-number{transition:none}
+ .home-benefit-card:hover{transform:none}
+}

@@ -9,27 +9,45 @@
 .doctor-grid-home .doctor-decoration [data-scene="emblem"]{display:block;width:100%;height:100%}
 .doctor-grid-home .doctor-card-home .doctor-decoration .solid-icon{width:100%;height:100%;color:var(--teal)}
 .doctor-grid-home .home-doctor-identity-name{margin:16px 0 0;font-size:16px;font-weight:700;line-height:1.5}
-.doctor-grid-home .home-doctor-tenure{display:flex;align-items:center;justify-content:center;gap:9px;margin:10px 0 0;font-size:15px;line-height:1.5;color:#e0e9ed}
-.doctor-grid-home .home-doctor-tenure .solid-icon{width:20px;height:20px;color:#c5e5d8}
+.doctor-grid-home .home-doctor-tenure{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;max-width:100%;margin:14px auto 0;padding:11px 16px;border:1px solid #b4d1c4;border-radius:15px;background:#fffbf4;color:#1b365d;font-size:15px;line-height:1.35;box-shadow:0 7px 14px -9px rgba(4,21,45,.4)}
+.doctor-grid-home .home-doctor-tenure>.solid-icon{width:22px;height:22px;color:#0a706b}
+.doctor-grid-home .home-doctor-tenure>span{display:grid;gap:3px;text-align:left;min-width:0}
+.doctor-grid-home .home-doctor-tenure-label{font-weight:700}
+.doctor-grid-home .home-doctor-tenure strong{font:600 26px/1.1 Lora,Georgia,serif;letter-spacing:-.015em;font-variant-numeric:lining-nums}
 .doctor-grid-home .home-doctor-feature .doctor-copy{grid-column:2;grid-row:1;min-width:0}
-.doctor-grid-home .doctor-card-home .doctor-copy>.eyebrow,.doctor-grid-home .doctor-card-home .doctor-copy>h3{padding-right:0}
+.doctor-grid-home .doctor-card-home .doctor-copy>h3{padding-right:0}
 .doctor-grid-home .doctor-copy>.eyebrow{margin:2px 0 16px;font-size:16px;line-height:1.5;letter-spacing:0;font-weight:700;color:#c5e5d8}
+.doctor-grid-home .doctor-copy>.home-doctor-role{display:inline-flex;align-items:center;gap:10px;width:fit-content;max-width:100%;min-height:44px;padding:8px 12px;border:1px solid #b4d1c4;border-radius:14px;background:#e7f4ef;color:#1b365d;font-size:16px;font-weight:700;line-height:1.4;text-transform:none}
+.doctor-grid-home .home-doctor-role>.solid-icon{width:24px;height:24px;color:#0a706b}
+.doctor-grid-home .home-doctor-role>span{min-width:0}
 .doctor-grid-home .doctor-copy>h3{margin:0;font-size:32px;line-height:1.25}
 .doctor-grid-home .home-doctor-biography{max-width:65ch;margin-top:20px}
 .doctor-grid-home .home-doctor-biography .doctor-summary{line-height:1.65;color:#e0e9ed}
 .doctor-grid-home .home-doctor-biography .doctor-summary+.doctor-summary{padding-top:12px}
 .doctor-grid-home .home-doctor-facts{display:flex;flex-wrap:wrap;gap:10px 12px;list-style:none;padding:0;border:0;margin:24px 0}
-.doctor-grid-home .home-doctor-facts li{display:flex;align-items:center;gap:9px;min-height:38px;max-width:100%;padding:8px 12px;margin:0;border:1px solid #688096;border-radius:999px;font-size:15px;line-height:1.4;color:#e0e9ed}
-.doctor-grid-home .home-doctor-facts .fact-icon{width:19px;height:19px;color:#c5e5d8}
-.doctor-grid-home .home-doctor-facts strong{font-weight:700}
-.doctor-grid-home .home-doctor-topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 30px;margin:0;padding-left:21px;font-size:17px;line-height:1.55}
-.doctor-grid-home .home-doctor-topics li,.doctor-grid-home .home-doctor-topics li+li{margin:0;padding-left:2px}
-.doctor-grid-home .home-doctor-topics a{font-weight:400;text-decoration-thickness:1px;text-underline-offset:4px}
+.doctor-grid-home .home-doctor-facts li{display:flex;align-items:center;gap:9px;min-height:44px;max-width:100%;padding:6px 12px 6px 7px;margin:0;border:1px solid #b4d1c4;border-radius:999px;background:#e7f4ef;font-size:15px;line-height:1.4;color:#1b365d;box-shadow:0 7px 13px -9px rgba(4,21,45,.38);transition:transform 180ms cubic-bezier(.23,1,.32,1),box-shadow 180ms ease,border-color 180ms ease}
+.doctor-grid-home .home-fact-symbol{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:#d4e9df}
+.doctor-grid-home .home-doctor-facts .fact-icon{width:20px;height:20px;color:#0a706b}
+.doctor-grid-home .home-doctor-facts strong{min-width:0;font-weight:700}
+.doctor-grid-home .home-doctor-facts .home-doctor-medal{border-color:#d9c69d;background:#fffbf4}
+.doctor-grid-home .home-doctor-medal .home-fact-symbol{background:#f3e8d0}
+.doctor-grid-home .home-doctor-medal .fact-icon{color:#a46b16}
+.doctor-grid-home .home-doctor-topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 26px;list-style:none;margin:0;padding:0;font-size:17px;line-height:1.4}
+.doctor-grid-home .home-doctor-topics li,.doctor-grid-home .home-doctor-topics li+li{margin:0;padding:0;min-width:0}
+.doctor-grid-home .home-doctor-topics a{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:center;gap:11px;min-height:44px;padding:5px 0;border-radius:8px;font-weight:700;text-decoration:none;text-underline-offset:4px}
+.doctor-grid-home .home-doctor-topics strong{font-weight:700}
+.doctor-grid-home .home-doctor-care-icon{display:block}
+.doctor-grid-home .home-doctor-care-icon .solid-icon{width:22px;height:22px;color:#c5e5d8}
+.doctor-grid-home .home-doctor-topics a:focus-visible strong{text-decoration:underline;text-decoration-thickness:1px}
 .doctor-grid-home .doctor-copy>.home-doctor-fee{margin:24px 0 0;font-size:17px;line-height:1.5}
 .doctor-grid-home .doctor-actions{grid-column:auto;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin:0;padding-top:24px}
 .doctor-grid-home .doctor-actions .text-link{margin:0;font-size:16px;line-height:1.5}
 .doctor-grid-home .home-doctor-call .solid-icon{width:20px;height:20px;color:#c5e5d8}
 .doctor-grid-home .doctor-actions .button-label{min-width:0}
+@media(hover:hover) and (pointer:fine){
+ .doctor-grid-home .home-doctor-facts li:hover{transform:translateY(-2px);border-color:#91bda8;box-shadow:0 10px 16px -9px rgba(4,21,45,.5)}
+ .doctor-grid-home .home-doctor-topics a:hover strong{text-decoration:underline;text-decoration-thickness:1px}
+}
 @media(max-width:1199px){
  .doctor-grid-home .home-doctor-feature{grid-template-columns:220px minmax(0,1fr);gap:28px;padding:28px}
  .doctor-grid-home .home-doctor-identity{width:220px}
@@ -50,14 +68,16 @@
  .doctor-grid-home .home-doctor-initials{font-size:54px}
  .doctor-grid-home .doctor-card-home .doctor-decoration{width:36px;height:36px}
  .doctor-grid-home .home-doctor-identity-name{margin-top:12px;font-size:15px}
- .doctor-grid-home .home-doctor-tenure{font-size:15px;gap:7px;align-items:flex-start}
- .doctor-grid-home .home-doctor-tenure .solid-icon{width:18px;height:18px;margin-top:2px}
+ .doctor-grid-home .home-doctor-tenure{font-size:15px;gap:8px;padding:10px 8px;border-radius:13px}
+ .doctor-grid-home .home-doctor-tenure>.solid-icon{width:20px;height:20px}
+ .doctor-grid-home .home-doctor-tenure strong{font-size:24px}
  .doctor-grid-home .home-doctor-feature .doctor-copy{grid-column:1;grid-row:2}
  .doctor-grid-home .doctor-copy>.eyebrow{min-height:0;margin-top:0;font-size:15px}
+ .doctor-grid-home .doctor-copy>.home-doctor-role{min-height:44px;padding:8px 11px;font-size:15px;gap:9px}
  .doctor-grid-home .doctor-copy>h3{font-size:28px;line-height:1.25}
  .doctor-grid-home .home-doctor-biography{margin-top:18px}
  .doctor-grid-home .home-doctor-facts{margin:22px 0;gap:10px}
- .doctor-grid-home .home-doctor-facts li{padding:8px 11px}
+ .doctor-grid-home .home-doctor-facts li{padding:6px 11px 6px 7px}
  .doctor-grid-home .doctor-copy>.home-doctor-fee{margin-top:22px}
  .doctor-grid-home .doctor-actions{align-items:stretch;flex-direction:column;gap:12px;padding-top:22px}
  .doctor-grid-home .doctor-actions .button,.doctor-grid-home .doctor-actions .text-link{width:100%;min-height:48px}
@@ -67,4 +87,8 @@
 @media(max-width:359px){
  .doctor-grid-home .home-doctor-feature{padding:22px 18px}
  .doctor-grid-home .doctor-copy>h3{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+ .doctor-grid-home .home-doctor-facts li{transition:none}
+ .doctor-grid-home .home-doctor-facts li:hover{transform:none}
 }

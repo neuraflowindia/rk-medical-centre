@@ -54,3 +54,6 @@
  .button:hover:not(:disabled):not([aria-disabled=true]),.button:active:not(:disabled):not([aria-disabled=true]),#visit .step:hover,#visit .step.is-priority{transform:none}
  .button:hover .button-label>[aria-hidden],.button:hover>[aria-hidden]{translate:none}
 }
+
+#care .care-title{display:flex;align-items:flex-start;gap:11px}
+#care .care-title>.solid-icon{width:22px;height:22px;flex:none;margin-top:5px;color:var(--teal)}
