@@ -1,0 +1,80 @@
+{
+  "status": "published-and-official-output-observed",
+  "commit": "a77f772fbcf1766ea63353f3fc6a32865ddbf2cb",
+  "implementation_commit": "1b1936ee5fb4cb7d2ab5f51b8e5b1ef45af0663c",
+  "baseline": "b0f98ae61ed001ee37cf623c6f07ac2ecddbb81d",
+  "work_branch": "codex/balanced-treatments-and-header-20261016",
+  "return_branch": "checkpoint/before-balanced-treatments-and-header-20261016",
+  "implementation_production_deployment": 7121515188,
+  "github_production_deployment": 7121691891,
+  "production_state": "success",
+  "production_completed_at": "2026-10-16T14:36:27Z",
+  "deployment_url": "https://rk-medical-centre-ihslzo0uu-neura-flow-s-projects.vercel.app",
+  "url": "https://www.rkmedicalcentre.com/",
+  "javascript": "/assets/index-CJlO4IK-.js",
+  "stylesheet": "/assets/index-B4SyD1w-.css",
+  "overview": {
+    "physician_entries": 5,
+    "women_entries": 5,
+    "total_entry_points": 10,
+    "actual_topics": 8,
+    "desktop_heights": [
+      527.265625,
+      527.265625
+    ],
+    "before_desktop_heights": [
+      527.265625,
+      364.390625
+    ]
+  },
+  "header": {
+    "visible_public_page_headers": 7,
+    "public_routes_http_200": 7,
+    "official_viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "local_main_page_views": 8,
+    "local_widths": [
+      1440,
+      1200,
+      1024,
+      768,
+      390,
+      320
+    ],
+    "desktop_nav_centre_px": 720,
+    "desktop_viewport_width": 1440,
+    "current_destination": "/contact",
+    "enabled_display_destination": "/booking",
+    "retained_on_refresh": "Existing display contract retained; admission remains guarded until fresh."
+  },
+  "booking": {
+    "state_endpoint_http": 200,
+    "enabled": false,
+    "direct_booking_http": 404,
+    "provider_activation": false,
+    "real_flow_acceptance": "not-performed"
+  },
+  "tracked_app_files": 880,
+  "changed_repository_files": 6,
+  "original_review_pairs_retained": 26,
+  "portraits_retained": 26,
+  "scene_entries_retained": 34,
+  "saved_screenshots": 55,
+  "tests_run": 0,
+  "release_gates_run": 0,
+  "normal_hosting_compilation": "succeeded",
+  "official_observed_page_errors": 0,
+  "customer_transactions_or_messages": 0,
+  "provider_or_database_mutations": 0,
+  "documentation_hubs_updated": 5,
+  "final_documentation_commit": "README-only; frontend assets unchanged from the implementation checkpoint.",
+  "remaining_separate": "Real booking/provider setup and client factual/photo approval remain unfinished. Historical evidence is labelled and preserved."
+}

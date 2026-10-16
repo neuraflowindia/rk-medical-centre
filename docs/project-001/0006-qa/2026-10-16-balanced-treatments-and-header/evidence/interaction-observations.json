@@ -1,0 +1,86 @@
+{
+  "appointmentFocus": {
+    "visible": true,
+    "focusVisible": true,
+    "outline": "solid",
+    "href": "/contact"
+  },
+  "appointmentDestination": {
+    "path": "/contact",
+    "phones": [
+      "tel:+919415049410",
+      "tel:+919838655095"
+    ]
+  },
+  "Period concerns and PCOS": {
+    "search": "?topic=womens-health",
+    "title": "Women's health",
+    "doctor": "Dr. Parul Gupta",
+    "description": "Discuss period problems, PCOS or another women’s health concern. PCOS is a condition that can affect periods and hormone levels. Bring your questions so you can talk through what has been troubling you.",
+    "scene": {
+      "id": "T3",
+      "type": "T3",
+      "time": 2966.5,
+      "duration": 3400,
+      "done": false,
+      "visible": true,
+      "ratio": 1,
+      "ready": true,
+      "tracks": 7,
+      "loops": 1,
+      "error": null,
+      "movement": true,
+      "reduced": false,
+      "paused": false,
+      "paneVisible": true
+    }
+  },
+  "Care after childbirth": {
+    "search": "?topic=pregnancy",
+    "title": "Pregnancy care",
+    "doctor": "Dr. Parul Gupta",
+    "description": "Discuss check-ups during pregnancy, nutrition questions and care after childbirth. Share any concerns you have and bring records from earlier visits, if you have them.",
+    "scene": {
+      "id": "T3",
+      "type": "T3",
+      "time": 2966.4680000000003,
+      "duration": 3200,
+      "done": false,
+      "visible": true,
+      "ratio": 1,
+      "ready": true,
+      "tracks": 22,
+      "loops": 3,
+      "error": null,
+      "movement": true,
+      "reduced": false,
+      "paused": false,
+      "paneVisible": true
+    }
+  },
+  "menu": {
+    "open": true,
+    "expanded": "true",
+    "selected": "Treatments"
+  },
+  "menuClosed": false,
+  "phone": {
+    "width": 320,
+    "headerTop": 0,
+    "columns": [
+      {
+        "height": 658.6875,
+        "rows": 5
+      },
+      {
+        "height": 704.125,
+        "rows": 5
+      }
+    ]
+  },
+  "reduced": {
+    "entries": 10,
+    "buttonVisible": true,
+    "sceneErrors": []
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "headers": [
+    {
+      "path": "/",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Home",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/treatment",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Treatments",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/about-clinic",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "About the clinic",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/meet-doctor",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/contact",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Contact",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/booking",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": null,
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Home",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/treatment",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Treatments",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/about-clinic",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "About the clinic",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/meet-doctor",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Doctors",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/contact",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": "Contact",
+      "hiddenOtherBookingLinks": true
+    },
+    {
+      "path": "/booking",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "selected": null,
+      "hiddenOtherBookingLinks": true
+    }
+  ],
+  "finalBundle": "/assets/index-CJlO4IK-.js",
+  "desktopHeights": [
+    527.265625,
+    527.265625
+  ]
+}

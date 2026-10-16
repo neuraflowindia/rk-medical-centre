@@ -1,0 +1,499 @@
+{
+  "saved_on": "2026-10-16",
+  "purpose": "Owner-requested Project 001 documentation closeout and pause for Project 004",
+  "website_source": "a77f772fbcf1766ea63353f3fc6a32865ddbf2cb",
+  "working_source_root": "03-client-projects/001-doctors",
+  "payload_files": 70,
+  "files": [
+    {
+      "source": "PROJECT-STATUS.md",
+      "saved": "PROJECT-STATUS.md",
+      "source_sha256": "080a48186b36b7615d56b920f8c72a3c4a0bdd71563f1012dbc60f1b8fea29b7",
+      "saved_sha256": "c13c417f2c69a6e5f688421c353dcb272cbded24636a0b27d6024c2a142fb93f",
+      "bytes": 13798
+    },
+    {
+      "source": "README.md",
+      "saved": "client-readme.md",
+      "source_sha256": "1a6650c31bd5036a8272bf023155f721b2b42b2ce1047ae6e2b23da8604bee5a",
+      "saved_sha256": "25c230ff8395d896720583786e21c4a3cd7a8ad21ec7291569bbfadeff26ba96",
+      "bytes": 6815
+    },
+    {
+      "source": "0001-planning/08-build-brief.md",
+      "saved": "0001-planning/08-build-brief.md",
+      "source_sha256": "ccaec6b0ac3c008e11a712d2d4bcc12da3fc9ed415a2041e6b8471cf6d01bd17",
+      "saved_sha256": "0da65d46afde02509ef8eb1090fd0697bf67eb2ac51dafe0867f76ec7cc6faf0",
+      "bytes": 7598
+    },
+    {
+      "source": "0005-website/build-notes.md",
+      "saved": "0005-website/build-notes.md",
+      "source_sha256": "74f638e6e6c00dee357db010dfbba70a623d64e601fb475127acee7b56ab086d",
+      "saved_sha256": "502aefbcfbaa0b7b7d17c3c70e55a8b3c213ddb437e727fefb1d4eb63ee70e2b",
+      "bytes": 19991
+    },
+    {
+      "source": "0008-handover/2026-10-16-project-pause/README.md",
+      "saved": "0008-handover/2026-10-16-project-pause/README.md",
+      "source_sha256": "891baf315d00570fea6a38696cb95a4469a5a3e0af09f1fb63282b862c3d5f18",
+      "saved_sha256": "891baf315d00570fea6a38696cb95a4469a5a3e0af09f1fb63282b862c3d5f18",
+      "bytes": 6283
+    },
+    {
+      "source": "0006-qa/2026-10-16-complete-review-and-page-refinements/review-content-provenance.md",
+      "saved": "0006-qa/2026-10-16-complete-review-and-page-refinements/review-content-provenance.md",
+      "source_sha256": "6f7f06f36c1809bc2da61da406bac4b2ff99fe2a5ef83936ee6d723d91993115",
+      "saved_sha256": "6f7f06f36c1809bc2da61da406bac4b2ff99fe2a5ef83936ee6d723d91993115",
+      "bytes": 2084
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/README.md",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/README.md",
+      "source_sha256": "bed0243b204375082639b450fa13e061d67c739ea9c183884dd79ee62eead936",
+      "saved_sha256": "bed0243b204375082639b450fa13e061d67c739ea9c183884dd79ee62eead936",
+      "bytes": 2871
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/implementation-plan.md",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/implementation-plan.md",
+      "source_sha256": "698d1a75218b58565b12aa0540445d37730ee7f6d362944a1d27f0acddf68a5f",
+      "saved_sha256": "698d1a75218b58565b12aa0540445d37730ee7f6d362944a1d27f0acddf68a5f",
+      "bytes": 5662
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/review-record.md",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/review-record.md",
+      "source_sha256": "e4038c1ec95d44d4c37ae774a86cebc7ee0bf2e90982196b4dac4b32318a38b7",
+      "saved_sha256": "e4038c1ec95d44d4c37ae774a86cebc7ee0bf2e90982196b4dac4b32318a38b7",
+      "bytes": 5745
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/publication.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/publication.json",
+      "source_sha256": "a82bc65b13b70adf60fcd7f4e630bd95fd96239e00d7375fdc76e1af2ff7b24b",
+      "saved_sha256": "a82bc65b13b70adf60fcd7f4e630bd95fd96239e00d7375fdc76e1af2ff7b24b",
+      "bytes": 2547
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/after-childbirth-link.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/after-childbirth-link.png",
+      "source_sha256": "f6c4e8f421c11fadc951655598184f013b74ad7ee706578bf6eab130ce4e9787",
+      "saved_sha256": "f6c4e8f421c11fadc951655598184f013b74ad7ee706578bf6eab130ce4e9787",
+      "bytes": 205412
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/after-childbirth-settled.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/after-childbirth-settled.png",
+      "source_sha256": "61e03008b67b056ee8ca9e43d43ed2812fa3c582c4c73f6c767acf9b71b136bd",
+      "saved_sha256": "61e03008b67b056ee8ca9e43d43ed2812fa3c582c4c73f6c767acf9b71b136bd",
+      "bytes": 205095
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/appointment-focus.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/appointment-focus.png",
+      "source_sha256": "31ca0d59f706e2daa767beba42a36ae33183f3c9cca1a8592bf9b8a3b9c4cf8f",
+      "saved_sha256": "31ca0d59f706e2daa767beba42a36ae33183f3c9cca1a8592bf9b8a3b9c4cf8f",
+      "bytes": 144807
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/appointment-hover.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/appointment-hover.png",
+      "source_sha256": "64c44534650442e16f564c2ff4e2b14a630d0e591d758338406b70a774528792",
+      "saved_sha256": "64c44534650442e16f564c2ff4e2b14a630d0e591d758338406b70a774528792",
+      "bytes": 143018
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/before-treatment-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/before-treatment-1440.png",
+      "source_sha256": "58563a32880281f13b24e9409c71fa1b4d4859447a0dde448487a67ace8f7742",
+      "saved_sha256": "58563a32880281f13b24e9409c71fa1b4d4859447a0dde448487a67ace8f7742",
+      "bytes": 123161
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/before-treatment-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/before-treatment-390.png",
+      "source_sha256": "6b0ec112568201d045a48813823498eac3e2e4f320f6d10cbcb039beecf4c880",
+      "saved_sha256": "6b0ec112568201d045a48813823498eac3e2e4f320f6d10cbcb039beecf4c880",
+      "bytes": 59968
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1024.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1024.png",
+      "source_sha256": "33335e5d01746bc2c7386ee83aab4e2d72712c935c56c8fbebb69a46dbf8c141",
+      "saved_sha256": "33335e5d01746bc2c7386ee83aab4e2d72712c935c56c8fbebb69a46dbf8c141",
+      "bytes": 119561
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1200.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1200.png",
+      "source_sha256": "7c4c80a733440bda72c767fa180d01c201d53bf988a9a94d2a7d071c1696c34a",
+      "saved_sha256": "7c4c80a733440bda72c767fa180d01c201d53bf988a9a94d2a7d071c1696c34a",
+      "bytes": 138055
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-1440.png",
+      "source_sha256": "0cf702fb8299856b2de43f1f57c507b214d5a917662b27c0e245febbff9d31d9",
+      "saved_sha256": "0cf702fb8299856b2de43f1f57c507b214d5a917662b27c0e245febbff9d31d9",
+      "bytes": 141639
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-320.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-320.png",
+      "source_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "saved_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "bytes": 59932
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-390.png",
+      "source_sha256": "39baaa8113664e48747b6e611a3c72a5963d8d65f9e21b49bf951aebe9357b40",
+      "saved_sha256": "39baaa8113664e48747b6e611a3c72a5963d8d65f9e21b49bf951aebe9357b40",
+      "bytes": 61950
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-768.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-treatment-768.png",
+      "source_sha256": "1173e4f801fa19befb8b91026b86dfc38b93f09187a1b4a14a4e157ac47f2c4d",
+      "saved_sha256": "1173e4f801fa19befb8b91026b86dfc38b93f09187a1b4a14a4e157ac47f2c4d",
+      "bytes": 134382
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-women-320.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-women-320.png",
+      "source_sha256": "1d86106bd8c56fb8b51ac47dcbd70177be7382027f1438188cd44904ac81c2aa",
+      "saved_sha256": "1d86106bd8c56fb8b51ac47dcbd70177be7382027f1438188cd44904ac81c2aa",
+      "bytes": 54387
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-women-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/candidate-women-390.png",
+      "source_sha256": "307ee7f65a7bc4e6da6d7e8d5b150d01b1b3cc38350b7086d3ec61b0dfe3cfd1",
+      "saved_sha256": "307ee7f65a7bc4e6da6d7e8d5b150d01b1b3cc38350b7086d3ec61b0dfe3cfd1",
+      "bytes": 52044
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/final-local-headers.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/final-local-headers.json",
+      "source_sha256": "127068aaf9ed54ac78687aab31a3dfa89900e01dad2e593f58062cad2a545c50",
+      "saved_sha256": "127068aaf9ed54ac78687aab31a3dfa89900e01dad2e593f58062cad2a545c50",
+      "bytes": 3532
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-about-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-about-1440.png",
+      "source_sha256": "fde3d6e69aa11a6cb61f7ebb05fb16f7d3a54d8c8e41c056031d7bbfc3e51f49",
+      "saved_sha256": "fde3d6e69aa11a6cb61f7ebb05fb16f7d3a54d8c8e41c056031d7bbfc3e51f49",
+      "bytes": 16364
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-about-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-about-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-booking-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-booking-1440.png",
+      "source_sha256": "58b8a6df43844ed746bc762124cd60a13cda208dfd5f12713fb1c60e967094a3",
+      "saved_sha256": "58b8a6df43844ed746bc762124cd60a13cda208dfd5f12713fb1c60e967094a3",
+      "bytes": 15754
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-booking-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-booking-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-contact-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-contact-1440.png",
+      "source_sha256": "7ac95fffff7a107eea6cce7795590f82c4b46c99fe6b670328b401492f1d86e9",
+      "saved_sha256": "7ac95fffff7a107eea6cce7795590f82c4b46c99fe6b670328b401492f1d86e9",
+      "bytes": 16291
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-contact-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-contact-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-doctors-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-doctors-1440.png",
+      "source_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "saved_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "bytes": 16052
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-doctors-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-doctors-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-home-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-home-1440.png",
+      "source_sha256": "5b3851a4d4b9bf4b59745e060b3b5e5055e2d81959bb9ff5b7c9e5062b4a2dce",
+      "saved_sha256": "5b3851a4d4b9bf4b59745e060b3b5e5055e2d81959bb9ff5b7c9e5062b4a2dce",
+      "bytes": 16131
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-home-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-home-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-parul-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-parul-1440.png",
+      "source_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "saved_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "bytes": 16052
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-parul-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-parul-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-sanjay-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-sanjay-1440.png",
+      "source_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "saved_sha256": "3ac11c2868c6bc2575db6db922904bb8597cded8e6ed84e7de853c8d06c95345",
+      "bytes": 16052
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-sanjay-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-sanjay-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-treatment-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-treatment-1440.png",
+      "source_sha256": "7c41bb5fc546bd52e08d2631a1f3d5d0e5272d26eebf568be7091d0561685e8a",
+      "saved_sha256": "7c41bb5fc546bd52e08d2631a1f3d5d0e5272d26eebf568be7091d0561685e8a",
+      "bytes": 16049
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-treatment-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/header-treatment-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/interaction-observations.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/interaction-observations.json",
+      "source_sha256": "1d9c03ebf46e863fb57b828895c431b51c2bbf400fb2cc9bede157fb9148329c",
+      "saved_sha256": "1d9c03ebf46e863fb57b828895c431b51c2bbf400fb2cc9bede157fb9148329c",
+      "bytes": 2049
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/layout-observations.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/layout-observations.json",
+      "source_sha256": "089834c0e4224356750a9ed356a02e542200fa354aad982a60055a46c66d7471",
+      "saved_sha256": "089834c0e4224356750a9ed356a02e542200fa354aad982a60055a46c66d7471",
+      "bytes": 10151
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/official-observations.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/official-observations.json",
+      "source_sha256": "fb4644bb2f06162274f36fd061d347edd71f41e0569218d4c89eaecadbb588e9",
+      "saved_sha256": "fb4644bb2f06162274f36fd061d347edd71f41e0569218d4c89eaecadbb588e9",
+      "bytes": 4046
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/period-care-link.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/period-care-link.png",
+      "source_sha256": "c09f7bcc046d2ba7322b67152227feee804130777f60bfc62bcdff45ce08f2a7",
+      "saved_sha256": "c09f7bcc046d2ba7322b67152227feee804130777f60bfc62bcdff45ce08f2a7",
+      "bytes": 224626
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/period-care-settled.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/period-care-settled.png",
+      "source_sha256": "aa59d2ee933e33665ec781b8ad5b57f22d2c697ef632b1baf882d5c195e773ec",
+      "saved_sha256": "aa59d2ee933e33665ec781b8ad5b57f22d2c697ef632b1baf882d5c195e773ec",
+      "bytes": 224565
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-320-final.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-320-final.png",
+      "source_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "saved_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "bytes": 59932
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-closed.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-closed.png",
+      "source_sha256": "e968fd50014b2822b759d313ad5aeb1d75fc962c00d10f7fbb31e4d6d845a640",
+      "saved_sha256": "e968fd50014b2822b759d313ad5aeb1d75fc962c00d10f7fbb31e4d6d845a640",
+      "bytes": 61146
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-focus-final.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-focus-final.png",
+      "source_sha256": "10c0c1c4d2a98c358eb35c183d774187387bb6ff854e9eff007f7eade90aed2c",
+      "saved_sha256": "10c0c1c4d2a98c358eb35c183d774187387bb6ff854e9eff007f7eade90aed2c",
+      "bytes": 61575
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-open.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-menu-open.png",
+      "source_sha256": "1781c00734df6fa37fe98db945c656b876ac75083d22f4775d64044730d76483",
+      "saved_sha256": "1781c00734df6fa37fe98db945c656b876ac75083d22f4775d64044730d76483",
+      "bytes": 54726
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-reduced.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-reduced.png",
+      "source_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "saved_sha256": "9ecd79e74701dfc613a2a56f7d9029336d955f6e45d132290aeee066b4772d97",
+      "bytes": 59932
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-women-320-final.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/phone-women-320-final.png",
+      "source_sha256": "479eaf2a926c5ad7b04be027c9add30826c4b3c10f8ed34646bec6f6b584b003",
+      "saved_sha256": "479eaf2a926c5ad7b04be027c9add30826c4b3c10f8ed34646bec6f6b584b003",
+      "bytes": 63367
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-about-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-about-1440.png",
+      "source_sha256": "d253858d8d26aaa094ff42b6566b3bc46bed82cfde3e2e41976b2cf3d1e04342",
+      "saved_sha256": "d253858d8d26aaa094ff42b6566b3bc46bed82cfde3e2e41976b2cf3d1e04342",
+      "bytes": 16235
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-about-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-about-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-contact-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-contact-1440.png",
+      "source_sha256": "d036eaac1eef47500474cc05b600ab25e5f66b6c5e2c6e39043fb19635ad432a",
+      "saved_sha256": "d036eaac1eef47500474cc05b600ab25e5f66b6c5e2c6e39043fb19635ad432a",
+      "bytes": 16159
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-contact-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-contact-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-doctors-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-doctors-1440.png",
+      "source_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "saved_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "bytes": 15922
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-doctors-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-doctors-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-home-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-home-1440.png",
+      "source_sha256": "5b3851a4d4b9bf4b59745e060b3b5e5055e2d81959bb9ff5b7c9e5062b4a2dce",
+      "saved_sha256": "5b3851a4d4b9bf4b59745e060b3b5e5055e2d81959bb9ff5b7c9e5062b4a2dce",
+      "bytes": 16131
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-home-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-home-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-parul-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-parul-1440.png",
+      "source_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "saved_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "bytes": 15922
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-parul-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-parul-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-sanjay-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-sanjay-1440.png",
+      "source_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "saved_sha256": "af555986a57cacb2f7a66202cb824174f6e939b9294cf56f64de3496e8814147",
+      "bytes": 15922
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-sanjay-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-sanjay-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-treatment-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-treatment-1440.png",
+      "source_sha256": "86071ff98f06b64d5499fd7595d8c2850b97e2cd90838c604553bd4f49fa11d5",
+      "saved_sha256": "86071ff98f06b64d5499fd7595d8c2850b97e2cd90838c604553bd4f49fa11d5",
+      "bytes": 15922
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-treatment-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-header-treatment-390.png",
+      "source_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "saved_sha256": "20679dd06b9334207be1c477eddffa18d6575b4f20eede9a6b3f80f0f21f029e",
+      "bytes": 7551
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-treatment-1440.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-treatment-1440.png",
+      "source_sha256": "749d0d7e268cce2efe8e7eb700f441862fb027d6b1b9fea2b6ed135b5703858c",
+      "saved_sha256": "749d0d7e268cce2efe8e7eb700f441862fb027d6b1b9fea2b6ed135b5703858c",
+      "bytes": 141507
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-treatment-390.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/published-treatment-390.png",
+      "source_sha256": "39baaa8113664e48747b6e611a3c72a5963d8d65f9e21b49bf951aebe9357b40",
+      "saved_sha256": "39baaa8113664e48747b6e611a3c72a5963d8d65f9e21b49bf951aebe9357b40",
+      "bytes": 61950
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/settled-interaction-observations.json",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/settled-interaction-observations.json",
+      "source_sha256": "86acf67dd26c7439486b74c649d2e91f6c2e20339b8eac544521728bfd9d3349",
+      "saved_sha256": "86acf67dd26c7439486b74c649d2e91f6c2e20339b8eac544521728bfd9d3349",
+      "bytes": 969
+    },
+    {
+      "source": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/treatment-desktop-final.png",
+      "saved": "0006-qa/2026-10-16-balanced-treatments-and-header/evidence/treatment-desktop-final.png",
+      "source_sha256": "0cf702fb8299856b2de43f1f57c507b214d5a917662b27c0e245febbff9d31d9",
+      "saved_sha256": "0cf702fb8299856b2de43f1f57c507b214d5a917662b27c0e245febbff9d31d9",
+      "bytes": 141639
+    }
+  ]
+}

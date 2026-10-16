@@ -1,0 +1,466 @@
+{
+  "layout": [
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 80,
+            "y": 351.46875,
+            "width": 626,
+            "height": 527.265625,
+            "right": 706,
+            "bottom": 878.734375
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 734,
+            "y": 351.46875,
+            "width": 626,
+            "height": 527.265625,
+            "right": 1360,
+            "bottom": 878.734375
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 80,
+          "y": 0,
+          "width": 1280,
+          "height": 88,
+          "right": 1360,
+          "bottom": 88
+        },
+        "brand": {
+          "x": 80,
+          "y": 20,
+          "width": 240.90625,
+          "height": 48,
+          "right": 320.90625,
+          "bottom": 68
+        },
+        "nav": {
+          "x": 499.75,
+          "y": 20,
+          "width": 440.5,
+          "height": 48,
+          "right": 940.25,
+          "bottom": 68
+        },
+        "button": {
+          "x": 1131,
+          "y": 19.796875,
+          "width": 229,
+          "height": 48.390625,
+          "right": 1360,
+          "bottom": 68.1875
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    },
+    {
+      "width": 1200,
+      "documentWidth": 1200,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 48,
+            "y": 351.46875,
+            "width": 538,
+            "height": 527.265625,
+            "right": 586,
+            "bottom": 878.734375
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 614,
+            "y": 351.46875,
+            "width": 538,
+            "height": 527.265625,
+            "right": 1152,
+            "bottom": 878.734375
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 48,
+          "y": 0,
+          "width": 1104,
+          "height": 88,
+          "right": 1152,
+          "bottom": 88
+        },
+        "brand": {
+          "x": 48,
+          "y": 20,
+          "width": 221.859375,
+          "height": 48,
+          "right": 269.859375,
+          "bottom": 68
+        },
+        "nav": {
+          "x": 379.75,
+          "y": 20,
+          "width": 440.5,
+          "height": 48,
+          "right": 820.25,
+          "bottom": 68
+        },
+        "button": {
+          "x": 923,
+          "y": 19.796875,
+          "width": 229,
+          "height": 48.390625,
+          "right": 1152,
+          "bottom": 68.1875
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    },
+    {
+      "width": 1024,
+      "documentWidth": 1024,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 32,
+            "y": 346.828125,
+            "width": 466,
+            "height": 669.453125,
+            "right": 498,
+            "bottom": 1016.28125
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 526,
+            "y": 346.828125,
+            "width": 466,
+            "height": 669.453125,
+            "right": 992,
+            "bottom": 1016.28125
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 32,
+          "y": 0,
+          "width": 960,
+          "height": 88,
+          "right": 992,
+          "bottom": 88
+        },
+        "brand": {
+          "x": 32,
+          "y": 20,
+          "width": 221.859375,
+          "height": 48,
+          "right": 253.859375,
+          "bottom": 68
+        },
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "button": {
+          "x": 699,
+          "y": 19.796875,
+          "width": 229,
+          "height": 48.390625,
+          "right": 928,
+          "bottom": 68.1875
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 944,
+          "y": 20,
+          "width": 48,
+          "height": 48,
+          "right": 992,
+          "bottom": 68
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 32,
+            "y": 346.828125,
+            "width": 341,
+            "height": 659.078125,
+            "right": 373,
+            "bottom": 1005.90625
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 395,
+            "y": 346.828125,
+            "width": 341,
+            "height": 659.078125,
+            "right": 736,
+            "bottom": 1005.90625
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 32,
+          "y": 0,
+          "width": 704,
+          "height": 88,
+          "right": 736,
+          "bottom": 88
+        },
+        "brand": {
+          "x": 32,
+          "y": 20,
+          "width": 221.859375,
+          "height": 48,
+          "right": 253.859375,
+          "bottom": 68
+        },
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "button": {
+          "x": 443,
+          "y": 19.796875,
+          "width": 229,
+          "height": 48.390625,
+          "right": 672,
+          "bottom": 68.1875
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 688,
+          "y": 20,
+          "width": 48,
+          "height": 48,
+          "right": 736,
+          "bottom": 68
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 20,
+            "y": -591.734375,
+            "width": 350,
+            "height": 661.375,
+            "right": 370,
+            "bottom": 69.640625
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 20,
+            "y": 91.640625,
+            "width": 350,
+            "height": 661.375,
+            "right": 370,
+            "bottom": 753.015625
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 20,
+          "y": 0,
+          "width": 350,
+          "height": 80,
+          "right": 370,
+          "bottom": 80
+        },
+        "brand": {
+          "x": 20,
+          "y": 20.09375,
+          "width": 190.34375,
+          "height": 39.796875,
+          "right": 210.34375,
+          "bottom": 59.890625
+        },
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "button": {
+          "x": 225.140625,
+          "y": 16,
+          "width": 90.859375,
+          "height": 48,
+          "right": 316,
+          "bottom": 64
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 326,
+          "y": 16,
+          "width": 44,
+          "height": 48,
+          "right": 370,
+          "bottom": 64
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "columns": [
+        {
+          "label": "Physician, diabetes & general health",
+          "rect": {
+            "x": 16,
+            "y": -645.359375,
+            "width": 288,
+            "height": 658.6875,
+            "right": 304,
+            "bottom": 13.328125
+          },
+          "rows": 5
+        },
+        {
+          "label": "Women's health & pregnancy care",
+          "rect": {
+            "x": 16,
+            "y": 35.328125,
+            "width": 288,
+            "height": 773.375,
+            "right": 304,
+            "bottom": 808.703125
+          },
+          "rows": 5
+        }
+      ],
+      "header": {
+        "rect": {
+          "x": 16,
+          "y": 0,
+          "width": 288,
+          "height": 80,
+          "right": 304,
+          "bottom": 80
+        },
+        "brand": {
+          "x": 16,
+          "y": 12.3125,
+          "width": 149.140625,
+          "height": 55.375,
+          "right": 165.140625,
+          "bottom": 67.6875
+        },
+        "nav": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "right": 0,
+          "bottom": 0
+        },
+        "button": {
+          "x": 173.140625,
+          "y": 16,
+          "width": 78.859375,
+          "height": 48,
+          "right": 252,
+          "bottom": 64
+        },
+        "buttonHidden": false,
+        "href": "/contact",
+        "menu": {
+          "x": 260,
+          "y": 16,
+          "width": 44,
+          "height": 48,
+          "right": 304,
+          "bottom": 64
+        }
+      },
+      "topicCount": 8,
+      "failedImages": [],
+      "sceneErrors": []
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # R. K. Medical Centre
 
+**Owner-requested pause — 16 October 2026:** attention has returned to Project 004. The approved website refinements are published; booking/provider setup and client content/photo approval remain separate. [Saved project records and return handoff](docs/project-001/README.md) include current notes, release evidence, screenshots and remaining work. Website implementation baseline: `a77f772fbcf1766ea63353f3fc6a32865ddbf2cb`. This later documentation-only closeout changes no runtime source or settings. File counts below describe their dated implementation release; the documentation archive adds files separately.
+
 The published clinic website and contained standardized appointment system. Source imported from the approved correction candidate on 15 October 2026; earlier review versions are preserved separately. Client content approval and the remaining provider connections are separate unfinished items.
 
 ## Local website

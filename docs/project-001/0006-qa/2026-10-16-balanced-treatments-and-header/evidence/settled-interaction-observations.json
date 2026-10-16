@@ -1,0 +1,49 @@
+{
+  "menuClosedAfter180msExit": {
+    "closed": true,
+    "expanded": "false",
+    "focusReturned": true
+  },
+  "settledCare": [
+    {
+      "topic": "womens-health",
+      "scene": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3400,
+        "duration": 3400,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 7,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": false,
+        "paneVisible": true
+      }
+    },
+    {
+      "topic": "pregnancy",
+      "scene": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3200,
+        "duration": 3200,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 22,
+        "loops": 3,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": false,
+        "paneVisible": true
+      }
+    }
+  ]
+}

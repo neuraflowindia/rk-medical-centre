@@ -1,0 +1,185 @@
+{
+  "official": [
+    {
+      "http": 200,
+      "path": "/",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Home"
+    },
+    {
+      "http": 200,
+      "path": "/treatment",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Treatments"
+    },
+    {
+      "width": 1440,
+      "columns": [
+        {
+          "height": 527.265625,
+          "rows": 5
+        },
+        {
+          "height": 527.265625,
+          "rows": 5
+        }
+      ],
+      "topics": 8
+    },
+    {
+      "http": 200,
+      "path": "/about-clinic",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "About the clinic"
+    },
+    {
+      "http": 200,
+      "path": "/meet-doctor",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/dr-sanjay-gupta",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/dr-parul-gupta",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/contact",
+      "width": 1440,
+      "documentWidth": 1440,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Contact"
+    },
+    {
+      "http": 200,
+      "path": "/",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Home"
+    },
+    {
+      "http": 200,
+      "path": "/treatment",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Treatments"
+    },
+    {
+      "width": 390,
+      "columns": [
+        {
+          "height": 661.375,
+          "rows": 5
+        },
+        {
+          "height": 661.375,
+          "rows": 5
+        }
+      ],
+      "topics": 8
+    },
+    {
+      "http": 200,
+      "path": "/about-clinic",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "About the clinic"
+    },
+    {
+      "http": 200,
+      "path": "/meet-doctor",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/dr-sanjay-gupta",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/dr-parul-gupta",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Doctors"
+    },
+    {
+      "http": 200,
+      "path": "/contact",
+      "width": 390,
+      "documentWidth": 390,
+      "buttonVisible": true,
+      "href": "/contact",
+      "bundle": "/assets/index-CJlO4IK-.js",
+      "selected": "Contact"
+    }
+  ],
+  "destination": {
+    "path": "/contact",
+    "phones": [
+      "tel:+919415049410",
+      "tel:+919838655095"
+    ]
+  },
+  "directBookingHttp": 404,
+  "serviceState": {
+    "http": 200,
+    "enabled": false
+  },
+  "pageErrors": []
+}
