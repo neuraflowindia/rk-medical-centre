@@ -8,9 +8,18 @@ const preparationIcons={'general-health':['report','medicine','question'],diabet
 const topicIcons={'general-health':'person',diabetes:'meter','blood-pressure':'heart',thyroid:'report','fever-infections':'medicine','womens-health':'heart',pregnancy:'family',ultrasound:'report'};
 const preparationLabels={'general-health':['Reports','Medicines','Questions'],diabetes:['Reports','Blood sugar readings','Medicines'],'blood-pressure':['Readings','Earlier care','Medicines'],thyroid:['Reports','Earlier care','Questions'],'fever-infections':['Reports','Medicines','Symptom notes'],'womens-health':['Reports','Dates','Medicines'],pregnancy:['Earlier check-ups','Reports','Questions'],ultrasound:['Scan request','Earlier reports','Questions']};
 
+function overviewItems(group){
+ return topics.filter(topic=>topic.area===group.id).flatMap(topic=>{
+  const item={topic:topic.id,title:topic.title,short:topic.short,icon:topicIcons[topic.id]};
+  if(topic.id==='womens-health')return [item,{topic:topic.id,title:'Period concerns and PCOS',short:'Talk about period changes, PCOS and your reports.',icon:'calendar'}];
+  if(topic.id==='pregnancy')return [item,{topic:topic.id,title:'Care after childbirth',short:'Ask your questions about care after childbirth.',icon:'family'}];
+  return [item];
+ });
+}
+
 function treatmentOverview(){
  // Native catalogue links reuse route selection. Only chapter buttons own data-topic.
- return `<div class="chapter-links treatment-overview">${groups.map(g=>`<article class="treatment-overview-group treatment-overview-${g.id}" aria-label="${e(g.title)}"><a class="chapter-link" href="#${g.id}"><span class="chapter-icon" aria-hidden="true">${solidIcon(g.id==='physician'?'doctor':'heart')}</span><span><strong>${e(g.title)}</strong><small>${e(doctors[g.doctor].name)}</small></span><span aria-hidden="true">↓</span></a><ul class="treatment-overview-topics">${topics.filter(t=>t.area===g.id).map(t=>`<li><a class="treatment-overview-link" href="${link(topicLink(t.id))}"><span class="treatment-overview-symbol" aria-hidden="true">${solidIcon(topicIcons[t.id])}</span><span class="treatment-overview-copy"><strong>${e(t.title)}</strong><span>${e(t.short)}</span></span>${arrow}</a></li>`).join('')}</ul></article>`).join('')}</div>`;
+ return `<div class="chapter-links treatment-overview">${groups.map(g=>`<article class="treatment-overview-group treatment-overview-${g.id}" aria-label="${e(g.title)}"><a class="chapter-link" href="#${g.id}"><span class="chapter-icon" aria-hidden="true">${solidIcon(g.id==='physician'?'doctor':'heart')}</span><span><strong>${e(g.title)}</strong><small>${e(doctors[g.doctor].name)}</small></span><span aria-hidden="true">↓</span></a><ul class="treatment-overview-topics">${overviewItems(g).map(t=>`<li><a class="treatment-overview-link" href="${link(topicLink(t.topic))}"><span class="treatment-overview-symbol" aria-hidden="true">${solidIcon(t.icon)}</span><span class="treatment-overview-copy"><strong>${e(t.title)}</strong><span>${e(t.short)}</span></span>${arrow}</a></li>`).join('')}</ul></article>`).join('')}</div>`;
 }
 
 export function detail(t){

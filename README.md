@@ -6,6 +6,16 @@ The published clinic website and contained standardized appointment system. Sour
 
 Use Node.js with npm. Run `npm ci`, then `npm run dev`. Run `npm run build` to compile the local frontend. The site includes eight main pages, local artwork, multi-stage motion, doctor facts and the preserved original reviews.
 
+## Current treatment overview and sticky header
+
+The treatment overview has five entries for each doctor, with equal-height columns on computers/tablets and naturally sized stacked cards on phones. Period concerns/PCOS and care after childbirth now have their own opening links, leading to the existing women's-health and pregnancy details. There are ten overview entry points into the same eight actual topics. No extra booking service, procedure, doctor mapping, artwork or choreography is introduced.
+
+The shared sticky header places the brand on the left, centres the desktop navigation and keeps the bold appointment action on the right. Below 1200px, it uses the existing menu beside the appointment action; phones retain the short Book label and full accessible action name. Existing active marking, focus and hover effects remain; the compact action/menu focus offset is 3px to keep their rings separate. Header positions and content were reviewed at 1440, 1200, 1024, 768, 390 and 320px.
+
+The header action is always usable: online booking ON opens `/booking`; OFF/checking/unavailable opens the real `/contact` phone choices. This is the explicitly stated implementation assumption for the requested visible button, pending any different owner preference. The original `syncBookingVisibility()` owns this one header exception before its normal booking-link pass. Other booking-only actions and all real booking/provider/readiness/submission guards remain unchanged. This does not activate online booking or expose an OFF booking route.
+
+Current work branch: `codex/balanced-treatments-and-header-20261016`. Return branch: `checkpoint/before-balanced-treatments-and-header-20261016`, at `b0f98ae61ed001ee37cf623c6f07ac2ecddbb81d`. Earlier full-page refinements, comparisons and source copies remain preserved. Current delivery evidence lives in the client's `2026-10-16-balanced-treatments-and-header` record. No tests or release gates run; normal compilation and source/rendered review are separate evidence. The app remains 880 files, with all 26 original review pairs, 26 local portraits, 34 scene entries and eight actual treatment topics.
+
 ## Home refinement
 
 The Home page keeps the established hero, distinct mint treatment section, six consistent paper-style care images, fuller stacked doctor profiles, calendar dates and repeating three-step explanation. Home doctor features keep all information in a more compact layout: three care columns on wide screens, two on tablets and one on phones; About the doctor, Call and the informational ₹800 fee share a wide-screen row. The availability-gated booking action remains separate. The doctors have six clearly filled qualification/institution/experience pills, two specialty strips, two practice-since-1992 badges and nine icon-led care links. The shared footer includes labelled doctor phone numbers, confirmed appointment times, directions and privacy choices.
@@ -22,7 +32,7 @@ The complete Home-card checkpoint is published from 73cd550e83cdee4b530fceae817d
 
 ## Seven further page refinements
 
-Treatments has a catalogue-led overview for all eight topics, meaningful icons, clear selected states, matching doctor links and three labelled preparation takeaways beside each complete description. The two care chapters and their individual artwork/selection sequences remain. On phones the topic buttons use two equal columns, changing to one below 360px.
+Treatments has a catalogue-led overview with ten entry points into all eight topics, meaningful icons, clear selected states, matching doctor links and three labelled preparation takeaways beside each complete description. The two care chapters and their individual artwork/selection sequences remain. On phones the topic buttons use two equal columns, changing to one below 360px.
 
 The Doctors directory, both individual profiles and About doctor features use confirmed qualification/institution/experience pills, strong care links, direct call actions and visible ₹800 fees. Actual appointment hours stay near useful actions. Parul's confirmed KGMU medal has a gold accent; doctor-photo positions remain ready for genuine supplied photos. All original background, care and preparation text remains. About also gives confirmed NABH and ISO facts two distinct, readable certificate features.
 

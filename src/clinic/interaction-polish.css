@@ -3,3 +3,18 @@
 @media(max-width:767px){.map-frame{height:300px;border-radius:20px}.chapter-grid .chapter-art{order:2}.chapter-grid .topic-explorer{order:1}}
 @media(prefers-reduced-motion:reduce){.button:hover .button-label,.button:active .button-label{transform:none}}
 .booking-steps{list-style:none;padding:0;margin:28px 0;display:grid;gap:18px}.booking-steps li{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;align-items:center;padding:0;font-size:16px;min-height:36px;font-weight:700}
+
+/* The shared sticky header reserves a real appointment action on every screen. */
+.site-header .header-row{display:grid;grid-template-columns:minmax(0,1fr) auto 48px;align-items:center;gap:16px;flex-wrap:nowrap}
+.site-header .brand{justify-self:start;min-width:0}
+.site-header .book{justify-self:end;margin:0;white-space:nowrap}
+.site-header .menu-button{justify-self:end}
+.site-header :is(.book,.menu-button):focus-visible{outline-offset:3px}
+@media(min-width:1200px){
+ .site-header .header-row{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:24px}
+ .site-header .desktop-nav{display:flex;flex-wrap:nowrap;justify-self:center;margin:0;gap:22px}
+}
+@media(max-width:767px){
+ .site-header .header-row{grid-template-columns:minmax(0,1fr) auto 44px;gap:10px}
+}
+@media(max-width:359px){.site-header .header-row{gap:8px}}

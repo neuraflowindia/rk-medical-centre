@@ -1,16 +1,16 @@
 /* Catalogue-led care navigation and confirmed About credentials only. */
-.treatment-overview{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px}
-.treatment-overview-group{min-width:0;border:1px solid #b4cbd0;border-radius:24px;background:var(--blue);box-shadow:0 12px 24px -19px rgba(27,54,93,.3)}
+.treatment-overview{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:28px}
+.treatment-overview-group{display:flex;flex-direction:column;min-width:0;border:1px solid #b4cbd0;border-radius:24px;background:var(--blue);box-shadow:0 12px 24px -19px rgba(27,54,93,.3)}
 .treatment-overview-women{border-color:#b4d1c4;background:var(--mint)}
-.treatment-overview .chapter-link{grid-template-columns:44px minmax(0,1fr) 20px;gap:16px;min-height:0;padding:25px 26px 22px;border:0;border-radius:23px 23px 0 0;background:none;align-items:center}
+.treatment-overview .chapter-link{grid-template-columns:44px minmax(0,1fr) 20px;gap:16px;min-height:0;padding:25px 26px 22px;border:0;border-radius:23px 23px 0 0;background:none;align-items:center;flex-shrink:0}
 .treatment-overview .chapter-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--warm)}
 .treatment-overview .chapter-icon .solid-icon{width:28px;height:28px}
 .treatment-overview .chapter-link strong{display:block;font:600 22px/1.35 Lora,Georgia,serif;letter-spacing:-.015em;overflow-wrap:normal}
 .treatment-overview .chapter-link small{font-size:16px;line-height:1.4;margin-top:7px}
-.treatment-overview-topics{list-style:none;padding:0 26px 12px;margin:0}
+.treatment-overview-topics{display:grid;grid-template-rows:repeat(5,minmax(0,1fr));flex:1;list-style:none;padding:0 26px 12px;margin:0}
 .treatment-overview-topics>li{min-width:0;border-top:1px solid #c4d7d9}
 .treatment-overview-women .treatment-overview-topics>li{border-color:#c3dace}
-.treatment-overview-link{display:grid;grid-template-columns:36px minmax(0,1fr) 18px;align-items:center;gap:12px;min-height:80px;padding:15px 0;color:var(--ink);border-radius:10px;transition:color 180ms ease}
+.treatment-overview-link{display:grid;grid-template-columns:36px minmax(0,1fr) 18px;align-items:center;gap:12px;min-height:80px;height:100%;padding:15px 0;color:var(--ink);border-radius:10px;transition:color 180ms ease}
 .treatment-overview-symbol{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--warm);box-shadow:0 4px 9px -7px rgba(27,54,93,.25)}
 .treatment-overview-symbol>.solid-icon{width:23px;height:23px;color:var(--teal)}
 .treatment-overview-copy{display:grid;gap:5px;min-width:0}
@@ -76,6 +76,7 @@
 }
 @media(max-width:767px){
  .treatment-overview{grid-template-columns:minmax(0,1fr);gap:22px}
+ .treatment-overview-topics{grid-template-rows:none;grid-auto-rows:auto;flex:initial}
  .treatment-overview .chapter-link{grid-template-columns:40px minmax(0,1fr) 18px;padding:23px 20px 20px;min-height:0}
  .treatment-overview .chapter-icon{width:40px;height:40px;border-radius:13px}
  .treatment-overview .chapter-icon .solid-icon{width:26px;height:26px}
