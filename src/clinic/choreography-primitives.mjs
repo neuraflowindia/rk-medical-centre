@@ -10,7 +10,7 @@ export function context(root,id,phone,duration){
  root.classList.add('ch-section');
  const own=el=>{el.dataset.choreographyOwned=id;owned.push(el);return el;};
  const add=(element,frames,start,end,easing=E)=>{if(!element||end<=start)return;tracks.push({element,frames:frames.map(f=>({...f,easing})),start,end,easing:'linear'});};
- const loop=(element,frames,cycle)=>{if(element)loops.push({element,frames,duration:cycle});};
+ const loop=(element,frames,cycle,{easing='ease-in-out',key,pauseWhen,visibilityRoot}={})=>{if(element)loops.push({element,frames,duration:cycle,easing,key,pauseWhen,visibilityRoot});};
  const inject=(parent,html)=>{const t=document.createElement('template');t.innerHTML=html;const els=[...t.content.children];for(const el of els){own(el);parent.append(el);}return els[0];};
  const bounds=el=>{const a=(el||root).getBoundingClientRect(),b=root.getBoundingClientRect();return {x:a.left-b.left,y:a.top-b.top,w:a.width,h:a.height,cx:a.left-b.left+a.width/2,cy:a.top-b.top+a.height/2};};
  const svg=()=>{if(overlay)return overlay;overlay=own(document.createElementNS(NS,'svg'));overlay.classList.add('ch-overlay');overlay.setAttribute('aria-hidden','true');overlay.setAttribute('viewBox',`0 0 ${root.clientWidth} ${root.clientHeight}`);overlay.setAttribute('preserveAspectRatio','none');root.append(overlay);return overlay;};
@@ -29,6 +29,7 @@ export function context(root,id,phone,duration){
  const fact=(el,a,b)=>{if(!el)return;const mark=el.querySelector('svg');travel(mark,a,b,[[phone?-6:-10,0],[phone?1:2,0],[0,0]]);line(el,a+(b-a)*.4,b,{inset:36});};
  const finalize=()=>{const finish=duration,start=Math.max(0,finish-180);for(const el of overlay?.querySelectorAll(':scope>.ch-route')||[])if(!el.hasAttribute('data-ch-retain')&&!el.hasAttribute('data-ch-retires'))retire(el,start,finish,.65);};
  return {root,id,phone,duration,tracks,loops,own,inject,bounds,anchor,svg,path,draw,line,icon,travel,plane,hinge,dot,traveler,retire,finalize,fact,add,loop,
+  requestSync(){root.dispatchEvent(new CustomEvent('choreography:interaction',{bubbles:true}));},
   cleanup(){for(const el of owned)el.remove();},stage:root.querySelector('[data-scene-stage],.composition,.care-media,.specialty-stage')||root};
 }
 export function partTrack(c,compositionId,name,keys,phoneKeys){

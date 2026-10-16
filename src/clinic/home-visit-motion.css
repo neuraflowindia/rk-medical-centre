@@ -1,0 +1,16 @@
+/* Attached artwork and idle accents only; shared row interaction belongs to the site styles. */
+#visit .ch-calendar-dates{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+#visit .ch-calendar-date-space{position:absolute;left:0;top:0;width:960px;height:960px;transform-origin:0 0}
+#visit .ch-calendar-date-face{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;overflow:visible;font-family:Lato,Arial,sans-serif;fill:#294b59}
+#visit .ch-date-month{font-size:39px;font-weight:700}
+#visit .ch-date-year{font-size:27px;font-weight:700;text-anchor:end;fill:#5e6c70}
+#visit .ch-date-weekday{font-size:22px;font-weight:700;text-anchor:middle;fill:#0a706b}
+#visit .ch-date-day{font-size:32px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+#visit .ch-date-today{fill:#cfe6db;stroke:#86b8a5;stroke-width:1.5}
+#visit .ch-date-rule{fill:none;stroke:#adc7c0;stroke-width:1.5}
+#visit .step-number{position:relative;z-index:2}
+#visit .ch-step-number-accent{position:absolute;inset:-1px;display:grid;place-items:center;border-radius:50%;font-weight:900;color:#0a706b;box-shadow:0 0 0 5px #0a706b1a,0 0 18px #0a706b16;text-shadow:0 0 10px #0a706b32;opacity:0;pointer-events:none}
+#visit .ch-step-title-accent{position:absolute;display:block;color:#0a706b;opacity:0;pointer-events:none}
+#visit .ch-step-traveler{position:absolute;width:3px;height:20px;border-radius:2px;background:#0a706b;opacity:0;pointer-events:none;z-index:0;box-shadow:0 0 7px #0a706b38}
+#visit .visit-steps.is-interacting .ch-step-cycle{opacity:0!important}
+@media(prefers-reduced-motion:reduce){#visit .ch-step-cycle{display:none}}

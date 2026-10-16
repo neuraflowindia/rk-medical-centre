@@ -6,6 +6,16 @@ The completed clinic website and contained standardized appointment system. Sour
 
 Use Node.js with npm. Run `npm ci`, then `npm run dev`. Run `npm run build` to compile the local frontend. The site includes eight main pages, local artwork, multi-stage motion, doctor facts and the preserved original reviews.
 
+## Home refinement
+
+The Home page keeps the established hero and adds a distinct mint treatment section, six consistent paper-style care images, fuller stacked doctor profiles, calendar dates and a repeating three-step explanation. Three new compositions have 480/800/1200px WebP exports. The shared footer includes labelled doctor phone numbers, confirmed appointment times, directions and privacy choices.
+
+Patient feedback uses 18 existing author/quotation pairs from the unchanged 26-review source collection. It moves automatically at 20px/second on computers and 14px/second on phones, pauses on hover and resumes after leaving. Read all reveals a complete still list; native reduced motion also uses that list. No invented ratings, localities, verification labels or patient-photo associations were added.
+
+Home doctor/review components have their own small modules and styles. Per-card clocks wait until their own artwork is reached; resizing preserves Home movement rather than finishing unseen scenes. The contained booking engine, actual fees, schedules, payment rules and OFF controls are unchanged. The existing visit form remains governed by booking availability; no second capture flow or unconnected enquiry form is published.
+
+The owner requested implementation, source/visual review and publication without tests. No automated test, lint, type or release suite was run for this Home refinement. Normal frontend/hosting compilation is separate from testing.
+
 ## Vercel configuration
 
 Framework: Vite. Application root: repository root. Install: `npm ci`. Build: `npm run build:hosting`. Output: `dist`. The root `vercel.json` and `middleware.ts` connect the contained Python backend and signed booking-state routing. Do not replace these with a generic all-path Home rewrite. The root `requirements.txt` is an exact generated copy of the sealed package requirements because Vercel's Python manifest discovery cannot follow its nested `-r` file reference. The hosting build refuses any mismatch. `/tests` in `.vercelignore` excludes only a top-level website test folder; every sealed package file remains included for its runtime integrity check.

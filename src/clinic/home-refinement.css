@@ -1,0 +1,56 @@
+/* Home refinements preserve the hero's geometry and established art timelines. */
+#care.home-care{background:var(--mint);border-top:1px solid var(--border);padding-block:76px 80px}
+#care .care-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+#care .care-card{display:flex;flex-direction:column;grid-template-columns:none;align-items:stretch;gap:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+#care .care-media{width:100%;aspect-ratio:3/2;height:auto;min-height:0;background:none;border:0;border-radius:0;overflow:visible}
+#care .care-object{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:3/2;border:1px solid #c5d7d2;border-radius:24px;overflow:hidden;box-shadow:0 12px 24px -14px #1b365d38}
+#care .care-object img{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;border-radius:0;box-shadow:none}
+#care .care-copy{padding:20px 0 0;gap:12px}
+#care .care-copy h3{font-size:25px;line-height:1.25}
+#care .care-copy p{font-size:17px;line-height:1.6;min-height:54px}
+#care .care-copy .text-link{font-size:16px;min-height:44px;margin-top:auto;align-self:flex-start}
+#care .care-group+.care-group{padding-top:36px;margin-top:40px;border-top:1px solid var(--border)}
+#doctors>.wrap>.section-heading{max-width:none}
+.visit-benefits{list-style:none;margin:28px 0;padding:0;display:grid;gap:0}
+.visit-benefits li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:14px;padding:18px 0;border-bottom:1px solid #c5d7d2}
+.visit-benefits li>.fact-icon,.visit-benefits li>span{margin-top:4px}
+.visit-benefits strong{font-size:18px;color:var(--ink)}
+.visit-benefits p{font-size:17px;line-height:1.6;margin-top:5px}
+.button{box-shadow:0 3px 7px #1b365d14}
+.button:active:not(:disabled):not([aria-disabled=true]){transform:translateY(-1px) scale(.98)}
+.button .button-label>[aria-hidden],.button>[aria-hidden]{transition:translate 180ms cubic-bezier(.23,1,.32,1)}
+.button:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
+.button:disabled,.button[aria-disabled=true]{transform:none;box-shadow:none;cursor:default}
+#visit .step{grid-template-columns:44px minmax(0,1fr);gap:22px;transition:transform 180ms cubic-bezier(.23,1,.32,1),filter 180ms cubic-bezier(.23,1,.32,1);background:transparent}
+#visit .step-number{width:44px;height:44px;border-width:1.5px;flex-shrink:0}
+#visit .step>div:before{content:none}
+#visit .step-line{left:21px;top:22px;width:1.5px;bottom:50px;z-index:0}
+#visit .step{z-index:1}
+@media(hover:hover) and (pointer:fine){
+ .button:hover:not(:disabled):not([aria-disabled=true]){transform:translateY(-3px);box-shadow:0 12px 20px -10px #1b365d55,0 0 0 5px #0a706b12}
+ .button:hover .button-label>[aria-hidden],.button:hover>[aria-hidden]{translate:3px 0}
+ .button:active:not(:disabled):not([aria-disabled=true]){transform:translateY(-1px) scale(.98)}
+ #visit .step:hover{transform:translateY(-4px);filter:drop-shadow(0 14px 13px #1b365d24)}
+ #visit .step:hover .step-number{font-weight:900;box-shadow:0 0 0 5px #0a706b1a,0 0 18px #0a706b20;text-shadow:0 0 10px #0a706b35}
+ #visit .step.is-priority{transform:translateY(-4px);filter:drop-shadow(0 14px 13px #1b365d24)}
+ #visit .step.is-priority .step-number{font-weight:900;box-shadow:0 0 0 5px #0a706b1a,0 0 18px #0a706b20;text-shadow:0 0 10px #0a706b35}
+ #visit .step.is-priority h3{color:var(--teal)}
+ #care .care-card:hover .care-object{box-shadow:0 18px 30px -16px #1b365d50}
+ #care .care-card:hover .care-media{filter:none}
+}
+@media(min-width:768px) and (max-width:1023px){#care .care-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){
+ #care.home-care{padding-block:56px}
+ #care .care-grid{grid-template-columns:minmax(0,1fr);gap:32px}
+ #care .care-object{border-radius:20px}
+ #care .care-copy{padding-top:20px}
+ #care .care-copy h3{font-size:24px}
+ #care .care-copy p{min-height:0}
+ #care .care-group+.care-group{padding-top:30px;margin-top:34px}
+ #visit .step{gap:16px;min-height:144px}
+ #visit .step:last-child{min-height:108px}
+}
+@media(prefers-reduced-motion:reduce){
+ .button:hover:not(:disabled):not([aria-disabled=true]),.button:active:not(:disabled):not([aria-disabled=true]),#visit .step:hover,#visit .step.is-priority{transform:none}
+ .button:hover .button-label>[aria-hidden],.button:hover>[aria-hidden]{translate:none}
+}

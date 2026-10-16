@@ -1,4 +1,6 @@
 import {E,T,F,pose,iconMarkup} from './choreography-primitives.mjs';
+import {mountCalendarDates} from './calendar-dates.mjs';
+import './home-visit-motion.css';
 const asset=stem=>`/clinic-assets/${stem}-960.webp`;
 const image=stem=>`<img src="${asset(stem)}" width="960" height="960" alt="" decoding="async">`;
 const lip='M267 611 Q269 596 288 590 L866 480 Q886 472 902 483 Q915 491 917 508 L952 657 Q959 678 936 688 L291 812 Q275 817 261 805 L260 636 Q260 616 267 611Z';
@@ -22,6 +24,7 @@ export function hero(c){
 }
 export function steps(c){
  const stage=reuse(c,c.root.querySelector('[data-composition="A12"]'),`<div class="ch-desk-halo"></div><span class="ch-desk-baseline"></span><svg class="ch-step-route-svg" viewBox="0 0 570 570"><path d="M150 355 C80 470 230 530 345 490 S510 410 566 362"/></svg><div class="ch-calendar">${image('a12-calendar')}</div><div class="ch-folio"><div class="ch-folio-base">${iconMarkup('person')}<i></i><i></i></div><div class="ch-folio-front">${iconMarkup('calendar')}<i></i><i></i><i class="ch-idle-rule"></i></div></div><div class="ch-review-outline"></div><div class="ch-slip">${image('a12-slip')}<svg class="ch-writing" viewBox="0 0 960 960"><path class="ch-note-lines" d="M290 405 560 320 M325 478 600 390 M357 550 551 489"/><path class="ch-check" d="m490 573 49 27 100-111"/></svg></div><div class="ch-pen"><div class="ch-idle">${image('a12-pen')}</div></div>`,'ch-step-art');if(!stage)return;c.stage=stage;
+ const removeDates=mountCalendarDates(stage.querySelector('.ch-calendar')),clean=c.cleanup;c.cleanup=()=>{removeDates();clean();};
  const time=c.phone?2400/2900:1,k=c.phone?.65:1,tr=(sel,f,a,b,e=E)=>c.add(stage.querySelector(sel),f,a*time,b*time,e);
  tr('.ch-desk-halo',[{transform:'scale(.8,.62) rotate(-8deg)',opacity:.2},{transform:'none',opacity:1}],0,750,F);
  tr('.ch-desk-baseline',[{transform:'scaleX(.1)',opacity:0},{transform:'scaleX(1)',opacity:1}],100,1100);
@@ -37,7 +40,62 @@ export function steps(c){
  c.add(c.root.querySelector('.step-line'),[{transform:'scaleY(0)'},{transform:'scaleY(.34)',offset:.3},{transform:'scaleY(.68)',offset:.65},{transform:'scaleY(1)'}],600*time,2750*time,T);
  c.loop(stage.querySelector('.ch-pen .ch-idle'),[{transform:'rotate(0)'},{transform:'rotate(0)',offset:.65},{transform:'rotate(2deg)',offset:.78},{transform:'rotate(-.5deg)',offset:.9},{transform:'rotate(0)'}],10000);
  c.loop(stage.querySelector('.ch-idle-rule'),[{opacity:.5},{opacity:.5,offset:.65},{opacity:1,offset:.82},{opacity:.5}],10000);
- c.onFrame=(ms)=>c.root.querySelectorAll('.step').forEach((el,i)=>el.classList.toggle('stage-active',ms>c.duration*.2&&i===(ms/c.duration<.32?0:ms/c.duration<.7?1:2)));
+ stepCycle(c);
+}
+function stepCycle(c){
+ const frame=c.root.querySelector('.visit-steps'),items=[...c.root.querySelectorAll('.step')];if(!frame||items.length!==3)return;
+ const fine=matchMedia('(hover: hover) and (pointer: fine)'),listeners=[];
+ let hovered=null,interacting=false,returning=false,returnTimer=0,alive=true,entryTime=0;
+ const listen=(target,name,handler)=>{target.addEventListener(name,handler);listeners.push(()=>target.removeEventListener(name,handler));};
+ const focusControl=()=>{const active=document.activeElement;return c.root.contains(active)&&active?.closest('a[href],button,input,select,textarea')?active:null;};
+ const entrance=()=>items.forEach((item,index)=>item.classList.toggle('stage-active',!interacting&&entryTime<c.duration&&entryTime>c.duration*.2&&index===(entryTime/c.duration<.32?0:entryTime/c.duration<.7?1:2)));
+ function reflect(){
+  if(!alive)return;
+  const focused=focusControl(),priority=focused?.closest('.step')||hovered;
+  interacting=!!priority||!!focused||returning;frame.classList.toggle('is-interacting',interacting);
+  items.forEach(item=>item.classList.toggle('is-priority',item===priority));entrance();c.requestSync();
+ }
+ items.forEach(item=>{
+  listen(item,'pointerenter',()=>{if(!fine.matches)return;clearTimeout(returnTimer);returning=false;hovered=item;reflect();});
+  listen(item,'pointerleave',()=>{if(hovered!==item)return;hovered=null;returning=true;clearTimeout(returnTimer);reflect();returnTimer=setTimeout(()=>{returning=false;reflect();},200);});
+ });
+ listen(c.root,'focusin',reflect);listen(c.root,'focusout',()=>queueMicrotask(reflect));
+ listen(fine,'change',()=>{if(!fine.matches){hovered=null;returning=false;clearTimeout(returnTimer);reflect();}});
+ if(fine.matches)hovered=items.find(item=>item.matches(':hover'))||null;
+ const frames=(start,end)=>{
+  const points=[{opacity:0,offset:0}];if(start)points.push({opacity:0,offset:start/9000});
+  points.push({opacity:1,offset:(start+120)/9000},{opacity:1,offset:(end-120)/9000},{opacity:0,offset:end/9000},{opacity:0,offset:1});return points;
+ };
+ const pauseWhen=()=>interacting;
+ items.forEach((item,index)=>{
+  const number=item.querySelector('.step-number'),heading=item.querySelector('h3'),copy=heading?.parentElement;if(!number||!heading||!copy)return;
+  const mark=c.inject(number,'<span class="ch-step-cycle ch-step-number-accent" aria-hidden="true"></span>');mark.textContent=number.firstChild?.textContent?.trim()||String(index+1);
+  // Keep the overlay outside the booking-state text node, which the shared binding replaces.
+  const title=c.inject(copy,'<span class="ch-step-cycle ch-step-title-accent" aria-hidden="true"></span>');title.textContent=heading.textContent;
+  const font=getComputedStyle(heading);Object.assign(title.style,{left:heading.offsetLeft+'px',top:heading.offsetTop+'px',width:heading.offsetWidth+'px',font:font.font,lineHeight:font.lineHeight,letterSpacing:font.letterSpacing});
+  const start=index*2800,end=start+2200;
+  c.loop(mark,frames(start,end),9000,{easing:'linear',key:'step-number-'+index,pauseWhen,visibilityRoot:frame});
+  c.loop(title,frames(start,end),9000,{easing:'linear',key:'step-title-'+index,pauseWhen,visibilityRoot:frame});
+ });
+ const area=c.bounds(frame),centres=items.map(item=>c.bounds(item.querySelector('.step-number'))),line=frame.querySelector('.step-line');
+ const x=centres[0].cx-area.x,y=centres[0].cy-area.y,second=centres[1].cy-centres[0].cy,third=centres[2].cy-centres[0].cy;
+ if(line)Object.assign(line.style,{left:(x-.75)+'px',top:y+'px',height:third+'px',bottom:'auto',width:'1.5px'});
+ const traveler=c.inject(frame,'<span class="ch-step-cycle ch-step-traveler" aria-hidden="true"></span>');frame.insertBefore(traveler,frame.firstChild);Object.assign(traveler.style,{left:(x-1.5)+'px',top:y+'px'});
+ c.loop(traveler,[
+  {transform:'translateY(0)',opacity:0,offset:0},
+  {transform:'translateY(0)',opacity:0,offset:2200/9000},
+  {transform:'translateY(0)',opacity:1,offset:2300/9000,easing:T},
+  {transform:`translateY(${second}px)`,opacity:1,offset:2800/9000},
+  {transform:`translateY(${second}px)`,opacity:0,offset:2850/9000},
+  {transform:`translateY(${second}px)`,opacity:0,offset:5000/9000},
+  {transform:`translateY(${second}px)`,opacity:1,offset:5100/9000,easing:T},
+  {transform:`translateY(${third}px)`,opacity:1,offset:5600/9000},
+  {transform:`translateY(${third}px)`,opacity:0,offset:5650/9000},
+  {transform:`translateY(${third}px)`,opacity:0,offset:1}
+ ],9000,{easing:'linear',key:'step-connector',pauseWhen,visibilityRoot:frame});
+ c.onFrame=ms=>{entryTime=ms;entrance();};
+ const clean=c.cleanup;c.cleanup=()=>{alive=false;clearTimeout(returnTimer);for(const remove of listeners)remove();frame.classList.remove('is-interacting');for(const item of items)item.classList.remove('stage-active','is-priority');clean();};
+ reflect();
 }
 export function profile(c){
  const leaf='M50 100 C22 77 3 39 10 4 C45 -4 84 12 90 40 C95 63 72 89 50 100Z';
