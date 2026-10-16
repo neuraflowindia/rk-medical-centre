@@ -4,8 +4,20 @@ import {solidIcon} from './ui.js';
 
 function initials(name){return name.trim().split(/\s+/u).slice(0,2).map(part=>Array.from(part)[0]||'').join('');}
 
+function reviewRating(value){
+ if(!Number.isFinite(value)||value<0||value>5)return '';
+ const stars=Array.from({length:5},(_,index)=>{
+  const fill=Math.max(0,Math.min(1,value-index))*100;
+  return `<span class="home-review-star">${solidIcon('star')}<span style="width:${fill}%">${solidIcon('star')}</span></span>`;
+ }).join('');
+ return `<div class="home-review-rating"><span class="home-review-stars" aria-hidden="true">${stars}</span><span>${e(value.toFixed(1))} out of 5</span></div>`;
+}
+
 function reviewCard(review,index){
- return `<div class="home-review-card" data-home-review-index="${index}"><figure class="home-review-surface"><figcaption class="home-review-identity"><span class="home-review-avatar" aria-hidden="true">${e(initials(review.name))}</span><span class="home-review-person"><strong>${e(review.name)}</strong><span class="home-review-context">Patient feedback</span></span><span class="home-review-quote" aria-hidden="true">${solidIcon('quote')}</span></figcaption><blockquote>${e(review.text)}</blockquote><div class="home-review-details"><span class="home-review-topic">${solidIcon(review.icon)}<span>${e(review.topic)}</span></span></div></figure></div>`;
+ const portrait=review.image?`<img src="${e(review.image)}" width="56" height="56" alt="" loading="lazy" decoding="async">`:'';
+ const identity=review.verified?`<span class="home-review-patient-mark">${solidIcon('check-circle')}Verified patient</span>`:'Patient feedback';
+ const locality=review.locality?`<p class="home-review-location">${solidIcon('pin')}<span>${e(review.locality)}</span></p>`:'';
+ return `<div class="home-review-card" data-home-review-index="${index}"><figure class="home-review-surface"><figcaption class="home-review-identity"><span class="home-review-avatar" aria-hidden="true"><span>${e(initials(review.name))}</span>${portrait}</span><span class="home-review-person"><strong>${e(review.name)}</strong><span class="home-review-context">${identity}</span></span><span class="home-review-quote" aria-hidden="true">${solidIcon('quote')}</span></figcaption><blockquote>${e(review.text)}</blockquote><div class="home-review-details">${reviewRating(review.rating)}${locality}<span class="home-review-topic">${solidIcon(review.icon)}<span>${e(review.topic)}</span></span></div></figure></div>`;
 }
 
 export function homeReviews(){

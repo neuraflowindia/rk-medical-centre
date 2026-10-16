@@ -10,7 +10,18 @@
 .home-review-surface{width:100%;margin:0;padding:27px;border:1px solid #abc8bb;border-radius:24px;background:var(--warm);box-shadow:0 14px 28px -18px rgba(27,54,93,.28);display:flex;flex-direction:column;position:relative;transition:transform 180ms cubic-bezier(.23,1,.32,1),border-color 180ms ease,box-shadow 180ms ease}
 .home-review-identity{display:flex;align-items:center;gap:14px;margin:0 0 24px;min-width:0;min-height:60px}
 .home-review-avatar{width:56px;height:56px;flex:0 0 56px;display:grid;place-items:center;border:2px solid #fffdf7;border-radius:18px;background:#d8eae4;color:var(--teal);font:700 19px/1.2 Lato,Arial,sans-serif;box-shadow:0 6px 13px -8px rgba(10,112,107,.4);position:relative}
-.home-review-avatar img{width:100%;height:100%;object-fit:cover;border-radius:15px}
+.home-review-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:15px}
+.home-review-avatar img.media-failed{display:none}
+.home-review-patient-mark{display:inline-flex;align-items:center;gap:5px;color:#0a706b;font-size:14px;font-weight:700}
+.home-review-patient-mark .solid-icon{width:16px;height:16px;color:#0a706b;flex:none}
+.home-review-rating{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:14px;font-weight:700;color:#455865;margin-bottom:12px}
+.home-review-stars{display:flex;gap:4px}
+.home-review-star{position:relative;display:block;width:18px;height:18px}
+.home-review-star>.solid-icon{width:18px;height:18px;color:#d7ddd7}
+.home-review-star>span{position:absolute;left:0;top:0;overflow:hidden;height:18px}
+.home-review-star>span>.solid-icon{width:18px;height:18px;max-width:none;color:#ad771e}
+.home-review-location{display:flex;align-items:center;gap:7px;font-size:15px;margin:0 0 14px;line-height:1.45}
+.home-review-location>.solid-icon{width:17px;height:17px;color:#0a706b;flex:none}
 .home-review-person{min-width:0}
 .home-review-identity strong{display:block;font-size:18px;line-height:1.35;color:var(--navy);font-weight:700}
 .home-review-context{display:block;margin-top:5px;font-size:15px;line-height:1.4;color:var(--body)}
@@ -29,3 +40,4 @@
 @media(max-width:1023px){.home-review-card{width:340px}.home-review-surface{padding:25px}.home-review-identity{gap:12px}.home-review-avatar{width:52px;height:52px;flex-basis:52px}.home-review-quote{flex-basis:20px}.home-review-quote .solid-icon{width:20px;height:20px}}
 @media(max-width:767px){.home-review-tools{gap:12px;margin-bottom:16px}.home-review-count{font-size:16px}.home-review-count .solid-icon{width:23px;height:23px}.home-review-card{width:min(320px,calc(100vw - 56px))}.home-review-surface{padding:23px 20px;border-radius:22px}.home-review-group{gap:18px;padding-right:18px}.home-review-identity{margin-bottom:22px;gap:10px;min-height:60px}.home-review-avatar{width:48px;height:48px;flex-basis:48px;border-radius:16px;font-size:17px}.home-review-avatar img{border-radius:13px}.home-review-identity strong{font-size:17px}.home-review-context{font-size:14px}.home-review-quote{flex-basis:16px}.home-review-quote .solid-icon{width:16px;height:16px}.home-review-card blockquote{font-size:17px;line-height:1.6}.home-review-details{padding-top:22px}.home-review-topic{font-size:14px;padding:8px 10px}.home-review-list{grid-template-columns:minmax(0,1fr);gap:20px}.home-review-toggle{min-height:48px}.home-review-viewport{padding-bottom:24px}}
 @media(prefers-reduced-motion:reduce){.home-review-viewport,.home-review-toggle{display:none}.home-review-list.home-review-list-collapsed{position:static!important;width:auto!important;height:auto!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important;margin:0!important}.home-review-surface{transition:none;transform:none!important}}
+@media(max-width:767px){.home-review-rating,.home-review-location{font-size:14px}}
