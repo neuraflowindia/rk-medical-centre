@@ -1,6 +1,6 @@
 import {doctors,doctorFacts,escapeHTML as e} from './model.mjs';
 import {doctorOrder,topicLink} from './care-catalogue.mjs';
-import {action,arrow,link,solidIcon} from './ui.js';
+import {arrow,link,solidIcon} from './ui.js';
 
 const presentation={
  sanjay:{role:'Physician, diabetes and general health',educationKeyword:'MBBS and DGO',careCopy:'Patients can meet him for diabetes, blood pressure, thyroid concerns, fever and everyday health problems. A visit gives them a chance to talk about what is worrying them and ask questions about their care.'},
@@ -40,11 +40,11 @@ function feature(id){
    </div>
    <ul class="doctor-facts home-doctor-facts">${factChips.map(([icon,label])=>`<li${icon==='medal'?' class="home-doctor-medal"':''}><span class="home-fact-symbol">${solidIcon(icon,'solid-icon fact-icon')}</span><strong>${e(label)}</strong></li>`).join('')}</ul>
    <ul class="doctor-topics home-doctor-topics">${care}</ul>
-   <p class="home-doctor-fee"><strong>₹${e(facts.fee)} · Consultation at the clinic</strong></p>
    <div class="doctor-actions">
-    ${action('About '+d.name,d.path)}
-    <a class="button secondary" data-booking-only href="${link('/booking?doctor='+id)}"><span class="button-label">Book a visit ${arrow}</span></a>
-    <a class="text-link home-doctor-call" href="tel:${d.tel}">${solidIcon('phone')}<span>Call ${e(d.name)}</span></a>
+    <a class="button home-doctor-about" href="${link(d.path)}" aria-label="About ${e(d.name)}"><span class="button-label">About the doctor${arrow}</span></a>
+    <a class="button secondary home-doctor-call" href="tel:${d.tel}">${solidIcon('phone')}<span>Call ${e(d.name)}</span></a>
+    <p class="home-doctor-fee"><strong>₹${e(facts.fee)} · Consultation at the clinic</strong></p>
+    <a class="button secondary home-doctor-book" data-booking-only href="${link('/booking?doctor='+id)}"><span class="button-label">Book a visit ${arrow}</span></a>
    </div>
   </div>
  </article>`;

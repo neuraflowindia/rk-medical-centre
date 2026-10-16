@@ -20,7 +20,7 @@ export function sceneParts(root,phone=false,id=root.dataset.sectionScene){
   else if(personal.has(base))profileContact(c);
   else supporting(c);
  }catch(error){c.cleanup();throw error;}
- c.finalize();c.spec=spec;return c;
+ c.spec=spec;return c;
 }
 export function sceneDefinition(id,phone=false){const s=sceneSpecs[id];return s?{duration:phone?s.phoneDuration:s.duration}:null;}
 export function matchingScene(scene,id){

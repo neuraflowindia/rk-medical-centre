@@ -23,20 +23,16 @@ export function hero(c){
  c.loop(instrument.querySelector('[data-ambient]')||instrument.firstElementChild,[{transform:pose()},{transform:pose(),offset:.65},{transform:pose(0,-4,.4),offset:.78},{transform:pose(0,-2,-.15),offset:.9},{transform:pose()}],12000);
 }
 export function steps(c){
- const stage=reuse(c,c.root.querySelector('[data-composition="A12"]'),`<div class="ch-desk-halo"></div><span class="ch-desk-baseline"></span><svg class="ch-step-route-svg" viewBox="0 0 570 570"><path d="M150 355 C80 470 230 530 345 490 S510 410 566 362"/></svg><div class="ch-calendar">${image('a12-calendar')}</div><div class="ch-folio"><div class="ch-folio-base">${iconMarkup('person')}<i></i><i></i></div><div class="ch-folio-front">${iconMarkup('calendar')}<i></i><i></i><i class="ch-idle-rule"></i></div></div><div class="ch-review-outline"></div><div class="ch-slip">${image('a12-slip')}<svg class="ch-writing" viewBox="0 0 960 960"><path class="ch-note-lines" d="M290 405 560 320 M325 478 600 390 M357 550 551 489"/><path class="ch-check" d="m490 573 49 27 100-111"/></svg></div><div class="ch-pen"><div class="ch-idle">${image('a12-pen')}</div></div>`,'ch-step-art');if(!stage)return;c.stage=stage;
+ const stage=reuse(c,c.root.querySelector('[data-composition="A12"]'),`<div class="ch-desk-halo"></div><div class="ch-calendar">${image('a12-calendar')}</div><div class="ch-folio"><div class="ch-folio-base">${iconMarkup('person')}<i></i><i></i></div><div class="ch-folio-front">${iconMarkup('calendar')}<i></i><i></i><i class="ch-idle-rule"></i></div></div><div class="ch-slip">${image('a12-slip')}<svg class="ch-writing" viewBox="0 0 960 960"><path class="ch-note-lines" d="M290 405 560 320 M325 478 600 390 M357 550 551 489"/><path class="ch-check" d="m490 573 49 27 100-111"/></svg></div><div class="ch-pen"><div class="ch-idle">${image('a12-pen')}</div></div>`,'ch-step-art');if(!stage)return;c.stage=stage;
  const removeDates=mountCalendarDates(stage.querySelector('.ch-calendar')),clean=c.cleanup;c.cleanup=()=>{removeDates();clean();};
  const time=c.phone?2400/2900:1,k=c.phone?.65:1,tr=(sel,f,a,b,e=E)=>c.add(stage.querySelector(sel),f,a*time,b*time,e);
  tr('.ch-desk-halo',[{transform:'scale(.8,.62) rotate(-8deg)',opacity:.2},{transform:'none',opacity:1}],0,750,F);
- tr('.ch-desk-baseline',[{transform:'scaleX(.1)',opacity:0},{transform:'scaleX(1)',opacity:1}],100,1100);
  tr('.ch-calendar',[{transform:pose((c.phone?32:-100)*k,24*k,-10),opacity:0},{transform:pose(10*k,-8*k,2),opacity:1,offset:.72},{transform:'none',opacity:1}],0,1100,T);
  tr('.ch-folio',[{transform:pose(48*k,20*k,18),opacity:0},{transform:'rotate(8deg)',opacity:1}],400,1200);
  tr('.ch-folio-front',[{transform:'rotateY(0)'},{transform:'rotateY(-135deg)',offset:.45},{transform:'rotateY(-135deg)',offset:.7},{transform:'rotateY(-20deg)'}],550,2700,F);
  tr('.ch-slip',[{transform:pose(-90*k,-90*k,-18),opacity:0},{transform:pose(-35*k,-38*k,-4),opacity:1,offset:.28},{transform:pose(-35*k,-38*k,-4),opacity:1,offset:.62},{transform:'none',opacity:1}],900,2650,T);
  tr('.ch-pen',[{transform:pose((c.phone?-35:35)*k,-130*k,15),opacity:0},{transform:pose(-120*k,2*k),opacity:1,offset:.3667},{transform:pose(-106*k,10*k),opacity:1,offset:.48},{transform:pose(-78*k,-21*k),opacity:1,offset:.6667},{transform:'none',opacity:1}],1000,2500,'linear');
  draw(c,stage.querySelector('.ch-note-lines'),1150*time,1750*time);draw(c,stage.querySelector('.ch-check'),1550*time,2000*time);
- tr('.ch-review-outline',[{transform:'translate(-20px,-24px) rotate(-15deg) scale(.9)',opacity:0},{transform:'rotate(-8deg)',opacity:1}],1700,2650,F);
- for(const selector of ['.ch-review-outline','.ch-desk-baseline','.ch-step-route-svg'])c.retire(stage.querySelector(selector),2650*time,2900*time);
- if(!c.phone)draw(c,stage.querySelector('.ch-step-route-svg path'),1600*time,2750*time);
  c.add(c.root.querySelector('.step-line'),[{transform:'scaleY(0)'},{transform:'scaleY(.34)',offset:.3},{transform:'scaleY(.68)',offset:.65},{transform:'scaleY(1)'}],600*time,2750*time,T);
  c.loop(stage.querySelector('.ch-pen .ch-idle'),[{transform:'rotate(0)'},{transform:'rotate(0)',offset:.65},{transform:'rotate(2deg)',offset:.78},{transform:'rotate(-.5deg)',offset:.9},{transform:'rotate(0)'}],10000);
  c.loop(stage.querySelector('.ch-idle-rule'),[{opacity:.5},{opacity:.5,offset:.65},{opacity:1,offset:.82},{opacity:.5}],10000);
@@ -100,12 +96,11 @@ function stepCycle(c){
 export function profile(c){
  const leaf='M50 100 C22 77 3 39 10 4 C45 -4 84 12 90 40 C95 63 72 89 50 100Z';
  const leaves=['left','middle','right'].map((name,i)=>`<div class="ch-leaf-position ch-leaf-${name}" style="left:${[56,66,77][i]}%;top:${[32,39,45][i]}%;width:${[18,19,18][i]}%;height:${[44,46,44][i]}%"><div class="ch-leaf-entry"><div class="ch-leaf-idle"><svg class="ch-leaf-face" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${leaf}"/></svg><svg class="ch-leaf-face ch-leaf-reverse" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${leaf}"/></svg></div></div></div>`).join('');
- const stage=reuse(c,c.root.querySelector('[data-composition="A21"]'),leaves+alpha('a21-fan','68 58 1127 1148','ch-fan',63.2,59.68,58.96,63.36,1)+alpha('a21-figure','155 14 901 1226','ch-figure',38.56,45.6,50.16,77.44,2)+'<svg class="ch-profile-ribbon" viewBox="0 0 460 460"><path d="M368 363 Q423 392 383 414 Q330 444 262 405"/></svg>','ch-profile-stage');if(!stage)return;c.stage=stage;
+ const stage=reuse(c,c.root.querySelector('[data-composition="A21"]'),leaves+alpha('a21-fan','68 58 1127 1148','ch-fan',63.2,59.68,58.96,63.36,1)+alpha('a21-figure','155 14 901 1226','ch-figure',38.56,45.6,50.16,77.44,2),'ch-profile-stage');if(!stage)return;c.stage=stage;
  const k=c.phone?5/6:1,w=stage.clientWidth,tr=(sel,f,a,b,e=T)=>{const el=stage.querySelector(sel);c.add(el,f,a*k,b*k,e);c.add(el,[{opacity:0},{opacity:1}],a*k,a*k+180);};
  tr('.ch-fan .ch-entry',[{transform:pose(0,w*.04,5,.93)},{transform:pose(-w*.01,-w*.01,-1),offset:1000/1900},{transform:'none'}],0,1900);
  tr('.ch-figure .ch-entry',[{transform:pose(c.phone?0:-w*.04,w*.04,0,.95)},{transform:pose(w*.01,-w*.01),offset:950/1750},{transform:'none'}],700,2450);
  ['left','middle','right'].forEach((name,i)=>{const r=c.phone?[[8,-10,-8],[0,1,0],[-8,10,8]][i]:[[12,-16,-12],[0,2,0],[-12,16,12]][i];tr(`.ch-leaf-${name} .ch-leaf-entry`,[{transform:`rotate(${r[0]}deg) rotateY(${c.phone?-42:-60}deg)`},{transform:`rotate(${r[1]}deg) rotateY(-8deg)`,offset:.65},{transform:`rotate(${r[2]}deg) rotateY(0)`}],500+i*150,1450+i*150,F);});
- draw(c,stage.querySelector('.ch-profile-ribbon path'),1900*k,2800*k);c.retire(stage.querySelector('.ch-profile-ribbon'),2800*k,2980*k);c.line(c.root.querySelector('.education-fact,[data-fact="education"],.profile-facts li,.doctor-facts li'),2600*k,3300*k);
  c.loop(stage.querySelector('.ch-leaf-right .ch-leaf-idle'),[{transform:'none'},{transform:'translateY(-4px) rotateY(2deg)',offset:.06},{transform:'translateY(-2px) rotateY(1deg)',offset:.1},{transform:'none',offset:.15},{transform:'none'}],12000);
 }
 export function booking(c){

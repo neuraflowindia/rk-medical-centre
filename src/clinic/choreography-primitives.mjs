@@ -16,19 +16,14 @@ export function context(root,id,phone,duration){
  const svg=()=>{if(overlay)return overlay;overlay=own(document.createElementNS(NS,'svg'));overlay.classList.add('ch-overlay');overlay.setAttribute('aria-hidden','true');overlay.setAttribute('viewBox',`0 0 ${root.clientWidth} ${root.clientHeight}`);overlay.setAttribute('preserveAspectRatio','none');root.append(overlay);return overlay;};
  const path=(d,cls='ch-route',parent=svg())=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.classList.add(cls);p.setAttribute('pathLength','1');parent.append(p);return p;};
  const draw=(p,a,b,opacity=.65)=>{p.style.strokeDasharray='1';add(p,[{strokeDashoffset:1,opacity:0},{strokeDashoffset:0,opacity}],a,b,T);return p;};
- const line=(el,a,b,{side='bottom',inset=0,width,retain=false}={})=>{if(!el||!el.getClientRects().length)return;const r=bounds(el),y=side==='bottom'?r.y+r.h-1:r.y+1,p=draw(path(`M${r.x+inset} ${y}h${width??Math.max(12,r.w-inset)}`),a,b);if(retain)p.dataset.chRetain='';return p;};
  const icon=(name,x,y,size=24)=>inject(root,`<span class="ch-floating-icon" style="left:${x}px;top:${y}px;width:${size}px;height:${size}px" aria-hidden="true">${iconMarkup(name)}</span>`);
  const travel=(el,a,b,points,easing=T)=>add(el,points.map(([x,y,r=0,s=1,offset])=>({transform:pose(x,y,r,s),...(offset===undefined?{}:{offset})})),a,b,easing);
  const plane=(x,y,w,h,{axis='Y',origin='0 50%',color='mint',parent=root}={})=>inject(parent,`<span class="ch-plane ch-plane-${color}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform-origin:${origin}" aria-hidden="true"><span class="ch-face"></span><span class="ch-face ch-reverse"></span></span>`);
  const hinge=(el,a,b,angle=-65,axis='Y',end=0)=>{if(!el)return;const edge=axis==='Y'?el.clientWidth:el.clientHeight,depth=Math.max(phone?450:600,edge*8);add(el,[{transform:`perspective(${depth}px) rotate${axis}(${angle}deg)`,opacity:.3},{transform:`perspective(${depth}px) rotate${axis}(-8deg)`,opacity:1,offset:.7},{transform:`perspective(${depth}px) rotate${axis}(${end}deg)`,opacity:1}],a,b,F);};
  const retire=(el,a,b,opacity=1)=>{if(!el)return;el.dataset.chRetires='';add(el,[{opacity},{opacity:0}],a,b);};
- const dot=(points,a,b,size=5)=>{const el=inject(root,`<span class="ch-dot" style="width:${size}px;height:${size}px" aria-hidden="true"></span>`);add(el,points.map(([x,y],i)=>({transform:pose(x-size/2,y-size/2),opacity:i===0?0:1})),a,b,T);retire(el,Math.max(a,b-180),b);return el;};
- // Sample the actual SVG curve: the traveler and its rail share one geometry.
- const traveler=(route,a,b,size=5)=>{const length=route.getTotalLength(),points=Array.from({length:33},(_,i)=>{const p=route.getPointAtLength(length*i/32);return[p.x,p.y];});return dot(points,a,b,size);};
  const anchor=(el)=>bounds(el?.querySelector('[data-motion-slot],.care-list-icon,.topic-item-icon,.prep-art,.review-quote-slot,svg,[aria-hidden="true"]')||el);
- const fact=(el,a,b)=>{if(!el)return;const mark=el.querySelector('svg');travel(mark,a,b,[[phone?-6:-10,0],[phone?1:2,0],[0,0]]);line(el,a+(b-a)*.4,b,{inset:36});};
- const finalize=()=>{const finish=duration,start=Math.max(0,finish-180);for(const el of overlay?.querySelectorAll(':scope>.ch-route')||[])if(!el.hasAttribute('data-ch-retain')&&!el.hasAttribute('data-ch-retires'))retire(el,start,finish,.65);};
- return {root,id,phone,duration,tracks,loops,own,inject,bounds,anchor,svg,path,draw,line,icon,travel,plane,hinge,dot,traveler,retire,finalize,fact,add,loop,
+ const fact=(el,a,b)=>{if(!el)return;const mark=el.querySelector('svg');travel(mark,a,b,[[phone?-6:-10,0],[phone?1:2,0],[0,0]]);};
+ return {root,id,phone,duration,tracks,loops,own,inject,bounds,anchor,svg,path,draw,icon,travel,plane,hinge,retire,fact,add,loop,
   requestSync(){root.dispatchEvent(new CustomEvent('choreography:interaction',{bubbles:true}));},
   cleanup(){for(const el of owned)el.remove();},stage:root.querySelector('[data-scene-stage],.composition,.care-media,.specialty-stage')||root};
 }
