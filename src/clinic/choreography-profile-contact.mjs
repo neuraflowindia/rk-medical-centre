@@ -85,11 +85,13 @@ function reviews(c,parul=false){
    const band=c.inject(card,`<span class="ch-author-band" aria-hidden="true" style="left:${a.x-r.x-6}px;top:${authorCentre-r.y-bandHeight/2}px;width:${a.w+12}px;height:${bandHeight}px"></span>`);
    c.add(band,[{transform:'scaleX(.1)',opacity:.2},{transform:'scaleX(1)',opacity:.35}],0,time(c,500,420),F);
    const slot=card.querySelector('.review-quote-slot'),dest=slot?c.bounds(slot):a,punctuation=mark(c,'quote',dest.cx-12,dest.cy-12,24);
+   fade(c,punctuation,0,time(c,180,150),0,1);
    c.travel(punctuation,0,time(c,1150,950),[[0,c.phone?-6:-10,c.phone?3:6],[0,1,c.phone?0:-1,1,700/1150],[0,0,0]],T);c.retire(punctuation,time(c,970,770),time(c,1150,950));
    const separator=author.querySelector('.review-author-rule');c.add(separator,[{transform:'scaleX(.1)',transformOrigin:'0 50%'},{transform:'scaleX(1)',transformOrigin:'0 50%'}],time(c,1000,850),time(c,1700,1450));
   }else{
-   const lead=mark(c,'quote',q.x,q.y-29,22);fade(c,lead,0,500*(c.phone?1750/2100:1));
+   const lead=mark(c,'quote',q.x,q.y-29,22);fade(c,lead,0,500*(c.phone?1750/2100:1),0,1);
    const slot=card.querySelector('.review-quote-slot'),dest=slot?c.bounds(slot):a,mx=dest.cx-12,my=dest.cy-12,marker=mark(c,'quote',mx,my,24),startY=c.phone?-20:q.y-my;
+   fade(c,marker,0,time(c,400,350),0,1);
    c.travel(marker,time(c,400,350),time(c,1150,950),[[0,startY,0,.9],[0,startY/2,0,1,.5],[0,0]],T);c.retire(lead,time(c,970,770),time(c,1150,950));c.retire(marker,time(c,970,770),time(c,1150,950));
   }
  });
