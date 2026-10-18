@@ -1,6 +1,6 @@
 # Website source and build notes
 
-18 October 2026. The approved Home/Treatments/About implementation and local review are complete. [Current delivery](../0006-qa/2026-10-18-home-treatments-about-implementation/README.md), [review](../0006-qa/2026-10-18-home-treatments-about-implementation/review-record.md) and its publication receipt own the official push/readback state. The no-tests instruction remains: ordinary hosting compilation and rendered/source inspection are separate evidence.
+18 October 2026. The approved Home/Treatments/About implementation, recursive review and official publication are complete. [Current delivery](../0006-qa/2026-10-18-home-treatments-about-implementation/README.md), [review](../0006-qa/2026-10-18-home-treatments-about-implementation/review-record.md) and its [publication receipt](../0006-qa/2026-10-18-home-treatments-about-implementation/publication.json) own the accepted official push/readback. Runtime source:09a23ecabc7cebd607cbb4320a4d75e9e0e6497b. The no-tests instruction remains: ordinary hosting compilation and rendered/source inspection are separate evidence.
 
 ## Maintained source and isolated work
 
@@ -39,7 +39,7 @@ No automated tests, lint, type/coverage checks, complete local/hosted suite, rel
 
 Vercel framework Vite, repository root, install `npm ci`, build `npm run build:hosting`, output `dist`. Preserve root vercel.json, middleware.ts, contained Python entry and exact requirements. No generic all-path Home rewrite. Hosting source export includes all sealed package files. Package1.1.0-rc.1 digest remains9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e.
 
-Official publishing is the existing clinic Git main route; no Codex Vercel connector/account switch. Verify actual served asset identities and rendered pages after the push. Recovery uses a scoped revert with the return branch for comparison, without resetting shared history or data.
+Official publishing is the existing clinic Git main route; no Codex Vercel connector/account switch. Actual public JS/CSS are byte-identical to the reviewed build; all three changed pages render correctly at1440/390with no page/scene errors or overflow. Recovery uses a scoped revert with the return branch for comparison, without resetting shared history or data.
 
 Booking remains OFF until its actual dependencies are ready. Separate doctor schedules,₹800clinic visits, optional online/clinic payment, private20-minute capacity, extra1:30pm/8:30pm starts and Sunday-evening closure stay. Patients call for changes; staff decide with reasons/history; refunds remain separate. No booking, payment, email, message or customer mutation occurred here.
 

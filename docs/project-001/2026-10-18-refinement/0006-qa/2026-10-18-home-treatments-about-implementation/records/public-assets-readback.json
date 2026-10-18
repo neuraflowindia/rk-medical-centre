@@ -1,0 +1,58 @@
+{
+  "time_utc": "2026-10-18T08:48:48.901722+00:00",
+  "implementation_commit": "09a23ec",
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": [
+        "Expert care for the health concerns on your mind. | R. K. Medical Centre"
+      ],
+      "assets": [
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ],
+      "sha256": "d7ef8079e19ff264d204252e53c3c62939a6120d2db49db1d606874231ead8e5"
+    },
+    {
+      "path": "/treatment",
+      "status": 200,
+      "title": [
+        "Treatments | R. K. Medical Centre"
+      ],
+      "assets": [
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ],
+      "sha256": "a4aa2239be94e67771c7c5959878964b23727b4216eb498657a2a07aeab23ec3"
+    },
+    {
+      "path": "/about-clinic",
+      "status": 200,
+      "title": [
+        "About the clinic | R. K. Medical Centre"
+      ],
+      "assets": [
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ],
+      "sha256": "09782519f33abf488b1c47fb3d99e1e2f74a0d94b12d5a4c7c9b4a738029f0c9"
+    }
+  ],
+  "assets": [
+    {
+      "path": "/assets/index-DF2XM_4q.js",
+      "status": 200,
+      "bytes": 193321,
+      "sha256": "50374c00723e6f6d3035483f5744b086cfe6f0f20405a1c3fa4f8eaa9e7ccea9",
+      "matches_local_file": true
+    },
+    {
+      "path": "/assets/index-cgg9oZGv.css",
+      "status": 200,
+      "bytes": 153438,
+      "sha256": "c1025ec37c93b27b85fdf5ef2fcad1d5ec60fb53536cb9b76f5828ccee59ba8d",
+      "matches_local_file": true
+    }
+  ]
+}

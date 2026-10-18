@@ -1,6 +1,6 @@
 # R. K. Medical Centre
 
-18 October 2026. The owner-approved Home, Treatments and About refinement is implemented and reviewed on `work/home-treatments-about-refinement-20261018`. The [current delivery records](docs/project-001/2026-10-18-refinement/README.md) own source, review, publication and remaining setup. Official website: https://www.rkmedicalcentre.com/. Booking/provider acceptance and genuine doctor photos remain separate.
+18 October 2026. The owner-approved Home, Treatments and About refinement is implemented, reviewed and officially published from09a23ec on `work/home-treatments-about-refinement-20261018`. The [current delivery records](docs/project-001/2026-10-18-refinement/README.md) own source, review, publication and remaining setup. Official website: https://www.rkmedicalcentre.com/. Booking/provider acceptance and genuine doctor photos remain separate.
 
 ## Current website
 

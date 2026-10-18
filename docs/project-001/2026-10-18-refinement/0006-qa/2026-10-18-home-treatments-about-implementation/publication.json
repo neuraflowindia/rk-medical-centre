@@ -1,0 +1,209 @@
+{
+  "date_utc": "2026-10-18T08:50:13.861860+00:00",
+  "state": "published_and_actual_public_pages_reviewed",
+  "implementation_commit": "09a23ecabc7cebd607cbb4320a4d75e9e0e6497b",
+  "repository": "https://github.com/neuraflowindia/rk-medical-centre",
+  "official_url": "https://www.rkmedicalcentre.com/",
+  "work_branch": "work/home-treatments-about-refinement-20261018",
+  "return_branch": "checkpoint/before-home-treatments-about-20261018",
+  "baseline": "200fdcf50e235d3981268dadc7e5dd356bbeab3f",
+  "host_status": {
+    "context": "Vercel",
+    "state": "success",
+    "description": "Deployment has completed",
+    "target_url": "https://vercel.com/neura-flow-s-projects/rk-medical-centre/FzGuVj9zciZ1CwCCaLdM7JkthMPh"
+  },
+  "feedback_items": {
+    "implemented": 12,
+    "planned": 12
+  },
+  "public_views": [
+    {
+      "width": 1440,
+      "page": "home",
+      "status": 200,
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1075,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "primary": "/contact",
+      "facts": 4,
+      "topics": 0,
+      "reviewCount": 18,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "treatments",
+      "status": 200,
+      "h1": "Treatments at the clinic",
+      "opening": 1075.46875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 0,
+      "topics": 10,
+      "notes": 3,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "about",
+      "status": 200,
+      "h1": "About R. K. Medical Centre",
+      "opening": 759,
+      "aboutDoctors": 1494.75,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 3,
+      "topics": 0,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "home",
+      "status": 200,
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1594.171875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "primary": "/contact",
+      "facts": 4,
+      "topics": 0,
+      "reviewCount": 18,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "treatments",
+      "status": 200,
+      "h1": "Treatments at the clinic",
+      "opening": 1708.796875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 0,
+      "topics": 10,
+      "notes": 3,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "about",
+      "status": 200,
+      "h1": "About R. K. Medical Centre",
+      "opening": 1271.84375,
+      "aboutDoctors": 2301.140625,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 3,
+      "topics": 0,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    }
+  ],
+  "page_errors": [],
+  "asset_readback": {
+    "time_utc": "2026-10-18T08:48:48.901722+00:00",
+    "implementation_commit": "09a23ec",
+    "pages": [
+      {
+        "path": "/",
+        "status": 200,
+        "title": [
+          "Expert care for the health concerns on your mind. | R. K. Medical Centre"
+        ],
+        "assets": [
+          "/assets/index-DF2XM_4q.js",
+          "/assets/index-cgg9oZGv.css"
+        ],
+        "sha256": "d7ef8079e19ff264d204252e53c3c62939a6120d2db49db1d606874231ead8e5"
+      },
+      {
+        "path": "/treatment",
+        "status": 200,
+        "title": [
+          "Treatments | R. K. Medical Centre"
+        ],
+        "assets": [
+          "/assets/index-DF2XM_4q.js",
+          "/assets/index-cgg9oZGv.css"
+        ],
+        "sha256": "a4aa2239be94e67771c7c5959878964b23727b4216eb498657a2a07aeab23ec3"
+      },
+      {
+        "path": "/about-clinic",
+        "status": 200,
+        "title": [
+          "About the clinic | R. K. Medical Centre"
+        ],
+        "assets": [
+          "/assets/index-DF2XM_4q.js",
+          "/assets/index-cgg9oZGv.css"
+        ],
+        "sha256": "09782519f33abf488b1c47fb3d99e1e2f74a0d94b12d5a4c7c9b4a738029f0c9"
+      }
+    ],
+    "assets": [
+      {
+        "path": "/assets/index-DF2XM_4q.js",
+        "status": 200,
+        "bytes": 193321,
+        "sha256": "50374c00723e6f6d3035483f5744b086cfe6f0f20405a1c3fa4f8eaa9e7ccea9",
+        "matches_local_file": true
+      },
+      {
+        "path": "/assets/index-cgg9oZGv.css",
+        "status": 200,
+        "bytes": 153438,
+        "sha256": "c1025ec37c93b27b85fdf5ef2fcad1d5ec60fb53536cb9b76f5828ccee59ba8d",
+        "matches_local_file": true
+      }
+    ]
+  },
+  "evidence_counts": {
+    "local_review_pngs": 172,
+    "actual_official_pngs": 12,
+    "total_pngs": 184,
+    "normal_boundary_page_width_observations": 39,
+    "actual_official_page_width_views": 6
+  },
+  "booking_state": "off; existing dependencies remain separate",
+  "external_mutations": "Approved source branch pushes, main fast-forward and existing automatic hosting only. No provider setting, database, booking, email, message or payment mutation.",
+  "tests_run": false,
+  "full_suites_or_release_gates_run": false,
+  "workflow_dispatched": false,
+  "proof_boundary": "Actual source/rendered review and ordinary hosting compilation. Native browser zoom was unavailable; text enlargement was a private DOM review. Operational booking and genuine doctor photos remain separate.",
+  "documentation": "A following documentation-only commit records this receipt without changing the implementation assets."
+}

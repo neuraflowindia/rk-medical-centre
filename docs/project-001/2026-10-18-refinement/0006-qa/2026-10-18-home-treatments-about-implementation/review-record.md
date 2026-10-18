@@ -1,6 +1,6 @@
 # Source and rendered review — 18 October 2026
 
-Implementation of all12owner feedback items and15strengthened contracts is complete. This record distinguishes actual runtime/browser inspection from static private targets, source inventory and ordinary compilation. Publication is recorded separately.
+Implementation of all12owner feedback items and15strengthened contracts is complete. This record distinguishes actual runtime/browser inspection from static private targets, source inventory and ordinary compilation. Official publication is complete; [the receipt](publication.json) records the exact served assets and six actual desktop/phone page observations.
 
 ## Exact visible parity
 
@@ -46,5 +46,5 @@ The declared18/16px role values in the private proposal were overridden by its i
 
 No tests, lint, type/coverage checks, full local/hosted suite, release gate or workflow dispatch run. No coverage/pass-rate is invented. Hosting compilation succeeds; large existing booking/font chunk advisories remain. No booking, charge, email, real message, stored record or provider setting changed.
 
-The source inventory records all952baseline files and the exact intentional differences,594unchanged sealed files, untouched media/data and three new allowlisted runtime files. Publication must show the final served bundles and actual changed pages before claiming live completion. Genuine photos and operational provider setup are separate remaining inputs, not reasons to leave the approved neutral presentation unfinished.
+The source inventory records all952baseline files and the exact intentional differences,594unchanged sealed files, untouched media/data and three new allowlisted runtime files. The final served bundles match the reviewed files byte for byte, and all six actual public views match the approved dimensions with no page/scene errors or horizontal overflow. Genuine photos and operational provider setup are separate remaining inputs, not reasons to leave the approved neutral presentation unfinished.
 

@@ -1,6 +1,6 @@
 # Implementation specification — approved programme
 
-18 October 2026 update: the owner approved the complete strengthened plan, separate branch, review, documentation and official publication. Implementation and local review are complete; the [current delivery](../../../0006-qa/2026-10-18-home-treatments-about-implementation/README.md) owns the publication checkpoint. The original inspection/proposal details below record the basis and contracts of this approved implementation. No further approval is needed; the no-tests boundary remains.
+18 October 2026 update: the owner approved the complete strengthened plan, separate branch, review, documentation and official publication. Implementation, review and official publication are complete; the [current delivery](../../../0006-qa/2026-10-18-home-treatments-about-implementation/README.md) owns the accepted publication receipt. The original inspection/proposal details below record the basis and contracts of this approved implementation. No further approval is needed; the no-tests boundary remains.
 
 
 ## 1. Objective, authority and baseline

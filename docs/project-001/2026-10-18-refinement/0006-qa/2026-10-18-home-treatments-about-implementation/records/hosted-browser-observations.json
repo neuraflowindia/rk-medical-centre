@@ -1,0 +1,119 @@
+{
+  "records": [
+    {
+      "width": 1440,
+      "page": "home",
+      "status": 200,
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1075,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "primary": "/contact",
+      "facts": 4,
+      "topics": 0,
+      "reviewCount": 18,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "treatments",
+      "status": 200,
+      "h1": "Treatments at the clinic",
+      "opening": 1075.46875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 0,
+      "topics": 10,
+      "notes": 3,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "about",
+      "status": 200,
+      "h1": "About R. K. Medical Centre",
+      "opening": 759,
+      "aboutDoctors": 1494.75,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 3,
+      "topics": 0,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "home",
+      "status": 200,
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1594.171875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "primary": "/contact",
+      "facts": 4,
+      "topics": 0,
+      "reviewCount": 18,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "treatments",
+      "status": 200,
+      "h1": "Treatments at the clinic",
+      "opening": 1708.796875,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 0,
+      "topics": 10,
+      "notes": 3,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "about",
+      "status": 200,
+      "h1": "About R. K. Medical Centre",
+      "opening": 1271.84375,
+      "aboutDoctors": 2301.140625,
+      "overflow": false,
+      "errors": [],
+      "booking": "off",
+      "facts": 3,
+      "topics": 0,
+      "notes": 0,
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    }
+  ],
+  "pageErrors": []
+}

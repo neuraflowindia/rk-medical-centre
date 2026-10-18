@@ -1,6 +1,6 @@
 # Home, Treatments and About — implementation and publication
 
-18 October 2026. The owner approved the complete strengthened programme, a separate branch, recursive source/rendered review, documentation and publication without another approval. Implementation and local review are complete; official push and readback are the final checkpoint. The standing no-tests boundary remains.
+18 October 2026. The owner approved the complete strengthened programme, a separate branch, recursive source/rendered review, documentation and publication without another approval. Implementation, recursive review, documentation and official publication/readback are complete. The standing no-tests boundary remains.
 
 Source of truth: [approved plan](../../0001-planning/plans/2026-10-18-home-treatments-about-refinement/README.md), its exact specifications, 15 contracts and feedback register. [Review record](review-record.md) covers all 12 items and the actual runtime observations. This augments the clinic website without changing shared booking, providers, stored data, review data, original artwork or other clients.
 
@@ -22,8 +22,8 @@ Source of truth: [approved plan](../../0001-planning/plans/2026-10-18-home-treat
 | 3. Treatments headings/spacing/A32 notes | Complete |
 | 4. About facts/stacked doctors/practical details | Complete |
 | 5. Runtime/responsive review and recursive corrections | Complete |
-| 6. Source allowlist and current documentation | Complete; dated Git snapshot being saved |
-| 7. Commit work/return branches, publish through main and inspect actual hosted pages | Underway |
+| 6. Source allowlist and current documentation | Complete; current dated Git snapshot saved |
+| 7. Commit work/return branches, publish through main and inspect actual hosted pages | Complete |
 
 ## Delivery boundaries
 
@@ -31,9 +31,13 @@ Three small new runtime files, 16 affected existing runtime/build/settings owner
 
 Local compiled candidate:http://127.0.0.1:4237/. Private current/proposed study:http://127.0.0.1:4236/. Both require their processes. Static private frames and staged browser captures are labelled separately in the review; they are not real booking-provider proof.
 
-Records contain responsive measurements, button ON/OFF presentation, opacity frames, independent About state/font handling, native reduced movement, all-topic views, preserved pages/reviews and source fingerprints. Publication will add actual public asset/page observations. Full-page shots use settlement/decoded media; separate natural-entry observations cover visibility behavior. Browser native zoom was unavailable; private text enlargement is identified accurately.
+Records contain responsive measurements, button ON/OFF presentation, opacity frames, independent About state/font handling, native reduced movement, all-topic views, preserved pages/reviews and source fingerprints. The [publication receipt](publication.json) records exact public assets and six desktop/phone page observations. Runtime source is09a23ecabc7cebd607cbb4320a4d75e9e0e6497b; a later documentation-only commit leaves those assets unchanged. Full-page shots use settlement/decoded media; separate natural-entry observations cover visibility behavior. Browser native zoom was unavailable; private text enlargement is identified accurately.
 
 No tests, lint, type/coverage checks, complete local/hosted suite, release gate or workflow dispatch. Normal hosting compilation succeeds. No real booking, charge, email, message, provider activation or database change.
 
-After live readback, the next step is the owner's visual review of these three pages. Existing provider setup, genuine photos and independent client content/photo validation remain separate. Those inputs do not block this approved presentation.
+After accepted live readback, the next step is the owner's visual review of these three pages. Existing provider setup, genuine photos and independent client content/photo validation remain separate. Those inputs do not block this approved presentation.
 
+
+## Published result
+
+All12feedback items are delivered. The official Home, Treatments and About return200and match the reviewed1440/390layouts. Public JS/assets/index-DF2XM_4q.js and CSS/assets/index-cgg9oZGv.css match the compiled files byte for byte. No page/scene error or horizontal overflow was observed in those six views.172local plus12official screenshots are retained (184total). The early old-bundle read during hosting propagation is preserved separately; final readback confirms the new assets. The return/work branches are on GitHub.

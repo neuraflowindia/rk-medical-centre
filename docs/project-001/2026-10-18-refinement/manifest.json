@@ -5,67 +5,67 @@
     {
       "source": "README.md",
       "saved": "client-readme.md",
-      "sha256": "84055bb21670e7202221d12cf60af3d436e9f4179319aafcbd595f6009a9e699"
+      "sha256": "57909490e63b0988f48567540caca2279c922b64335c34892743ec9f093387b0"
     },
     {
       "source": "PROJECT-STATUS.md",
       "saved": "PROJECT-STATUS.md",
-      "sha256": "0e5eef5f192c976b692228c664c31143431c10089aa25030bf678c37867841dd"
+      "sha256": "914bd567f6a3f5a8b58e1b412bc26df481d81c371d4dfac6399c01a9e077a695"
     },
     {
       "source": "0001-planning/08-build-brief.md",
       "saved": "0001-planning/08-build-brief.md",
-      "sha256": "885ed561c6a48525e51f2a50e7ab57fa6b8bca22b40f1b4e20458cfa33cde51a"
+      "sha256": "5c716238b8a81d9126744ac98de0f49774f111e3ac20006646fb7046c225f47b"
     },
     {
       "source": "0005-website/build-notes.md",
       "saved": "0005-website/build-notes.md",
-      "sha256": "4be9c3eb653f6e5f0a272c0c65104f7e0246214cef8dd377c469d1e57d53fdae"
+      "sha256": "12b8bad6f2d7416dc35566beb2fc05f385c1f29570a908ef53e8d50a8417413a"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/README.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/README.md",
-      "sha256": "517fdcaa9c4cbf4065b946b3d2f71572700fb5512130ad44c60fd25aab394e6c"
+      "sha256": "c5b6281778c646c8aaddf12735a430bd685ac6aa2a1d95296b95394b350ef397"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/implementation-spec.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/implementation-spec.md",
-      "sha256": "47bf0718b30d2b57ce8141cefddd0f1f35000f213e2bbf0437f8880e5ffdbd84"
+      "sha256": "9330062fd1ac7f5a506a541ae820ce9c5835448bf1d73e67d64bfa77d7c262be"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/implementation-contracts.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/implementation-contracts.md",
-      "sha256": "cd0738092a6e7772d47e60b1ab451b089b90efadaa32b34a3a48e995507ab05c"
+      "sha256": "c2c5deaf982d729ec40659dacd876d7d07473900701f5a244562e84488277ae9"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/feedback-register.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/feedback-register.md",
-      "sha256": "3025a3da7018ed1d146ad43067239e0ab5dd80d1360c7a8440d5f5427475d34b"
+      "sha256": "d719b3a229352d26c648defc4ec97ab41e9aba5db3fc0b7c67c5e48e6cec906a"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/review-record.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/review-record.md",
-      "sha256": "e209443f08db70d324528eddb65a47c9f242ae0ae6870fff948725e2c89a1d79"
+      "sha256": "e9b822d281ac2266d4550d9bbc809cb1a2d2528749900f42e2e4bc02ffdb6f0e"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/content-and-assets.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/content-and-assets.md",
-      "sha256": "4b9f4879d2428c44232b2eb271425b9a49b1e5ec489b8c61ef290b06e37f6118"
+      "sha256": "ba3989442327dabcd81bdb2078b5ec47bb5d4133a91717e5e07d2a433f268073"
     },
     {
       "source": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/sitewide-audit.md",
       "saved": "0001-planning/plans/2026-10-18-home-treatments-about-refinement/sitewide-audit.md",
-      "sha256": "0d65543b025895e2b423d57503da39802908e12f6f1ac84d2c466dd143793b51"
+      "sha256": "284ea53fa67ebd1024fd0da83b0e2ba28956a8d294cc35411e5c768df604daa6"
     },
     {
       "source": "0006-qa/2026-10-18-home-treatments-about-implementation/README.md",
       "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/README.md",
-      "sha256": "2b1a248b51d3dee3efb002923792145a33000dfab52325991c019cc935e92b00"
+      "sha256": "042c90443f066e83b27f38560c230d53475383cd85b5ffd3a79b6195546914e0"
     },
     {
       "source": "0006-qa/2026-10-18-home-treatments-about-implementation/review-record.md",
       "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/review-record.md",
-      "sha256": "579085fc5edf3b7111d8bfec2afbfea8edb9881ec78145191a095df2a25fed0b"
+      "sha256": "6cd0f5738fbe688d9207c65fb3d841a6631735b0e67f1972e2ec83e8c4019a48"
     },
     {
       "source": "0006-qa/2026-10-18-home-treatments-about-implementation/records/source-inventory.json",
@@ -171,6 +171,51 @@
       "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/treatment-heading-focus.png",
       "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/treatment-heading-focus.png",
       "sha256": "5753ffa28d2f51edeb726bce663ce396a39cb7a07dfa916fa3128cab4476c19f"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/publication.json",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/publication.json",
+      "sha256": "e886cb7822cc19b0f86d4504fa34c46b97dd0a51ea8812b910435ade605d5515"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/records/public-assets-readback.json",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/records/public-assets-readback.json",
+      "sha256": "270da155b8c9c7eda9145d547d0e8f339ebd7d8be6c6d6eb169adde87f65a31d"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/records/hosted-browser-observations.json",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/records/hosted-browser-observations.json",
+      "sha256": "d3705d5cb3130801c463e91be93ac0cf8cc9abb4ee0a6f59925c7b92a46f019b"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-home-1440-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-home-1440-opening.png",
+      "sha256": "e3c4bf1c7d6cc0b4098ee27112cca5cfb891a19fc7691f1cdf17cd0efb587536"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-home-390-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-home-390-opening.png",
+      "sha256": "b8a25af14eb8dd7edbcef4634d199cc0efc28068dac004605ba3957210f34111"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-treatments-1440-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-treatments-1440-opening.png",
+      "sha256": "e7c8cc8f83a70c71f5a8ab3b796c4cc5d588b274f952a653e39119741280a6f4"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-treatments-390-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-treatments-390-opening.png",
+      "sha256": "622bf36a8caffcfc1f14ce02043113d0b64afbde0b1daab5db7ce906455616ef"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-about-1440-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-about-1440-opening.png",
+      "sha256": "0b1a2e4e8a3e0d8e7c230c9ce404f19df9459f2db8f5ef2dd78435748df3543d"
+    },
+    {
+      "source": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-about-390-opening.png",
+      "saved": "0006-qa/2026-10-18-home-treatments-about-implementation/screenshots/official-about-390-opening.png",
+      "sha256": "ca9df9bd68aee34609112b50198bf15a40f3f48c0618324e880d3c7a0d71c4e1"
     }
   ]
 }
