@@ -13,4 +13,5 @@ import './clinic/care-pages.css';
 import './clinic/doctor-pages.css';
 import './clinic/contact-page.css';
 import './clinic/booking-page.css';
+import './clinic/clinic-glance.css';
 import './clinic/site.js';

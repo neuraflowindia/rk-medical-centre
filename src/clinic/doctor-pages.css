@@ -30,8 +30,6 @@
 .doctor-card-doctors .doctor-page-care strong,.doctor-card-about .doctor-page-care strong,.doctor-profile-information .doctor-page-care strong{font-weight:700;min-width:0}
 .doctor-card-doctors .doctor-page-care a:focus-visible,.doctor-card-about .doctor-page-care a:focus-visible,.doctor-profile-information .doctor-page-care a:focus-visible{outline:3px solid var(--teal);outline-offset:4px;background:#e7f4ef}
 .doctor-card-about{border:1px solid #b3c7ca;box-shadow:0 15px 28px -20px rgba(27,54,93,.3)}
-.doctor-card-about .doctor-summary{font-size:17px!important;line-height:1.65}
-.doctor-card-about .doctor-actions{margin-top:auto;padding-top:22px}
 .doctor-card-about[data-doctor="parul"] .doctor-name-mark{background:#f3e8d0}
 .doctor-card-about[data-doctor="parul"] .doctor-name-mark .solid-icon{color:#9a6517}
 .doctor-directory-page .appointment-schedule{padding:26px 28px;margin-top:36px;border:1px solid #b4d1c4;border-radius:24px;background:#e7f4ef}
@@ -142,4 +140,65 @@
 @media(prefers-reduced-motion:reduce){
  .doctor-card-doctors .doctor-page-facts li,.doctor-card-about .doctor-page-facts li,.doctor-profile-page .doctor-page-facts li,.doctor-card-doctors .doctor-page-care a,.doctor-card-about .doctor-page-care a,.doctor-profile-information .doctor-page-care a{transition:none}
  .doctor-card-doctors .doctor-page-facts li:hover,.doctor-card-about .doctor-page-facts li:hover,.doctor-profile-page .doctor-page-facts li:hover,.doctor-card-doctors .doctor-page-care a:hover,.doctor-card-about .doctor-page-care a:hover,.doctor-profile-information .doctor-page-care a:hover{transform:none}
+}
+
+/* About uses two full-width introductions with a reserved, truthful portrait area. */
+.doctor-grid-about{grid-template-columns:minmax(0,1fr);gap:30px}
+.doctor-card-about{display:grid;grid-template-columns:300px minmax(0,1fr);column-gap:36px;row-gap:0;padding:30px;background:#fffbf4;border-radius:26px;border-width:1.5px;align-items:start}
+.doctor-card-about .doctor-copy{grid-column:2;grid-row:1;min-width:0}
+.doctor-card-about .doctor-actions{grid-column:2;margin:18px 0 0;padding:0;align-self:start}
+.doctor-card-about .about-doctor-portrait{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px;margin:0;align-self:start;position:relative;overflow:hidden;border-radius:20px;border:1px solid #b4c8d6;background:#e4eef7;aspect-ratio:4/5;color:var(--physician)}
+.doctor-card-about .about-doctor-portrait>.solid-icon{width:48px;height:48px}
+.doctor-card-about .about-doctor-portrait .portrait-initials{font:500 78px/1.15 Lora,Georgia,serif;color:var(--navy)}
+.doctor-card-about .portrait-brand{font:700 16px/1.4 Lato,Arial,sans-serif;text-align:center}
+.doctor-card-about[data-doctor=parul] .about-doctor-portrait{background:#e4f1ec;color:var(--teal)}
+.doctor-card-about h3{font-size:32px;line-height:1.25}
+.doctor-card-about .doctor-role{font-size:17px!important;margin-top:12px!important;color:#455865}
+.doctor-card-about .doctor-summary{font-size:18px!important;line-height:1.65;margin-top:0!important}
+.doctor-card-about .doctor-facts{margin:20px 0}
+.doctor-card-about .doctor-page-visit{margin-top:18px}
+.doctor-card-about .doctor-page-care{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px;gap:6px 12px}
+.doctor-card-about .doctor-page-care a{font-size:16px;grid-template-columns:30px minmax(0,1fr) minmax(16px,max-content);gap:8px;min-height:48px}
+.doctor-card-about .doctor-page-care .doctor-care-icon{width:30px;height:30px}
+.about-practical-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:30px}
+.about-practical-grid article,.about-practical-grid .observation-note{margin:0;padding:24px;border:1px solid #b4c8d6;border-radius:22px;background:white}
+.about-practical-grid h3{display:flex;gap:12px;align-items:center;font-size:22px;line-height:1.35;margin:0}
+.about-practical-grid h3>.solid-icon{width:25px;height:25px;flex:none;color:var(--teal)}
+.about-practical-grid p{font-size:17px;line-height:1.6;margin-top:14px}
+.about-practical-grid a{margin-top:12px;font-weight:700}
+#before .closing{margin-top:30px}
+@media(max-width:1199px){
+ .doctor-card-about{grid-template-columns:220px minmax(0,1fr);column-gap:28px;padding:26px}
+ .doctor-card-about .doctor-page-care{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .doctor-card-about .doctor-actions{flex-direction:row;align-items:center}
+ .doctor-card-about .doctor-actions .button{width:auto}
+}
+@media(max-width:767px){
+ .doctor-card-about{grid-template-columns:100px minmax(0,1fr);gap:0 16px;padding:22px 18px}
+ .doctor-card-about .about-doctor-portrait{width:100px;grid-row:1;gap:10px;padding:12px;border-radius:15px}
+ .doctor-card-about .about-doctor-portrait>.solid-icon{width:22px;height:22px}
+ .doctor-card-about .about-doctor-portrait .portrait-initials{font-size:32px}
+ .doctor-card-about .portrait-brand{display:none}
+ .doctor-card-about .doctor-copy{display:contents}
+ .doctor-card-about .about-doctor-identity{grid-column:2;grid-row:1;min-width:0}
+ .doctor-card-about .about-doctor-identity .eyebrow{font-size:13px;line-height:1.45;margin:0 0 10px}
+ .doctor-card-about .about-doctor-identity h3{display:block;font-size:26px;line-height:1.25;margin:0}
+ .doctor-card-about .about-doctor-identity .doctor-role{font-size:17px!important;line-height:1.5;margin:12px 0 0}
+ .doctor-card-about .about-doctor-identity .doctor-name-mark{display:inline-grid;width:24px;height:24px;border-radius:8px;vertical-align:middle;margin-right:6px}
+ .doctor-card-about .about-doctor-identity .doctor-name-mark svg{width:17px;height:17px}
+ .doctor-card-about .doctor-copy>.doctor-facts,.doctor-card-about .doctor-copy>.doctor-summary,.doctor-card-about .doctor-copy>.doctor-page-care,.doctor-card-about .doctor-copy>.doctor-page-visit,.doctor-card-about .doctor-actions{grid-column:1/-1}
+ .doctor-card-about .doctor-copy>.doctor-facts{margin-top:24px;margin-bottom:0}
+ .doctor-card-about .doctor-summary{font-size:17px!important}
+ .doctor-card-about .doctor-page-care{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+ .doctor-card-about .doctor-page-care a{font-size:15px;gap:7px}
+ .doctor-card-about .doctor-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:22px}
+ .doctor-card-about .doctor-actions .button{width:100%}
+ .about-practical-grid{grid-template-columns:minmax(0,1fr);gap:18px}
+ .about-practical-grid article,.about-practical-grid .observation-note{padding:22px}
+}
+@media(max-width:359px){
+ .doctor-card-about{grid-template-columns:88px minmax(0,1fr);gap:0 14px;padding:20px 16px}
+ .doctor-card-about .about-doctor-portrait{width:88px}
+ .doctor-card-about .about-doctor-identity h3{font-size:24px}
+ .doctor-card-about .doctor-page-care{grid-template-columns:minmax(0,1fr)}
 }

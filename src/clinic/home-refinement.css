@@ -1,4 +1,25 @@
 /* Home refinements preserve the hero's geometry and established art timelines. */
+.hero h1{max-width:520px}
+.hero-care-summary li:first-child>.solid-icon,.hero .specialty-0 .solid-icon,.hero .specialty-1 .solid-icon{color:var(--physician)}
+.hero .specialty-0:before,.hero .specialty-1:before{border-color:#86a8c3}
+.hero .specialty-2:before,.hero .specialty-3:before{border-color:#91bcae}
+.hero .specialty strong,.hero .specialty small{overflow-wrap:anywhere}
+.hero .actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.hero .actions .button{font-size:16px;font-weight:700;min-height:50px;padding:12px 18px;gap:10px}
+.hero .actions .button-label{gap:10px}
+.hero .actions .button>span:not([aria-hidden]){white-space:normal;min-width:0}
+.hero .appointment-icon{display:inline-flex;flex:none}
+.hero .appointment-icon[hidden]{display:none}
+/* Keep the existing visit scene inside narrow phones, including its outer pen. */
+@media(min-width:360px) and (max-width:389px){
+ .composition.ch-step-art{transform:scale(.88);transform-origin:top left;margin:0 -42px -43px 0}
+}
+.hero .appointment-icon>.solid-icon{width:21px;height:21px;color:currentColor}
+.hero-secondary-actions{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:14px}
+.hero-secondary-actions .text-link{margin:0;min-height:44px;font-size:16px;font-weight:700;gap:10px}
+.hero-secondary-actions .solid-icon{width:20px;height:20px;color:currentColor}
+.home-review-tools .home-review-toggle{max-width:100%;flex-shrink:1;white-space:normal}
+.hero .actions .button:focus-visible,.hero-secondary-actions .text-link:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
 #care.home-care{background:var(--mint);border-top:1px solid var(--border);padding-block:76px 80px}
 #care .care-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
 #care .care-card{display:flex;flex-direction:column;grid-template-columns:none;align-items:stretch;gap:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
@@ -40,6 +61,10 @@
 }
 @media(min-width:768px) and (max-width:1023px){#care .care-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:767px){
+ .hero .actions{gap:12px}
+ .hero .actions .button{min-width:0;flex:0 1 auto;padding-inline:14px;gap:8px;font-size:15px}
+ .hero .actions .button-label{gap:8px}
+ .hero-secondary-actions{gap:8px 22px;margin-top:10px}
  #care.home-care{padding-block:56px}
  #care .care-grid{grid-template-columns:minmax(0,1fr);gap:32px}
  #care .care-object{border-radius:20px}
@@ -50,6 +75,9 @@
  #visit .step{gap:16px;min-height:144px}
  #visit .step:last-child{min-height:108px}
 }
+@media(max-width:479px){:root[data-booking-state=on] .hero .actions{display:grid;grid-template-columns:minmax(0,1fr)}:root[data-booking-state=on] .hero .actions .button{width:100%}}
+@media(max-width:389px){.hero .actions{flex-direction:column;align-items:stretch}.hero .actions .button{width:100%;flex:initial}}
+@media(max-width:359px){.hero-secondary-actions{gap:4px 16px}}
 @media(prefers-reduced-motion:reduce){
  .button:hover:not(:disabled):not([aria-disabled=true]),.button:active:not(:disabled):not([aria-disabled=true]),#visit .step:hover,#visit .step.is-priority{transform:none}
  .button:hover .button-label>[aria-hidden],.button:hover>[aria-hidden]{translate:none}

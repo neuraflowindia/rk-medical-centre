@@ -1,0 +1,163 @@
+{
+  "finalLocal": [
+    {
+      "width": 1440,
+      "page": "home",
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1075,
+      "portrait": [],
+      "role": [],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "treatments",
+      "h1": "Treatments at the clinic",
+      "opening": 1075.46875,
+      "portrait": [],
+      "role": [],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "page": "about",
+      "h1": "About R. K. Medical Centre",
+      "opening": 759,
+      "aboutDoctors": 1494.75,
+      "portrait": [
+        {
+          "w": 298,
+          "h": 373
+        },
+        {
+          "w": 298,
+          "h": 373
+        }
+      ],
+      "role": [
+        "17px",
+        "17px"
+      ],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "home",
+      "h1": "Expert care for the health concerns on your mind.",
+      "opening": 1594.171875,
+      "portrait": [],
+      "role": [],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "treatments",
+      "h1": "Treatments at the clinic",
+      "opening": 1708.796875,
+      "portrait": [],
+      "role": [],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    },
+    {
+      "width": 390,
+      "page": "about",
+      "h1": "About R. K. Medical Centre",
+      "opening": 1271.84375,
+      "aboutDoctors": 2301.140625,
+      "portrait": [
+        {
+          "w": 98,
+          "h": 123
+        },
+        {
+          "w": 98,
+          "h": 123
+        }
+      ],
+      "role": [
+        "17px",
+        "17px"
+      ],
+      "overflow": false,
+      "errors": [],
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-DF2XM_4q.js",
+        "/assets/index-cgg9oZGv.css"
+      ]
+    }
+  ],
+  "finalText": [
+    {
+      "kind": "double-text-after-wrap",
+      "width": 390,
+      "page": "home",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-after-wrap",
+      "width": 390,
+      "page": "about",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-after-wrap",
+      "width": 320,
+      "page": "home",
+      "overflow": true,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-after-wrap",
+      "width": 320,
+      "page": "about",
+      "overflow": false,
+      "clipped": []
+    }
+  ],
+  "finalHomeText": [
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "clipped": []
+    },
+    {
+      "width": 320,
+      "scrollWidth": 329,
+      "clipped": []
+    }
+  ],
+  "finalTextReading": "### Result\n{\"kind\":\"final-double-text-320\",\"width\":320,\"scrollWidth\":320,\"readingClips\":[]}\n### Ran Playwright code\n```js\nawait (async (page) => {await page.setViewportSize({width:320,height:900});await page.goto('http://127.0.0.1:4237/');await page.waitForFunction(()=>window.designReview);await page.evaluate(async()=>{await document.fonts.ready;window.designReview.settle();const sizes=[...document.querySelectorAll('main h1,main h2,main h3,main h4,main p,main strong,main small,main span,main li,main a,main button')].filter(el=>el.namespaceURI==='http://www.w3.org/1999/xhtml').map(el=>[el,parseFloat(getComputedStyle(el).fontSize)*2]);for(const[el,size]of sizes)el.style.fontSize=size+'px';});await page.waitForTimeout(180);return await page.evaluate(()=>({kind:'final-double-text-320',width:innerWidth,scrollWidth:document.documentElement.scrollWidth,readingClips:[...document.querySelectorAll('.clinic-glance article,.hero .specialty,.hero .actions a,.home-review-toggle')].filter(el=>el.scrollWidth>el.clientWidth+1).map(el=>el.className)}));})(page);\n```\n### Events\n- New console entries: .playwright-mcp/console-2026-10-18T07-06-08-240Z.log#L5"
+}

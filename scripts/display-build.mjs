@@ -2,9 +2,10 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {publicFiles,writeSurfaceManifest} from '../appointment-system/tools/build/surfaces.mjs';
 import {generateModes} from '../appointment-system/tools/build/page-modes.mjs';
+import {homeHeadline} from '../src/clinic/model.mjs';
 
 export const pages={
-  '/':['Doctor consultations in Lucknow','Physician, diabetes, general health, women’s health and pregnancy care at R. K. Medical Centre.'],
+  '/':[homeHeadline,'Speak with our doctors about diabetes and everyday illnesses, period concerns or pregnancy at R. K. Medical Centre, Lucknow.'],
   '/treatment':['Treatments','See what Dr. Sanjay Gupta and Dr. Parul Gupta can help with.'],
   '/about-clinic':['About the clinic','Read about R. K. Medical Centre, clinic hours and preparing for your visit.'],
   '/meet-doctor':['Meet the doctors','Read about the doctors’ qualifications, experience and areas of care.'],

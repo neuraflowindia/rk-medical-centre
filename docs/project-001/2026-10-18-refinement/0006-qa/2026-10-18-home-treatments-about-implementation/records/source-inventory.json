@@ -1,0 +1,41 @@
+{
+  "baseline": "200fdcf50e235d3981268dadc7e5dd356bbeab3f",
+  "baseline_files": 952,
+  "different": [
+    "README.md",
+    "appointment-settings/hosting-files.json",
+    "docs/project-001/README.md",
+    "scripts/display-build.mjs",
+    "src/clinic/about-page.js",
+    "src/clinic/artwork.js",
+    "src/clinic/care-pages.css",
+    "src/clinic/choreography-sections.mjs",
+    "src/clinic/doctor-pages.css",
+    "src/clinic/home-refinement.css",
+    "src/clinic/home.js",
+    "src/clinic/model.mjs",
+    "src/clinic/motion.js",
+    "src/clinic/page-parts.js",
+    "src/clinic/scene-definitions.mjs",
+    "src/clinic/site.js",
+    "src/clinic/treatments.js",
+    "src/main.jsx"
+  ],
+  "missing": [],
+  "unchanged": 934,
+  "sealed_files": 595,
+  "media_files": 207,
+  "protected_changed": [],
+  "new_runtime_files": [
+    "src/clinic/clinic-glance.js",
+    "src/clinic/clinic-glance.css",
+    "src/clinic/preparation-art.mjs"
+  ],
+  "compiled_main_assets_sha256": {
+    "index-cgg9oZGv.css": "c1025ec37c93b27b85fdf5ef2fcad1d5ec60fb53536cb9b76f5828ccee59ba8d",
+    "index-DF2XM_4q.js": "50374c00723e6f6d3035483f5744b086cfe6f0f20405a1c3fa4f8eaa9e7ccea9"
+  },
+  "tests_run": false,
+  "scope": "Source inventory and ordinary compilation, not a test suite or provider acceptance.",
+  "screenshots_saved_locally": 172
+}

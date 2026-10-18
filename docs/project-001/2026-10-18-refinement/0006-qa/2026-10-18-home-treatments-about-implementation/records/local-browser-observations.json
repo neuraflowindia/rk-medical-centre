@@ -1,0 +1,3467 @@
+{
+  "scope": "Private browser/source review; no automated test suite, provider activation or submission.",
+  "normalViews": [
+    {
+      "width": 390,
+      "page": "home",
+      "overflow": false,
+      "height": 1594.171875,
+      "chapterHeaders": [],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [
+        {
+          "text": "Arrange a visit\n↗",
+          "href": "/contact",
+          "hidden": false
+        },
+        {
+          "text": "See treatments\n↗",
+          "href": "/treatment",
+          "hidden": false
+        }
+      ],
+      "facts": 4
+    },
+    {
+      "width": 390,
+      "page": "treatments",
+      "overflow": false,
+      "height": 1708.796875,
+      "chapterHeaders": [
+        {
+          "height": 136.578125,
+          "icon": "rgb(36, 88, 130)",
+          "grid": "40px 224px 16px"
+        },
+        {
+          "height": 136.578125,
+          "icon": "rgb(10, 112, 107)",
+          "grid": "40px 224px 16px"
+        }
+      ],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [],
+      "facts": 0
+    },
+    {
+      "width": 390,
+      "page": "about",
+      "overflow": false,
+      "height": 1271.84375,
+      "chapterHeaders": [],
+      "doctorRows": [
+        {
+          "height": 1002.0625,
+          "portrait": {
+            "x": 39,
+            "y": 3726.515625,
+            "width": 100,
+            "height": 125,
+            "top": 3726.515625,
+            "right": 139,
+            "bottom": 3851.515625,
+            "left": 39
+          }
+        },
+        {
+          "height": 932.265625,
+          "portrait": {
+            "x": 39,
+            "y": 4758.578125,
+            "width": 100,
+            "height": 125,
+            "top": 4758.578125,
+            "right": 139,
+            "bottom": 4883.578125,
+            "left": 39
+          }
+        }
+      ],
+      "scenes": [],
+      "links": [],
+      "facts": 3
+    },
+    {
+      "width": 320,
+      "page": "home",
+      "overflow": false,
+      "height": 1701.96875,
+      "chapterHeaders": [],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [
+        {
+          "text": "Arrange a visit\n↗",
+          "href": "/contact",
+          "hidden": false
+        },
+        {
+          "text": "See treatments\n↗",
+          "href": "/treatment",
+          "hidden": false
+        }
+      ],
+      "facts": 4
+    },
+    {
+      "width": 320,
+      "page": "treatments",
+      "overflow": false,
+      "height": 1739.234375,
+      "chapterHeaders": [
+        {
+          "height": 131.390625,
+          "icon": "rgb(36, 88, 130)",
+          "grid": "36px 184px 14px"
+        },
+        {
+          "height": 131.390625,
+          "icon": "rgb(10, 112, 107)",
+          "grid": "36px 184px 14px"
+        }
+      ],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [],
+      "facts": 0
+    },
+    {
+      "width": 320,
+      "page": "about",
+      "overflow": false,
+      "height": 1315.21875,
+      "chapterHeaders": [],
+      "doctorRows": [
+        {
+          "height": 1100.609375,
+          "portrait": {
+            "x": 33,
+            "y": 3959.703125,
+            "width": 88,
+            "height": 110,
+            "top": 3959.703125,
+            "right": 121,
+            "bottom": 4069.703125,
+            "left": 33
+          }
+        },
+        {
+          "height": 1037.40625,
+          "portrait": {
+            "x": 33,
+            "y": 5090.3125,
+            "width": 88,
+            "height": 110,
+            "top": 5090.3125,
+            "right": 121,
+            "bottom": 5200.3125,
+            "left": 33
+          }
+        }
+      ],
+      "scenes": [],
+      "links": [],
+      "facts": 3
+    },
+    {
+      "width": 1440,
+      "page": "home",
+      "overflow": false,
+      "height": 1075,
+      "chapterHeaders": [],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [
+        {
+          "text": "Arrange a visit\n↗",
+          "href": "/contact",
+          "hidden": false
+        },
+        {
+          "text": "See treatments\n↗",
+          "href": "/treatment",
+          "hidden": false
+        }
+      ],
+      "facts": 4
+    },
+    {
+      "width": 1440,
+      "page": "treatments",
+      "overflow": false,
+      "height": 1075.46875,
+      "chapterHeaders": [
+        {
+          "height": 142,
+          "icon": "rgb(36, 88, 130)",
+          "grid": "44px 468px 20px"
+        },
+        {
+          "height": 142,
+          "icon": "rgb(10, 112, 107)",
+          "grid": "44px 468px 20px"
+        }
+      ],
+      "doctorRows": [],
+      "scenes": [],
+      "links": [],
+      "facts": 0
+    },
+    {
+      "width": 1440,
+      "page": "about",
+      "overflow": false,
+      "height": 759,
+      "chapterHeaders": [],
+      "doctorRows": [
+        {
+          "height": 600.640625,
+          "portrait": {
+            "x": 111,
+            "y": 2313.046875,
+            "width": 300,
+            "height": 375,
+            "top": 2313.046875,
+            "right": 411,
+            "bottom": 2688.046875,
+            "left": 111
+          }
+        },
+        {
+          "height": 570.953125,
+          "portrait": {
+            "x": 111,
+            "y": 2943.6875,
+            "width": 300,
+            "height": 375,
+            "top": 2943.6875,
+            "right": 411,
+            "bottom": 3318.6875,
+            "left": 111
+          }
+        }
+      ],
+      "scenes": [],
+      "links": [],
+      "facts": 3
+    }
+  ],
+  "responsiveBoundaries": [
+    {
+      "width": 1920,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1075,
+      "errors": []
+    },
+    {
+      "width": 1920,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        142,
+        142
+      ],
+      "rowTops": [
+        [
+          534.46875,
+          631.46875,
+          728.46875,
+          825.46875,
+          922.46875
+        ],
+        [
+          534.46875,
+          631.46875,
+          728.46875,
+          825.46875,
+          922.46875
+        ]
+      ],
+      "hero": 1075.46875,
+      "errors": []
+    },
+    {
+      "width": 1920,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 759,
+      "errors": []
+    },
+    {
+      "width": 1200,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1075,
+      "errors": []
+    },
+    {
+      "width": 1200,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        146.765625,
+        146.765625
+      ],
+      "rowTops": [
+        [
+          539.234375,
+          636.234375,
+          733.234375,
+          830.234375,
+          927.234375
+        ],
+        [
+          539.234375,
+          636.234375,
+          733.234375,
+          830.234375,
+          927.234375
+        ]
+      ],
+      "hero": 1080.234375,
+      "errors": []
+    },
+    {
+      "width": 1200,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 776.9375,
+      "errors": []
+    },
+    {
+      "width": 1199,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1711.671875,
+      "errors": []
+    },
+    {
+      "width": 1199,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        132,
+        132
+      ],
+      "rowTops": [
+        [
+          479.828125,
+          561.265625,
+          642.703125,
+          724.140625,
+          805.578125
+        ],
+        [
+          479.828125,
+          561.265625,
+          642.703125,
+          724.140625,
+          805.578125
+        ]
+      ],
+      "hero": 903.015625,
+      "errors": []
+    },
+    {
+      "width": 1199,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 716.625,
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1711.671875,
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        137.578125,
+        137.578125
+      ],
+      "rowTops": [
+        [
+          485.40625,
+          589.34375,
+          693.28125,
+          797.21875,
+          901.15625
+        ],
+        [
+          485.40625,
+          589.34375,
+          693.28125,
+          797.21875,
+          901.15625
+        ]
+      ],
+      "hero": 1021.09375,
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 791.65625,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1711.671875,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        137.578125,
+        137.578125
+      ],
+      "rowTops": [
+        [
+          485.40625,
+          589.34375,
+          693.28125,
+          797.21875,
+          901.15625
+        ],
+        [
+          485.40625,
+          589.34375,
+          693.28125,
+          797.21875,
+          901.15625
+        ]
+      ],
+      "hero": 1021.09375,
+      "errors": []
+    },
+    {
+      "width": 768,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 916.84375,
+      "errors": []
+    },
+    {
+      "width": 767,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1319.234375,
+      "errors": []
+    },
+    {
+      "width": 767,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        128,
+        128
+      ],
+      "rowTops": [
+        [
+          413.328125,
+          493.765625,
+          575.203125,
+          656.640625,
+          738.078125
+        ],
+        [
+          995.515625,
+          1075.953125,
+          1157.390625,
+          1238.828125,
+          1320.265625
+        ]
+      ],
+      "hero": 1397.703125,
+      "errors": []
+    },
+    {
+      "width": 767,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1138.515625,
+      "errors": []
+    },
+    {
+      "width": 480,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1501.234375,
+      "errors": []
+    },
+    {
+      "width": 480,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        136.578125,
+        136.578125
+      ],
+      "rowTops": [
+        [
+          449.09375,
+          529.53125,
+          633.46875,
+          737.40625,
+          818.84375
+        ],
+        [
+          1084.859375,
+          1187.796875,
+          1269.234375,
+          1373.171875,
+          1454.609375
+        ]
+      ],
+      "hero": 1532.046875,
+      "errors": []
+    },
+    {
+      "width": 480,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1138.515625,
+      "errors": []
+    },
+    {
+      "width": 479,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1501.234375,
+      "errors": []
+    },
+    {
+      "width": 479,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        136.578125,
+        136.578125
+      ],
+      "rowTops": [
+        [
+          449.09375,
+          529.53125,
+          633.46875,
+          737.40625,
+          818.84375
+        ],
+        [
+          1084.859375,
+          1187.796875,
+          1291.734375,
+          1395.671875,
+          1477.109375
+        ]
+      ],
+      "hero": 1554.546875,
+      "errors": []
+    },
+    {
+      "width": 479,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1138.515625,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1594.171875,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        136.578125,
+        136.578125
+      ],
+      "rowTops": [
+        [
+          490.84375,
+          593.78125,
+          697.71875,
+          801.65625,
+          905.59375
+        ],
+        [
+          1194.109375,
+          1297.046875,
+          1400.984375,
+          1504.921875,
+          1608.859375
+        ]
+      ],
+      "hero": 1708.796875,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1271.84375,
+      "errors": []
+    },
+    {
+      "width": 389,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1656.171875,
+      "errors": []
+    },
+    {
+      "width": 389,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        136.578125,
+        136.578125
+      ],
+      "rowTops": [
+        [
+          490.84375,
+          593.78125,
+          697.71875,
+          801.65625,
+          905.59375
+        ],
+        [
+          1194.109375,
+          1297.046875,
+          1400.984375,
+          1504.921875,
+          1608.859375
+        ]
+      ],
+      "hero": 1708.796875,
+      "errors": []
+    },
+    {
+      "width": 389,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1271.84375,
+      "errors": []
+    },
+    {
+      "width": 360,
+      "page": "home",
+      "overflow": true,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1656.171875,
+      "errors": []
+    },
+    {
+      "width": 360,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        136.578125,
+        136.578125
+      ],
+      "rowTops": [
+        [
+          491.4375,
+          594.375,
+          698.3125,
+          802.25,
+          906.1875
+        ],
+        [
+          1194.703125,
+          1297.640625,
+          1401.578125,
+          1505.515625,
+          1609.453125
+        ]
+      ],
+      "hero": 1708.796875,
+      "errors": []
+    },
+    {
+      "width": 360,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1295.84375,
+      "errors": []
+    },
+    {
+      "width": 359,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1635.234375,
+      "errors": []
+    },
+    {
+      "width": 359,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        131.390625,
+        131.390625
+      ],
+      "rowTops": [
+        [
+          481.03125,
+          583.96875,
+          687.90625,
+          791.84375,
+          895.78125
+        ],
+        [
+          1179.109375,
+          1282.046875,
+          1385.984375,
+          1489.921875,
+          1593.859375
+        ]
+      ],
+      "hero": 1693.796875,
+      "errors": []
+    },
+    {
+      "width": 359,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1291.21875,
+      "errors": []
+    },
+    {
+      "width": 320,
+      "page": "home",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1701.96875,
+      "errors": []
+    },
+    {
+      "width": 320,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": [],
+      "headers": [
+        131.390625,
+        131.390625
+      ],
+      "rowTops": [
+        [
+          481.03125,
+          583.96875,
+          687.90625,
+          791.84375,
+          895.78125
+        ],
+        [
+          1179.109375,
+          1304.546875,
+          1431.421875,
+          1535.359375,
+          1639.296875
+        ]
+      ],
+      "hero": 1739.234375,
+      "errors": []
+    },
+    {
+      "width": 320,
+      "page": "about",
+      "overflow": false,
+      "clipped": [],
+      "headers": [],
+      "rowTops": [],
+      "hero": 1315.21875,
+      "errors": []
+    }
+  ],
+  "narrowHomeAfterCorrection": [
+    {
+      "kind": "final-narrow-home",
+      "width": 360,
+      "scrollWidth": 360,
+      "stage": "matrix(0.88, 0, 0, 0.88, 0, 0)"
+    },
+    {
+      "kind": "final-narrow-home",
+      "width": 389,
+      "scrollWidth": 389,
+      "stage": "matrix(0.88, 0, 0, 0.88, 0, 0)"
+    },
+    {
+      "kind": "final-narrow-home",
+      "width": 359,
+      "scrollWidth": 359,
+      "stage": "matrix(0.82, 0, 0, 0.82, 0, 0)"
+    },
+    {
+      "kind": "final-narrow-home",
+      "width": 320,
+      "scrollWidth": 320,
+      "stage": "matrix(0.82, 0, 0, 0.82, 0, 0)"
+    },
+    {
+      "kind": "final-narrow-home",
+      "width": 390,
+      "scrollWidth": 390,
+      "stage": "none"
+    }
+  ],
+  "entryStates": [
+    {
+      "state": "on",
+      "width": 1440,
+      "label": "Book an appointment\n↗",
+      "href": "/booking",
+      "icon": [
+        {
+          "name": "phone",
+          "hidden": true
+        },
+        {
+          "name": "calendar",
+          "hidden": false
+        }
+      ],
+      "overflow": false,
+      "guard": false
+    },
+    {
+      "state": "on",
+      "width": 768,
+      "label": "Book an appointment\n↗",
+      "href": "/booking",
+      "icon": [
+        {
+          "name": "phone",
+          "hidden": true
+        },
+        {
+          "name": "calendar",
+          "hidden": false
+        }
+      ],
+      "overflow": false,
+      "guard": false
+    },
+    {
+      "state": "on",
+      "width": 390,
+      "label": "Book an appointment\n↗",
+      "href": "/booking",
+      "icon": [
+        {
+          "name": "phone",
+          "hidden": true
+        },
+        {
+          "name": "calendar",
+          "hidden": false
+        }
+      ],
+      "overflow": false,
+      "guard": false
+    },
+    {
+      "state": "on",
+      "width": 320,
+      "label": "Book an appointment\n↗",
+      "href": "/booking",
+      "icon": [
+        {
+          "name": "phone",
+          "hidden": true
+        },
+        {
+          "name": "calendar",
+          "hidden": false
+        }
+      ],
+      "overflow": false,
+      "guard": false
+    },
+    {
+      "state": "on-to-off",
+      "sameEntry": true,
+      "sameLabel": true,
+      "focused": true,
+      "label": "Arrange a visit\n↗",
+      "href": "/contact",
+      "h1": {
+        "id": "H1",
+        "type": "H1",
+        "time": 2300,
+        "duration": 2300,
+        "done": true,
+        "visible": false,
+        "ratio": 0.12332175672054291,
+        "ready": true,
+        "tracks": 11,
+        "loops": 2,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": false,
+        "paneVisible": true
+      },
+      "unguardedBooking": 0
+    },
+    {
+      "state": "failed-refresh",
+      "label": "Arrange a visit\n↗",
+      "href": "/contact",
+      "sameEntry": true,
+      "h1": {
+        "id": "H1",
+        "type": "H1",
+        "time": 2300,
+        "duration": 2300,
+        "done": true,
+        "visible": false,
+        "ratio": 0.12332175672054291,
+        "ready": true,
+        "tracks": 11,
+        "loops": 2,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": false,
+        "paneVisible": true
+      }
+    }
+  ],
+  "fadeReview": [
+    {
+      "width": 1440,
+      "amount": 0,
+      "cards": [
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 1440,
+      "amount": 50,
+      "cards": [
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 1440,
+      "amount": 100,
+      "cards": [
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 1440,
+      "kind": "focused-card",
+      "cards": [
+        {
+          "id": "H3/general-health",
+          "time": 480,
+          "done": true
+        },
+        {
+          "id": "H3/diabetes",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/fever-infections",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/womens-health",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/pregnancy",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/ultrasound",
+          "time": 0,
+          "done": false
+        }
+      ],
+      "cardOpacity": "1"
+    },
+    {
+      "width": 390,
+      "amount": 0,
+      "cards": [
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 390,
+      "amount": 50,
+      "cards": [
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "0.965983",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 390,
+      "amount": 100,
+      "cards": [
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        },
+        {
+          "opacity": "1",
+          "transform": "none",
+          "artTransform": "none",
+          "frames": [
+            [
+              {
+                "opacity": "0"
+              },
+              {
+                "opacity": "1"
+              }
+            ]
+          ]
+        }
+      ],
+      "duration": [
+        480,
+        480,
+        480,
+        480,
+        480,
+        480
+      ]
+    },
+    {
+      "width": 390,
+      "kind": "focused-card",
+      "cards": [
+        {
+          "id": "H3/general-health",
+          "time": 480,
+          "done": true
+        },
+        {
+          "id": "H3/diabetes",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/fever-infections",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/womens-health",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/pregnancy",
+          "time": 0,
+          "done": false
+        },
+        {
+          "id": "H3/ultrasound",
+          "time": 0,
+          "done": false
+        }
+      ],
+      "cardOpacity": "1"
+    }
+  ],
+  "aboutMotion": [
+    {
+      "kind": "initial-unseen",
+      "scenes": [
+        {
+          "id": "A3",
+          "type": "A3",
+          "time": 0,
+          "duration": 2300,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 0,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": false,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/0",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 2300,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": false,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/1",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 2300,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": false,
+          "paneVisible": true
+        }
+      ],
+      "glints": [
+        {
+          "rect": {
+            "x": 454,
+            "y": 2360.046875,
+            "width": 24,
+            "height": 24,
+            "top": 2360.046875,
+            "right": 478,
+            "bottom": 2384.046875,
+            "left": 454
+          },
+          "phase": [
+            -1
+          ]
+        },
+        {
+          "rect": {
+            "x": 454,
+            "y": 2990.6875,
+            "width": 24,
+            "height": 24,
+            "top": 2990.6875,
+            "right": 478,
+            "bottom": 3014.6875,
+            "left": 454
+          },
+          "phase": [
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "first-natural-entry-second-unseen",
+      "scenes": [
+        {
+          "id": "A3",
+          "type": "A3",
+          "time": 2300,
+          "duration": 2300,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 0,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/0",
+          "type": "A3-panel",
+          "time": 2300,
+          "duration": 2300,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/1",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 2300,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ],
+      "glints": [
+        {
+          "rect": {
+            "x": 454,
+            "y": 378.046875,
+            "width": 24,
+            "height": 24,
+            "top": 378.046875,
+            "right": 478,
+            "bottom": 402.046875,
+            "left": 454
+          },
+          "phase": [
+            516.5999999999999
+          ]
+        },
+        {
+          "rect": {
+            "x": 454,
+            "y": 1008.6875,
+            "width": 24,
+            "height": 24,
+            "top": 1008.6875,
+            "right": 478,
+            "bottom": 1032.6875,
+            "left": 454
+          },
+          "phase": [
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "completed-resize-loop-phase",
+      "scenes": [
+        {
+          "id": "A3",
+          "type": "A3",
+          "time": 2300,
+          "duration": 2300,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 0,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/0",
+          "type": "A3-panel",
+          "time": 2300,
+          "duration": 2300,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/1",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 2300,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ],
+      "glints": [
+        {
+          "rect": {
+            "x": 422,
+            "y": 406.78125,
+            "width": 24,
+            "height": 24,
+            "top": 406.78125,
+            "right": 446,
+            "bottom": 430.78125,
+            "left": 422
+          },
+          "phase": [
+            533.3000000000001
+          ]
+        },
+        {
+          "rect": {
+            "x": 422,
+            "y": 1037.421875,
+            "width": 24,
+            "height": 24,
+            "top": 1037.421875,
+            "right": 446,
+            "bottom": 1061.421875,
+            "left": 422
+          },
+          "phase": [
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "half-progress-phone-crossing",
+      "scenes": [
+        {
+          "id": "A3",
+          "type": "A3",
+          "time": 1900,
+          "duration": 1900,
+          "done": true,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 0,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/0",
+          "type": "A3-panel",
+          "time": 950,
+          "duration": 1900,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/1",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 1900,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ],
+      "glints": [
+        {
+          "rect": {
+            "x": 159.5,
+            "y": 1766.359375,
+            "width": 17,
+            "height": 17,
+            "top": 1766.359375,
+            "right": 176.5,
+            "bottom": 1783.359375,
+            "left": 159.5
+          },
+          "phase": [
+            -1
+          ]
+        },
+        {
+          "rect": {
+            "x": 159.5,
+            "y": 2798.421875,
+            "width": 17,
+            "height": 17,
+            "top": 2798.421875,
+            "right": 176.5,
+            "bottom": 2815.421875,
+            "left": 159.5
+          },
+          "phase": [
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "font-event-remeasure",
+      "scenes": [
+        {
+          "id": "A3",
+          "type": "A3",
+          "time": 1900,
+          "duration": 1900,
+          "done": true,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 0,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/0",
+          "type": "A3-panel",
+          "time": 950,
+          "duration": 1900,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "A3/1",
+          "type": "A3-panel",
+          "time": 0,
+          "duration": 1900,
+          "done": false,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 4,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ],
+      "glints": [
+        {
+          "rect": {
+            "x": 159.5,
+            "y": 1766.359375,
+            "width": 17,
+            "height": 17,
+            "top": 1766.359375,
+            "right": 176.5,
+            "bottom": 1783.359375,
+            "left": 159.5
+          },
+          "phase": [
+            -1
+          ]
+        },
+        {
+          "rect": {
+            "x": 159.5,
+            "y": 2798.421875,
+            "width": 17,
+            "height": 17,
+            "top": 2798.421875,
+            "right": 176.5,
+            "bottom": 2815.421875,
+            "left": 159.5
+          },
+          "phase": [
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "route-cleanup",
+      "glints": 0,
+      "errors": []
+    }
+  ],
+  "preservedMotion": [
+    {
+      "width": 1440,
+      "scene": "T4",
+      "amount": 0,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 0,
+        "duration": 2400,
+        "done": false,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 6,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 1440,
+      "scene": "T4",
+      "amount": 50,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 1200,
+        "duration": 2400,
+        "done": false,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 6,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 1440,
+      "scene": "T4",
+      "amount": 100,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 2400,
+        "duration": 2400,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 6,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 1440,
+      "scene": "H1",
+      "status": [
+        {
+          "id": "H1",
+          "type": "H1",
+          "time": 2800,
+          "duration": 2800,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 11,
+          "loops": 2,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scene": "H5",
+      "status": [
+        {
+          "id": "H5",
+          "type": "H5",
+          "time": 2900,
+          "duration": 2900,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 9,
+          "loops": 9,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scene": "H8",
+      "status": [
+        {
+          "id": "H8",
+          "type": "H8",
+          "time": 1500,
+          "duration": 1500,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scene": "H9",
+      "status": [
+        {
+          "id": "H9",
+          "type": "H9",
+          "time": 1200,
+          "duration": 1200,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 1,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/doctor",
+          "type": "H9-card",
+          "time": 1200,
+          "duration": 1200,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/calendar",
+          "type": "H9-card",
+          "time": 1200,
+          "duration": 1200,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/reports",
+          "type": "H9-card",
+          "time": 1200,
+          "duration": 1200,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/contact",
+          "type": "H9-card",
+          "time": 1200,
+          "duration": 1200,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scene": "T4",
+      "amount": 0,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 0,
+        "duration": 2000,
+        "done": false,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 9,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 390,
+      "scene": "T4",
+      "amount": 50,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 1000,
+        "duration": 2000,
+        "done": false,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 9,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 390,
+      "scene": "T4",
+      "amount": 100,
+      "marks": [
+        {
+          "parentLayer": "main",
+          "transform": null,
+          "text": "For my visitReportsMedicinesQuestions"
+        },
+        {
+          "parentLayer": "second",
+          "transform": null,
+          "text": "My questionsAny changes?My medicines"
+        },
+        {
+          "parentLayer": "front",
+          "transform": null,
+          "text": "Ready"
+        }
+      ],
+      "status": {
+        "id": "T4",
+        "type": "T4",
+        "time": 2000,
+        "duration": 2000,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 9,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      }
+    },
+    {
+      "width": 390,
+      "scene": "H1",
+      "status": [
+        {
+          "id": "H1",
+          "type": "H1",
+          "time": 2300,
+          "duration": 2300,
+          "done": true,
+          "visible": true,
+          "ratio": 0.45470908284187317,
+          "ready": true,
+          "tracks": 11,
+          "loops": 2,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scene": "H5",
+      "status": [
+        {
+          "id": "H5",
+          "type": "H5",
+          "time": 2400,
+          "duration": 2400,
+          "done": true,
+          "visible": true,
+          "ratio": 0.9534288048744202,
+          "ready": true,
+          "tracks": 9,
+          "loops": 9,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scene": "H8",
+      "status": [
+        {
+          "id": "H8",
+          "type": "H8",
+          "time": 1300,
+          "duration": 1300,
+          "done": true,
+          "visible": true,
+          "ratio": 0.6730608940124512,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scene": "H9",
+      "status": [
+        {
+          "id": "H9",
+          "type": "H9",
+          "time": 1100,
+          "duration": 1100,
+          "done": true,
+          "visible": false,
+          "ratio": 0,
+          "ready": true,
+          "tracks": 1,
+          "loops": 0,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/doctor",
+          "type": "H9-card",
+          "time": 1100,
+          "duration": 1100,
+          "done": true,
+          "visible": false,
+          "ratio": 0,
+          "ready": false,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/calendar",
+          "type": "H9-card",
+          "time": 1100,
+          "duration": 1100,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/reports",
+          "type": "H9-card",
+          "time": 1100,
+          "duration": 1100,
+          "done": true,
+          "visible": true,
+          "ratio": 1,
+          "ready": true,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        },
+        {
+          "id": "H9/contact",
+          "type": "H9-card",
+          "time": 1100,
+          "duration": 1100,
+          "done": true,
+          "visible": false,
+          "ratio": 0,
+          "ready": false,
+          "tracks": 5,
+          "loops": 1,
+          "error": null,
+          "movement": true,
+          "reduced": false,
+          "paused": true,
+          "paneVisible": true
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "width": 1440,
+      "topic": "general-health",
+      "selected": "true",
+      "title": "General health",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3100,
+        "duration": 3100,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 16,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "diabetes",
+      "selected": "true",
+      "title": "Diabetes care",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3300,
+        "duration": 3300,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 11,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "blood-pressure",
+      "selected": "true",
+      "title": "Blood pressure",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 2700,
+        "duration": 2700,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 7,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "thyroid",
+      "selected": "true",
+      "title": "Thyroid concerns",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 2900,
+        "duration": 2900,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 12,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "fever-infections",
+      "selected": "true",
+      "title": "Fever & infections",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3150,
+        "duration": 3150,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 21,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "womens-health",
+      "selected": "true",
+      "title": "Women's health",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3400,
+        "duration": 3400,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 7,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "pregnancy",
+      "selected": "true",
+      "title": "Pregnancy care",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3200,
+        "duration": 3200,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 22,
+        "loops": 3,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "topic": "ultrasound",
+      "selected": "true",
+      "title": "Ultrasound scans",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3300,
+        "duration": 3300,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 17,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "general-health",
+      "selected": "true",
+      "title": "General health",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3100,
+        "duration": 3100,
+        "done": true,
+        "visible": true,
+        "ratio": 0.6255859136581421,
+        "ready": true,
+        "tracks": 16,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "diabetes",
+      "selected": "true",
+      "title": "Diabetes care",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3300,
+        "duration": 3300,
+        "done": true,
+        "visible": true,
+        "ratio": 0.6255859136581421,
+        "ready": true,
+        "tracks": 11,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "blood-pressure",
+      "selected": "true",
+      "title": "Blood pressure",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 2700,
+        "duration": 2700,
+        "done": true,
+        "visible": true,
+        "ratio": 0.6255859136581421,
+        "ready": true,
+        "tracks": 7,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "thyroid",
+      "selected": "true",
+      "title": "Thyroid concerns",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 2900,
+        "duration": 2900,
+        "done": true,
+        "visible": true,
+        "ratio": 0.6255859136581421,
+        "ready": true,
+        "tracks": 12,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "fever-infections",
+      "selected": "true",
+      "title": "Fever & infections",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T2",
+        "type": "T2",
+        "time": 3150,
+        "duration": 3150,
+        "done": true,
+        "visible": true,
+        "ratio": 0.6255859136581421,
+        "ready": true,
+        "tracks": 21,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "womens-health",
+      "selected": "true",
+      "title": "Women's health",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3400,
+        "duration": 3400,
+        "done": true,
+        "visible": true,
+        "ratio": 0.85498046875,
+        "ready": true,
+        "tracks": 7,
+        "loops": 1,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "pregnancy",
+      "selected": "true",
+      "title": "Pregnancy care",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3200,
+        "duration": 3200,
+        "done": true,
+        "visible": true,
+        "ratio": 0.85498046875,
+        "ready": true,
+        "tracks": 22,
+        "loops": 3,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "topic": "ultrasound",
+      "selected": "true",
+      "title": "Ultrasound scans",
+      "book": [
+        {
+          "hidden": true,
+          "inert": true
+        }
+      ],
+      "status": {
+        "id": "T3",
+        "type": "T3",
+        "time": 3300,
+        "duration": 3300,
+        "done": true,
+        "visible": true,
+        "ratio": 0.85498046875,
+        "ready": true,
+        "tracks": 17,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": true,
+        "paneVisible": true
+      },
+      "overflow": false
+    }
+  ],
+  "otherPages": [
+    {
+      "width": 1440,
+      "page": "doctors",
+      "h1": "Meet the doctors",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 1440,
+      "page": "sanjay",
+      "h1": "Dr. Sanjay Gupta",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 1440,
+      "page": "parul",
+      "h1": "Dr. Parul Gupta",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 1440,
+      "page": "contact",
+      "h1": "Contact the clinic",
+      "overflow": false,
+      "errors": [],
+      "nav": "Contact",
+      "map": true
+    },
+    {
+      "width": 390,
+      "page": "doctors",
+      "h1": "Meet the doctors",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 390,
+      "page": "sanjay",
+      "h1": "Dr. Sanjay Gupta",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 390,
+      "page": "parul",
+      "h1": "Dr. Parul Gupta",
+      "overflow": false,
+      "errors": [],
+      "nav": "Doctors",
+      "map": false
+    },
+    {
+      "width": 390,
+      "page": "contact",
+      "h1": "Contact the clinic",
+      "overflow": false,
+      "errors": [],
+      "nav": "Contact",
+      "map": true
+    },
+    {
+      "page": "booking-in-app-off",
+      "heading": "Book your visit",
+      "unavailable": "Online booking is currently unavailable\n\nYou can call the clinic to arrange your visit.\n\nDr. Sanjay Gupta\n\nGeneral health and diabetes care · ₹800 at the clinic\n\n+91 94150 49410\n↗\nDr. Parul Gupta\n\nWomen's health and pregnancy care · ₹800 at the clinic\n\n+91 98386 55095\n↗\nCheck again",
+      "contacts": [
+        "tel:+919415049410",
+        "tel:+919838655095"
+      ]
+    }
+  ],
+  "interaction": [
+    {
+      "kind": "heading-focus",
+      "outline": "rgb(255, 255, 255) solid 3px",
+      "offset": "-7px"
+    },
+    {
+      "kind": "physician-hover",
+      "color": "rgb(36, 88, 130)",
+      "underline": "underline"
+    },
+    {
+      "kind": "menu-route",
+      "path": "/about-clinic",
+      "open": false,
+      "heading": "H1",
+      "errors": []
+    },
+    {
+      "kind": "native-reduced",
+      "path": "/",
+      "unfinished": [],
+      "running": 0,
+      "overflow": false
+    },
+    {
+      "kind": "native-reduced",
+      "path": "/treatment",
+      "unfinished": [],
+      "running": 0,
+      "overflow": false
+    },
+    {
+      "kind": "native-reduced",
+      "path": "/about-clinic",
+      "unfinished": [],
+      "running": 0,
+      "overflow": false
+    },
+    {
+      "kind": "picture-failure-reading",
+      "opacity": "1",
+      "text": "General health\n\nEveryday health concerns and follow-up care.\n\nRead more\n↗",
+      "scene": {
+        "id": "H3/general-health",
+        "type": "H3-card",
+        "time": 480,
+        "duration": 480,
+        "done": true,
+        "visible": true,
+        "ratio": 1,
+        "ready": true,
+        "tracks": 1,
+        "loops": 0,
+        "error": null,
+        "movement": true,
+        "reduced": false,
+        "paused": false,
+        "paneVisible": true
+      }
+    }
+  ],
+  "reviews": {
+    "review": {
+      "kind": "reviews-retained",
+      "count": 18,
+      "images": 18,
+      "ratings": 18,
+      "locations": 18,
+      "marks": 18,
+      "start": "matrix(1, 0, 0, 1, -3.6668, 0)",
+      "moved": "matrix(1, 0, 0, 1, -13.6668, 0)",
+      "hover": "matrix(1, 0, 0, 1, -14.0008, 0)",
+      "paused": "matrix(1, 0, 0, 1, -14.0008, 0)",
+      "resumed": "matrix(1, 0, 0, 1, -23.666, 0)"
+    },
+    "zoom": {
+      "before": {
+        "width": 1440,
+        "dpr": 1
+      },
+      "after": {
+        "width": 1440,
+        "dpr": 1
+      }
+    }
+  },
+  "textEnlargementBeforeWrappingCorrection": [
+    {
+      "kind": "double-text-private",
+      "width": 1440,
+      "page": "home",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 1440,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 1440,
+      "page": "about",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 390,
+      "page": "home",
+      "overflow": false,
+      "clipped": [
+        {
+          "text": "2 doctors\n\nAt one clinic",
+          "class": ""
+        }
+      ]
+    },
+    {
+      "kind": "double-text-private",
+      "width": 390,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 390,
+      "page": "about",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 320,
+      "page": "home",
+      "overflow": true,
+      "clipped": [
+        {
+          "text": "2 doctors\n\nAt one clinic",
+          "class": ""
+        }
+      ]
+    },
+    {
+      "kind": "double-text-private",
+      "width": 320,
+      "page": "treatments",
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "kind": "double-text-private",
+      "width": 320,
+      "page": "about",
+      "overflow": false,
+      "clipped": [
+        {
+          "text": "₹800 consultation\n\nFor either doctor · At the clinic",
+          "class": ""
+        }
+      ]
+    }
+  ]
+}

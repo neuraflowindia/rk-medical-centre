@@ -1,0 +1,34 @@
+/* Attached reading bands share factual anatomy, without another motion owner. */
+:root{--physician:#245882}
+.clinic-glance{display:grid;background:#fff;border:1px solid #b2c9cd}
+.clinic-glance article{display:flex;gap:16px;min-width:0}
+.clinic-glance article>div{min-width:0;overflow-wrap:anywhere}
+.clinic-glance article>svg{flex:none;color:var(--physician)}
+.clinic-glance strong{display:block;color:var(--navy)}
+.clinic-glance p{font:400 16px/1.5 Lato,Arial,sans-serif;color:var(--body)}
+.hero-fact-strip{grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;min-height:159px;margin-top:56px;padding:24px 28px;border-radius:24px;box-shadow:0 12px 26px -20px #1b365d40}
+.hero-fact-strip article{align-items:flex-start;padding-inline:24px;border-left:1px solid #cfdddf}
+.hero-fact-strip article:first-child{padding-left:0;border-left:0}
+.hero-fact-strip article:last-child{padding-right:0}
+.hero-fact-strip article>svg{width:26px;height:26px;margin-top:5px}
+.hero-fact-strip strong{font:600 29px/1.3 Lora,Georgia,serif}
+.hero-fact-strip p{margin-top:7px}
+.about-hero-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:28px;padding:24px 28px;border-color:#b4c8d6;border-radius:22px}
+.about-hero-facts article{align-items:center}
+.about-hero-facts article>svg{width:30px;height:30px}
+.about-hero-facts strong{font-size:20px;font-weight:700}
+.about-hero-facts p{margin-top:5px}
+@media(max-width:1199px){
+ .hero-fact-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;min-height:0;margin-top:32px;padding:24px}
+ .hero-fact-strip article{padding:0;border:0}
+ .hero-fact-strip strong{font-size:25px}
+}
+@media(max-width:767px){
+ .hero-fact-strip{padding:22px 18px;gap:22px 18px;margin-top:28px;border-radius:20px}
+ .hero-fact-strip article{flex-direction:column;gap:8px}
+ .hero-fact-strip article>svg{width:22px;height:22px;margin:0}
+ .hero-fact-strip strong{font-size:21px}
+ .hero-fact-strip p{line-height:1.45;margin-top:6px}
+ .about-hero-facts{grid-template-columns:minmax(0,1fr);gap:20px;padding:22px}
+}
+@media(max-width:359px){.hero-fact-strip{gap:22px 14px;padding:20px 16px}}

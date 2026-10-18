@@ -1,4 +1,4 @@
-import {T,F,pose,partTrack,iconMarkup} from './choreography-primitives.mjs';
+import {E,T,F,pose,partTrack,iconMarkup} from './choreography-primitives.mjs';
 const pick=(c,selector)=>[...(c.root.matches(selector)?[c.root]:[]),...c.root.querySelectorAll(selector)].filter(el=>el.getClientRects().length&&el.closest('[data-section-scene]')===c.root.closest('[data-section-scene]'));
 const scale=(c,d,p)=>c.phone?p:d;
 function glint(c,target,cycle,active,restFirst=false){if(!target)return;const shine=c.own(target.cloneNode(true));shine.removeAttribute('style');shine.setAttribute('pathLength','1');shine.style.strokeDasharray='.12 1';shine.style.strokeWidth='3';shine.style.opacity='0';target.parentNode.append(shine);const start=restFirst?1-active/cycle:0,end=start+active/cycle,frames=[{strokeDashoffset:.12,opacity:0,offset:0}];if(start)frames.push({strokeDashoffset:.12,opacity:0,offset:start});frames.push({strokeDashoffset:0,opacity:.18,offset:start+active/cycle*.1},{strokeDashoffset:-.95,opacity:.18,offset:start+active/cycle*.9},{strokeDashoffset:-1.12,opacity:0,offset:end});if(end<1)frames.push({strokeDashoffset:-1.12,opacity:0,offset:1});c.loop(shine,frames,cycle);}
@@ -23,12 +23,12 @@ export function supporting(c){const {id,phone:p}=c;
   const slots=[...c.root.querySelectorAll('.visit-sequence li svg,.visit-benefits li svg')].slice(0,3);slots.forEach((mark,i)=>c.travel(mark,(800+120*i)*c.duration/1900,1500*c.duration/1900,[[p?0:-10,p?8:0],[p?0:2,p?-1:0,0,1,.65],[0,0]]));
  }else if(id==='H3'||id==='H3-card'){
   if(id==='H3'){c.stage=c.root.querySelector('.section-heading')||c.root;c.media=[];return;}
-  const cards=pick(c,'.care-card');
-  cards.forEach((card,i)=>{const media=card.querySelector('.care-media'),obj=card.querySelector('.care-object'),r=c.bounds(media);const start=p?500:950+50*i,end=p?1450:1800+35*i;
-   c.travel(obj,start,end,p?[[0,r.h*.10,i%2?2:-2,.95],[0,-r.h*.01,0,1,.6],[0,0]]:[[r.w*(i%2?.12:-.12),0,i%2?3:-3,.94],[-r.w*(i%2?.01:-.01),0,i%2?-.5:.5,1,.6],[0,0]]);
-  });
+  // Native lazy pictures never hold the card's readable text at opacity zero.
+  c.media=[];
+  for(const card of pick(c,'.care-card'))c.add(card,[{opacity:0},{opacity:1}],0,480,E);
  }else if(['H4','H4-panel','A3','A3-panel','D1','D1-panel'].includes(id)){
-  if(id==='H4'){c.stage=c.root.querySelector('.section-heading')||c.root;c.media=[];return;}
+  if(id==='H4'||id==='A3'){c.stage=c.root.querySelector('.section-heading')||c.root;c.media=[];return;}
+  if(id==='A3-panel'){c.stage=c.root.querySelector('.about-doctor-identity')||c.root;c.media=[];}
   const base=id.split('-panel')[0],cards=pick(c,'.doctor-card');if((p||base==='D1')&&!id.includes('-panel'))return;
   cards.forEach((card,j)=>{const marks=card.querySelectorAll('[data-layer="contour"]');marks.forEach(el=>{el.setAttribute('pathLength','1');el.style.strokeDasharray='1';c.add(el,[{strokeDashoffset:1},{strokeDashoffset:0}],0,p?550:650);});
    const main=card.querySelector('[data-layer="main"],.doctor-decoration [data-scene="emblem"] svg');

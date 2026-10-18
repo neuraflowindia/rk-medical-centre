@@ -111,7 +111,7 @@ export function createMotion({onMovementChange=()=>{}}={}){
   for(const s of [...scenes])if(s.child){
    cancel(s);sizeObserver.unobserve(s.root);delete s.root.dataset.motionOwner;scenes.splice(scenes.indexOf(s),1);
   }
-  const selectors={H3:'.care-card',H4:'.doctor-card',H9:'.home-benefit-card',D1:'.doctor-card',...(phoneMode?{A3:'.doctor-card',A2:'.care-explained>article'}:{})};
+  const selectors={H3:'.care-card',H4:'.doctor-card',H9:'.home-benefit-card',D1:'.doctor-card',A3:'.doctor-card-about',...(phoneMode?{A2:'.care-explained>article'}:{})};
   for(const s of [...scenes])if(selectors[s.type])for(const [index,root] of [...s.root.querySelectorAll(selectors[s.type])].entries()){
    const key=s.type==='H9'?root.dataset.benefit:s.type==='H4'?root.dataset.doctor:s.type==='H3'?(root.dataset.careKey||root.querySelector('[data-scene-id]')?.dataset.sceneId?.replace(/^care-/,'')):String(index);
    const child=add(root,s.type+(['H3','H9'].includes(s.type)?'-card':'-panel'),s.type+'/'+(key||index));child.child=true;
@@ -130,7 +130,7 @@ export function createMotion({onMovementChange=()=>{}}={}){
   for(const s of scenes){
    if(!all&&!breakpointChanged&&!targets.has(s.root))continue;
    const state=states.get(s.id);
-   if(homeScene(s))build(s,state?{state}:{});
+   if(homeScene(s)||s.type==='A3-panel')build(s,state?{state}:{});
    else if(all||breakpointChanged)build(s,{finishNow:true});
    else if(['T2','T3'].includes(s.type))build(s,{resumeTime:state?.time||0});
    else build(s,{finishNow:!!state&&(state.started||state.done)});
@@ -144,6 +144,7 @@ export function createMotion({onMovementChange=()=>{}}={}){
   if(disposed)return;
   if(!effective())for(const s of scenes)if(!s.done)finish(s);
   for(const s of scenes){
+   if(s.type==='H3-card'&&s.root.contains(document.activeElement)&&!s.done)finish(s);
    if(formFocused(s)&&s.ready&&!s.done)finish(s);
    // Below the desk on phones, the explanatory steps have their own visibility.
    if(s.ready&&!s.visible&&!s.done&&effective()&&!manualPause&&paneVisible&&!document.hidden&&s.loops.some(record=>record.visibilityRoot&&record.visible))finish(s);
@@ -183,6 +184,9 @@ export function createMotion({onMovementChange=()=>{}}={}){
  listen(reduced,'change',()=>{settle();preferenceChanged();sync();});
  for(const root of document.querySelectorAll('[data-section-scene]'))add(root,root.dataset.sectionScene);
  children();for(const s of scenes)build(s);
+ // Fonts can move an emblem inside a card without resizing the outer card.
+ const queueAboutLayout=()=>{if(disposed)return;for(const s of scenes)if(s.type==='A3-panel')layoutPending.add(s.root);if(layoutPending.size)queueLayout();};
+ if(document.fonts){document.fonts.ready.then(queueAboutLayout);listen(document.fonts,'loadingdone',queueAboutLayout);}
  listen(window,'resize',()=>queueLayout(true));
  listen(document,'choreography:interaction',sync);
  listen(document,'visibilitychange',()=>{last=null;sync();});
