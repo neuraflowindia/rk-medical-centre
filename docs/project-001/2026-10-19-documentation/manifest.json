@@ -1,0 +1,572 @@
+{
+  "date": "2026-10-19",
+  "purpose": "Portable documentation only; no duplicate application, credentials, dependencies or private customer records.",
+  "files": [
+    {
+      "source": "03-client-projects/001-doctors/README.md",
+      "saved": "client-readme.md",
+      "source_sha256": "68d52d6a0e53d5d456df018a9f446bc5be685f0c710fc481f4d4561368a4217b",
+      "saved_sha256": "75dd0a9fafa7e97734259c818afd7cdbbfa38b2527e32a46b0765c9f36019ca2"
+    },
+    {
+      "source": "03-client-projects/001-doctors/PROJECT-STATUS.md",
+      "saved": "PROJECT-STATUS.md",
+      "source_sha256": "bdab4ce641a9b3a9531969b04265276bcb22cb070890196afc3d092d57345e0c",
+      "saved_sha256": "bfd0274b53f7e6cf051ac73f511e4804a60977876ec645407b6bcaba78fd61be"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "saved": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "source_sha256": "193f12f3af81c19429c1b62e4ef0397b33f6463f206edc1e7ec1d55c0d8530a1",
+      "saved_sha256": "f56259c1325be0881430dc9df49a54b93577065801d12c068add3789f34361a0"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/08-build-brief.md",
+      "saved": "0001-planning/08-build-brief.md",
+      "source_sha256": "f3986a1d442e05ee498d2cb8349b0de7b447ae58da8a536c8a7b1d1e5cf59686",
+      "saved_sha256": "9a1c70b8e9ebb7645307413ccfdbb28f652a64f0d5575a7ec0aad71ba491358f"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0005-website/build-notes.md",
+      "saved": "0005-website/build-notes.md",
+      "source_sha256": "2c14923d00ed2dbb3e3691beaea167bf1736225ce346edfc1c62f80d3d64c9e7",
+      "saved_sha256": "4ea4dfb581cd9e5fe72a56c1aade7e2804936f17dbdc6a000069e57f3829b2da"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0007-deployment/README.md",
+      "saved": "0007-deployment/README.md",
+      "source_sha256": "6732eda4094fc9d0bb074d0d7b4948459107bd49bb3a88f90fb95ed3103d8e5c",
+      "saved_sha256": "28a811aa7c8cec3aae78a5d09e46549fa9b735758fe3def024f58f1e59756cc0"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/09-source-and-visual-audit.md",
+      "saved": "0001-planning/09-source-and-visual-audit.md",
+      "source_sha256": "e4edad734f70b72f7dcbd51217679e809df7c76b1ef151bf6cc6644bf69aed38",
+      "saved_sha256": "14a24be518269c73b562844769303b80326ce077d8648d7f0d04cb82df57cf33"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/10-refinement-plan.md",
+      "saved": "0001-planning/10-refinement-plan.md",
+      "source_sha256": "ab6521da367507f8669e1694d0ffc73bde95766941e1e184d31ecd0c53cdf0dd",
+      "saved_sha256": "0f9b332246cb8b77adaaadc12fe527f859b97c1e3c153da7a36b315c1ef3ad1d"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/11-comparison-and-richer-visual-plan.md",
+      "saved": "0001-planning/11-comparison-and-richer-visual-plan.md",
+      "source_sha256": "bbb22acf406ca3e78ae688d1fc989578b3ebce67f707b53df9090689a06eb81a",
+      "saved_sha256": "6529e6bd92690b86a19aeb6732fe4a31a7b98b9a2d7efe1f7daccc82793428be"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/12-generated-image-briefs.md",
+      "saved": "0001-planning/12-generated-image-briefs.md",
+      "source_sha256": "6115eaab6f44f37c96abd00ed6f753c00c06ad9de4ad90fdcd2dce53c7277f70",
+      "saved_sha256": "07efd9006135b3994ad0f8c277cbbe7b465b993f803ce8f84eb1089c7a5f6f1c"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/13-motion-and-background-spec.md",
+      "saved": "0001-planning/13-motion-and-background-spec.md",
+      "source_sha256": "2b2ebf120be73e51aa1d63e698dc3f01cb66a197dc5fd629604461ba00e67296",
+      "saved_sha256": "0c17c85998c5ff30fb638563c121430e4bf8c68c37a223c1d8bc9565759d21f6"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/14-page-by-page-review-and-wording.md",
+      "saved": "0001-planning/14-page-by-page-review-and-wording.md",
+      "source_sha256": "d81902da0d3e1aba1679db5cbb26033bf628c4678458758daf8e3f19e9bdcbde",
+      "saved_sha256": "754d0311ccc6f74fc49f0e1e962372e67580957a1efd7d0efa0eaf6fad7ad154"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/DESIGN_SYSTEM.md",
+      "saved": "0001-planning/DESIGN_SYSTEM.md",
+      "source_sha256": "2d8f29f4a22c3ecb9ed1b90f9f9b1bd0b951324de72f3d3f8d4a996804f68488",
+      "saved_sha256": "7f225f8f2d72f5449ce5ee7d52cda856c240dc21d35a396b9fa8175a05b2ceb3"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "saved": "0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "source_sha256": "fa56b89ec855140c263062cbeb9e263e7a4e1953416b6ca8003164d8fd671c59",
+      "saved_sha256": "d150c01be17c42df5a9695ee9966c3edda93461d701e37a0f8a5649a3c587ea7"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "saved": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "source_sha256": "e68fb8c08d855a74366d79ba9a021595e3d47b134efcd97809e936cde26ebf65",
+      "saved_sha256": "2a89bb6e1ead51b8bead6e093c5ec791fe65dbd35f0de180003370d293cf9e46"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "saved": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "source_sha256": "bc6062c2ade128d2b65dcfae4a2f5cdde5c8c33bced55e1e5f8b1a6d0262ea90",
+      "saved_sha256": "fa8ea25ca95569a4822bd1661601f28cf433b3ce9fa5a432722f2f38d0389aef"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "saved": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "source_sha256": "e3120dc5ab751f050efbe9930739b245345e5e59169f24c3fa11b9b0b7827668",
+      "saved_sha256": "6e77b9974f17df53cf05d0461f16aece97e50167f7c55b1750daea58af09fe33"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "saved": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "source_sha256": "29237662bc81be913ab78e12dbc7b4ceacc237abf2a546924ea03185defaf844",
+      "saved_sha256": "e10a99db18ade632b4f8b7586f877de0c90a7e5f18de92ae256eb072fd38c487"
+    },
+    {
+      "source": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "saved": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "source_sha256": "de3761d138562b4b2181c54e2191a18951317b7cf67888d0cf8340ed8e68058e",
+      "saved_sha256": "6b07cc7461111e2a05317e2db88c37ba69c4f75a221510a9fd391818780da497"
+    }
+  ],
+  "local_only_references": [
+    {
+      "document": "client-readme.md",
+      "target": "0006-qa/2026-10-16-reference-refresh/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-16-reference-refresh/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "hosting-packaging-repair.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/hosting-packaging-repair.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "provider-dependency-map.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/provider-dependency-map.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "production-publication.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/production-publication.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "hosted-core-acceptance.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/hosted-core-acceptance.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "hosting-packaging-repair.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/hosting-packaging-repair.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "final-publication-privacy-check.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/final-publication-privacy-check.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "publication-readback-after-email-refresh.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/publication-readback-after-email-refresh.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "email-refreshed-deployment-check.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/email-refreshed-deployment-check.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "independent-monitor-run-after-email-refresh.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/independent-monitor-run-after-email-refresh.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "email-handoff-format-check.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/email-handoff-format-check.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "database-verification.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/database-verification.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "company-enrollment.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/company-enrollment.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "worker-secret-upload.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/worker-secret-upload.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "worker-off-initialization.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/worker-off-initialization.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "worker-automatic-jobs.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/worker-automatic-jobs.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "independent-monitor-setup.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/independent-monitor-setup.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "independent-monitor-run.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/independent-monitor-run.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "email-credential-handoff.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/email-credential-handoff.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "worker-private-access-verification.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/worker-private-access-verification.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "signing-material-setup.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/signing-material-setup.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "dns-progress.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/dns-progress.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-15-guided-launch/README.md",
+      "target": "email-domain-setup.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-15-guided-launch/email-domain-setup.json"
+    },
+    {
+      "document": "0005-website/build-notes.md",
+      "target": "../0006-qa/2026-10-16-reference-refresh/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-16-reference-refresh/README.md"
+    },
+    {
+      "document": "0001-planning/10-refinement-plan.md",
+      "target": "../0006-qa/2026-10-13-comparison-build/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-build/README.md"
+    },
+    {
+      "document": "0001-planning/10-refinement-plan.md",
+      "target": "../0006-qa/2026-10-13-comparison-planning/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-planning/README.md"
+    },
+    {
+      "document": "0001-planning/11-comparison-and-richer-visual-plan.md",
+      "target": "../0006-qa/2026-10-13-comparison-build/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-build/README.md"
+    },
+    {
+      "document": "0001-planning/11-comparison-and-richer-visual-plan.md",
+      "target": "../0006-qa/2026-10-13-comparison-planning/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-planning/README.md"
+    },
+    {
+      "document": "0001-planning/12-generated-image-briefs.md",
+      "target": "../0003-generated-assets/00000-medical-illustrations/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0003-generated-assets/00000-medical-illustrations/README.md"
+    },
+    {
+      "document": "0001-planning/13-motion-and-background-spec.md",
+      "target": "../0006-qa/2026-10-13-comparison-build/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-build/README.md"
+    },
+    {
+      "document": "0001-planning/14-page-by-page-review-and-wording.md",
+      "target": "../0006-qa/2026-10-13-comparison-build/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-comparison-build/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "target": "implementation-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-additive-refinement/implementation-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "target": "design-and-behavior-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-additive-refinement/design-and-behavior-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "target": "inspection-and-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-additive-refinement/inspection-and-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-additive-refinement/README.md",
+      "target": "../../../0006-qa/2026-10-13-additive-build/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-additive-build/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "implementation-record.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/implementation-record.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "../../../0006-qa/2026-10-13-visual-correction-evidence/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-13-visual-correction-evidence/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "cohesion-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/cohesion-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "implementation-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/implementation-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "asset-and-motion-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/asset-and-motion-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "verification-and-handoff.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/verification-and-handoff.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-13-visual-correction/README.md",
+      "target": "layout-study.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-13-visual-correction/layout-study.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "target": "content-map.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/content-map.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "target": "implementation-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/implementation-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "target": "confirmed-facts.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/confirmed-facts.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "target": "review-record.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/review-record.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-content-and-design-restoration/README.md",
+      "target": "evidence/gallery.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-content-and-design-restoration/evidence/gallery.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "baseline-visual-audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/baseline-visual-audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "page-audit/section-ledger.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/page-audit/section-ledger.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "page-audit/shared-components.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/page-audit/shared-components.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "design-and-motion-contract.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/design-and-motion-contract.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "motion-family-map.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/motion-family-map.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "asset-feasibility-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/asset-feasibility-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "treatment-topic-motion-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/treatment-topic-motion-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "treatment-topic-tracks.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/treatment-topic-tracks.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "storyboard/index.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/storyboard/index.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "flagship-studies/index.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/flagship-studies/index.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "profile-booking-studies/index.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/profile-booking-studies/index.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "home-layout-study/index.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/home-layout-study/index.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "supporting-layout-studies/index.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/supporting-layout-studies/index.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "sarsa-reference/home-motion-audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/sarsa-reference/home-motion-audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "sarsa-reference/supporting-page-motion-audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/sarsa-reference/supporting-page-motion-audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "asset-audit/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/asset-audit/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "research/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/research/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "independent-plan-critique.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/independent-plan-critique.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "storyboard-critique.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/storyboard-critique.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "storyboard-followup-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/storyboard-followup-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "authority-and-proof.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/authority-and-proof.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "review-register.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/review-register.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "closeout-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/closeout-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "final-planning-checks.json",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/final-planning-checks.json"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-section-choreography/README.md",
+      "target": "implementation-order.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-section-choreography/implementation-order.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "../../../0006-qa/2026-10-14-correction-candidate/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-14-correction-candidate/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "../../../0006-qa/2026-10-14-correction-candidate/evidence/local-completion-review.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-14-correction-candidate/evidence/local-completion-review.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "preview.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/preview.html"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "home-treatment-motion-audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/home-treatment-motion-audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "page-audit/content-and-settled-design-audit.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/page-audit/content-and-settled-design-audit.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "booking-diagnosis.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/booking-diagnosis.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "section-specifications.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/section-specifications.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "content-specifications.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/content-specifications.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "booking-diagnosis.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/booking-diagnosis.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "review-results.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/review-results.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-14-settled-design-corrections/README.md",
+      "target": "skills-and-research.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-14-settled-design-corrections/skills-and-research.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "../../../0006-qa/2026-10-16-home-implementation/README.md",
+      "workspace_reference": "03-client-projects/001-doctors/0006-qa/2026-10-16-home-implementation/README.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "feedback-register.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/feedback-register.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "implementation-spec.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/implementation-spec.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "research.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/research.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "review-record.md",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/review-record.md"
+    },
+    {
+      "document": "0001-planning/plans/2026-10-16-home-augmentation/README.md",
+      "target": "review.html",
+      "workspace_reference": "03-client-projects/001-doctors/0001-planning/plans/2026-10-16-home-augmentation/review.html"
+    }
+  ]
+}

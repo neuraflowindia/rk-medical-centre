@@ -1,16 +1,20 @@
 # R. K. Medical Centre
 
-18 October 2026. The owner-approved Home, Treatments and About refinement is implemented, reviewed and officially published from09a23ec on `work/home-treatments-about-refinement-20261018`. The [current delivery records](docs/project-001/2026-10-18-refinement/README.md) own source, review, publication and remaining setup. Official website: https://www.rkmedicalcentre.com/. Booking/provider acceptance and genuine doctor photos remain separate.
+> **19 October GitHub publication:** the owner has authorized publishing this documentation. Runtime/closeout commits quoted below identify the inspected base before this documentation follow-up; they are not an assertion that those remain the latest main revision. Git records the current revision. No customer setting or website behavior changes here.
+
+Reviewed 19 October 2026; latest runtime delivery remains18 October.  The owner-approved Home, Treatments and About refinement is implemented, reviewed and officially published from 09a23ec on `work/home-treatments-about-refinement-20261018`. The [current delivery records](docs/project-001/2026-10-18-refinement/README.md) own source, review, publication and remaining setup. Official website: https://www.rkmedicalcentre.com/. Booking/provider acceptance and genuine doctor photos remain separate.
+
+GitHub main/HEAD was independently read on 19 October as 218f75c34f256919c69fa6b829270040d6ac14ad. This documentation reconciliation changes no runtime/package/provider behavior. The original factory import-only instruction predates the subsequently approved implementation/publication; the maintained root is this repository, not the supplied Doctor-Demo reference.
 
 ## Current website
 
-Eight main pages retain the clinic's Lora/Lato, navy/blue/teal/cream identity, full original information, local artwork and meaningful multi-stage motion. Home has the approved patient-led headline, four useful actions, two physician/two women's-health choices and four short facts. Its1440px opening is1075px (+25%), while the760px art stage and complete stethoscope/green curve stay. Six care cards use independent480ms opacity-only entrances at final geometry.
+Eight main pages retain the clinic's Lora/Lato, navy/blue/teal/cream identity, full original information, local artwork and meaningful multi-stage motion. Home has the approved patient-led headline, four useful actions, two physician/two women's-health choices and four short facts. Its1440px opening is 1075px (+25%), while the 760px art stage and complete stethoscope/green curve stay. Six care cards use independent480ms opacity-only entrances at final geometry.
 
-Treatments retains ten opening links into eight real topics, five entries per doctor, all descriptions/preparation and topic-specific sequences. Blue/green native h2 heading bands distinguish the categories; physician symbols are blue. Natural shared tracks align headings and rows. Its desktop opening is1075.469px (+23.65%). The original three A32 paper layers carry added writing/checks without changing their raster geometry or motion.
+Treatments retains ten opening links into eight real topics, five entries per doctor, all descriptions/preparation and topic-specific sequences. Blue/green native h2 heading bands distinguish the categories; physician symbols are blue. Natural shared tracks align headings and rows. Its desktop opening is 1075.469px (+23.65%). The original three A32 paper layers carry added writing/checks without changing their raster geometry or motion.
 
 About has opening actions/three facts, two complete stacked doctor introductions, neutral SG/PG portrait-ready areas, existing qualification/institute/experience pills, five/four care links, fees and direct actions. Each doctor's original symbol/fact sequence waits for that row and preserves progress through resize/font arrival. Four practical cards group actual address/directions, hours, fee and observation care. Genuine supplied photographs can replace the identity area later.
 
-The directory, doctor profiles, Contact Map and shared header/footer remain. All18Home reviews retain names, photos, quotes, ratings, localities, badges and visit labels, automatic movement, hover pause and still reading. All26original source pairs and26local portraits are unchanged. Their dated [internal provenance](docs/project-001/0006-qa/2026-10-16-complete-review-and-page-refinements/review-content-provenance.md) distinguishes the owner's publication direction from independent factual/photo validation; this refinement adds no endorsement or verification data.
+The directory, doctor profiles, Contact Map and shared header/footer remain. All18Home reviews retain names, photos, quotes, ratings, localities, badges and visit labels, automatic movement, hover pause and still reading. All26original source pairs and 26local portraits are unchanged. Their dated [internal provenance](docs/project-001/0006-qa/2026-10-16-complete-review-and-page-refinements/review-content-provenance.md) distinguishes the owner's publication direction from independent factual/photo validation; this refinement adds no endorsement or verification data.
 
 ## Booking display and protected operations
 
@@ -22,7 +26,7 @@ The contained standardized booking package remains byte-identical. Independent d
 
 Run `npm ci`, then `npm run dev`. Ordinary frontend compilation: `npm run build`. Production hosting compilation: `npm run build:hosting`. No tests, lint, type/coverage checks, full release suites/gates or workflow dispatch were run for this visual delivery. Compilation is not visual or provider proof.
 
-Vercel uses Vite, repository root, install `npm ci`, build `npm run build:hosting`, output `dist`. Keep root vercel.json, middleware.ts, exact generated requirements and contained Python/backend routing. Do not introduce an all-path Home rewrite. Package1.1.0-rc.1 digest:9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e.
+Vercel uses Vite, repository root, install `npm ci`, build `npm run build:hosting`, output `dist`. Keep root vercel.json, middleware.ts, exact generated requirements and contained Python/backend routing. Do not introduce an all-path Home rewrite. Package 1.1.0-rc.1 digest: 9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e.
 
 Three new runtime files are allowlisted: clinic-glance.js/css and preparation-art.mjs. Existing page/style/motion/build owners carry the bounded changes. No dependency, database, payment policy, provider, shared-master, other-client or raster artwork change.
 
@@ -33,4 +37,3 @@ Return branch `checkpoint/before-home-treatments-about-20261018` retains baselin
 The last accepted provider readback reported email_sender=false despite the saved Production setting; protected Vercel reads were403. Email diagnosis/private original key, delivery callbacks, Google staff/records, independent encrypted recovery and management credential handoff remain. Preserve the existing management credential. Online payment also needs the merchant; approved at-clinic payment does not need that merchant but cannot bypass the other dependencies. Contact submission and optional visit measurement have no approved connected destination.
 
 These are the existing guided-launch scope, unchanged by this presentation. Booking stays OFF until its real dependencies are accepted. Domain/Git/Vercel/Neon/worker and independent monitoring are established with their dated evidence; no patient booking, charge, email, message or provider activation occurred in this run. Private credentials never belong in source or chat. See the contained setup/resource-visit docs for the supported configuration route.
-
