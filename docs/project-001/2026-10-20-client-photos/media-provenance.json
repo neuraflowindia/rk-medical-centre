@@ -1,0 +1,405 @@
+{
+  "date": "2026-10-20",
+  "scope": "Private implementation candidate only; source photographs unchanged; deterministic crop/resize/WebP encode, no generation or color/face/architecture changes.",
+  "approval_boundary": "Board/contextual doctor assignments used for private review. Identity/public-use confirmation and frontage privacy review remain publication dependencies; this task does not publish.",
+  "operations": [
+    "RGB conversion without color adjustments",
+    "Reviewed fixed portrait crops only",
+    "Lanczos resizing below or at native width",
+    "WebP quality86 method6 except native frontage83 to meet largest-image budget; no metadata copied"
+  ],
+  "output_files": 26,
+  "output_bytes": 2737308,
+  "source_unchanged": true,
+  "items": [
+    {
+      "id": "waiting-area",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Clean Clinic Lobby with Mezzanine and Reception.png",
+      "source_sha256": "022694c8498643178eeb7fa1b89684a1d82234c5b67b38e89b38f7c9488858bb",
+      "source_bytes": 2935764,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": null,
+      "crop_dimensions": [
+        1448,
+        1086
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/clinic-waiting-area-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 49684,
+          "sha256": "fb01bf71321458c0a7e6530c71746afa62136a779e69fd3527187ad781e14bb0",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 34.54
+        },
+        {
+          "path": "public/client-photos/clinic-waiting-area-768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 115212,
+          "sha256": "fa5a079df513afaf0e0368bebcfcf43449190409224f6d41f847c526fc74172b",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 35.5
+        },
+        {
+          "path": "public/client-photos/clinic-waiting-area-1024.webp",
+          "width": 1024,
+          "height": 768,
+          "bytes": 190364,
+          "sha256": "8c7ec322b6b88ea060248dcf1ff8f3fc137671bb5b4cdf0476682eb636f9cf45",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 36.4
+        },
+        {
+          "path": "public/client-photos/clinic-waiting-area-1448.webp",
+          "width": 1448,
+          "height": 1086,
+          "bytes": 326418,
+          "sha256": "f212df70c4505c930c80c743313c7139249a9d0e4e701d58039ce5070dde05ad",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 37.63
+        }
+      ]
+    },
+    {
+      "id": "entrance",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Clinic Entrance with Red Cross Doors.png",
+      "source_sha256": "39655adc46e0fea143543d3e313ad3e211ba5b73b34f1a3467c1877037b0328d",
+      "source_bytes": 2550234,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": null,
+      "crop_dimensions": [
+        1448,
+        1086
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/clinic-glass-door-entrance-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 40710,
+          "sha256": "2a4de4804cdf92baf76465bfa705daeb027848ef4e819312f8132695b32531af",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 36.72
+        },
+        {
+          "path": "public/client-photos/clinic-glass-door-entrance-768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 89200,
+          "sha256": "04305923d7c319448a523e8eaab405119ccd56e8ccbe8b77ed0fd90e2e9e8f58",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.01
+        },
+        {
+          "path": "public/client-photos/clinic-glass-door-entrance-1024.webp",
+          "width": 1024,
+          "height": 768,
+          "bytes": 140530,
+          "sha256": "9975404ceed409aa8a6fbe9dffb131eea5fa93b84a6984e14125c81403bdc30f",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.76
+        },
+        {
+          "path": "public/client-photos/clinic-glass-door-entrance-1448.webp",
+          "width": 1448,
+          "height": 1086,
+          "bytes": 229376,
+          "sha256": "a02a2090ae383e08f6e591d219891260efbbc83e407898e352100efbcca1d740",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 39.63
+        }
+      ]
+    },
+    {
+      "id": "sanjay-room",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Neat Doctor\u2019s Clinic Consultation Room.png",
+      "source_sha256": "dfe0029b602bae7bb61e44e32db99250bb0e7829f8ddd5d556bf5dbcd55f58ea",
+      "source_bytes": 1852782,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": null,
+      "crop_dimensions": [
+        1448,
+        1086
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/sanjay-gupta-consultation-room-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 22984,
+          "sha256": "0e9cd16c28c038d70dcdc4477c5bacbfc77c6968a8bc9fff3c0bc3bd6cd0babd",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 36.89
+        },
+        {
+          "path": "public/client-photos/sanjay-gupta-consultation-room-768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 45860,
+          "sha256": "ec82daa7c4bd80f62c8b8ce88883465dda587c3a22defb2fc039ff033030f980",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.48
+        },
+        {
+          "path": "public/client-photos/sanjay-gupta-consultation-room-1024.webp",
+          "width": 1024,
+          "height": 768,
+          "bytes": 69144,
+          "sha256": "297ed92b28a711be67abdee4595b200b0cbf8bac2f644f9a23dbb5f4c64ae39f",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 39.64
+        },
+        {
+          "path": "public/client-photos/sanjay-gupta-consultation-room-1448.webp",
+          "width": 1448,
+          "height": 1086,
+          "bytes": 106502,
+          "sha256": "84112db5a33ca42d351909117ec00916f8a8f4b53bd9e4b3f10f7f3aecc68d61",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 40.9
+        }
+      ]
+    },
+    {
+      "id": "parul-room",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Doctor\u2019s Clinic Office with Awards.png",
+      "source_sha256": "c90b25bfdbaf244bade1780e1b0ad48c10e8d8a3ce2b5bf5de66b6573c7488e2",
+      "source_bytes": 2321293,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": null,
+      "crop_dimensions": [
+        1448,
+        1086
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/parul-gupta-consultation-room-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 36824,
+          "sha256": "1e14cf664fa0694eaf9d255333c5e6b707c1e840853781aac0d530e4d7416952",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 35.16
+        },
+        {
+          "path": "public/client-photos/parul-gupta-consultation-room-768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 76900,
+          "sha256": "c0c8def4098cfaf5f1380c002cc295926cb8fdd3f47c29d081669395cc4a8751",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 36.59
+        },
+        {
+          "path": "public/client-photos/parul-gupta-consultation-room-1024.webp",
+          "width": 1024,
+          "height": 768,
+          "bytes": 122232,
+          "sha256": "3ff394531f7c9199cf30fa579c233429c64321f46198b696a3bb1753640bd518",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 37.62
+        },
+        {
+          "path": "public/client-photos/parul-gupta-consultation-room-1448.webp",
+          "width": 1448,
+          "height": 1086,
+          "bytes": 202852,
+          "sha256": "7a8b0248b79acce34f5e1bc04b9fcb36378a914da64ae1846275173c170cf93e",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.81
+        }
+      ]
+    },
+    {
+      "id": "street-frontage",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Cleaned-Up Clinic Street Scene.png",
+      "source_sha256": "df7f39f3276a9f146e6adeaac6a60e8c1c401112f32d5c44758776484cf3a0a3",
+      "source_bytes": 3121816,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": null,
+      "crop_dimensions": [
+        1448,
+        1086
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/clinic-street-frontage-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 52754,
+          "sha256": "aa5c89f8d79d5ea0accd12f020b8fb3af262db4d6f5d6337d8ab24178f2fcd47",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 32.38
+        },
+        {
+          "path": "public/client-photos/clinic-street-frontage-768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 128668,
+          "sha256": "d9b049457a44094d699744c62be4d18c8fafad82e38b937fb2a38597386b8f3f",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 33.52
+        },
+        {
+          "path": "public/client-photos/clinic-street-frontage-1024.webp",
+          "width": 1024,
+          "height": 768,
+          "bytes": 220088,
+          "sha256": "03f6192045ff501e24a5659f7df81566f278ba1a3c1afa4b467313a3172f321e",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 34.6
+        },
+        {
+          "path": "public/client-photos/clinic-street-frontage-1448.webp",
+          "width": 1448,
+          "height": 1086,
+          "bytes": 338926,
+          "sha256": "52611f44a8a3662870311f41055893e1f6a21cbbfeec49621956700786d9266a",
+          "webp_quality": 83,
+          "webp_method": 6,
+          "rgb_psnr_db": 35.21
+        }
+      ]
+    },
+    {
+      "id": "sanjay-portrait",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Doctor Working in a Clean Clinic Office.png",
+      "source_sha256": "dab0876d5f7e5885a78a1eff3e56313d7e038ea8f7aef9d6574766ee7628b2d4",
+      "source_bytes": 1901399,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": [
+        780,
+        235,
+        1260,
+        835
+      ],
+      "crop_dimensions": [
+        480,
+        600
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/sanjay-gupta-at-desk-160.webp",
+          "width": 160,
+          "height": 200,
+          "bytes": 6166,
+          "sha256": "068067d0bea6024e755580211d2cee9a3f9ad49029190c4909e3cf973dab30ec",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 35.87
+        },
+        {
+          "path": "public/client-photos/sanjay-gupta-at-desk-320.webp",
+          "width": 320,
+          "height": 400,
+          "bytes": 16910,
+          "sha256": "649f0db90b016ea563a71315148417c1f289b5bf4ccab5782dd811a2cb78394e",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.34
+        },
+        {
+          "path": "public/client-photos/sanjay-gupta-at-desk-480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 29294,
+          "sha256": "51f393878b3e8cd6d0049117e8b5106482bd121ed5479600472a8a64fe601aac",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 39.75
+        }
+      ]
+    },
+    {
+      "id": "parul-portrait",
+      "source": "03-client-projects/001-doctors/0002-client-assets/provided-by-client/Doctor\u2019s Clinic Office with Awards.png",
+      "source_sha256": "c90b25bfdbaf244bade1780e1b0ad48c10e8d8a3ce2b5bf5de66b6573c7488e2",
+      "source_bytes": 2321293,
+      "source_dimensions": [
+        1448,
+        1086
+      ],
+      "crop_xyxy": [
+        260,
+        420,
+        780,
+        1070
+      ],
+      "crop_dimensions": [
+        520,
+        650
+      ],
+      "exports": [
+        {
+          "path": "public/client-photos/parul-gupta-at-desk-160.webp",
+          "width": 160,
+          "height": 200,
+          "bytes": 8162,
+          "sha256": "e963726d994fd833951cef7047b90ac44d50a3188d0870a01a6499eadbe1c57f",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 33.88
+        },
+        {
+          "path": "public/client-photos/parul-gupta-at-desk-320.webp",
+          "width": 320,
+          "height": 400,
+          "bytes": 23416,
+          "sha256": "3cecf889c40302ff81759e4e8cf3149e43f131606b356859a9f98d8bda589ab7",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 36.41
+        },
+        {
+          "path": "public/client-photos/parul-gupta-at-desk-520.webp",
+          "width": 520,
+          "height": 650,
+          "bytes": 48132,
+          "sha256": "52712ec97931c2e9489036b4ced011b8456a73d3ac432249708e5bfd7f2036a7",
+          "webp_quality": 86,
+          "webp_method": 6,
+          "rgb_psnr_db": 38.46
+        }
+      ]
+    }
+  ]
+}

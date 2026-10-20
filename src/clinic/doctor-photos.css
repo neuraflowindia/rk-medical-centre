@@ -1,0 +1,28 @@
+/* Complete existing photo spaces without changing their grid, facts or artwork. */
+.doctor-grid-home .home-doctor-portrait.has-doctor-photo,
+.doctor-card-doctors .doctor-portrait.has-doctor-photo,
+.doctor-card-about .about-doctor-portrait.has-doctor-photo{
+ position:relative;display:block;gap:0;padding:0;overflow:hidden;
+ border:1px solid #b4c8d6;box-shadow:0 12px 30px rgba(27,54,93,.10);
+}
+[data-doctor-photo-frame] picture{display:block;width:100%;height:100%}
+[data-doctor-photo-frame] img[data-client-photo-image]{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;padding:0}
+[data-doctor-photo-frame] .doctor-photo-fallback{position:absolute;inset:0;display:none;place-items:center;background:#e4eef7}
+[data-doctor-photo-frame].is-photo-loading .doctor-photo-fallback,
+[data-doctor-photo-frame].is-photo-unavailable .doctor-photo-fallback{display:grid}
+[data-doctor-photo-frame].is-photo-unavailable img{visibility:hidden}
+[data-doctor="parul"] [data-doctor-photo-frame] .doctor-photo-fallback{background:#e4f1ec}
+.doctor-grid-home .home-doctor-photo-footer{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;overflow:visible}
+.doctor-grid-home .home-doctor-photo-footer .doctor-decoration{flex:0 0 52px;width:52px;height:52px;overflow:visible}
+.doctor-grid-home .home-doctor-photo-footer .doctor-decoration .solid-icon,
+.doctor-grid-home .ch-emblem-glint .solid-icon{color:#c5e5d8}
+.doctor-grid-home .home-doctor-photo-footer .home-doctor-identity-name{margin:0;text-align:left;min-width:0}
+.doctor-profile-information .profile-room-photo{margin:0 0 32px}
+.doctor-profile-information .profile-room-photo figcaption{margin-top:12px;font-size:16px;line-height:1.5;color:var(--body)}
+@media(max-width:767px){
+ .doctor-grid-home .home-doctor-photo-footer{gap:12px;margin-top:12px}
+ .doctor-grid-home .home-doctor-photo-footer .doctor-decoration{flex-basis:36px;width:36px;height:36px}
+ .doctor-grid-home .home-doctor-photo-footer .home-doctor-identity-name{font-size:15px;line-height:1.45}
+ .doctor-profile-information .profile-room-photo{margin-bottom:28px}
+ .doctor-profile-information .profile-room-photo figcaption{font-size:15px}
+}

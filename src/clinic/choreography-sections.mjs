@@ -28,7 +28,10 @@ export function supporting(c){const {id,phone:p}=c;
   for(const card of pick(c,'.care-card'))c.add(card,[{opacity:0},{opacity:1}],0,480,E);
  }else if(['H4','H4-panel','A3','A3-panel','D1','D1-panel'].includes(id)){
   if(id==='H4'||id==='A3'){c.stage=c.root.querySelector('.section-heading')||c.root;c.media=[];return;}
+  if(id==='H4-panel')c.media=[];
   if(id==='A3-panel'){c.stage=c.root.querySelector('.about-doctor-identity')||c.root;c.media=[];}
+  // Keep original instrument admission, without waiting for new identity photos.
+  if(id==='D1'||id==='D1-panel')c.media=[...c.root.querySelectorAll('.doctor-decoration img,.doctor-decoration svg image')].filter(el=>el.closest('[data-motion-owner]')===c.root);
   const base=id.split('-panel')[0],cards=pick(c,'.doctor-card');if((p||base==='D1')&&!id.includes('-panel'))return;
   cards.forEach((card,j)=>{const marks=card.querySelectorAll('[data-layer="contour"]');marks.forEach(el=>{el.setAttribute('pathLength','1');el.style.strokeDasharray='1';c.add(el,[{strokeDashoffset:1},{strokeDashoffset:0}],0,p?550:650);});
    const main=card.querySelector('[data-layer="main"],.doctor-decoration [data-scene="emblem"] svg');

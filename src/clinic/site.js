@@ -1,3 +1,4 @@
+import {bindClinicPhotos} from './photo-viewer.js';
 import {normalizedPath} from '../../appointment-system/hosting/surface-policy.mjs';
 import {productState,admissionAllowed} from '../../appointment-system/browser/product-state.mjs';
 import '../../appointment-system/browser/visibility.js';
@@ -61,8 +62,9 @@ function start(){const initialPath=pagePath(location.pathname);if(initialPath===
 
  if(route==='/treatment')bindTreatments({signal,selection,onContentChange:syncBookingVisibility,onArtChange:(id,options)=>motion?.refreshScene(id,options),onArtRemove:id=>motion?.unmountScene(id),onSelection:(sel,topic)=>{scrolls.set(history.state.key,scrollY);history.pushState({key:++entry,selection:sel},'',base+'/treatment?topic='+topic);}});
  for(const panel of document.querySelectorAll('[data-review-collection]')){const button=panel.querySelector('[data-review-toggle]'),more=panel.querySelector('[data-review-more]');if(!button||!more)continue;button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')!=='true';if(!open&&more.contains(document.activeElement))button.focus();more.hidden=!open;button.setAttribute('aria-expanded',String(open));button.textContent=open?'Show fewer reviews':`Read all ${button.dataset.total} reviews`;if(open&&!matchMedia('(prefers-reduced-motion: reduce)').matches)more.animate([{opacity:.3},{opacity:1}],{duration:220,easing:'cubic-bezier(.23,1,.32,1)'});},{signal});}
+ bindClinicPhotos({signal});
  syncBookingVisibility();bindSharedPolish({signal,previousNav});if(route==='/')homeReviewController=bindHomeReviews({signal,visible:visible&&!document.hidden});motion=createMotion();motion.setVisible(visible&&!document.hidden);document.querySelector('[data-privacy]').onclick=()=>prefs.open();
- for(const img of document.images){if(img.complete&&!img.naturalWidth)img.classList.add('media-failed');img.addEventListener('error',()=>img.classList.add('media-failed'),{signal,once:true});}
+ for(const img of document.images){if(img.matches('[data-client-photo-image]'))continue;if(img.complete&&!img.naturalWidth)img.classList.add('media-failed');img.addEventListener('error',()=>img.classList.add('media-failed'),{signal,once:true});}
  prefs.measurement.setRoute(route);window.designReview={...motion,route,setVisible:applyVisibility,navigate,preferences:()=>prefs.measurement.snapshot(),promptStatus:()=>prompt?.status(),replayPrompt:()=>prompt?.replay()};
  const thisGeneration=generation;requestAnimationFrame(()=>{if(thisGeneration!==generation)return;if(restore!==null){motion?.settle();scrollTo(0,restore);}else if(route==='/treatment'&&selection.area){document.querySelector('#'+selection.area)?.scrollIntoView({behavior:'instant'});}else if(focus){scrollTo(0,0);document.querySelector('main h1')?.focus({preventScroll:true});}});
  }

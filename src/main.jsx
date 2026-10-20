@@ -14,4 +14,7 @@ import './clinic/doctor-pages.css';
 import './clinic/contact-page.css';
 import './clinic/booking-page.css';
 import './clinic/clinic-glance.css';
+import './clinic/clinic-photos.css';
+import './clinic/doctor-photos.css';
+import './clinic/photo-viewer.css';
 import './clinic/site.js';

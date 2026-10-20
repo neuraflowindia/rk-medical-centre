@@ -63,6 +63,8 @@ function preparation(c,start,end){
 }
 
 function facts(c,parul=false){
+ // A room photograph is independent of the established facts/preparation clock.
+ c.media=[];
  const fs=all(c,'.doctor-facts li,.profile-education,.profile-experience');
  if(parul){const k=c.phone?2200/2600:1;c.fact(fs[0],0,550*k);c.fact(fs[1],450*k,1250*k);}else{c.fact(fs[0],0,time(c,550,450));c.fact(fs[1],time(c,400,350),time(c,1150,950));}
  const links=parul?all(c,'.care-list a'):[];

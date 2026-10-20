@@ -1,6 +1,8 @@
 import {doctors,doctorFacts,escapeHTML as e} from './model.mjs';
 import {doctorOrder,topicLink} from './care-catalogue.mjs';
 import {arrow,link,solidIcon} from './ui.js';
+import {photoImage} from './clinic-photos.js';
+import {doctorPortraits} from './client-media.mjs';
 
 const presentation={
  sanjay:{role:'Physician, diabetes and general health',educationKeyword:'MBBS and DGO',careCopy:'Patients can meet him for diabetes, blood pressure, thyroid concerns, fever and everyday health problems. A visit gives them a chance to talk about what is worrying them and ask questions about their care.'},
@@ -23,12 +25,15 @@ function feature(id){
  ];
  const care=facts.care.map(item=>`<li><a href="${link(topicLink(item.topic))}"><span class="home-doctor-care-icon" aria-hidden="true">${solidIcon(careIcons[item.topic]||'check-circle')}</span><strong>${e(item.text)}</strong></a></li>`).join('');
  return `<article class="doctor-card doctor-card-home home-doctor-feature" data-doctor="${id}" aria-labelledby="home-doctor-${id}">
-  <div class="home-doctor-identity" aria-hidden="true">
-   <div class="home-doctor-portrait">
-    <span class="home-doctor-initials">${e(d.initials)}</span>
-    <div class="doctor-decoration"><div data-scene="emblem" data-scene-id="doctor-${id}">${solidIcon(id==='sanjay'?'doctor':'heart')}</div></div>
+  <div class="home-doctor-identity">
+   <div class="home-doctor-portrait has-doctor-photo" data-doctor-photo-frame>
+    ${photoImage(doctorPortraits[id],{sizes:'(max-width: 767px) 144px, (max-width: 1023px) 180px, (max-width: 1199px) 220px, 260px'})}
+    <span class="home-doctor-initials doctor-photo-fallback" aria-hidden="true">${e(d.initials)}</span>
    </div>
-   <p class="home-doctor-identity-name">${e(d.name)}</p>
+   <div class="home-doctor-photo-footer">
+    <div class="doctor-decoration" aria-hidden="true"><div data-scene="emblem" data-scene-id="doctor-${id}">${solidIcon(id==='sanjay'?'doctor':'heart')}</div></div>
+    <p class="home-doctor-identity-name">${e(d.name)}</p>
+   </div>
    <p class="home-doctor-tenure">${solidIcon('clock')}<span><span class="home-doctor-tenure-label">Practising since</span><strong>${e(facts.since)}</strong></span></p>
   </div>
   <div class="doctor-copy">
