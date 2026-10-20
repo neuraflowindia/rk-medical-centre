@@ -9,34 +9,38 @@ Work branch: `work/client-photos-20261020`. Return branch: `checkpoint/before-cl
 | Page | Addition |
 | --- | --- |
 | Home | Fill both existing doctor identity frames. Keep their emblems and movement beneath the photos, with a lighter tint against navy. Add one waiting-area preview after the doctor section. |
-| About the clinic | Fill existing doctor frames; add one selected 4:3 photograph with five labelled choices after the doctors and before practical information. |
+| About the clinic | Fill existing doctor frames; add one selected 4:3 photograph with seven labelled choices after the doctors and before practical information. |
 | Doctors | Fill existing identity frames while retaining the instrument artwork beneath them and every existing detail/action. |
 | Both doctor profiles | Add a full 4:3 room photograph above the existing Related treatments content. Preserve each complex hero and the preparation, reviews and actions. |
-| Contact | Add the street frontage and glass-door entrance after the existing opening/map section. Preserve phones, address, Map, hours and existing form state. |
+| Contact | Add the street frontage, glass-door entrance and clinic gate after the existing opening/map section. Preserve phones, address, Map, hours and existing form state. |
 | Treatments | Retain the existing page, without a repeated room-photo collection. |
 
 Existing section wording, medical facts, reviews, calls, meaningful motion, guard ownership and all previous artwork stay. New photo sections are static, readable additions with hover/focus and enlarged viewing; they add no competing animation controller. Identity photos inherit existing container entry. No new clinical claim, customer journey, backend, library or provider setting is introduced.
 
 ## Source and ownership
 
-- `src/clinic/client-media.mjs`: seven display entries and one ordered five-photo album. Doctor names come from the existing model; medical facts are not duplicated in media configuration.
+- `src/clinic/client-media.mjs`: nine display entries and one ordered seven-photo album. Doctor names come from the existing model; medical facts are not duplicated in media configuration.
 - `src/clinic/clinic-photos.js/css`: semantic images/figures, responsive sources, captions, real opening buttons, Home preview, About collection and Contact arrival photos. The About link underlines only its words, with the arrow outside them.
 - `src/clinic/doctor-photos.css`: populate the existing 4:5 identity spaces, retain initials as failure fallback and move the same Home emblem beneath the picture. Existing responsive grid dimensions are retained.
 - `src/clinic/photo-viewer.js/css`: one native enlarged viewer, page-image loading/failure/retry, gallery selection and route-lifetime cleanup. No automatic slideshow.
 - `site.js` binds the photo owner once per rendered route and leaves its images out of the inherited illustration failure treatment. Route abort disposes the viewer, listeners, observer and request timers.
 - Existing H4/A3 factual tracks do not await new portraits; D1 still awaits its original instrument media only. S2/P2 fact/preparation tracks explicitly own no room-photo loading. Durations, tracks and loops remain; facts cannot be held invisible by a failed photograph.
-- `public/client-photos/`: 26 WebP derivatives, 2,737,308 bytes in total across all responsive sizes. This is the entire library size, not a per-page download. The largest photograph is 338,926 bytes; the largest portrait is 48,132 bytes. No upscaling, generated face/room changes or copied original metadata.
-- `appointment-settings/hosting-files.json`: includes all six new runtime files and all 26 derivative files. No existing source-export entry is removed. The contained booking package and settings remain unchanged.
+- `public/client-photos/`: 34 WebP derivatives, 3,790,584 bytes in total across all responsive sizes. This is the entire library size, not a per-page download. The largest photograph is 338,926 bytes; the largest portrait is 48,132 bytes. No upscaling, generated face/room changes or copied original metadata.
+- `appointment-settings/hosting-files.json`: includes all six new runtime files and all 34 derivative files. No existing source-export entry is removed. The contained booking package and settings remain unchanged.
 
-[Media provenance](media-provenance.json) records original filenames/hashes, exact reviewed portrait crops and each output hash/dimension. Original intake belongs to the outer client project and remains byte-identical. Do not ship all incoming PNGs or use the duplicate entrance, gate/cart reserve or occupied reception merely to fill space. Named crops follow the supplied room context and the reviewed private board approved for implementation; independent public named-photo acceptance and the frontage's visible people/plates remain a later publication check. No face-recognition claim or patient-photo association is made.
+[Media provenance](media-provenance.json) records original filenames/hashes, exact reviewed portrait crops and each output hash/dimension. Original intake belongs to the outer client project and remains byte-identical. Do not ship all incoming PNGs or duplicate the same entrance merely to fill space. The owner explicitly requested Reception and Clinic gate after the initial five-photo delivery; both now have defined album/Contact placements. Named crops follow the supplied room context and the reviewed private board approved for implementation; independent public named-photo acceptance and the frontage's visible people/plates remain a later publication check. No face-recognition claim or patient-photo association is made.
 
 ## Interaction and failure rules
 
-Every album entry opens the same five-photo order: waiting area, entrance, Sanjay's room, Parul's room and street frontage. The selected thumbnail retains focus and exposes its selected state. Both the picture and its View photo button work. Captions remain below pictures; no text sits over faces or signs.
+Every album entry opens the same seven-photo order: waiting area, reception, entrance, Sanjay's room, Parul's room, street frontage and clinic gate. The selected thumbnail retains focus and exposes its selected state. Both the picture and its View photo button work. Captions remain below pictures; no text sits over faces or signs.
 
 The viewer reserves a 4:3 stage and contains the full photograph. It has caption/count, Previous/Next/Close, arrow keys, Escape/backdrop closing and explicit Tab edge wrapping. Focus returns to the original opener unless navigation removed it. Existing dialogs use the same scroll-lock/close-reason convention; no nested modal is kept open. Transitions are 150ms opacity only, removed under the device's reduced-motion preference.
 
 Viewer requests use a fresh image and generation guard. A late prior photo cannot replace a later selection. The 15-second deadline shows a retry without blocking navigation. Lazy page-image deadlines start within 300px of the visible area. Ordinary photo failure retains its caption/actions and offers retry; portrait failure retains the exact frame and shows initials. Failed images never remove the page or its factual content. A retry affects only its image.
+
+## Follow-up inclusion and review
+
+The owner requested both held images on20October. They are now included without changing original photos, old sections or movement. Eight new responsive exports and Contact’s three/two/one-column arrangement extend the initial saved commit `a8480a0` as local branch working changes. About/Contact were additionally reviewed at1440/1024/768/390/320px; both new selected images/viewer counts were opened. Current source paths reflect the owner’s move into `provided-by-client/Clinic/`. The outer `0006-qa/2026-10-20-photo-additions/README.md` owns this follow-up evidence.
 
 ## Actual review and limits
 
@@ -44,7 +48,7 @@ The outer client delivery at `0006-qa/2026-10-20-client-photo-implementation/` c
 
 Review covers seven pages in both versions at 1440×1000 and 390×844 (28 renders), plus six changed pages at 1920, 1024, 768 and 320px (24 additional renders). Existing section copy and scene duration/track/loop counts match across all 14 current/candidate page-width pairs, excluding only the intentionally completed identity spaces and new photo captions. No existing visible section is removed. No document overflow, page-script exception, scene error or failed photo was observed in the normal render matrix.
 
-Focused browser interactions cover all five selections, opening from page/caption controls, wraparound navigation, Tab/Shift+Tab, Escape/focus return, route cleanup, 320px controls, slow-image/Next races, failed portraits without motion delay, page and viewer retries, reduced motion and private enlarged-text stress. Review corrected the original faux caption action, native browser's extra BODY focus stop, focus transfer when Retry disappears, caption overflow under enlarged text and a clipped phone thumbnail focus outline. Early mid-transition viewer captures were replaced with settled captures after image readiness and the 150ms fade.
+The initial focused browser interactions cover all five initial selections, opening from page/caption controls, wraparound navigation, Tab/Shift+Tab, Escape/focus return, route cleanup, 320px controls, slow-image/Next races, failed portraits without motion delay, page and viewer retries, reduced motion and private enlarged-text stress. Review corrected the original faux caption action, native browser's extra BODY focus stop, focus transfer when Retry disappears, caption overflow under enlarged text and a clipped phone thumbnail focus outline. Early mid-transition viewer captures were replaced with settled captures after image readiness and the 150ms fade.
 
 Full-page resting screenshots explicitly settle existing scenes and load/decode lazy images with bounded waits; they do not prove natural animation timing. Separate focused observations cover natural admission and failure independence. Private numeric text enlargement is not native browser-zoom certification. Desktop/phone responsive inspection is not physical-device or screen-reader acceptance.
 

@@ -38,7 +38,7 @@
 .clinic-gallery-bottom>p{font-size:16px;line-height:1.5;max-width:660px}
 .clinic-gallery-bottom>.button{font-size:15px;flex-shrink:0;gap:10px}
 .clinic-arrival-section{padding-block:64px}
-.clinic-arrival-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.clinic-arrival-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
 .clinic-arrival-directions{display:flex;align-items:center;justify-content:space-between;gap:28px;margin-top:30px}
 .clinic-arrival-directions>p{max-width:700px;font-size:17px;line-height:1.6}
 .clinic-arrival-directions>.button{font-size:15px;flex-shrink:0;gap:10px}
@@ -53,6 +53,8 @@
  .clinic-photo-choice:hover{background:#f1f6f8}
 }
 @media(max-width:1199px){
+ .clinic-arrival-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .clinic-arrival-grid>.clinic-photo-figure:last-child{grid-column:1/-1;width:calc(50% - 12px);justify-self:center}
  .clinic-home-photo-grid{gap:36px}
  .clinic-home-photo-copy .actions{gap:12px 18px}
  .clinic-home-photo-copy .button{padding-inline:16px;font-size:14px}
@@ -82,6 +84,7 @@
  .clinic-gallery-bottom>p{font-size:15px}
  .clinic-gallery-bottom>.button{margin-top:19px}
  .clinic-arrival-grid{grid-template-columns:minmax(0,1fr);gap:26px}
+ .clinic-arrival-grid>.clinic-photo-figure:last-child{grid-column:auto;width:100%}
  .clinic-arrival-directions{display:block;margin-top:26px}
  .clinic-arrival-directions>p{font-size:16px}
  .clinic-arrival-directions>.button{margin-top:20px}
