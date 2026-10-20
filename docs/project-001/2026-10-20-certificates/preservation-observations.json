@@ -1,0 +1,148 @@
+{
+  "date_utc": "2026-10-20T13:24:30.152Z",
+  "origin": "http://127.0.0.1:4271",
+  "mode": "preservation",
+  "records": [
+    {
+      "route": "/",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/treatment",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/about-clinic",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/meet-doctor",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/dr-sanjay-gupta",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/dr-parul-gupta",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/contact",
+      "width": 1440,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/treatment",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/about-clinic",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/meet-doctor",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/dr-sanjay-gupta",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/dr-parul-gupta",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    },
+    {
+      "route": "/contact",
+      "width": 390,
+      "textUnchanged": true,
+      "linksUnchanged": true,
+      "imagesUnchanged": true,
+      "scenesUnchanged": true,
+      "sectionsUnchanged": true,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

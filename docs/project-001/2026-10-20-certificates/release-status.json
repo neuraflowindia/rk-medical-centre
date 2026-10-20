@@ -1,0 +1,13 @@
+{
+  "date_utc": "2026-10-20T13:29:42.998942+00:00",
+  "state": "implemented_and_reviewed_publication_authorized_pending",
+  "branch": "work/doctor-certificates-20261020",
+  "before_official": "cba2554c2540f12ad53b2111525caf409cb9ca9f",
+  "photo_checkpoint": "e9b120a",
+  "certificate_count": 10,
+  "sanjay_count": 5,
+  "parul_count": 5,
+  "official_url": "https://www.rkmedicalcentre.com/",
+  "full_suite_or_release_gate_run": false,
+  "provider_or_customer_mutation": false
+}

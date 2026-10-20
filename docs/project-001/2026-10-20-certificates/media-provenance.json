@@ -1,0 +1,282 @@
+[
+  {
+    "id": "sanjay-gupta-certificate-03",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/sanjay-gupta-certificate-03.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "2423d0d9e0df40393a358f960e056fe3674c36c225755577b182c4d0d8748bba",
+    "variants": [
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-03-480.webp",
+        "max_long_edge": 480,
+        "width": 357,
+        "height": 480,
+        "bytes": 39762,
+        "sha256": "3ba77737082a03aec4eb45deb2dc712839723732ec7144ea904b7003bdc472d1"
+      },
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-03-720.webp",
+        "max_long_edge": 720,
+        "width": 536,
+        "height": 720,
+        "bytes": 82904,
+        "sha256": "a17841b1b24b9652fe912d469ac9ec4c70b378bae850024dd0022a3f665cbde8"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1082,
+      1454
+    ]
+  },
+  {
+    "id": "parul-gupta-certificate-01",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/parul-gupta-certificate-01.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "eab747c8be8d2bb28efc37ab8d9adbe673b5c77497166ad472c49ed3b738606e",
+    "variants": [
+      {
+        "file": "public/certificates/parul-gupta-certificate-01-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 360,
+        "bytes": 36776,
+        "sha256": "d9838a6b110ef9faad9341f0bc27bcba66242401236b959f678286dfb1ce7517"
+      },
+      {
+        "file": "public/certificates/parul-gupta-certificate-01-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 540,
+        "bytes": 69756,
+        "sha256": "8a1ae38da869aab3dbb38b7be8cac9987adf26d7eef5ad988ad03c720dc1553c"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1448,
+      1086
+    ]
+  },
+  {
+    "id": "sanjay-gupta-certificate-08",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/sanjay-gupta-certificate-08.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "0b674fa3ed2265929680f51101e024b7b46e51abdd4d837d076111653a9f3f75",
+    "variants": [
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-08-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 320,
+        "bytes": 21762,
+        "sha256": "3292754b7fd33cda24ec1f8eaaef9d4b77ff4159049a362c7745a314d2c73423"
+      },
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-08-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 480,
+        "bytes": 40300,
+        "sha256": "041dcb15b998817d1cddcfa6dd0278831d46e3f9bce8664cb6ccf4df53112cab"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "id": "parul-gupta-certificate-02",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/parul-gupta-certificate-02.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "b7109f4f57fdbad5f79a28633e6597ba571143554493318b1017b97fd9bb6adf",
+    "variants": [
+      {
+        "file": "public/certificates/parul-gupta-certificate-02-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 360,
+        "bytes": 32676,
+        "sha256": "414a7985128393ab2aac177f20f48b1e14b16bccaa6fbae9225dba71794210e1"
+      },
+      {
+        "file": "public/certificates/parul-gupta-certificate-02-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 540,
+        "bytes": 60316,
+        "sha256": "75233b6528410c644202b5e859d66599fb87c5230e2cd888f9196a3562c05ee9"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1448,
+      1086
+    ]
+  },
+  {
+    "id": "sanjay-gupta-certificate-01",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/sanjay-gupta-certificate-01.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "bfd1fa7b4b8f4256b219138978077a7d3be78569c3f511d6e7eac4cbec1b562d",
+    "variants": [
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-01-480.webp",
+        "max_long_edge": 480,
+        "width": 357,
+        "height": 480,
+        "bytes": 49492,
+        "sha256": "b79c9656c1edf7d18e0b7c3bf9c5096fd1ec9dcb38a3384136ca0e48ab03472f"
+      },
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-01-720.webp",
+        "max_long_edge": 720,
+        "width": 535,
+        "height": 720,
+        "bytes": 96954,
+        "sha256": "a957db345d1921339432e870f1123d24a90eadc7222dd5a5a8f0bd635f9fe614"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1081,
+      1455
+    ]
+  },
+  {
+    "id": "parul-gupta-certificate-05",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/parul-gupta-certificate-05.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "7b98b1a4e38fe16927ff2a1b75888427ba34e72e654f3091b6c4ef082f7a4347",
+    "variants": [
+      {
+        "file": "public/certificates/parul-gupta-certificate-05-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 360,
+        "bytes": 24764,
+        "sha256": "3ec0b91b3b2a0c58b9367e83b9f4c1238c6c3f1fdaaac5826daa5a218204f902"
+      },
+      {
+        "file": "public/certificates/parul-gupta-certificate-05-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 540,
+        "bytes": 47686,
+        "sha256": "87f163419143b6e9bc0933d119fb1568d83ba0bc67366d864bae8a7c4443d470"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1448,
+      1086
+    ]
+  },
+  {
+    "id": "sanjay-gupta-certificate-06",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/sanjay-gupta-certificate-06.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "7d640d1388bd7e37bc8ebeb8c35258156bcd1dad929ec9d4ce8e0489bc90efd0",
+    "variants": [
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-06-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 270,
+        "bytes": 18962,
+        "sha256": "fb2f721e71e1d958d3eadf44d8eef5036f01b19ed9535c7eb59fa60fb45a84fd"
+      },
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-06-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 405,
+        "bytes": 36044,
+        "sha256": "708379f522832775e27f4b5197935dc6aa4ab807bc497c6c417fa8edea4115ae"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1672,
+      940
+    ]
+  },
+  {
+    "id": "parul-gupta-certificate-03",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/parul-gupta-certificate-03.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "e32564eb2e5117df7d404e0260037a899e5fc5029132cf9c418b5a806a33380e",
+    "variants": [
+      {
+        "file": "public/certificates/parul-gupta-certificate-03-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 360,
+        "bytes": 30654,
+        "sha256": "4fe43abf9312f0e9f3f61d251ba1e4dbc2b55b4d59f54839b35e123a88cf9719"
+      },
+      {
+        "file": "public/certificates/parul-gupta-certificate-03-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 540,
+        "bytes": 57508,
+        "sha256": "7d906e9828080f973ae03fe98503cae5ea5a6405af03cafb1189a367196ef28b"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1448,
+      1086
+    ]
+  },
+  {
+    "id": "sanjay-gupta-certificate-02",
+    "source": "0002-client-assets/provided-by-client/certificates-ai-cleaned/sanjay-gupta-certificate-02.png",
+    "source_kind": "reviewed-ai-cleaned-copy",
+    "source_sha256": "080fcb86b6adc7a584cf340cc84e9ae2b6d159eac12a7ac2eae3a279112dfa3e",
+    "variants": [
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-02-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 270,
+        "bytes": 18812,
+        "sha256": "c4d14ad60d6623b791dec9abd0123b89091b47d5006c52f9cc5e4e2a0f978d11"
+      },
+      {
+        "file": "public/certificates/sanjay-gupta-certificate-02-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 405,
+        "bytes": 35580,
+        "sha256": "a0335c935db6e1d964d1a615a1ef8d82dfdf5c0b33b5a2850ffaa393d6003f6c"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1672,
+      941
+    ]
+  },
+  {
+    "id": "parul-gupta-certificate-04",
+    "source": "0002-client-assets/provided-by-client/Certificates/Parul Gupta - 4.jpeg",
+    "source_kind": "unaltered-original-photo",
+    "source_sha256": "4b209111f34b3621af2e0fd30512120a4c527ba73e4c3f9f695005078bb65c7a",
+    "variants": [
+      {
+        "file": "public/certificates/parul-gupta-certificate-04-480.webp",
+        "max_long_edge": 480,
+        "width": 480,
+        "height": 360,
+        "bytes": 23152,
+        "sha256": "ac357798e4a8c6737271f3665ca8552fba3240dd0a56c3b204bd121f334f841f"
+      },
+      {
+        "file": "public/certificates/parul-gupta-certificate-04-720.webp",
+        "max_long_edge": 720,
+        "width": 720,
+        "height": 540,
+        "bytes": 49396,
+        "sha256": "bae0bb3d9d742cfe319dce820d6a0b6c399edd34d8e5412daa2420892cbd28e8"
+      }
+    ],
+    "oriented_source_dimensions": [
+      1280,
+      960
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "date_utc": "2026-10-20T13:24:30.552Z",
+  "origin": "http://127.0.0.1:4271",
+  "mode": "states",
+  "records": [
+    {
+      "state": "travel",
+      "over700ms": -11.465609999999998
+    },
+    {
+      "state": "hover",
+      "over700ms": 0
+    },
+    {
+      "state": "keyboard-focus",
+      "over400ms": 0
+    },
+    {
+      "state": "browse-all",
+      "count": 10,
+      "url": "http://127.0.0.1:4271/about-clinic"
+    },
+    {
+      "state": "offscreen",
+      "over400ms": 0
+    },
+    {
+      "state": "privacy-panel",
+      "over400ms": 0
+    },
+    {
+      "state": "reduced-motion",
+      "count": 10
+    },
+    {
+      "state": "resize-phase",
+      "expected": 0.33,
+      "actual": 0.3301960705882352
+    },
+    {
+      "state": "route-disposal",
+      "oldAnimation": "idle",
+      "newCount": 5
+    },
+    {
+      "state": "phone-keyboard-scroll",
+      "scrollLeft": 480
+    },
+    {
+      "state": "phone-all-10",
+      "count": 10,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

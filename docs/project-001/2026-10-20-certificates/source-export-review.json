@@ -1,0 +1,16 @@
+{
+  "delivery_files": 20,
+  "bytes": 873256,
+  "missing_public_exports": [],
+  "fingerprint_mismatches": [],
+  "protected_package_booking_settings_old_art_changes": [],
+  "source_selection": {
+    "sanjay": 5,
+    "parul": 5,
+    "ai_cleaned": 9,
+    "original_photo": 1
+  },
+  "build_command": "npm run build:hosting",
+  "compilation": "successful",
+  "full_suites_or_release_gate": false
+}

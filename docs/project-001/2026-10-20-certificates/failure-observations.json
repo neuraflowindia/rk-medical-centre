@@ -1,0 +1,28 @@
+{
+  "date_utc": "2026-10-20T13:22:56.745Z",
+  "origin": "http://127.0.0.1:4271",
+  "mode": "failure",
+  "records": [
+    {
+      "state": "image-failure",
+      "caption": "World Hypertension Day appreciation",
+      "count": 10
+    },
+    {
+      "state": "image-retry",
+      "allImagesReady": true,
+      "focus": "visible list"
+    },
+    {
+      "state": "late-image",
+      "timeoutAppeared": true,
+      "captionRetained": true
+    },
+    {
+      "state": "late-image-recovered",
+      "count": 5,
+      "allImagesReady": true
+    }
+  ],
+  "errors": []
+}
