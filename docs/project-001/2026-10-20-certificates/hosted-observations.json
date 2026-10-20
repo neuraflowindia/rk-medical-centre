@@ -1,0 +1,413 @@
+{
+  "date_utc": "2026-10-20T13:42:52.025Z",
+  "origin": "https://www.rkmedicalcentre.com",
+  "mode": "hosted",
+  "records": [
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "title": "About the clinic — R. K. Medical Centre",
+      "certificateCount": 10,
+      "doctor": "mixed",
+      "layout": "marquee",
+      "motion": "running",
+      "listWidth": 1,
+      "listContentWidth": 2706,
+      "identities": [
+        "sanjay-gupta-certificate-03",
+        "parul-gupta-certificate-01",
+        "sanjay-gupta-certificate-08",
+        "parul-gupta-certificate-02",
+        "sanjay-gupta-certificate-01",
+        "parul-gupta-certificate-05",
+        "sanjay-gupta-certificate-06",
+        "parul-gupta-certificate-03",
+        "sanjay-gupta-certificate-02",
+        "parul-gupta-certificate-04"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "A1",
+          "tracks": 5,
+          "loops": 2,
+          "duration": 3000,
+          "error": null
+        },
+        {
+          "id": "A2",
+          "tracks": 16,
+          "loops": 0,
+          "duration": 3200,
+          "error": null
+        },
+        {
+          "id": "A2-new-credentials",
+          "tracks": 2,
+          "loops": 0,
+          "duration": 1550,
+          "error": null
+        },
+        {
+          "id": "A3",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 2300,
+          "error": null
+        },
+        {
+          "id": "A4",
+          "tracks": 3,
+          "loops": 0,
+          "duration": 2300,
+          "error": null
+        },
+        {
+          "id": "A3/0",
+          "tracks": 4,
+          "loops": 1,
+          "duration": 2300,
+          "error": null
+        },
+        {
+          "id": "A3/1",
+          "tracks": 4,
+          "loops": 1,
+          "duration": 2300,
+          "error": null
+        }
+      ],
+      "route": "/about-clinic",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    },
+    {
+      "liveState": "travel-and-hover",
+      "travel500ms": -7.99967,
+      "hover400ms": 0
+    },
+    {
+      "liveState": "browse-all",
+      "count": 10
+    },
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "title": "Dr. Sanjay Gupta — R. K. Medical Centre",
+      "certificateCount": 5,
+      "doctor": "sanjay",
+      "layout": "row",
+      "motion": "still",
+      "listWidth": 1280,
+      "listContentWidth": 1280,
+      "identities": [
+        "sanjay-gupta-certificate-03",
+        "sanjay-gupta-certificate-08",
+        "sanjay-gupta-certificate-01",
+        "sanjay-gupta-certificate-06",
+        "sanjay-gupta-certificate-02"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "S1",
+          "tracks": 9,
+          "loops": 1,
+          "duration": 3200,
+          "error": null
+        },
+        {
+          "id": "S2",
+          "tracks": 6,
+          "loops": 0,
+          "duration": 2500,
+          "error": null
+        },
+        {
+          "id": "S3",
+          "tracks": 15,
+          "loops": 0,
+          "duration": 2100,
+          "error": null
+        },
+        {
+          "id": "S4",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 1850,
+          "error": null
+        }
+      ],
+      "route": "/dr-sanjay-gupta",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    },
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "title": "Dr. Parul Gupta — R. K. Medical Centre",
+      "certificateCount": 5,
+      "doctor": "parul",
+      "layout": "row",
+      "motion": "still",
+      "listWidth": 1280,
+      "listContentWidth": 1280,
+      "identities": [
+        "parul-gupta-certificate-01",
+        "parul-gupta-certificate-02",
+        "parul-gupta-certificate-05",
+        "parul-gupta-certificate-03",
+        "parul-gupta-certificate-04"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "P1",
+          "tracks": 10,
+          "loops": 1,
+          "duration": 3300,
+          "error": null
+        },
+        {
+          "id": "P2",
+          "tracks": 8,
+          "loops": 0,
+          "duration": 2600,
+          "error": null
+        },
+        {
+          "id": "P3",
+          "tracks": 15,
+          "loops": 0,
+          "duration": 2100,
+          "error": null
+        },
+        {
+          "id": "P4",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 1850,
+          "error": null
+        }
+      ],
+      "route": "/dr-parul-gupta",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "title": "About the clinic — R. K. Medical Centre",
+      "certificateCount": 10,
+      "doctor": "mixed",
+      "layout": "marquee",
+      "motion": "running",
+      "listWidth": 1,
+      "listContentWidth": 2346,
+      "identities": [
+        "sanjay-gupta-certificate-03",
+        "parul-gupta-certificate-01",
+        "sanjay-gupta-certificate-08",
+        "parul-gupta-certificate-02",
+        "sanjay-gupta-certificate-01",
+        "parul-gupta-certificate-05",
+        "sanjay-gupta-certificate-06",
+        "parul-gupta-certificate-03",
+        "sanjay-gupta-certificate-02",
+        "parul-gupta-certificate-04"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "A1",
+          "tracks": 5,
+          "loops": 2,
+          "duration": 2500,
+          "error": null
+        },
+        {
+          "id": "A2",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 2650,
+          "error": null
+        },
+        {
+          "id": "A2-new-credentials",
+          "tracks": 2,
+          "loops": 0,
+          "duration": 1350,
+          "error": null
+        },
+        {
+          "id": "A3",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 1900,
+          "error": null
+        },
+        {
+          "id": "A4",
+          "tracks": 3,
+          "loops": 0,
+          "duration": 1900,
+          "error": null
+        },
+        {
+          "id": "A2/0",
+          "tracks": 8,
+          "loops": 0,
+          "duration": 2650,
+          "error": null
+        },
+        {
+          "id": "A2/1",
+          "tracks": 8,
+          "loops": 0,
+          "duration": 2650,
+          "error": null
+        },
+        {
+          "id": "A3/0",
+          "tracks": 4,
+          "loops": 1,
+          "duration": 1900,
+          "error": null
+        },
+        {
+          "id": "A3/1",
+          "tracks": 4,
+          "loops": 1,
+          "duration": 1900,
+          "error": null
+        }
+      ],
+      "route": "/about-clinic",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "title": "Dr. Sanjay Gupta — R. K. Medical Centre",
+      "certificateCount": 5,
+      "doctor": "sanjay",
+      "layout": "row",
+      "motion": "still",
+      "listWidth": 350,
+      "listContentWidth": 1144,
+      "identities": [
+        "sanjay-gupta-certificate-03",
+        "sanjay-gupta-certificate-08",
+        "sanjay-gupta-certificate-01",
+        "sanjay-gupta-certificate-06",
+        "sanjay-gupta-certificate-02"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "S1",
+          "tracks": 9,
+          "loops": 1,
+          "duration": 2650,
+          "error": null
+        },
+        {
+          "id": "S2",
+          "tracks": 6,
+          "loops": 0,
+          "duration": 2100,
+          "error": null
+        },
+        {
+          "id": "S3",
+          "tracks": 15,
+          "loops": 0,
+          "duration": 1750,
+          "error": null
+        },
+        {
+          "id": "S4",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 1550,
+          "error": null
+        }
+      ],
+      "route": "/dr-sanjay-gupta",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "title": "Dr. Parul Gupta — R. K. Medical Centre",
+      "certificateCount": 5,
+      "doctor": "parul",
+      "layout": "row",
+      "motion": "still",
+      "listWidth": 350,
+      "listContentWidth": 1144,
+      "identities": [
+        "parul-gupta-certificate-01",
+        "parul-gupta-certificate-02",
+        "parul-gupta-certificate-05",
+        "parul-gupta-certificate-03",
+        "parul-gupta-certificate-04"
+      ],
+      "failedImages": [],
+      "scenes": [
+        {
+          "id": "P1",
+          "tracks": 10,
+          "loops": 1,
+          "duration": 2750,
+          "error": null
+        },
+        {
+          "id": "P2",
+          "tracks": 8,
+          "loops": 0,
+          "duration": 2200,
+          "error": null
+        },
+        {
+          "id": "P3",
+          "tracks": 15,
+          "loops": 0,
+          "duration": 1750,
+          "error": null
+        },
+        {
+          "id": "P4",
+          "tracks": 0,
+          "loops": 0,
+          "duration": 1550,
+          "error": null
+        }
+      ],
+      "route": "/dr-parul-gupta",
+      "assets": [
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Lora:wght@400;500;600&display=swap",
+        "/assets/index-BEj5yDLm.js",
+        "/assets/index-DS5W11sS.css"
+      ]
+    }
+  ],
+  "errors": []
+}

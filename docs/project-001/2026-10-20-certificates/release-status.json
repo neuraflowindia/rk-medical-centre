@@ -1,6 +1,6 @@
 {
-  "date_utc": "2026-10-20T13:29:42.998942+00:00",
-  "state": "implemented_and_reviewed_publication_authorized_pending",
+  "date_utc": "2026-10-20T13:50:45.326469+00:00",
+  "state": "published_and_public_readback_verified",
   "branch": "work/doctor-certificates-20261020",
   "before_official": "cba2554c2540f12ad53b2111525caf409cb9ca9f",
   "photo_checkpoint": "e9b120a",
@@ -9,5 +9,13 @@
   "parul_count": 5,
   "official_url": "https://www.rkmedicalcentre.com/",
   "full_suite_or_release_gate_run": false,
-  "provider_or_customer_mutation": false
+  "provider_or_customer_mutation": false,
+  "implementation_commit": "dbdad9989009ddbe09c507d6b7a231d79bf2a75c",
+  "published_ref": "main",
+  "rollback_branch": "checkpoint/before-doctor-certificates-20261020",
+  "publication_receipt": "publication.json",
+  "live_page_width_views": 6,
+  "live_interaction_observations": 2,
+  "public_files_verified": 56,
+  "all_public_files_match": true
 }

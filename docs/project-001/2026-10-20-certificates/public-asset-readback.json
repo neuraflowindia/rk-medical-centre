@@ -1,0 +1,404 @@
+{
+  "date_utc": "2026-10-20T13:42:51.330628+00:00",
+  "origin": "https://www.rkmedicalcentre.com",
+  "implementation_commit": "dbdad9989009ddbe09c507d6b7a231d79bf2a75c",
+  "records": [
+    {
+      "path": "/certificates/parul-gupta-certificate-01-480.webp",
+      "status": 200,
+      "bytes": 36776,
+      "sha256": "d9838a6b110ef9faad9341f0bc27bcba66242401236b959f678286dfb1ce7517",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-01-720.webp",
+      "status": 200,
+      "bytes": 69756,
+      "sha256": "8a1ae38da869aab3dbb38b7be8cac9987adf26d7eef5ad988ad03c720dc1553c",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-02-480.webp",
+      "status": 200,
+      "bytes": 32676,
+      "sha256": "414a7985128393ab2aac177f20f48b1e14b16bccaa6fbae9225dba71794210e1",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-02-720.webp",
+      "status": 200,
+      "bytes": 60316,
+      "sha256": "75233b6528410c644202b5e859d66599fb87c5230e2cd888f9196a3562c05ee9",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-03-480.webp",
+      "status": 200,
+      "bytes": 30654,
+      "sha256": "4fe43abf9312f0e9f3f61d251ba1e4dbc2b55b4d59f54839b35e123a88cf9719",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-03-720.webp",
+      "status": 200,
+      "bytes": 57508,
+      "sha256": "7d906e9828080f973ae03fe98503cae5ea5a6405af03cafb1189a367196ef28b",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-04-480.webp",
+      "status": 200,
+      "bytes": 23152,
+      "sha256": "ac357798e4a8c6737271f3665ca8552fba3240dd0a56c3b204bd121f334f841f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-04-720.webp",
+      "status": 200,
+      "bytes": 49396,
+      "sha256": "bae0bb3d9d742cfe319dce820d6a0b6c399edd34d8e5412daa2420892cbd28e8",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-05-480.webp",
+      "status": 200,
+      "bytes": 24764,
+      "sha256": "3ec0b91b3b2a0c58b9367e83b9f4c1238c6c3f1fdaaac5826daa5a218204f902",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-05-720.webp",
+      "status": 200,
+      "bytes": 47686,
+      "sha256": "87f163419143b6e9bc0933d119fb1568d83ba0bc67366d864bae8a7c4443d470",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-01-480.webp",
+      "status": 200,
+      "bytes": 49492,
+      "sha256": "b79c9656c1edf7d18e0b7c3bf9c5096fd1ec9dcb38a3384136ca0e48ab03472f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-01-720.webp",
+      "status": 200,
+      "bytes": 96954,
+      "sha256": "a957db345d1921339432e870f1123d24a90eadc7222dd5a5a8f0bd635f9fe614",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-02-480.webp",
+      "status": 200,
+      "bytes": 18812,
+      "sha256": "c4d14ad60d6623b791dec9abd0123b89091b47d5006c52f9cc5e4e2a0f978d11",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-02-720.webp",
+      "status": 200,
+      "bytes": 35580,
+      "sha256": "a0335c935db6e1d964d1a615a1ef8d82dfdf5c0b33b5a2850ffaa393d6003f6c",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-03-480.webp",
+      "status": 200,
+      "bytes": 39762,
+      "sha256": "3ba77737082a03aec4eb45deb2dc712839723732ec7144ea904b7003bdc472d1",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-03-720.webp",
+      "status": 200,
+      "bytes": 82904,
+      "sha256": "a17841b1b24b9652fe912d469ac9ec4c70b378bae850024dd0022a3f665cbde8",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-06-480.webp",
+      "status": 200,
+      "bytes": 18962,
+      "sha256": "fb2f721e71e1d958d3eadf44d8eef5036f01b19ed9535c7eb59fa60fb45a84fd",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-06-720.webp",
+      "status": 200,
+      "bytes": 36044,
+      "sha256": "708379f522832775e27f4b5197935dc6aa4ab807bc497c6c417fa8edea4115ae",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-08-480.webp",
+      "status": 200,
+      "bytes": 21762,
+      "sha256": "3292754b7fd33cda24ec1f8eaaef9d4b77ff4159049a362c7745a314d2c73423",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/certificates/sanjay-gupta-certificate-08-720.webp",
+      "status": 200,
+      "bytes": 40300,
+      "sha256": "041dcb15b998817d1cddcfa6dd0278831d46e3f9bce8664cb6ccf4df53112cab",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-gate-street-view-1024.webp",
+      "status": 200,
+      "bytes": 236122,
+      "sha256": "6c4e8ea994a9b3300732d3e2588d4d88d624922b20e753874626e663034311c0",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-gate-street-view-1448.webp",
+      "status": 200,
+      "bytes": 337274,
+      "sha256": "a1c92f3957171c0df3b81c50de10b50a9e83c874e0fe9638ba1e49717ae71512",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-gate-street-view-480.webp",
+      "status": 200,
+      "bytes": 59344,
+      "sha256": "a3eeff534fe239dde9b0974765d3f4e6f269068a2010d92899a62affc0b745b3",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-gate-street-view-768.webp",
+      "status": 200,
+      "bytes": 144510,
+      "sha256": "472ce055816ba2ed0972a5828c657f26e3e7fcab53da32199cd3baebb117cca6",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-glass-door-entrance-1024.webp",
+      "status": 200,
+      "bytes": 140530,
+      "sha256": "9975404ceed409aa8a6fbe9dffb131eea5fa93b84a6984e14125c81403bdc30f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-glass-door-entrance-1448.webp",
+      "status": 200,
+      "bytes": 229376,
+      "sha256": "a02a2090ae383e08f6e591d219891260efbbc83e407898e352100efbcca1d740",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-glass-door-entrance-480.webp",
+      "status": 200,
+      "bytes": 40710,
+      "sha256": "2a4de4804cdf92baf76465bfa705daeb027848ef4e819312f8132695b32531af",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-glass-door-entrance-768.webp",
+      "status": 200,
+      "bytes": 89200,
+      "sha256": "04305923d7c319448a523e8eaab405119ccd56e8ccbe8b77ed0fd90e2e9e8f58",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-reception-desk-1024.webp",
+      "status": 200,
+      "bytes": 76784,
+      "sha256": "5ca048feac96607c1712df4d1e9c0dd8339f57e59803077b969d5593760bae9d",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-reception-desk-1448.webp",
+      "status": 200,
+      "bytes": 126650,
+      "sha256": "bcb737768ec07dc61ba5d10a171a5b5203e26933082b8ef89d3da2612d03a25a",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-reception-desk-480.webp",
+      "status": 200,
+      "bytes": 23746,
+      "sha256": "2c18cde1e1a2abdff7168b81c0bc0e9bd91baacb49ac452b2699c89f9f25374a",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-reception-desk-768.webp",
+      "status": 200,
+      "bytes": 48846,
+      "sha256": "b3278ccfc7456e871e5ff7d719c4a3db427f670751bea7ee49ccafd57968af14",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-street-frontage-1024.webp",
+      "status": 200,
+      "bytes": 220088,
+      "sha256": "03f6192045ff501e24a5659f7df81566f278ba1a3c1afa4b467313a3172f321e",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-street-frontage-1448.webp",
+      "status": 200,
+      "bytes": 338926,
+      "sha256": "52611f44a8a3662870311f41055893e1f6a21cbbfeec49621956700786d9266a",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-street-frontage-480.webp",
+      "status": 200,
+      "bytes": 52754,
+      "sha256": "aa5c89f8d79d5ea0accd12f020b8fb3af262db4d6f5d6337d8ab24178f2fcd47",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-street-frontage-768.webp",
+      "status": 200,
+      "bytes": 128668,
+      "sha256": "d9b049457a44094d699744c62be4d18c8fafad82e38b937fb2a38597386b8f3f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-waiting-area-1024.webp",
+      "status": 200,
+      "bytes": 190364,
+      "sha256": "8c7ec322b6b88ea060248dcf1ff8f3fc137671bb5b4cdf0476682eb636f9cf45",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-waiting-area-1448.webp",
+      "status": 200,
+      "bytes": 326418,
+      "sha256": "f212df70c4505c930c80c743313c7139249a9d0e4e701d58039ce5070dde05ad",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-waiting-area-480.webp",
+      "status": 200,
+      "bytes": 49684,
+      "sha256": "fb01bf71321458c0a7e6530c71746afa62136a779e69fd3527187ad781e14bb0",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/clinic-waiting-area-768.webp",
+      "status": 200,
+      "bytes": 115212,
+      "sha256": "fa5a079df513afaf0e0368bebcfcf43449190409224f6d41f847c526fc74172b",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-at-desk-160.webp",
+      "status": 200,
+      "bytes": 8162,
+      "sha256": "e963726d994fd833951cef7047b90ac44d50a3188d0870a01a6499eadbe1c57f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-at-desk-320.webp",
+      "status": 200,
+      "bytes": 23416,
+      "sha256": "3cecf889c40302ff81759e4e8cf3149e43f131606b356859a9f98d8bda589ab7",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-at-desk-520.webp",
+      "status": 200,
+      "bytes": 48132,
+      "sha256": "52712ec97931c2e9489036b4ced011b8456a73d3ac432249708e5bfd7f2036a7",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-consultation-room-1024.webp",
+      "status": 200,
+      "bytes": 122232,
+      "sha256": "3ff394531f7c9199cf30fa579c233429c64321f46198b696a3bb1753640bd518",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-consultation-room-1448.webp",
+      "status": 200,
+      "bytes": 202852,
+      "sha256": "7a8b0248b79acce34f5e1bc04b9fcb36378a914da64ae1846275173c170cf93e",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-consultation-room-480.webp",
+      "status": 200,
+      "bytes": 36824,
+      "sha256": "1e14cf664fa0694eaf9d255333c5e6b707c1e840853781aac0d530e4d7416952",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/parul-gupta-consultation-room-768.webp",
+      "status": 200,
+      "bytes": 76900,
+      "sha256": "c0c8def4098cfaf5f1380c002cc295926cb8fdd3f47c29d081669395cc4a8751",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-at-desk-160.webp",
+      "status": 200,
+      "bytes": 6166,
+      "sha256": "068067d0bea6024e755580211d2cee9a3f9ad49029190c4909e3cf973dab30ec",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-at-desk-320.webp",
+      "status": 200,
+      "bytes": 16910,
+      "sha256": "649f0db90b016ea563a71315148417c1f289b5bf4ccab5782dd811a2cb78394e",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-at-desk-480.webp",
+      "status": 200,
+      "bytes": 29294,
+      "sha256": "51f393878b3e8cd6d0049117e8b5106482bd121ed5479600472a8a64fe601aac",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-consultation-room-1024.webp",
+      "status": 200,
+      "bytes": 69144,
+      "sha256": "297ed92b28a711be67abdee4595b200b0cbf8bac2f644f9a23dbb5f4c64ae39f",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-consultation-room-1448.webp",
+      "status": 200,
+      "bytes": 106502,
+      "sha256": "84112db5a33ca42d351909117ec00916f8a8f4b53bd9e4b3f10f7f3aecc68d61",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-consultation-room-480.webp",
+      "status": 200,
+      "bytes": 22984,
+      "sha256": "0e9cd16c28c038d70dcdc4477c5bacbfc77c6968a8bc9fff3c0bc3bd6cd0babd",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-consultation-room-768.webp",
+      "status": 200,
+      "bytes": 45860,
+      "sha256": "ec82daa7c4bd80f62c8b8ce88883465dda587c3a22defb2fc039ff033030f980",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/assets/index-BEj5yDLm.js",
+      "status": 200,
+      "bytes": 224952,
+      "sha256": "5c1a116f68211f53761fb7290a15d728d9ced6c4c7ca549b10a8b7d0aa069081",
+      "matches_reviewed_file": true
+    },
+    {
+      "path": "/assets/index-DS5W11sS.css",
+      "status": 200,
+      "bytes": 172433,
+      "sha256": "4eb68f1ec28ec052b0b693c13e66ff51dfa58019eac5b6178038286ce9a33cab",
+      "matches_reviewed_file": true
+    }
+  ],
+  "certificates": 20,
+  "photo_files": 34,
+  "main_js_css": 2,
+  "all_status_200": true,
+  "all_fingerprints_match": true
+}

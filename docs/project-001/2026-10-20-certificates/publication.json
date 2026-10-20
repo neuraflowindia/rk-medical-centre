@@ -1,0 +1,81 @@
+{
+  "recorded_at_utc": "2026-10-20T13:50:45.326469+00:00",
+  "state": "published_and_public_readback_verified",
+  "official_url": "https://www.rkmedicalcentre.com/",
+  "repository": "https://github.com/neuraflowindia/rk-medical-centre",
+  "implementation_commit": "dbdad9989009ddbe09c507d6b7a231d79bf2a75c",
+  "published_ref": "main",
+  "preserved_work_branch": "work/doctor-certificates-20261020",
+  "photo_checkpoint": "e9b120aa032ed4001f4cc5fd24d40f96416deb8e",
+  "rollback": {
+    "branch": "checkpoint/before-doctor-certificates-20261020",
+    "commit": "cba2554c2540f12ad53b2111525caf409cb9ca9f",
+    "method": "Reviewed scoped revert through clinic main and its existing automatic host connection; no force push or appointment-data reset."
+  },
+  "host_status": {
+    "source": "GitHub combined commit status, read after the main push",
+    "context": "Vercel",
+    "state": "success",
+    "target_url": "https://vercel.com/neura-flow-s-projects/rk-medical-centre/F4knN5qr71dfFrX8RDwvNNJ91uXL",
+    "private_host_logs_or_account_connection_used": false
+  },
+  "public_browser": {
+    "observed_at_utc": "2026-10-20T13:42:52.025Z",
+    "evidence": "hosted-observations.json",
+    "page_width_views": 6,
+    "widths_px": [
+      1440,
+      390
+    ],
+    "counts": {
+      "/about-clinic": 10,
+      "/dr-sanjay-gupta": 5,
+      "/dr-parul-gupta": 5
+    },
+    "additional_interaction_observations": 2,
+    "interactions": [
+      "Automatic travel with real mouse-hover pause",
+      "Browse all 10 switches to a still ten-item grid"
+    ],
+    "page_errors": 0,
+    "normal_certificate_image_failures": 0,
+    "page_overflow_observed": false
+  },
+  "public_assets": {
+    "observed_at_utc": "2026-10-20T13:42:51.330628+00:00",
+    "evidence": "public-asset-readback.json",
+    "files": 56,
+    "certificate_webps": 20,
+    "photo_webps": 34,
+    "main_js_css": 2,
+    "all_http_200": true,
+    "all_sha256_match_reviewed_files": true
+  },
+  "local_review": {
+    "layout_views": 18,
+    "interaction_observations": 11,
+    "private_image_failure_recovery_observations": 4,
+    "before_after_preservation_comparisons": 14,
+    "hosting_compilation_succeeded": true,
+    "scope": "Read-only focused rendered/source/export review, not a full suite or operational acceptance."
+  },
+  "source_fidelity": {
+    "selection": "Sanjay 01/02/03/06/08; Parul 01/02/03/04/05",
+    "prepared_inputs": 9,
+    "original_source_inputs": 1,
+    "original_source_reason": "Parul 04 retains the original photo because the generated handwritten date remains uncertain; caption includes no guessed date.",
+    "certificate_delivery_bytes": 873256,
+    "unselected_sources_retained": 9
+  },
+  "boundaries": {
+    "full_local_or_hosted_suite_run": false,
+    "release_gate_run": false,
+    "workflow_dispatched": false,
+    "provider_or_customer_mutation": false,
+    "booking_activated": false,
+    "contact_or_measurement_connected": false,
+    "operational_audit_items_unchanged": 13,
+    "native_device_or_screen_reader_acceptance_claimed": false
+  },
+  "documentation_note": "This receipt identifies the published runtime commit. A later documentation-only commit records this proof without changing reviewed runtime assets."
+}
