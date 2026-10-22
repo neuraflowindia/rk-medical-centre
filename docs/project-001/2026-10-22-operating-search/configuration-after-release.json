@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-22T17:34:23.200437+00:00",
+  "operation": "authenticated read-only configuration constructor evidence; no provider action",
+  "http_status": 200,
+  "application": "rk-medical-centre",
+  "version": 1,
+  "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "provider_acceptance": "not_checked",
+  "configured": {
+    "staff_connection": true,
+    "worker_connection": true,
+    "company_connection": true,
+    "studio": false,
+    "google_resources": false,
+    "contact_protection": true,
+    "email_sender": true,
+    "email_webhook": true,
+    "payment_accounts": false,
+    "payment_webhook": false,
+    "projection_reader": true,
+    "recovery_contract": true
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "at": "2026-10-22T17:51:25.984296+00:00",
+  "read_only": true,
+  "private_values_printed": false,
+  "due_by_lane": [
+    {
+      "lane": "booking_records",
+      "remaining_due": 0
+    },
+    {
+      "lane": "control_publication",
+      "remaining_due": 0
+    },
+    {
+      "lane": "email_events",
+      "remaining_due": 0
+    },
+    {
+      "lane": "enquiry_records",
+      "remaining_due": 0
+    },
+    {
+      "lane": "maintenance",
+      "remaining_due": 0
+    },
+    {
+      "lane": "notification_email",
+      "remaining_due": 0
+    },
+    {
+      "lane": "payment",
+      "remaining_due": 0
+    },
+    {
+      "lane": "payment_events",
+      "remaining_due": 0
+    },
+    {
+      "lane": "verification_email",
+      "remaining_due": 0
+    }
+  ],
+  "recovery_attention": false,
+  "incident_count": 0,
+  "active_worker_lease": [
+    null,
+    null
+  ],
+  "record_counts": {
+    "bookings": 0,
+    "enquiries": 0
+  },
+  "app_health": {
+    "http_status": 200,
+    "body": {
+      "status": "online"
+    }
+  },
+  "worker_health": {
+    "http_status": 200,
+    "body": {
+      "status": "healthy"
+    }
+  },
+  "public_state": {
+    "http_status": 200,
+    "body": {
+      "enabled": false,
+      "activation_epoch": "263e8eab-6059-4a57-8797-06531f279699"
+    }
+  },
+  "passed": true
+}

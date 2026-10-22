@@ -1,0 +1,204 @@
+{
+  "at": "2026-10-22T17:34:27.597850+00:00",
+  "origin": "https://www.rkmedicalcentre.com",
+  "read_only": true,
+  "scope": "Original hosted HTML and headers only; browser interaction, account indexing and provider delivery are separate.",
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 262698,
+      "title": "Physician & Women's Health in Lucknow | R. K. Medical Centre",
+      "description": [
+        "Speak with Dr. Sanjay Gupta or Dr. Parul Gupta about diabetes, everyday illnesses, women's health or pregnancy at the clinic in Lucknow."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 18552,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/treatment",
+      "status": 200,
+      "bytes": 33657,
+      "title": "Treatments in Lucknow | R. K. Medical Centre",
+      "description": [
+        "See what the clinic's physician and women's-health services cover, which doctor to choose and what to bring for your visit."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/treatment"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 2640,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/about-clinic",
+      "status": 200,
+      "bytes": 72059,
+      "title": "About the Clinic | R. K. Medical Centre, Lucknow",
+      "description": [
+        "Find out about R. K. Medical Centre, the doctors, clinic hours, observation care and what to know before coming for a visit."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/about-clinic"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 6828,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/meet-doctor",
+      "status": 200,
+      "bytes": 46796,
+      "title": "Meet the Doctors | R. K. Medical Centre, Lucknow",
+      "description": [
+        "Read about Dr. Sanjay Gupta and Dr. Parul Gupta, their areas of care and how to choose the doctor for your clinic appointment."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/meet-doctor"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 3310,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "status": 200,
+      "bytes": 51153,
+      "title": "Dr. Sanjay Gupta, Physician in Lucknow | R. K. Medical Centre",
+      "description": [
+        "Read about Dr. Sanjay Gupta's care for diabetes, blood pressure, thyroid concerns and everyday illnesses, and prepare for an in-person visit."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-sanjay-gupta"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 3706,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "status": 200,
+      "bytes": 49641,
+      "title": "Dr. Parul Gupta, Women's Health in Lucknow | R. K. Medical Centre",
+      "description": [
+        "Read about Dr. Parul Gupta's care for women's health, pregnancy and ultrasound questions, and prepare for your visit to the clinic."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-parul-gupta"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 3584,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "bytes": 22780,
+      "title": "Contact & Directions | R. K. Medical Centre, Lucknow",
+      "description": [
+        "Find the clinic's phone numbers, address, visiting hours and Google Maps directions. Contact the clinic about an appointment or a question."
+      ],
+      "canonical": [
+        "https://www.rkmedicalcentre.com/contact"
+      ],
+      "robots": [
+        "index, follow",
+        ""
+      ],
+      "main_characters": 2064,
+      "h1_count": 1,
+      "main_count": 1,
+      "jsonld_blocks": 1,
+      "failures": []
+    }
+  ],
+  "sitemap": {
+    "status": 200,
+    "count": 7,
+    "unique": 7,
+    "matches_public_pages": true,
+    "urls": [
+      "https://www.rkmedicalcentre.com/",
+      "https://www.rkmedicalcentre.com/treatment",
+      "https://www.rkmedicalcentre.com/about-clinic",
+      "https://www.rkmedicalcentre.com/meet-doctor",
+      "https://www.rkmedicalcentre.com/dr-sanjay-gupta",
+      "https://www.rkmedicalcentre.com/dr-parul-gupta",
+      "https://www.rkmedicalcentre.com/contact"
+    ]
+  },
+  "robots": {
+    "status": 200,
+    "content_type": "text/plain; charset=utf-8",
+    "sitemap_present": true,
+    "body": "User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /company/\nDisallow: /studio\nDisallow: /enquiries-studio\nDisallow: /__booking_display/\nSitemap: https://www.rkmedicalcentre.com/sitemap.xml\n"
+  },
+  "utilities": [
+    {
+      "path": "/booking",
+      "status": 404,
+      "robots": [
+        "noindex, nofollow"
+      ],
+      "noindex": true
+    },
+    {
+      "path": "/booking-details",
+      "status": 404,
+      "robots": [
+        "noindex, nofollow"
+      ],
+      "noindex": true
+    },
+    {
+      "path": "/booking-help",
+      "status": 404,
+      "robots": [
+        "noindex, nofollow"
+      ],
+      "noindex": true
+    }
+  ],
+  "redirects": [],
+  "passed": true
+}

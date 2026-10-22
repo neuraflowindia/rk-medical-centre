@@ -1,0 +1,2864 @@
+{
+  "observed_at": "2026-10-22T17:42:15.915Z",
+  "read_only": true,
+  "runtime_source": "33de6b24701e12c19da96284aa0b33a3240fc86e",
+  "deployment_id": "dpl_EzJ6Eg6YdLiPZxQsA9ZgqE4Z9Gmm",
+  "deployment_host": "https://rk-medical-centre-mb26b25z4-neura-flow-s-projects.vercel.app",
+  "deployment_probe": {
+    "transport": "Existing signed-in mcp__codex_apps__vercel_web_fetch_vercel_url only; temporary protected access values are neither displayed nor retained.",
+    "basis": "On the same deployment hostname absent from the routing profile allowed hosts, an image returns200 but guarded page/API/JS returns421. This proves image matcher exclusion independently of CDN HIT.",
+    "observations": [
+      {
+        "kind": "guarded-health-api",
+        "path": "/api/health",
+        "expected": 421,
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "kind": "known-social-image",
+        "path": "/clinic-assets/rk-medical-centre-social.png",
+        "expected": 200,
+        "tool_success": true,
+        "status": 200,
+        "statusText": "OK",
+        "content_type": "image/png",
+        "content_length": "76461",
+        "source_bytes": 76461,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-at-desk-160.webp",
+        "expected": 200,
+        "kind": "known-client-photo",
+        "tool_success": true,
+        "status": 200,
+        "statusText": "OK",
+        "content_type": "image/webp",
+        "content_length": "6166",
+        "source_bytes": 6166,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-01-480.webp",
+        "expected": 200,
+        "kind": "known-certificate",
+        "tool_success": true,
+        "status": 200,
+        "statusText": "OK",
+        "content_type": "image/webp",
+        "content_length": "36776",
+        "source_bytes": 36776,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/not-a-real-public-file.png",
+        "expected": 404,
+        "kind": "unknown-safe-image",
+        "tool_success": true,
+        "status": 404,
+        "statusText": "Not Found",
+        "content_type": "text/plain; charset=utf-8",
+        "content_length": "84",
+        "passed": true
+      },
+      {
+        "path": "/",
+        "expected": 421,
+        "kind": "general-page",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/assets/index-sAC8tCdM.js",
+        "expected": 421,
+        "kind": "general-mixed-js",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/assets/clinic-booking-HH_5yCmV.js",
+        "expected": 421,
+        "kind": "booking-js",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/api/service-state",
+        "expected": 421,
+        "kind": "public-state-api",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/booking",
+        "expected": 421,
+        "kind": "booking-page",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/not-image.js",
+        "expected": 421,
+        "kind": "unsafe-image-extension",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a06-phone-320.webp/extra",
+        "expected": 421,
+        "kind": "image-path-suffix",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/%61%30%36-phone-320.webp",
+        "expected": 421,
+        "kind": "encoded-path",
+        "tool_success": true,
+        "status": 421,
+        "statusText": "Misdirected Request",
+        "content_type": "text/plain;charset=UTF-8",
+        "content_length": null,
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "customer_actions": 0,
+  "provider_dispatch": 0,
+  "passed": true,
+  "completed_at": "2026-10-22T17:42:54.650766+00:00",
+  "origin": "https://www.rkmedicalcentre.com",
+  "source_identity": {
+    "middleware.ts": "67828f8a0b99218f632489eef9ddb2c0b6110c36eb1b8a4817a1192cb96546f1",
+    "dist/appointment-routing-profile.json": "a252ea812a2f3a43197478d3bc868580f39ee89b2f10e36e303b4c53c0001702",
+    "dist/appointment-surface-manifest.json": "2ea9640a5e85de1f35d3adede8668a8d7fe0931d8a97ed74e1db8cf50a049572"
+  },
+  "source_unchanged": true,
+  "deployment_host_absent_from_allowed_hosts": true,
+  "official_head_inventory": {
+    "prefixes": {
+      "clinic-assets": 208,
+      "client-photos": 34,
+      "certificates": 20
+    },
+    "denominator": 262,
+    "passed_count": 262,
+    "observations": [
+      {
+        "path": "/certificates/parul-gupta-certificate-01-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "36776",
+        "same_public_target": true,
+        "source_bytes": 36776,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-01-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "69756",
+        "same_public_target": true,
+        "source_bytes": 69756,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-02-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "32676",
+        "same_public_target": true,
+        "source_bytes": 32676,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-02-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "60316",
+        "same_public_target": true,
+        "source_bytes": 60316,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-03-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "30654",
+        "same_public_target": true,
+        "source_bytes": 30654,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-03-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "57508",
+        "same_public_target": true,
+        "source_bytes": 57508,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-04-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23152",
+        "same_public_target": true,
+        "source_bytes": 23152,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-04-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "49396",
+        "same_public_target": true,
+        "source_bytes": 49396,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-05-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "24764",
+        "same_public_target": true,
+        "source_bytes": 24764,
+        "passed": true
+      },
+      {
+        "path": "/certificates/parul-gupta-certificate-05-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "47686",
+        "same_public_target": true,
+        "source_bytes": 47686,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-01-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "49492",
+        "same_public_target": true,
+        "source_bytes": 49492,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-01-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "96954",
+        "same_public_target": true,
+        "source_bytes": 96954,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-02-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "18812",
+        "same_public_target": true,
+        "source_bytes": 18812,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-02-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35580",
+        "same_public_target": true,
+        "source_bytes": 35580,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-03-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "39762",
+        "same_public_target": true,
+        "source_bytes": 39762,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-03-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "82904",
+        "same_public_target": true,
+        "source_bytes": 82904,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-06-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "18962",
+        "same_public_target": true,
+        "source_bytes": 18962,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-06-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "36044",
+        "same_public_target": true,
+        "source_bytes": 36044,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-08-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "21762",
+        "same_public_target": true,
+        "source_bytes": 21762,
+        "passed": true
+      },
+      {
+        "path": "/certificates/sanjay-gupta-certificate-08-720.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "40300",
+        "same_public_target": true,
+        "source_bytes": 40300,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-gate-street-view-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "236122",
+        "same_public_target": true,
+        "source_bytes": 236122,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-gate-street-view-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "337274",
+        "same_public_target": true,
+        "source_bytes": 337274,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-gate-street-view-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "59344",
+        "same_public_target": true,
+        "source_bytes": 59344,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-gate-street-view-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "144510",
+        "same_public_target": true,
+        "source_bytes": 144510,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-glass-door-entrance-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "140530",
+        "same_public_target": true,
+        "source_bytes": 140530,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-glass-door-entrance-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "229376",
+        "same_public_target": true,
+        "source_bytes": 229376,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-glass-door-entrance-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "40710",
+        "same_public_target": true,
+        "source_bytes": 40710,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-glass-door-entrance-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "89200",
+        "same_public_target": true,
+        "source_bytes": 89200,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-reception-desk-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "76784",
+        "same_public_target": true,
+        "source_bytes": 76784,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-reception-desk-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "126650",
+        "same_public_target": true,
+        "source_bytes": 126650,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-reception-desk-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23746",
+        "same_public_target": true,
+        "source_bytes": 23746,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-reception-desk-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "48846",
+        "same_public_target": true,
+        "source_bytes": 48846,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-street-frontage-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "220088",
+        "same_public_target": true,
+        "source_bytes": 220088,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-street-frontage-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "338926",
+        "same_public_target": true,
+        "source_bytes": 338926,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-street-frontage-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "52754",
+        "same_public_target": true,
+        "source_bytes": 52754,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-street-frontage-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "128668",
+        "same_public_target": true,
+        "source_bytes": 128668,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-waiting-area-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "190364",
+        "same_public_target": true,
+        "source_bytes": 190364,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-waiting-area-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "326418",
+        "same_public_target": true,
+        "source_bytes": 326418,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-waiting-area-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "49684",
+        "same_public_target": true,
+        "source_bytes": 49684,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/clinic-waiting-area-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "115212",
+        "same_public_target": true,
+        "source_bytes": 115212,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-at-desk-160.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "8162",
+        "same_public_target": true,
+        "source_bytes": 8162,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-at-desk-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23416",
+        "same_public_target": true,
+        "source_bytes": 23416,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-at-desk-520.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "48132",
+        "same_public_target": true,
+        "source_bytes": 48132,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-consultation-room-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "122232",
+        "same_public_target": true,
+        "source_bytes": 122232,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-consultation-room-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "202852",
+        "same_public_target": true,
+        "source_bytes": 202852,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-consultation-room-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "36824",
+        "same_public_target": true,
+        "source_bytes": 36824,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/parul-gupta-consultation-room-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "76900",
+        "same_public_target": true,
+        "source_bytes": 76900,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-at-desk-160.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "6166",
+        "same_public_target": true,
+        "source_bytes": 6166,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-at-desk-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "16910",
+        "same_public_target": true,
+        "source_bytes": 16910,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-at-desk-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "29294",
+        "same_public_target": true,
+        "source_bytes": 29294,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-consultation-room-1024.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "69144",
+        "same_public_target": true,
+        "source_bytes": 69144,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-consultation-room-1448.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "106502",
+        "same_public_target": true,
+        "source_bytes": 106502,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-consultation-room-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "22984",
+        "same_public_target": true,
+        "source_bytes": 22984,
+        "passed": true
+      },
+      {
+        "path": "/client-photos/sanjay-gupta-consultation-room-768.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "45860",
+        "same_public_target": true,
+        "source_bytes": 45860,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a06-phone-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "17732",
+        "same_public_target": true,
+        "source_bytes": 17732,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a06-phone-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "51646",
+        "same_public_target": true,
+        "source_bytes": 51646,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a06-phone-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "111124",
+        "same_public_target": true,
+        "source_bytes": 111124,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a09-phone-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "10074",
+        "same_public_target": true,
+        "source_bytes": 10074,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a09-phone-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "34344",
+        "same_public_target": true,
+        "source_bytes": 34344,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a09-phone-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "76452",
+        "same_public_target": true,
+        "source_bytes": 76452,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a10-phone-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12776",
+        "same_public_target": true,
+        "source_bytes": 12776,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a10-phone-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "45766",
+        "same_public_target": true,
+        "source_bytes": 45766,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a10-phone-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "99762",
+        "same_public_target": true,
+        "source_bytes": 99762,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a11-phone-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "6000",
+        "same_public_target": true,
+        "source_bytes": 6000,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a11-phone-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15348",
+        "same_public_target": true,
+        "source_bytes": 15348,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a11-phone-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31742",
+        "same_public_target": true,
+        "source_bytes": 31742,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-calendar-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15906",
+        "same_public_target": true,
+        "source_bytes": 15906,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-calendar-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "38242",
+        "same_public_target": true,
+        "source_bytes": 38242,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-calendar-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "70538",
+        "same_public_target": true,
+        "source_bytes": 70538,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-pen-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "8398",
+        "same_public_target": true,
+        "source_bytes": 8398,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-pen-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20154",
+        "same_public_target": true,
+        "source_bytes": 20154,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-pen-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35420",
+        "same_public_target": true,
+        "source_bytes": 35420,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-slip-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "8066",
+        "same_public_target": true,
+        "source_bytes": 8066,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-slip-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20528",
+        "same_public_target": true,
+        "source_bytes": 20528,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a12-slip-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "39642",
+        "same_public_target": true,
+        "source_bytes": 39642,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-probe-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "17186",
+        "same_public_target": true,
+        "source_bytes": 17186,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-probe-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "41510",
+        "same_public_target": true,
+        "source_bytes": 41510,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-probe-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "73684",
+        "same_public_target": true,
+        "source_bytes": 73684,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-stethoscope-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23980",
+        "same_public_target": true,
+        "source_bytes": 23980,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-stethoscope-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "58146",
+        "same_public_target": true,
+        "source_bytes": 58146,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a15-stethoscope-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "108012",
+        "same_public_target": true,
+        "source_bytes": 108012,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-ground-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "6770",
+        "same_public_target": true,
+        "source_bytes": 6770,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-ground-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "16162",
+        "same_public_target": true,
+        "source_bytes": 16162,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-ground-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "29710",
+        "same_public_target": true,
+        "source_bytes": 29710,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-man-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12304",
+        "same_public_target": true,
+        "source_bytes": 12304,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-man-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "29932",
+        "same_public_target": true,
+        "source_bytes": 29932,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-man-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "55134",
+        "same_public_target": true,
+        "source_bytes": 55134,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-woman-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15596",
+        "same_public_target": true,
+        "source_bytes": 15596,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-woman-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "38574",
+        "same_public_target": true,
+        "source_bytes": 38574,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a16-woman-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "70880",
+        "same_public_target": true,
+        "source_bytes": 70880,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-front-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9378",
+        "same_public_target": true,
+        "source_bytes": 9378,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-front-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23186",
+        "same_public_target": true,
+        "source_bytes": 23186,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-front-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "42474",
+        "same_public_target": true,
+        "source_bytes": 42474,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-rear-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13230",
+        "same_public_target": true,
+        "source_bytes": 13230,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-rear-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33422",
+        "same_public_target": true,
+        "source_bytes": 33422,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-rear-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "66098",
+        "same_public_target": true,
+        "source_bytes": 66098,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-woman-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14386",
+        "same_public_target": true,
+        "source_bytes": 14386,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-woman-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35040",
+        "same_public_target": true,
+        "source_bytes": 35040,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a17-woman-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "62990",
+        "same_public_target": true,
+        "source_bytes": 62990,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a18-whole-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15522",
+        "same_public_target": true,
+        "source_bytes": 15522,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a18-whole-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "40242",
+        "same_public_target": true,
+        "source_bytes": 40242,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a18-whole-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "82742",
+        "same_public_target": true,
+        "source_bytes": 82742,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14760",
+        "same_public_target": true,
+        "source_bytes": 14760,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37244",
+        "same_public_target": true,
+        "source_bytes": 37244,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "74904",
+        "same_public_target": true,
+        "source_bytes": 74904,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-hands-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "17266",
+        "same_public_target": true,
+        "source_bytes": 17266,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-hands-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "41892",
+        "same_public_target": true,
+        "source_bytes": 41892,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a19-hands-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "77168",
+        "same_public_target": true,
+        "source_bytes": 77168,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-case-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13966",
+        "same_public_target": true,
+        "source_bytes": 13966,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-case-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37114",
+        "same_public_target": true,
+        "source_bytes": 37114,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-case-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "84880",
+        "same_public_target": true,
+        "source_bytes": 84880,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-stethoscope-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "24226",
+        "same_public_target": true,
+        "source_bytes": 24226,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-stethoscope-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "60172",
+        "same_public_target": true,
+        "source_bytes": 60172,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a20-stethoscope-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "109858",
+        "same_public_target": true,
+        "source_bytes": 109858,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-fan-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "17308",
+        "same_public_target": true,
+        "source_bytes": 17308,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-fan-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "46924",
+        "same_public_target": true,
+        "source_bytes": 46924,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-fan-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "110038",
+        "same_public_target": true,
+        "source_bytes": 110038,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-figure-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15384",
+        "same_public_target": true,
+        "source_bytes": 15384,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-figure-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "39128",
+        "same_public_target": true,
+        "source_bytes": 39128,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a21-figure-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "71376",
+        "same_public_target": true,
+        "source_bytes": 71376,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-handset-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14810",
+        "same_public_target": true,
+        "source_bytes": 14810,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-handset-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35608",
+        "same_public_target": true,
+        "source_bytes": 35608,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-handset-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "68932",
+        "same_public_target": true,
+        "source_bytes": 68932,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-pin-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13388",
+        "same_public_target": true,
+        "source_bytes": 13388,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-pin-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31640",
+        "same_public_target": true,
+        "source_bytes": 31640,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a22-pin-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "58284",
+        "same_public_target": true,
+        "source_bytes": 58284,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-card-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "8756",
+        "same_public_target": true,
+        "source_bytes": 8756,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-card-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "21822",
+        "same_public_target": true,
+        "source_bytes": 21822,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-card-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "42078",
+        "same_public_target": true,
+        "source_bytes": 42078,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-holder-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "10740",
+        "same_public_target": true,
+        "source_bytes": 10740,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-holder-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33390",
+        "same_public_target": true,
+        "source_bytes": 33390,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a23-holder-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "90526",
+        "same_public_target": true,
+        "source_bytes": 90526,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-figure-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12984",
+        "same_public_target": true,
+        "source_bytes": 12984,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-figure-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31214",
+        "same_public_target": true,
+        "source_bytes": 31214,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-figure-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "56114",
+        "same_public_target": true,
+        "source_bytes": 56114,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-stethoscope-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "18396",
+        "same_public_target": true,
+        "source_bytes": 18396,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-stethoscope-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "44536",
+        "same_public_target": true,
+        "source_bytes": 44536,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-stethoscope-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "83346",
+        "same_public_target": true,
+        "source_bytes": 83346,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-thermometer-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9480",
+        "same_public_target": true,
+        "source_bytes": 9480,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-thermometer-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "23576",
+        "same_public_target": true,
+        "source_bytes": 23576,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a24-thermometer-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "46728",
+        "same_public_target": true,
+        "source_bytes": 46728,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-case-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "19968",
+        "same_public_target": true,
+        "source_bytes": 19968,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-case-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "72930",
+        "same_public_target": true,
+        "source_bytes": 72930,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-case-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "167278",
+        "same_public_target": true,
+        "source_bytes": 167278,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-meter-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14176",
+        "same_public_target": true,
+        "source_bytes": 14176,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-meter-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "34666",
+        "same_public_target": true,
+        "source_bytes": 34666,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-meter-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "67428",
+        "same_public_target": true,
+        "source_bytes": 67428,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-strip-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "4352",
+        "same_public_target": true,
+        "source_bytes": 4352,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-strip-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "10894",
+        "same_public_target": true,
+        "source_bytes": 10894,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a25-strip-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20500",
+        "same_public_target": true,
+        "source_bytes": 20500,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a26-whole-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13018",
+        "same_public_target": true,
+        "source_bytes": 13018,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a26-whole-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "32132",
+        "same_public_target": true,
+        "source_bytes": 32132,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a26-whole-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "63116",
+        "same_public_target": true,
+        "source_bytes": 63116,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a27-whole-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "11136",
+        "same_public_target": true,
+        "source_bytes": 11136,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a27-whole-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27326",
+        "same_public_target": true,
+        "source_bytes": 27326,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a27-whole-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "52446",
+        "same_public_target": true,
+        "source_bytes": 52446,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-case-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "11594",
+        "same_public_target": true,
+        "source_bytes": 11594,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-case-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "28760",
+        "same_public_target": true,
+        "source_bytes": 28760,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-case-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "54156",
+        "same_public_target": true,
+        "source_bytes": 54156,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-cloth-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "10778",
+        "same_public_target": true,
+        "source_bytes": 10778,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-cloth-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37642",
+        "same_public_target": true,
+        "source_bytes": 37642,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-cloth-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "76696",
+        "same_public_target": true,
+        "source_bytes": 76696,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-thermometer-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "4788",
+        "same_public_target": true,
+        "source_bytes": 4788,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-thermometer-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "11050",
+        "same_public_target": true,
+        "source_bytes": 11050,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a28-thermometer-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "19990",
+        "same_public_target": true,
+        "source_bytes": 19990,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-figure-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14950",
+        "same_public_target": true,
+        "source_bytes": 14950,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-figure-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37296",
+        "same_public_target": true,
+        "source_bytes": 37296,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-figure-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "71920",
+        "same_public_target": true,
+        "source_bytes": 71920,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-front-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9050",
+        "same_public_target": true,
+        "source_bytes": 9050,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-front-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "22276",
+        "same_public_target": true,
+        "source_bytes": 22276,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-front-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "40466",
+        "same_public_target": true,
+        "source_bytes": 40466,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-rear-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12432",
+        "same_public_target": true,
+        "source_bytes": 12432,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-rear-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31906",
+        "same_public_target": true,
+        "source_bytes": 31906,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a29-rear-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "63486",
+        "same_public_target": true,
+        "source_bytes": 63486,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-figure-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14560",
+        "same_public_target": true,
+        "source_bytes": 14560,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-figure-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "36732",
+        "same_public_target": true,
+        "source_bytes": 36732,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-figure-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "66386",
+        "same_public_target": true,
+        "source_bytes": 66386,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-fold-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12442",
+        "same_public_target": true,
+        "source_bytes": 12442,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-fold-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "30370",
+        "same_public_target": true,
+        "source_bytes": 30370,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a30-fold-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "57510",
+        "same_public_target": true,
+        "source_bytes": 57510,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a31-whole-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9074",
+        "same_public_target": true,
+        "source_bytes": 9074,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a31-whole-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20252",
+        "same_public_target": true,
+        "source_bytes": 20252,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a31-whole-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "34854",
+        "same_public_target": true,
+        "source_bytes": 34854,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-list-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14060",
+        "same_public_target": true,
+        "source_bytes": 14060,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-list-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33728",
+        "same_public_target": true,
+        "source_bytes": 33728,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-list-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "61128",
+        "same_public_target": true,
+        "source_bytes": 61128,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-note-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "7814",
+        "same_public_target": true,
+        "source_bytes": 7814,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-note-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "18910",
+        "same_public_target": true,
+        "source_bytes": 18910,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-note-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37010",
+        "same_public_target": true,
+        "source_bytes": 37010,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-report-320.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "12732",
+        "same_public_target": true,
+        "source_bytes": 12732,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-report-640.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31204",
+        "same_public_target": true,
+        "source_bytes": 31204,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/a32-report-960.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "56404",
+        "same_public_target": true,
+        "source_bytes": 56404,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/adult-care-paper-relief-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "81986",
+        "same_public_target": true,
+        "source_bytes": 81986,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/adult-care-paper-relief-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "16170",
+        "same_public_target": true,
+        "source_bytes": 16170,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/adult-care-paper-relief-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35374",
+        "same_public_target": true,
+        "source_bytes": 35374,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/glucose-meter-studio-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "82348",
+        "same_public_target": true,
+        "source_bytes": 82348,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/glucose-meter-studio-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "22710",
+        "same_public_target": true,
+        "source_bytes": 22710,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/glucose-meter-studio-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "45952",
+        "same_public_target": true,
+        "source_bytes": 45952,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/hero-stethoscope-illustration-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "102166",
+        "same_public_target": true,
+        "source_bytes": 102166,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/hero-stethoscope-illustration-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27948",
+        "same_public_target": true,
+        "source_bytes": 27948,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/hero-stethoscope-illustration-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "61064",
+        "same_public_target": true,
+        "source_bytes": 61064,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-booking-consultation-instruments-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33692",
+        "same_public_target": true,
+        "source_bytes": 33692,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-booking-consultation-instruments-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "10520",
+        "same_public_target": true,
+        "source_bytes": 10520,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-booking-consultation-instruments-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20492",
+        "same_public_target": true,
+        "source_bytes": 20492,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-diabetes-paper-relief-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35722",
+        "same_public_target": true,
+        "source_bytes": 35722,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-diabetes-paper-relief-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9564",
+        "same_public_target": true,
+        "source_bytes": 9564,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-diabetes-paper-relief-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "19200",
+        "same_public_target": true,
+        "source_bytes": 19200,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-fever-paper-relief-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31176",
+        "same_public_target": true,
+        "source_bytes": 31176,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-fever-paper-relief-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "7722",
+        "same_public_target": true,
+        "source_bytes": 7722,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-fever-paper-relief-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "16028",
+        "same_public_target": true,
+        "source_bytes": 16028,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-ultrasound-paper-relief-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "28276",
+        "same_public_target": true,
+        "source_bytes": 28276,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-ultrasound-paper-relief-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "7300",
+        "same_public_target": true,
+        "source_bytes": 7300,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/home-ultrasound-paper-relief-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14924",
+        "same_public_target": true,
+        "source_bytes": 14924,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/physician-care-still-life-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "69158",
+        "same_public_target": true,
+        "source_bytes": 69158,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/physician-care-still-life-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13490",
+        "same_public_target": true,
+        "source_bytes": 13490,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/physician-care-still-life-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "36712",
+        "same_public_target": true,
+        "source_bytes": 36712,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/pregnancy-care-paper-illustration-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "46874",
+        "same_public_target": true,
+        "source_bytes": 46874,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/pregnancy-care-paper-illustration-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9086",
+        "same_public_target": true,
+        "source_bytes": 9086,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/pregnancy-care-paper-illustration-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "25328",
+        "same_public_target": true,
+        "source_bytes": 25328,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/report-folder-studio-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "110570",
+        "same_public_target": true,
+        "source_bytes": 110570,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/report-folder-studio-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "28426",
+        "same_public_target": true,
+        "source_bytes": 28426,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/report-folder-studio-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "59290",
+        "same_public_target": true,
+        "source_bytes": 59290,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-abhishek-jain.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "14716",
+        "same_public_target": true,
+        "source_bytes": 14716,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-aditi-sen.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33772",
+        "same_public_target": true,
+        "source_bytes": 33772,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-amitav-banerjee.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27772",
+        "same_public_target": true,
+        "source_bytes": 27772,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-ananya-sharma.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "21456",
+        "same_public_target": true,
+        "source_bytes": 21456,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-anita-deshmukh.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27858",
+        "same_public_target": true,
+        "source_bytes": 27858,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-arjun-singhal.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "28296",
+        "same_public_target": true,
+        "source_bytes": 28296,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-deepak-singhania.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "16806",
+        "same_public_target": true,
+        "source_bytes": 16806,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-divya-menon.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33708",
+        "same_public_target": true,
+        "source_bytes": 33708,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-geeta-pillai.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "39650",
+        "same_public_target": true,
+        "source_bytes": 39650,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-harshvardhan-joshi.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "31386",
+        "same_public_target": true,
+        "source_bytes": 31386,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-karan-verma.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "35946",
+        "same_public_target": true,
+        "source_bytes": 35946,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-kavita-nair.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "22114",
+        "same_public_target": true,
+        "source_bytes": 22114,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-manoj-nambiar.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "32916",
+        "same_public_target": true,
+        "source_bytes": 32916,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-meera-raman.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27966",
+        "same_public_target": true,
+        "source_bytes": 27966,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-neha-agarwal.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "33682",
+        "same_public_target": true,
+        "source_bytes": 33682,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-nikhil-saxena.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "24278",
+        "same_public_target": true,
+        "source_bytes": 24278,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-pooja-iyer.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "24788",
+        "same_public_target": true,
+        "source_bytes": 24788,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-priya-venkatesh.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "18272",
+        "same_public_target": true,
+        "source_bytes": 18272,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-rajesh-mehta.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "27854",
+        "same_public_target": true,
+        "source_bytes": 27854,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-rohan-kapoor.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "25642",
+        "same_public_target": true,
+        "source_bytes": 25642,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-shweta-mukherjee.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "13230",
+        "same_public_target": true,
+        "source_bytes": 13230,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-sneha-kulkarni.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "39870",
+        "same_public_target": true,
+        "source_bytes": 39870,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-sunita-rao.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37844",
+        "same_public_target": true,
+        "source_bytes": 37844,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-suresh-kulkarni.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "40488",
+        "same_public_target": true,
+        "source_bytes": 40488,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-tanvi-bhatia.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "29202",
+        "same_public_target": true,
+        "source_bytes": 29202,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/review-portraits/patient-portrait-vikram-sengupta.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "24542",
+        "same_public_target": true,
+        "source_bytes": 24542,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/rk-medical-centre-logo.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "19604",
+        "same_public_target": true,
+        "source_bytes": 19604,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/rk-medical-centre-social.png",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/png",
+        "content_length": "76461",
+        "same_public_target": true,
+        "source_bytes": 76461,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/thermometer-studio-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "119738",
+        "same_public_target": true,
+        "source_bytes": 119738,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/thermometer-studio-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "28264",
+        "same_public_target": true,
+        "source_bytes": 28264,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/thermometer-studio-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "62310",
+        "same_public_target": true,
+        "source_bytes": 62310,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/ultrasound-probe-still-life-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "20122",
+        "same_public_target": true,
+        "source_bytes": 20122,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/ultrasound-probe-still-life-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "5826",
+        "same_public_target": true,
+        "source_bytes": 5826,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/ultrasound-probe-still-life-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "11616",
+        "same_public_target": true,
+        "source_bytes": 11616,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/visit-preparation-still-life-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "15324",
+        "same_public_target": true,
+        "source_bytes": 15324,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/visit-preparation-still-life-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "4480",
+        "same_public_target": true,
+        "source_bytes": 4480,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/visit-preparation-still-life-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "9198",
+        "same_public_target": true,
+        "source_bytes": 9198,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/womens-health-paper-illustration-1200.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "37276",
+        "same_public_target": true,
+        "source_bytes": 37276,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/womens-health-paper-illustration-480.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "7892",
+        "same_public_target": true,
+        "source_bytes": 7892,
+        "passed": true
+      },
+      {
+        "path": "/clinic-assets/womens-health-paper-illustration-800.webp",
+        "method": "HEAD",
+        "status": 200,
+        "content_type": "image/webp",
+        "content_length": "21582",
+        "same_public_target": true,
+        "source_bytes": 21582,
+        "passed": true
+      }
+    ]
+  },
+  "official_representative_hashes": [
+    {
+      "path": "/clinic-assets/a06-phone-320.webp",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/webp",
+      "content_length": "17732",
+      "same_public_target": true,
+      "received_bytes": 17732,
+      "received_sha256": "ba9687f46a88f3349955d1649f7c5f791e745a8393ad7dc384054b8395cf14b1",
+      "source_bytes": 17732,
+      "source_sha256": "ba9687f46a88f3349955d1649f7c5f791e745a8393ad7dc384054b8395cf14b1",
+      "passed": true
+    },
+    {
+      "path": "/client-photos/sanjay-gupta-at-desk-160.webp",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/webp",
+      "content_length": "6166",
+      "same_public_target": true,
+      "received_bytes": 6166,
+      "received_sha256": "068067d0bea6024e755580211d2cee9a3f9ad49029190c4909e3cf973dab30ec",
+      "source_bytes": 6166,
+      "source_sha256": "068067d0bea6024e755580211d2cee9a3f9ad49029190c4909e3cf973dab30ec",
+      "passed": true
+    },
+    {
+      "path": "/certificates/parul-gupta-certificate-01-480.webp",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/webp",
+      "content_length": "36776",
+      "same_public_target": true,
+      "received_bytes": 36776,
+      "received_sha256": "d9838a6b110ef9faad9341f0bc27bcba66242401236b959f678286dfb1ce7517",
+      "source_bytes": 36776,
+      "source_sha256": "d9838a6b110ef9faad9341f0bc27bcba66242401236b959f678286dfb1ce7517",
+      "passed": true
+    },
+    {
+      "path": "/clinic-assets/rk-medical-centre-social.png",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/png",
+      "content_length": "76461",
+      "same_public_target": true,
+      "received_bytes": 76461,
+      "received_sha256": "e2499ea8e488927d2ecb2791972de50cd88bcacea43add5bfff7275e661dcee9",
+      "source_bytes": 76461,
+      "source_sha256": "e2499ea8e488927d2ecb2791972de50cd88bcacea43add5bfff7275e661dcee9",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "boundaries": [
+    "Official-origin HEAD proves HTTP200, exact image type and source byte length for all 262 paths; four GETs prove exact source bytes.",
+    "Signed-in MCP protected-host status contrast proves matcher exclusion; CDN cache headers are not the proof.",
+    "Only image paths, status/type/length and hashes are retained. No auth links, cookies, full headers, body bytes or customer data.",
+    "No page/API/booking/customer mutation or provider dispatch was performed."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-22T17:52:45.062Z",
+  "read_only": true,
+  "source": "https://maps.google.com/maps?q=26.8857572,80.9851729&z=16&output=embed",
+  "title": "R K Medical Centre location in Indira Nagar, Lucknow",
+  "events": [
+    {
+      "host": "maps.google.com",
+      "status": 301,
+      "resource": "document"
+    },
+    {
+      "host": "www.google.com",
+      "status": 200,
+      "resource": "document"
+    }
+  ],
+  "frames": [
+    {
+      "host": "www.google.com",
+      "title": "",
+      "body": "Keyboard shortcuts\nMap data ©2026 Google\nTerms\nReport a map error"
+    },
+    {
+      "host": "",
+      "title": "",
+      "body": ""
+    },
+    {
+      "host": "",
+      "title": "",
+      "body": ""
+    }
+  ]
+}

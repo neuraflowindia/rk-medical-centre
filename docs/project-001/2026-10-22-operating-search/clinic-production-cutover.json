@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-22T17:41:26.166471+00:00",
+  "mode": "cutover",
+  "installation_id": "526b57e7-3932-4ee1-9799-3071fd03210a",
+  "project": "rk-medical-centre",
+  "new_release": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "secret_values_printed": false,
+  "passed": true,
+  "result": {
+    "status": "calendars_configured",
+    "profile_digest": "d588dc15033bf5886ab1f5a5bcab6fd71846d7da69cf3cf8d0eb126e46a2edb4",
+    "worker_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+    "booking_enabled": false
+  },
+  "state": {
+    "profile_digest": "d588dc15033bf5886ab1f5a5bcab6fd71846d7da69cf3cf8d0eb126e46a2edb4",
+    "calendar_map": {
+      "dr-parul-gupta": "dr.parulgupta23@gmail.com",
+      "dr-sanjay-gupta": "drsanjayguptamd@gmail.com"
+    },
+    "product": {
+      "enabled": false,
+      "requested_enabled": false,
+      "revision": 1
+    },
+    "contact_intake_open": false,
+    "worker_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+    "worker_idle": true,
+    "migration_count": 40,
+    "ledger_matches_source": true,
+    "record_counts": {
+      "bookings": 0,
+      "enquiries": 0
+    }
+  },
+  "provider_write": "one guarded transaction: additive040 + worker binding + doctor calendar mapping; booking/contact remain closed"
+}

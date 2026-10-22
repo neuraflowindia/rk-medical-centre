@@ -1,0 +1,230 @@
+{
+  "read_only": true,
+  "provider_writes": 0,
+  "results": [
+    {
+      "path": "/",
+      "width": 1440,
+      "status": 200,
+      "title": "Physician & Women's Health in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-home.png"
+    },
+    {
+      "path": "/treatment",
+      "width": 1440,
+      "status": 200,
+      "title": "Treatments in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/treatment"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-treatment.png"
+    },
+    {
+      "path": "/about-clinic",
+      "width": 1440,
+      "status": 200,
+      "title": "About the Clinic | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/about-clinic"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-about-clinic.png"
+    },
+    {
+      "path": "/meet-doctor",
+      "width": 1440,
+      "status": 200,
+      "title": "Meet the Doctors | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/meet-doctor"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-meet-doctor.png"
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "width": 1440,
+      "status": 200,
+      "title": "Dr. Sanjay Gupta, Physician in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-sanjay-gupta"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-dr-sanjay-gupta.png"
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "width": 1440,
+      "status": 200,
+      "title": "Dr. Parul Gupta, Women's Health in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-parul-gupta"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-dr-parul-gupta.png"
+    },
+    {
+      "path": "/contact",
+      "width": 1440,
+      "status": 200,
+      "title": "Contact & Directions | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/contact"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "1440-contact.png"
+    },
+    {
+      "path": "/",
+      "width": 390,
+      "status": 200,
+      "title": "Physician & Women's Health in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-home.png"
+    },
+    {
+      "path": "/treatment",
+      "width": 390,
+      "status": 200,
+      "title": "Treatments in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/treatment"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-treatment.png"
+    },
+    {
+      "path": "/about-clinic",
+      "width": 390,
+      "status": 200,
+      "title": "About the Clinic | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/about-clinic"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-about-clinic.png"
+    },
+    {
+      "path": "/meet-doctor",
+      "width": 390,
+      "status": 200,
+      "title": "Meet the Doctors | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/meet-doctor"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-meet-doctor.png"
+    },
+    {
+      "path": "/dr-sanjay-gupta",
+      "width": 390,
+      "status": 200,
+      "title": "Dr. Sanjay Gupta, Physician in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-sanjay-gupta"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-dr-sanjay-gupta.png"
+    },
+    {
+      "path": "/dr-parul-gupta",
+      "width": 390,
+      "status": 200,
+      "title": "Dr. Parul Gupta, Women's Health in Lucknow | R. K. Medical Centre",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/dr-parul-gupta"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-dr-parul-gupta.png"
+    },
+    {
+      "path": "/contact",
+      "width": 390,
+      "status": 200,
+      "title": "Contact & Directions | R. K. Medical Centre, Lucknow",
+      "canonical": [
+        "https://www.rkmedicalcentre.com/contact"
+      ],
+      "h1": 1,
+      "main": 1,
+      "overflow": false,
+      "broken": [],
+      "errors": [],
+      "failedScripts": [],
+      "screenshot": "390-contact.png"
+    }
+  ]
+}

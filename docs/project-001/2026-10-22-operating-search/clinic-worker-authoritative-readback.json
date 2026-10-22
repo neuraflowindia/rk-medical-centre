@@ -1,0 +1,281 @@
+{
+  "at": "2026-10-22T17:39:58.043606+00:00",
+  "read_only": true,
+  "private_values_printed": false,
+  "reason": "Reconcile authoritative provider state after first deploy exited1 despite publishing a version; second attempt stopped at OLD-digest guard before any write.",
+  "new_version": {
+    "id": "0f06a056-336f-4db2-8cdb-e409f042db40",
+    "number": 3,
+    "metadata": {
+      "created_on": "2026-10-22T17:35:27.421425Z",
+      "source": "wrangler"
+    },
+    "resources": {
+      "script": {
+        "etag": "292d7578051f30cae5b6950506eaf7871b4542c95a193645e02d62f77c54a709",
+        "handlers": [
+          "scheduled",
+          "queue",
+          "fetch"
+        ],
+        "named_handlers": [
+          {
+            "name": "BookingProductState",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "BookingRecoveryState",
+            "handlers": [
+              "class"
+            ]
+          }
+        ],
+        "last_deployed_from": "wrangler"
+      },
+      "script_runtime": {
+        "migration_tag": "appointment-recovery-sqlite-v1",
+        "compatibility_date": "2026-10-15",
+        "usage_model": "standard"
+      },
+      "bindings": [
+        {
+          "name": "BOOKING_CONTROL_PUBLISH_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_CONTROL_READ_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_CONTROL_RECONCILE_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_EMAIL_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "BOOKING_GOOGLE_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_INSTALLATION_ID",
+          "type": "plain_text",
+          "text": "526b57e7-3932-4ee1-9799-3071fd03210a"
+        },
+        {
+          "name": "BOOKING_MONITOR_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_PRODUCT_STATE",
+          "type": "durable_object_namespace",
+          "namespace_id": "f0040586472c4caa9af7101c9180cca4",
+          "class_name": "BookingProductState"
+        },
+        {
+          "name": "BOOKING_PROJECT_ID",
+          "type": "plain_text",
+          "text": "rk-medical-centre"
+        },
+        {
+          "name": "BOOKING_PUBLIC_ORIGIN",
+          "type": "plain_text",
+          "text": "https://www.rkmedicalcentre.com"
+        },
+        {
+          "name": "BOOKING_RECOVERY_STATE",
+          "type": "durable_object_namespace",
+          "namespace_id": "a90a2b3e6195448ba7318fae5b692325",
+          "class_name": "BookingRecoveryState"
+        },
+        {
+          "name": "BOOKING_RECOVERY_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_RELEASE_DIGEST",
+          "type": "plain_text",
+          "text": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+        },
+        {
+          "name": "BOOKING_WAKE_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_WAKE_QUEUE",
+          "type": "queue",
+          "queue_name": "rk-medical-centre-production-wake"
+        }
+      ]
+    }
+  },
+  "old_version": {
+    "id": "f2c7ecca-d0ff-49ca-9d31-73770ef34687",
+    "number": 2,
+    "metadata": {
+      "created_on": "2026-10-15T17:45:25.523124Z",
+      "source": "wrangler"
+    },
+    "resources": {
+      "script": {
+        "etag": "14d7899be8883853e7496a1b4404f336465b85a8b6d54d3a78ec33330e1cf546",
+        "handlers": [
+          "scheduled",
+          "queue",
+          "fetch"
+        ],
+        "named_handlers": [
+          {
+            "name": "BookingProductState",
+            "handlers": [
+              "class"
+            ]
+          },
+          {
+            "name": "BookingRecoveryState",
+            "handlers": [
+              "class"
+            ]
+          }
+        ],
+        "last_deployed_from": "api"
+      },
+      "script_runtime": {
+        "migration_tag": "appointment-recovery-sqlite-v1",
+        "compatibility_date": "2026-10-15",
+        "usage_model": "standard"
+      },
+      "bindings": [
+        {
+          "name": "BOOKING_CONTROL_PUBLISH_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_CONTROL_READ_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_CONTROL_RECONCILE_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_EMAIL_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_ENVIRONMENT",
+          "type": "plain_text",
+          "text": "production"
+        },
+        {
+          "name": "BOOKING_GOOGLE_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_INSTALLATION_ID",
+          "type": "plain_text",
+          "text": "526b57e7-3932-4ee1-9799-3071fd03210a"
+        },
+        {
+          "name": "BOOKING_MONITOR_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_PRODUCT_STATE",
+          "type": "durable_object_namespace",
+          "namespace_id": "f0040586472c4caa9af7101c9180cca4",
+          "class_name": "BookingProductState"
+        },
+        {
+          "name": "BOOKING_PROJECT_ID",
+          "type": "plain_text",
+          "text": "rk-medical-centre"
+        },
+        {
+          "name": "BOOKING_PUBLIC_ORIGIN",
+          "type": "plain_text",
+          "text": "https://www.rkmedicalcentre.com"
+        },
+        {
+          "name": "BOOKING_RECOVERY_STATE",
+          "type": "durable_object_namespace",
+          "namespace_id": "a90a2b3e6195448ba7318fae5b692325",
+          "class_name": "BookingRecoveryState"
+        },
+        {
+          "name": "BOOKING_RECOVERY_WORKER_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_RELEASE_DIGEST",
+          "type": "plain_text",
+          "text": "9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e"
+        },
+        {
+          "name": "BOOKING_WAKE_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BOOKING_WAKE_QUEUE",
+          "type": "queue",
+          "queue_name": "rk-medical-centre-production-wake"
+        }
+      ]
+    }
+  },
+  "all_other_bindings_equal_old_version": true,
+  "current_deployment": {
+    "id": "97cfa7e4-39ba-4627-ad2d-77c74a045b10",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "versions": [
+      {
+        "version_id": "0f06a056-336f-4db2-8cdb-e409f042db40",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-22T17:35:29.105753Z"
+  },
+  "schedules": {
+    "schedules": [
+      {
+        "cron": "*/15 * * * *",
+        "created_on": "2026-10-15T18:25:04.921631Z",
+        "modified_on": "2026-10-15T18:25:04.921631Z"
+      }
+    ]
+  },
+  "content": {
+    "http_status": 200,
+    "content_type": "multipart/form-data",
+    "modules": [
+      {
+        "name": "index.js",
+        "bytes": 33392,
+        "sha256": "f8e012b7f5802963c7689db33c9e39555fa8c4193edc7ee33646a4503e6f6001"
+      },
+      {
+        "name": "index.js.map",
+        "bytes": 53634,
+        "sha256": "a37b303bb4a085191536d5593f3afa55c7c032db8810cef1f06c8c3d1af02223"
+      }
+    ],
+    "expected_bundle_sha256": "f8e012b7f5802963c7689db33c9e39555fa8c4193edc7ee33646a4503e6f6001",
+    "expected_bundle_bytes": 33392,
+    "matches_prepared_artifact": true
+  },
+  "passed": true,
+  "worker": "rk-medical-centre-production",
+  "new_release": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "provider_write": false,
+  "actual_deployment_confirmed": true,
+  "cli_nonzero_not_treated_as_rollback": true
+}

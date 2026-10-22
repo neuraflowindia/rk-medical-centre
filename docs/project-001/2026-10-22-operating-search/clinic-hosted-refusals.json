@@ -1,0 +1,122 @@
+{
+  "at": "2026-10-22T17:55:13.414755+00:00",
+  "anonymous_refusals": true,
+  "provider_events_signed_or_fabricated": false,
+  "customer_actions": 0,
+  "observations": [
+    {
+      "method": "GET",
+      "path": "/api/company/settings",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/studio/status",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 14
+    },
+    {
+      "method": "GET",
+      "path": "/api/enquiry-studio/status",
+      "status": 503,
+      "expected": [
+        401,
+        503
+      ],
+      "passed": true,
+      "robots": null,
+      "bytes": 101
+    },
+    {
+      "method": "POST",
+      "path": "/api/internal/recovery/configuration",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "passed": true,
+      "robots": null,
+      "bytes": 23
+    },
+    {
+      "method": "POST",
+      "path": "/api/internal/worker/plan",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "valid_typed_body": true,
+      "authorization_header_supplied": false,
+      "passed": true,
+      "bytes": 23
+    },
+    {
+      "method": "POST",
+      "path": "/api/webhooks/resend",
+      "status": 400,
+      "expected": [
+        400,
+        401
+      ],
+      "passed": true,
+      "robots": null,
+      "bytes": 24
+    },
+    {
+      "method": "GET",
+      "path": "/studio",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 14
+    },
+    {
+      "method": "GET",
+      "path": "/__booking_display/on/booking.html",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 14
+    },
+    {
+      "method": "GET",
+      "path": "/booking-display-manifest.json",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 14
+    },
+    {
+      "method": "GET",
+      "path": "/not-a-clinic-page",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "passed": true,
+      "robots": "noindex, nofollow",
+      "bytes": 14
+    }
+  ],
+  "passed": true
+}

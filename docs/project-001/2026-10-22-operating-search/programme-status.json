@@ -1,22 +1,21 @@
 {
-  "updated_at": "2026-10-22",
+  "updated_at": "2026-10-22T17:57:32.170475+00:00",
   "implementation": "complete",
   "package_release": "1.2.0-rc.2",
   "package_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
   "package_manifest_files": 604,
   "local_booking_qualification": "complete; source-bound reconciliation and successful final affected cases",
-  "public_site_publication": "prepared, not yet accepted",
+  "public_site_publication": "accepted at runtime33de6b24701e12c19da96284aa0b33a3240fc86e; expected Vercel production deployment READY",
   "booking_enabled": false,
   "contact_intake_open": false,
   "account_dependencies": [
-    "deployed readback of saved protection/callback settings and callback activation",
-    "Google identity and record-workbook grants",
+    "Google staff identity and clinic/agency record-workbook grants",
     "one private Calendar consent per doctor",
-    "intended online-payment merchant and callbacks without real charges",
-    "independent encrypted recovery destination/key custody and real restore acceptance",
-    "controlled real joined operational acceptance"
+    "intended online-payment merchant/callbacks and no-money acceptance",
+    "independent encrypted recovery destination, writer/reader grants, key custody and isolated restore",
+    "controlled joined booking/Contact/staff/record acceptance after those dependencies"
   ],
-  "owner_email_setting": "corrected original connection saved by owner; deployment/readback pending",
+  "owner_email_setting": "same original key corrected; owner saved Production setting; exact deployed constructor accepted",
   "real_charges_authorized": false,
   "optional_analytics": "deferred/default denied",
   "future_observations": [
@@ -24,5 +23,12 @@
     "Search Console/Bing submissions through correct owner properties",
     "later indexing/query observation"
   ],
-  "five_protection_callback_settings": "Owner confirmed allfive saved inProduction; deployment/readback pending"
+  "five_protection_callback_settings": "all five owner-saved values accepted by matching live deployment",
+  "runtime_commit": "33de6b24701e12c19da96284aa0b33a3240fc86e",
+  "deployment_id": "dpl_EzJ6Eg6YdLiPZxQsA9ZgqE4Z9Gmm",
+  "worker_version": "0f06a056-336f-4db2-8cdb-e409f042db40",
+  "worker_traffic_percent": 100,
+  "installed_migrations": 40,
+  "private_calendar_mapping": "committed under guarded OFF/idle transaction; actual doctor consent remains",
+  "email_transport": "one owner-authorised diagnostic delivered; authentic callbackHTTP200 receivedtrue"
 }
