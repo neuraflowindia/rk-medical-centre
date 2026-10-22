@@ -29,6 +29,11 @@ def configure(installation, initial_business):
     database, not by modifying this bootstrap snapshot or hot-reloading files.
     """
     incoming = Profile(Installation.parse(installation), BusinessSettings.parse(canonical_business_contacts(initial_business)))
+    calendars = incoming.installation.document.get("resource_calendars", {})
+    policy = incoming.initial_business.document
+    if calendars and (policy.get("version") != 2 or policy.get("meeting") != "in_person"
+            or set(calendars) - {resource["id"] for resource in policy.get("resources", [])}):
+        raise ValueError("Calendar resources must match the declared in-person schedules.")
     global _profile
     with _lock:
         if _profile is not None and _profile != incoming:

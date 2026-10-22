@@ -41,7 +41,8 @@ export async function displayProof(projectRoot,siteRoot,{enabled=false,port=0}={
    const target=guarded.headers.get('x-proof-rewrite'),passed=guarded.headers.get('x-proof-next');
    const headers=Object.fromEntries(guarded.headers);delete headers['x-proof-rewrite'];delete headers['x-proof-next'];
    if(target || passed){
-    if(passed && (incoming.pathname==='/api' || incoming.pathname.startsWith('/api/') || incoming.pathname.startsWith('/company') || incoming.pathname.includes('studio'))){
+    const backend=manifest.backend_paths.some(path=>incoming.pathname===path || incoming.pathname.startsWith(path+'/'));
+    if(passed && (incoming.pathname==='/api' || incoming.pathname.startsWith('/api/') || incoming.pathname==='/company' || incoming.pathname.startsWith('/company/') || backend)){
      response.writeHead(503,{'content-type':'application/json','cache-control':'no-store'});
      return response.end(JSON.stringify({code:'isolated_display_proof_no_application'}));
     }

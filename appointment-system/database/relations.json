@@ -77,6 +77,7 @@
   "appointment_system.recovery_lane_incidents",
   "appointment_system.recovery_lanes",
   "appointment_system.request_limits",
+  "appointment_system.resource_closure_actions",
   "appointment_system.schema_migrations",
   "appointment_system.sheet_current_digests",
   "appointment_system.sheet_current_records",

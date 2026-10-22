@@ -247,12 +247,12 @@
     try {
       const result = await request('/api/company/resources/status');
       if (epoch !== accessEpoch) return;
-      const labels = {calendar:'Client Calendar',client_sheet:'Client records',agency_sheet:'NeuraFlow record copy'};
-      $('google-status').textContent = result.resources.map(item => `${labels[item.resource]}: ${item.reconnect_required ? 'approval needed' : item.connected ? 'connected' : 'not connected'}`).join(' · ');
+      const label = item => item.label || ({calendar:'Client Calendar',client_sheet:'Client records',agency_sheet:'NeuraFlow record copy'}[item.resource] || 'Calendar');
+      $('google-status').textContent = result.resources.map(item => `${label(item)}${item.owner_email ? ` (${item.owner_email})` : ''}: ${item.reconnect_required ? 'approval needed' : item.connected ? 'connected' : 'not connected'}`).join(' · ');
       $('google-pending').replaceChildren();
       for (const item of result.pending) {
         const button = document.createElement('button'); button.type = 'button';
-        button.textContent = `Finish ${labels[item.resource]} connection`;
+        button.textContent = `Finish ${label(item)} connection`;
         button.addEventListener('click', async () => {
           button.disabled = true;
           try {

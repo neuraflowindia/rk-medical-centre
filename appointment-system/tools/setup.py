@@ -4,6 +4,7 @@ from contextlib import contextmanager
 import getpass
 import json
 import os
+import re
 import sys
 import warnings
 from pathlib import Path
@@ -55,6 +56,50 @@ def initialize(connection,installation,business):
         connection.execute('SELECT appointment_system.configure_installation(%s,%s,false)',
             (Jsonb(installation.document),Jsonb(business.document)))
         return {'status':'initialized','booking_enabled':False,'changed':True}
+
+
+
+def configure_resource_calendars(connection,installation,*,expected_profile,expected_worker,new_worker):
+    """Atomically fence an idle old release before adding private calendar work.
+
+    The caller prepares and verifies the complete new app/worker first. This is
+    an owner setup operation, never a web endpoint or a reset of live work.
+    """
+    from appointment_system.serialization import fingerprint
+    if (not isinstance(installation,Installation) or not installation.document.get('resource_calendars')
+        or any(type(value) is not str or not re.fullmatch(r'[a-f0-9]{64}',value)
+               for value in (expected_profile,expected_worker,new_worker))):
+        raise SetupError('setup_calendar_cutover_invalid')
+    with owner(connection,installation):
+        saved=connection.execute('SELECT specification FROM appointment_system.installation WHERE singleton FOR UPDATE').fetchone()
+        state=connection.execute('SELECT enabled,requested_enabled FROM appointment_system.control_product_state WHERE singleton FOR UPDATE').fetchone()
+        worker=connection.execute('SELECT release_digest,active_run,active_until FROM appointment_system.worker_release WHERE singleton FOR UPDATE').fetchone()
+        if saved is None or fingerprint(saved[0])!=expected_profile:
+            raise SetupError('setup_installation_changed')
+        target=installation.document
+        if {k:v for k,v in saved[0].items() if k!='resource_calendars'}!={k:v for k,v in target.items() if k!='resource_calendars'}:
+            raise SetupError('setup_installation_mismatch')
+        if state!=(False,False):raise SetupError('setup_booking_must_be_closed')
+        if worker is None or worker[0]!=expected_worker:raise SetupError('setup_worker_release_changed')
+        if worker[1:]!=(None,None):raise SetupError('setup_worker_busy')
+        busy=connection.execute("""SELECT
+         EXISTS(SELECT 1 FROM appointment_system.delivery_jobs WHERE lease_expires_at>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.enquiry_delivery_jobs WHERE lease_expires_at>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.booking_verification_mail WHERE lease_expires_at>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.provider_inbox WHERE lease_expires_at>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.payment_orders WHERE lease_expires_at>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.payment_cases WHERE financial_lease_until>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.google_resource_grants WHERE refresh_lease_until>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.google_connections WHERE refresh_lease_until>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.google_workbooks WHERE lease_until>clock_timestamp()) OR
+         EXISTS(SELECT 1 FROM appointment_system.control_publications WHERE lease_until>clock_timestamp())""").fetchone()[0]
+        if busy:raise SetupError('setup_delivery_busy')
+        connection.execute('SELECT appointment_system.configure_worker_release(%s)',(new_worker,))
+        result=connection.execute('SELECT appointment_system.configure_resource_calendars(%s,%s)',
+            (expected_profile,Jsonb(target['resource_calendars']))).fetchone()[0]
+        if result.get('profile_digest')!=fingerprint(target):raise SetupError('setup_installation_mismatch')
+        installed(connection,installation)
+        return {'status':'calendars_configured','profile_digest':result['profile_digest'],'worker_digest':new_worker,'booking_enabled':False}
 
 
 def register(connection,installation):

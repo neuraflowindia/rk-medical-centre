@@ -14,14 +14,24 @@ from .fixtures import business
 from .test_sql_booking_verification import BookingCodeFixture
 
 
+class StoredProductReader:
+    """Local projection double backed by this fixture's actual control epoch."""
+    def __init__(self,db):self.db=db
+    async def read(self):
+        return self.db.value("SELECT jsonb_build_object('enabled',enabled,'activation_epoch',activation_epoch) "
+                             "FROM appointment_system.control_product_state WHERE singleton;")
+
+
 class BrowserJourneySQL(BookingCodeFixture):
-    def journey(self,otp,*,website=False,no_email=False):
+    def journey(self,otp,*,website=False,no_email=False,doctor_index=0,payment_method="online"):
         spec=business(booking_otp=otp)
         if website:
             spec=json.loads((Path(os.environ['BOOKING_WEBSITE_PROOF_PROJECT'])/'appointment-settings/business-settings.json').read_text())
             otp=spec['booking_verification']['email']
         if no_email:
             otp=False;spec['booking_verification']['email']=False;spec['required_contacts']=['phone']
+        clinic=website and spec.get('version')==2
+        if doctor_index or payment_method!='online':self.assertTrue(clinic,'A v2 in-person receiving project is required.')
         self.set_policy(spec);adapter=Mock()
         adapter.credentials=Credentials('SyntheticMerchant','live','fixture','rzp_live_synthetic','synthetic-secret')
         captured=False;order={}
@@ -37,8 +47,10 @@ class BrowserJourneySQL(BookingCodeFixture):
         adapter.create_order.side_effect=create;adapter.order.side_effect=lambda _:dict(order);adapter.order_payments.side_effect=payments
         adapter.payment.side_effect=lambda _:payments(None)['items'][0]
         accounts=Accounts([adapter],current_versions={('SyntheticMerchant','live'):'fixture'})
+        from appointment_system.webhook import WebhookAccount
         app=create_application(self.public,self.settings,verified_client_address=lambda request:'127.0.0.1',
-            projection_reader=self.reader,worker_store=self.worker,email_sender=self.sender,booking_verification_keys=self.keys,payment_accounts=accounts)
+            projection_reader=StoredProductReader(self.db),worker_store=self.worker,email_sender=self.sender,booking_verification_keys=self.keys,payment_accounts=accounts,
+            webhook_account=WebhookAccount('SyntheticMerchant','live',('synthetic-webhook-secret',)),provider_store=self.worker)
         self.client=TestClient(app,base_url=installation()['origin'])
         node=os.environ.get('BOOKING_NODE_EXECUTABLE') or shutil.which('node')
         self.assertIsNotNone(node,'Node is required for native browser coordinator proof')
@@ -55,7 +67,7 @@ class BrowserJourneySQL(BookingCodeFixture):
                     continue
                 if not line:break
                 self.assertLess(len(line),16384);row=json.loads(line);path=row['path'];body={};status=200
-                if path=='test:settings':body={key:installation()[key] for key in ('installation_id','environment')}|{'no_email':no_email}
+                if path=='test:settings':body={key:installation()[key] for key in ('installation_id','environment')}|{'no_email':no_email,'doctor_index':doctor_index,'payment_method':payment_method}
                 elif path=='test:date':body={'value':datetime.fromisoformat(self.starts[0]).astimezone(ZoneInfo('Asia/Kolkata')).date().isoformat()}
                 elif path=='test:verification-code':body={'value':self.code()}
                 elif path=='test:payment-capture':
@@ -78,9 +90,14 @@ class BrowserJourneySQL(BookingCodeFixture):
             if process.poll() is None:process.kill();process.wait()
             for stream in (process.stdin,process.stdout,process.stderr):stream.close()
             self.client.close()
-        self.assertEqual(adapter.create_order.call_count,1)
+        self.assertEqual(adapter.create_order.call_count,0 if payment_method=='at_clinic' else 1)
         self.assertEqual(self.db.scalar('SELECT count(*) FROM appointment_system.bookings;'),'1')
-        self.assertEqual(self.db.scalar('SELECT count(*) FROM appointment_system.accepted_payments;'),'1')
+        self.assertEqual(self.db.scalar('SELECT count(*) FROM appointment_system.accepted_payments;'),'0' if payment_method=='at_clinic' else '1')
+        if clinic:
+            chosen=spec['resources'][doctor_index]
+            facts=self.db.value('SELECT jsonb_build_object(\'resource_id\',resource_id,\'payment_method\',payment_method,\'state\',state) FROM appointment_system.bookings;')
+            self.assertEqual(facts,{'resource_id':chosen['id'],'payment_method':payment_method,'state':'confirmed'})
+            self.assertEqual(self.db.scalar('SELECT count(*) FROM appointment_system.meeting_events;'),'0')
         self.assertEqual(len(self.requests),1 if otp else 0)
         if no_email:
             self.assertEqual(self.db.scalar('SELECT email IS NULL FROM appointment_system.bookings;'),'t')
@@ -96,3 +113,12 @@ class BrowserJourneySQL(BookingCodeFixture):
 
     @unittest.skipUnless(os.environ.get('BOOKING_WEBSITE_PROOF_PROJECT'),'Explicit built project required')
     def test_real_built_website_without_email(self):self.journey(False,website=True,no_email=True)
+
+    @unittest.skipUnless(os.environ.get('BOOKING_WEBSITE_PROOF_PROJECT'),'Explicit built project required')
+    def test_real_clinic_second_doctor_online(self):self.journey(False,website=True,doctor_index=1)
+
+    @unittest.skipUnless(os.environ.get('BOOKING_WEBSITE_PROOF_PROJECT'),'Explicit built project required')
+    def test_real_clinic_first_doctor_pay_at_clinic(self):self.journey(False,website=True,payment_method='at_clinic')
+
+    @unittest.skipUnless(os.environ.get('BOOKING_WEBSITE_PROOF_PROJECT'),'Explicit built project required')
+    def test_real_clinic_second_doctor_pay_at_clinic(self):self.journey(False,website=True,doctor_index=1,payment_method='at_clinic')

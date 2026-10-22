@@ -9,7 +9,7 @@ import {localDate} from '../browser/display-formatting.mjs';
 
 const project=process.env.BOOKING_WEBSITE_PROOF_PROJECT,site=process.env.BOOKING_WEBSITE_PROOF_SITE;
 if(!project||!site)throw Error('Explicit local project and built website required.');
-const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
 const headed=process.env.BOOKING_EXPERIENCE_HEADED==='1';
 const browser=await chromium.launch({headless:!headed,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']});
 const proof=await displayProof(project,site,{enabled:true});

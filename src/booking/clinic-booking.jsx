@@ -1,7 +1,7 @@
 import React, {useEffect, useId, useRef, useSyncExternalStore} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createUseBooking} from '../../appointment-system/browser/booking/index.mjs';
-import {productState} from '../../appointment-system/browser/product-state.mjs';
+import {productState} from '../clinic/product-state.mjs';
 import {dateRange, timeLabel, money} from '../../appointment-system/browser/display-formatting.mjs';
 import {ReceiptFields, BookingDetailsFields, DateField, VerificationFields} from './shared-fields.jsx';
 import './clinic-booking.css';

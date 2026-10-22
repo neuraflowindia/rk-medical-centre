@@ -1,0 +1,29 @@
+{
+  "release": "1.2.0-rc.2",
+  "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "declared_files": 604,
+  "sealed_source_matches_installed_package": true,
+  "final_receiving_build_matches_both_fresh_target_runs": true,
+  "final_receiving_build_differs_from_preserved_prior_build": true,
+  "current_receiving_correction": "App-only utility registry plus raw/runtime canonical, og:url and structured-graph cleanup; final native build frozen before both fresh target runs.",
+  "working_python_owners": 142,
+  "working_javascript_owners": 49,
+  "all_original_domains_meet_at_least_90_statements_and_branches": true,
+  "python_minimum_domain_branch_percent": 90.0,
+  "javascript_minimum_domain_branch_percent": 90.33457249070632,
+  "javascript_main_cases": 355,
+  "javascript_additional_source_bound_cases": 45,
+  "javascript_counter_integrity_cases": 4,
+  "archived_proof_files": 47,
+  "archive_file_hashes_verified": true,
+  "source_modified_after_seal": false,
+  "fresh_affected_cases": {
+    "PG16": 12,
+    "PG18": 12
+  },
+  "shared_source_and_counter_proof_carried_unchanged": true,
+  "provider_actions": 0,
+  "customer_actions": 0,
+  "local_package_G02_G04_complete": true,
+  "production_booking_or_consent_claim": false
+}

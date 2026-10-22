@@ -40,7 +40,27 @@ SHEET_SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
 RESOURCE_ROLES={'calendar':'client','client_sheet':'client','agency_sheet':'agency'}
 RESOURCE_SCOPES={name:frozenset(('openid',EMAIL_SCOPE,CALENDAR_SCOPE if name=='calendar' else FILE_SCOPE))
                  for name in RESOURCE_ROLES}
+# Staff/sign-in principals stay client + agency. Calendar-only doctors never
+# acquire either role, Drive scopes, or a staff identity through a resource grant.
 OWNERS = owners()
+
+def resource_roles():
+    from .configuration import installation
+    return RESOURCE_ROLES | {"calendar_"+resource: "doctor-"+resource
+        for resource in installation().get("resource_calendars", {})}
+
+def resource_owners():
+    from .configuration import installation
+    return OWNERS | {"doctor-"+resource: owner
+        for resource, owner in installation().get("resource_calendars", {}).items()}
+
+def scopes_for_resource(resource):
+    if resource in RESOURCE_SCOPES:
+        return RESOURCE_SCOPES[resource]
+    if resource in resource_roles():
+        return RESOURCE_SCOPES["calendar"]
+    raise GoogleFailure("google_resource_invalid")
+
 MAX_RESPONSE = 65536
 CALLBACK = '/api/studio/google/callback'
 SIGN_IN_CALLBACK = '/api/studio/sign-in/callback'
@@ -60,10 +80,13 @@ def scopes_for(role):
 
 def resource_scopes_valid(resources,scopes):
     if (type(resources) is not tuple or not resources or tuple(sorted(set(resources)))!=resources
-        or any(name not in RESOURCE_ROLES for name in resources)):
+        # Each doctor grant is confined to one explicitly declared Calendar.
+        or any(name not in resource_roles() for name in resources)):
         return False
     calendar=RESOURCE_SCOPES['calendar'];sheet=RESOURCE_SCOPES['client_sheet']
     combined=calendar|{FILE_SCOPE}
+    if len(resources)==1 and resources[0].startswith("calendar_"):
+        return scopes==calendar
     if resources==('calendar','client_sheet'):return scopes==combined
     if len(resources)!=1:return False
     return scopes in ((calendar,calendar|{CALENDAR_READ_SCOPE},combined) if resources[0]=='calendar'
@@ -122,7 +145,8 @@ class Attempt:
     verifier: str = field(repr=False)
 
     def __post_init__(self):
-        scopes_for(self.role)
+        if self.role not in resource_owners():
+            raise GoogleFailure("google_attempt_invalid")
         if (not isinstance(self.state,str) or not re.fullmatch(r'(?:a1\.[a-zA-Z0-9_-]{1,32}\.)?[A-Za-z0-9_-]{43}',self.state)
             or any(not isinstance(v, str) or not re.fullmatch(r'[A-Za-z0-9_-]{43}', v)
                for v in (self.nonce, self.verifier))):
@@ -144,11 +168,11 @@ class Grant:
     resources: tuple = ()
 
     def __post_init__(self):
-        if (self.email != OWNERS.get(self.role) or not _opaque(self.subject, 1, 255)
+        if (self.email != (resource_owners() if self.resources else OWNERS).get(self.role) or not _opaque(self.subject, 1, 255)
                 or not _opaque(self.refresh_token)
                 or (self.scopes != scopes_for(self.role) if not self.resources else
                     not resource_scopes_valid(self.resources,self.scopes)
-                    or any(RESOURCE_ROLES.get(resource)!=self.role for resource in self.resources))):
+                    or any(resource_roles().get(resource)!=self.role for resource in self.resources))):
             raise GoogleFailure('google_grant_invalid')
         if self.refresh_expires_at is not None:
             _time(self.refresh_expires_at)
@@ -226,7 +250,7 @@ class GrantCipher:
             raise GoogleFailure('google_saved_'+kind+'_invalid') from None
 
     def seal_attempt(self,attempt,purpose):
-        if not isinstance(attempt,Attempt) or purpose not in ('signin','connect',REPAIR_PURPOSE):
+        if not isinstance(attempt,Attempt) or attempt.role not in OWNERS or purpose not in ('signin','connect',REPAIR_PURPOSE):
             raise GoogleFailure('google_attempt_invalid')
         data=dict(purpose='appointment:v1:google-attempt:v1',flow=purpose,client_id=self._client_id,
                   role=attempt.role,state=attempt.state,nonce=attempt.nonce,verifier=attempt.verifier)
@@ -278,16 +302,22 @@ class GoogleOAuth:
     def __init__(self, settings, *, transport=None,resource=None):
         if not isinstance(settings, OAuthSettings):
             raise GoogleFailure('google_configuration_invalid')
-        if resource is not None and resource not in RESOURCE_ROLES:raise GoogleFailure('google_resource_invalid')
+        if resource is not None and resource not in resource_roles():raise GoogleFailure('google_resource_invalid')
         self.settings, self._transport,self.resource = settings, transport,resource
 
     def expected_scopes(self,role):
         if self.resource is None:return scopes_for(role)
-        if RESOURCE_ROLES[self.resource]!=role:raise GoogleFailure('google_account_mismatch')
-        return RESOURCE_SCOPES[self.resource]
+        if resource_roles()[self.resource]!=role:raise GoogleFailure('google_account_mismatch')
+        return scopes_for_resource(self.resource)
+
+    def expected_owner(self, role):
+        self.expected_scopes(role)
+        return (resource_owners() if self.resource is not None else OWNERS)[role]
 
     def authorization_url(self, attempt, *, signin=False, repair=False):
-        if signin and repair: raise GoogleFailure('google_attempt_invalid')
+        if signin and repair or (signin or repair) and (self.resource is not None or attempt.role not in OWNERS):
+            raise GoogleFailure('google_attempt_invalid')
+        owner = self.expected_owner(attempt.role)
         challenge = base64.urlsafe_b64encode(hashlib.sha256(attempt.verifier.encode()).digest()).rstrip(b'=').decode()
         return AUTH + '?' + urlencode(dict(
             client_id=self.settings.client_id,
@@ -295,7 +325,7 @@ class GoogleOAuth:
             response_type='code', scope='openid email' if signin else ' '.join(sorted(self.expected_scopes(attempt.role))),
             access_type='online' if signin else 'offline',
             prompt='select_account' if signin else 'consent', include_granted_scopes='false',
-            login_hint=OWNERS[attempt.role], state=attempt.state, nonce=attempt.nonce,
+            login_hint=owner, state=attempt.state, nonce=attempt.nonce,
             code_challenge=challenge, code_challenge_method='S256'))
 
     @observe_provider('google')
@@ -355,7 +385,7 @@ class GoogleOAuth:
     def _identity(self, value, role, *, subject=None):
         if (not isinstance(value, dict) or value.get('email_verified') is not True
                 or not isinstance(value.get('email'), str)
-                or value['email'].lower() != OWNERS[role]
+                or value['email'].lower() != self.expected_owner(role)
                 or not _opaque(value.get('sub'), 1, 255)
                 or (subject is not None and value['sub'] != subject)):
             raise GoogleFailure('google_account_mismatch')
@@ -379,7 +409,8 @@ class GoogleOAuth:
         return Access(tokens['access_token'], _time(now) + timedelta(seconds=seconds), grant,self.settings.client_id)
 
     def _exchange_identity(self, attempt, code, *, signin=False, previous_subject=None, repair=False):
-        if signin and repair: raise GoogleFailure('google_attempt_invalid')
+        if signin and repair or (signin or repair) and (self.resource is not None or attempt.role not in OWNERS):
+            raise GoogleFailure('google_attempt_invalid')
         if not _opaque(code, 1, 4096):
             raise GoogleFailure('google_code_invalid')
         tokens = self._request(TOKEN, data=dict(client_id=self.settings.client_id,
@@ -422,7 +453,7 @@ class GoogleOAuth:
             if type(seconds) is not int or not 0 < seconds <= 315360000:
                 raise GoogleFailure('google_token_invalid')
             refresh_expiry = now + timedelta(seconds=seconds)
-        grant = Grant(attempt.role, subject, OWNERS[attempt.role], tokens['refresh_token'], scopes, refresh_expiry,
+        grant = Grant(attempt.role, subject, self.expected_owner(attempt.role), tokens['refresh_token'], scopes, refresh_expiry,
                       (self.resource,) if self.resource is not None else ())
         return self._access(tokens, grant, now)
 

@@ -85,6 +85,20 @@ class ClinicFacts(TestCase):
 
 
 class ClinicMail(TestCase):
+    def test_doctor_payment_review_uses_only_its_declared_resource_destination(self):
+        job=self.job(role='resource',kind='payment_review');job['destination']='doctor@example.test'
+        job['payload'].update(payment_method='online',amount_due_paise=0)
+        declared={'resource_notifications':{'doctor-a':'doctor@example.test'},'owners':{'agency_email':'manager@example.test'}}
+        with patch('appointment_system.email_messages.installation',return_value=declared):
+            message=render_message(job)
+            self.assertIn('not an appointment confirmation',message['text'])
+            self.assertIn('private studio',message['text'])
+            self.assertNotIn('20 minutes',message['text'])
+            job['destination']='another-doctor@example.test'
+            with self.assertRaises(EmailFailure):render_message(job)
+            job['destination']='doctor@example.test';job['payload']['facts_version']=1
+            with self.assertRaises(EmailFailure):render_message(job)
+
     def test_private_payment_review_is_not_an_appointment_confirmation(self):
         job=self.job(role='agency',kind='payment_review');job['destination']='manager@example.test'
         job['payload'].update(payment_method='online',amount_due_paise=0)

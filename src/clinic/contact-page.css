@@ -40,3 +40,17 @@
 @media(max-width:767px){.contact-opening-actions{gap:12px;margin-bottom:34px}.contact-opening-actions .button{padding-inline:17px;min-height:48px;font-size:15px}.contact-visit-fact{font-size:15px;margin-top:9px}[data-section-scene="C1"] .contact-grid{grid-template-columns:minmax(0,1fr);gap:38px}.contact-call-choice.contact-row{padding:21px 18px;grid-template-columns:36px minmax(0,1fr);gap:12px}.contact-doctor-symbol{width:36px;height:36px;border-radius:12px}.contact-doctor-symbol>.solid-icon{width:23px;height:23px}.contact-call-choice h3{font-size:22px}.contact-call-choice p{font-size:16px}.contact-call-choice .phone-number{font-size:19px;gap:7px}.contact-doctor-about{font-size:15px}.contact-location .map-panel iframe{height:290px;border-radius:22px}.contact-location .map-panel h2{font-size:25px}.contact-hours .appointment-schedule li{font-size:16px}.contact-address address{font-size:17px!important}}
 @media(max-width:359px){.contact-opening-actions{align-items:stretch}.contact-opening-actions .button{width:100%;justify-content:center}.contact-call-choice.contact-row{padding:20px 16px;grid-template-columns:minmax(0,1fr)}.contact-doctor-symbol{margin-bottom:2px}.contact-call-choice .phone-number{font-size:18px}}
 @media(max-width:767px){#phone-and-address{scroll-margin-top:100px}}
+
+/* The existing form geometry also covers verification and safe pre-bind states. */
+[data-contact-form] fieldset{border:0;padding:0;margin:0;min-width:0;display:grid;gap:18px}
+[data-contact-form] .field-hint{font-size:15px;line-height:1.55;margin:0}
+[data-contact-form] [data-contact-verification]{display:grid;gap:12px}
+[data-contact-form] [hidden]{display:none!important}
+[data-contact-form] input,[data-contact-form] textarea{font-size:16px}
+[data-contact-form] [role="alert"]{color:#8f241b}
+[data-contact-form] button:focus-visible,[data-contact-form] input:focus-visible,[data-contact-form] textarea:focus-visible{outline:2px solid #17675e;outline-offset:2px}
+[data-contact-form] [data-contact-countdown]{font-size:14px}
+[data-contact-form] button{min-height:44px}
+/* Contact text fields are ordinary inputs, separate from the radio-choice styles. */
+[data-contact-form] fieldset input{position:static;opacity:1;width:100%;height:auto}
+[data-contact-form] fieldset label>span{display:inline;min-height:0;padding:0;border:0;border-radius:0;background:transparent;font-size:14px!important;font-weight:400!important;color:var(--body)!important}

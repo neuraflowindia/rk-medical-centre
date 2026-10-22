@@ -8,7 +8,7 @@ import {displayProof} from '../tools/checks/website-display.mjs';
 
 const root=process.env.BOOKING_WEBSITE_PROOF_PROJECT,site=process.env.BOOKING_WEBSITE_PROOF_SITE;
 test('built project in Chrome removes booking pages, assets and links while preserving ordinary pages',{skip:!root || !site},async()=>{
- const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+ const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
  const browser=await chromium.launch({headless:true,...(process.env.BOOKING_CHROME_EXECUTABLE?{executablePath:process.env.BOOKING_CHROME_EXECUTABLE}:{}),args:['--no-sandbox']});
  const proof=await displayProof(root,site),context=await browser.newContext();
  try{
@@ -37,8 +37,12 @@ test('built project in Chrome removes booking pages, assets and links while pres
   for(const path of requests)assert.notEqual(proof.manifest.assets[path],'booking','OFF page loaded booking-only code: '+path);
   await page.goto(proof.origin+'/');await page.waitForFunction(()=>document.querySelector('h1') && document.body.innerText.trim().length>60 && !document.body.innerText.includes('Loading the page'));
   proof.setEnabled(true);
+  // A genuine foreground event reads fresh state immediately; public idle reads
+  // intentionally run once per minute rather than within this 10-second check.
+  await page.waitForTimeout(110);await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
   await page.waitForFunction(()=>[...document.querySelectorAll('a[href]')].some(node=>/^\/booking(?:[/?#]|$)/.test(node.getAttribute('href'))),undefined,{timeout:10000});
   proof.setEnabled(false);
+  await page.waitForTimeout(110);await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
   await page.waitForFunction(()=>![...document.querySelectorAll('a[href]')].some(node=>/^\/booking(?:[/?#]|$)/.test(node.getAttribute('href'))),undefined,{timeout:10000});
   await page.goto(proof.origin+'/contact');await page.waitForFunction(()=>document.querySelector('h1') && document.body.innerText.trim().length>60 && !document.body.innerText.includes('Loading the page'));
   assert.ok(await page.locator('input,textarea').count()>0,'Contact fields disappeared OFF');

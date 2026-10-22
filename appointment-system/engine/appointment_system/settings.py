@@ -90,7 +90,7 @@ class Installation:
     @classmethod
     def parse(cls, document):
         value = decode(canonical(document))
-        object_fields(value, PROJECT_FIELDS, {"resource_notifications", "schedule_management", "public_contacts"})
+        object_fields(value, PROJECT_FIELDS, {"resource_notifications", "resource_calendars", "schedule_management", "public_contacts"})
         if "public_contacts" in value:
             contacts = value["public_contacts"]
             if type(contacts) is not list or not 1 <= len(contacts) <= 10:
@@ -109,6 +109,15 @@ class Installation:
             identifier(resource, "resource_id")
             if destination != email(destination, "resource_notifications"):
                 raise invalid("resource_notifications")
+        calendars = value.get("resource_calendars", {})
+        if type(calendars) is not dict or len(calendars) > 100:
+            raise invalid("resource_calendars")
+        for resource, owner in calendars.items():
+            identifier(resource, "resource_id")
+            if owner != email(owner, "resource_calendars") or destinations.get(resource) != owner:
+                raise invalid("resource_calendars")
+        if len(set(calendars.values())) != len(calendars):
+            raise invalid("resource_calendars")
         if "schedule_management" in value:
             _unique_list(value["schedule_management"], 2, {"client", "agency"}, "schedule_management")
             if not value["schedule_management"]:

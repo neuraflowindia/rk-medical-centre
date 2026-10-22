@@ -1,0 +1,10 @@
+{
+  "prefixes": {
+    "clinic-assets": 208,
+    "client-photos": 34,
+    "certificates": 20
+  },
+  "files": 262,
+  "mixedAssetsExcluded": false,
+  "hostReadbackRequired": true
+}

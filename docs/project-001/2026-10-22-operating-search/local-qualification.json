@@ -1,0 +1,43 @@
+{
+  "package": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "python_owners": 142,
+  "javascript_owners": 49,
+  "excluded_owners": [],
+  "python_statements": {
+    "covered": 10944,
+    "total": 11252
+  },
+  "python_branches": {
+    "covered": 4127,
+    "total": 4504
+  },
+  "javascript_statements": {
+    "covered": 5191,
+    "total": 5445
+  },
+  "javascript_branches": {
+    "covered": 4446,
+    "total": 4837
+  },
+  "javascript_main_cases": 355,
+  "javascript_supplement_cases": 45,
+  "shared_domain_minimum_percent": 90,
+  "source_bound_reconciliation": true,
+  "final_affected_cases": {
+    "postgres16": 12,
+    "postgres18": 12
+  },
+  "provider_calls": 0,
+  "real_charges": 0,
+  "real_messages": 0,
+  "provider_acceptance": false,
+  "local_public_review": {
+    "natural_desktop_phone_pages": 14,
+    "boundary_states": 28,
+    "no_javascript_pages": 7,
+    "contact_scenarios": 6,
+    "treatment_scenarios": 8,
+    "motion_boundary_cases": 21,
+    "final_contact_startup_observations": 4
+  }
+}

@@ -1,0 +1,16 @@
+/** Read-only hosted browser review; never clicks a send/payment/booking action. */
+import assert from 'node:assert/strict';import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';import {resolve} from 'node:path';import {pathToFileURL} from 'node:url';
+const spec=JSON.parse(readFileSync(process.argv[2],'utf8')),output=resolve(process.argv[3]),origin=spec.origin;
+assert.match(origin,/^https:\/\/(?:www\.rkmedicalcentre\.com|www\.shiwlyscreations\.co\.in|astroadvicebykundansingh\.com|www\.sarsajyotishsansthan\.com)$/);
+const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES,'playwright-core/index.mjs')).href);const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_BROWSER_EXECUTABLE,args:['--no-sandbox']});mkdirSync(output,{recursive:true});const results=[];
+const widths=(process.env.REVIEW_WIDTHS||'1440,390').split(',').map(Number);
+try{for(const viewport of [{width:1440,height:900},{width:390,height:844}].filter(view=>widths.includes(view.width))){const context=await browser.newContext({viewport,reducedMotion:'no-preference'}),page=await context.newPage();
+ for(const item of spec.pages){const errors=[],scripts=[];page.removeAllListeners('pageerror');page.removeAllListeners('response');page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.request().resourceType()==='script'&&r.status()>=400)scripts.push({url:r.url(),status:r.status()});});
+ const response=await page.goto(origin+item.path,{waitUntil:'load'});await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(item.path==='/'?6500:1200);
+ const scenes=page.locator('main section');for(let i=0;i<await scenes.count();i++){if(!await scenes.nth(i).evaluate(e=>!!e.getClientRects().length&&getComputedStyle(e).display!=='none'))continue;await scenes.nth(i).scrollIntoViewIfNeeded();await page.waitForTimeout(300);}await page.waitForTimeout(1300);await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(400);
+ const state=await page.evaluate(()=>({title:document.title,canonical:[...document.querySelectorAll('link[rel="canonical"]')].map(e=>e.href),h1:document.querySelectorAll('main h1').length,main:document.querySelectorAll('main').length,overflow:document.documentElement.scrollWidth>innerWidth+1,broken:[...document.images].filter(e=>e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
+ const row={path:item.path,width:viewport.width,status:response.status(),...state,errors,failedScripts:scripts,screenshot:`${viewport.width}-${item.path==='/'?'home':item.path.slice(1).replaceAll('/','-')}.png`};results.push(row);await page.screenshot({path:resolve(output,row.screenshot),fullPage:true});writeFileSync(resolve(output,'results.json'),JSON.stringify({read_only:true,provider_writes:0,results},null,2)+'\n');console.log(JSON.stringify({...row,canonical:undefined}));
+ assert.equal(row.status,200);assert.equal(row.title,item.title);assert.equal(row.h1,1);assert.equal(row.main,1);assert.equal(row.overflow,false);assert.deepEqual(row.broken,[]);assert.deepEqual(errors,[]);assert.deepEqual(scripts,[]);
+ }
+ await context.close();}
+}finally{await browser.close();writeFileSync(resolve(output,'results.json'),JSON.stringify({read_only:true,provider_writes:0,results},null,2)+'\n');}

@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {displayProof} from '../tools/checks/website-display.mjs';
 const root=process.env.BOOKING_WEBSITE_PROOF_PROJECT,site=process.env.BOOKING_WEBSITE_PROOF_SITE;
 test('actual enquiry form preserves one request through uncertain save, wrong code, expiry and resend',{skip:!root||!site},async()=>{
- const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+ const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
  const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']});
  const proof=await displayProof(root,site,{enabled:false}),context=await browser.newContext({reducedMotion:'reduce'});
  const page=await context.newPage();page.setDefaultTimeout(10000);
@@ -32,7 +32,37 @@ test('actual enquiry form preserves one request through uncertain save, wrong co
   return send(reply());
  });
  try{
-  await page.goto(proof.origin+'/contact');await page.locator('#visitor-name,#name').first().waitFor();
+  await page.goto(proof.origin+'/contact');await page.locator('#contact-name,#visitor-name,#name').first().waitFor();
+  if(await page.locator('[data-contact-form]').count()){
+   const form=page.locator('[data-contact-form]'),submit=form.locator('button[type=submit]'),code=form.locator('#contact-code');
+   await submit.click();
+   for(const text of ['Enter your full name (2–100 characters).','Enter a valid email address.','Write your question (2–4,000 characters).'])await page.getByText(text,{exact:true}).waitFor();
+   assert.equal(calls.length,0);assert.equal(await form.locator('#contact-phone').getAttribute('required'),null);
+   await form.locator('#contact-email').fill('wrong');await form.locator('#contact-phone').fill('abc');await submit.click();
+   await page.getByText('Include your country code and check the number.',{exact:true}).waitFor();assert.equal(calls.length,0);
+   await form.locator('#contact-name').fill('Synthetic Customer');await form.locator('#contact-email').fill('customer@example.com');
+   await form.locator('#contact-phone').fill('+919876543210');await form.locator('#contact-message').fill('A synthetic question for the clinic.');
+   await submit.click();const retry=form.locator('[data-contact-retry]');await retry.waitFor({state:'visible'});
+   assert.equal(await code.isVisible(),false,'A failed save is not a delivered code');
+   startFailure=false;await retry.click();await code.waitFor({state:'visible'});
+   const starts=calls.filter(call=>call.action==='start');assert.equal(starts.length,2);assert.deepEqual(starts[0],starts[1]);
+   assert.equal(starts[0].body.phone,'+919876543210');assert.equal(starts[0].body.subject,'Website enquiry');
+   assert.equal(starts[0].body.message,'A synthetic question for the clinic.');
+   await code.fill('123456');await form.locator('[data-contact-verify]').click();
+   await form.locator('[data-contact-error-summary]').filter({hasText:/\S/}).waitFor({state:'visible'});
+   assert.notEqual(await form.locator('[data-contact-status]').innerText(),'The clinic has received your question.');
+   phase='expired';await form.locator('[data-contact-check]').click();
+   await form.locator('[data-contact-status]').filter({hasText:/This code has expired/}).waitFor();
+   assert.equal(await form.locator('[data-contact-verify]').isDisabled(),true);
+   await form.locator('[data-contact-resend]').click();await page.waitForFunction(()=>!document.querySelector('[data-contact-verify]').disabled);
+   assert.equal(generation,2);assert.equal(await code.inputValue(),'');
+   wrongCode=false;await code.fill('123456');await form.locator('[data-contact-verify]').click();
+   await form.locator('[data-contact-status]').filter({hasText:/^The clinic has received your question\.$/}).waitFor();
+   assert.equal(calls.filter(call=>call.action==='start').length,2);assert.equal(calls.filter(call=>call.action==='resend').length,1);
+   await form.locator('[data-contact-restart]').click();
+   await page.waitForFunction(()=>document.querySelector('#contact-name')?.value==='');
+   assert.equal(await form.locator('#contact-name').inputValue(),'');assert.deepEqual(errors,[]);return;
+  }
   const inline=await page.locator('#visitor-name').count()>0;
   if(!inline){
    const offlineHelp=page.getByRole('button',{name:'How do I arrange a consultation?',exact:true});

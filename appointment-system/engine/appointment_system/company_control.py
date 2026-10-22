@@ -71,6 +71,17 @@ def re_full_csrf(value):
     return type(value) is str and re.fullmatch(r"[a-f0-9]{64}",value) is not None
 
 
+def calendar_connection_buttons():
+    """Names only; private owner addresses are returned after company sign-in."""
+    from .configuration import business
+    mapped=installation().get('resource_calendars',{})
+    names={item['id']:item['name'] for item in business().get('resources',[])}
+    if not mapped:
+        return '<button type="button" data-google-resource="calendar">Connect the client’s Calendar</button>'
+    return ''.join('<button type="button" data-google-resource="'+html.escape('calendar_'+identifier,quote=True)+
+        '">Connect '+html.escape(names[identifier])+"’s Calendar</button>" for identifier in mapped)
+
+
 def router(settings,*,database=None,publisher=None,worker_key=None,address=None):
     routes=APIRouter()
     database=database or (ControlDatabase(settings) if settings is not None else None)
@@ -114,6 +125,7 @@ def router(settings,*,database=None,publisher=None,worker_key=None,address=None)
     @routes.get("/company/booking-control")
     def page():
         source=(ASSETS/"control.html").read_text()
+        source=source.replace("CALENDAR_RESOURCE_BUTTONS",calendar_connection_buttons())
         source=source.replace("CLIENT_NAME",html.escape(label())).replace("PROJECT_NUMBER",html.escape(project_id()))
         return HTMLResponse(source,headers=PRIVATE_HEADERS)
 

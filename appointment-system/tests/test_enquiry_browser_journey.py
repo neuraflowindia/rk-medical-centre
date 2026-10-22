@@ -15,8 +15,14 @@ class EnquiryBrowserJourneySQL(EnquiryFixture):
         script='enquiry-website-native.mjs' if website else 'enquiry-browser-native.mjs'
         forms=['/contact']
         if website:
-            profile=json.loads((Path(os.environ['BOOKING_WEBSITE_PROOF_PROJECT'])/'appointment-settings/enquiry-browser.json').read_text())
-            if 'prashna' in profile['channels']:forms=['/contact','/','/services/prashna-kundali']
+            profile_file=Path(os.environ['BOOKING_WEBSITE_PROOF_PROJECT'])/'appointment-settings/enquiry-browser.json'
+            if profile_file.is_file():
+                profile=json.loads(profile_file.read_text())
+                if 'prashna' in profile['channels']:forms=['/contact','/','/services/prashna-kundali']
+            # Some supported receiving adapters build their single Contact
+            # channel from the validated project bootstrap instead of this
+            # optional multi-form settings document. The real UI/API journey
+            # still has to submit, reload and verify that owned enquiry.
         process=subprocess.Popen([node,str(Path(__file__).with_name(script))],
             stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,bufsize=1)
         lines=ChildLines(process.stdout);completed=False

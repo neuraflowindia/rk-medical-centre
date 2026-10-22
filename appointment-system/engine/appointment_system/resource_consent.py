@@ -3,14 +3,13 @@ import hashlib,hmac,secrets,re,html
 from uuid import UUID,uuid4
 from fastapi import APIRouter,Request
 from fastapi.responses import JSONResponse,RedirectResponse,HTMLResponse,Response
-from pydantic import BaseModel,ConfigDict,Field
-from typing import Literal
+from pydantic import BaseModel,ConfigDict,Field,field_validator
 from psycopg.types.json import Jsonb
 from .company_control import PRIVATE_HEADERS,re_full_csrf
 from .company_auth import Credentials,COOKIE
 from .service_control import ControlError
-from .configuration import origin,label
-from .google_oauth import Attempt,GoogleFailure,RESOURCE_ROLES
+from .configuration import origin,label,business
+from .google_oauth import Attempt,GoogleFailure,resource_roles
 from .receipt_view import timestamp
 from .studio import SESSION_COOKIE
 from .serialization import fingerprint
@@ -19,7 +18,12 @@ from .company_control import ASSETS
 CORRELATION='__Host-appointment-resource-consent'
 class Start(BaseModel):
     model_config=ConfigDict(extra='forbid')
-    resource:Literal['calendar','client_sheet','agency_sheet']
+    resource:str=Field(min_length=1,max_length=89)
+    @field_validator('resource')
+    @classmethod
+    def declared_resource(cls, value):
+        if value not in resource_roles():raise ValueError('Resource is not declared.')
+        return value
 class Finish(BaseModel):
     model_config=ConfigDict(extra='forbid')
     attempt_id:UUID
@@ -80,7 +84,14 @@ def router(studio,company_settings,company_database,staff_store,limit):
         else:token=studio.digest('session',request.cookies.get(SESSION_COOKIE))
         result=call(auth,'SELECT appointment_system.resource_connection_status(%s,%s,%s)',(auth,token,studio.google.settings.client_id))
         pending=call(auth,'SELECT appointment_system.pending_resource_consents(%s)',(token,)) if auth=='company' else []
-        return JSONResponse({'resources':result,'pending':pending},headers=PRIVATE_HEADERS)
+        names={item['id']:item['name'] for item in business().get('resources',[])}
+        def describe(item):
+            resource=item['resource'];declared=resources.resources.get(resource)
+            if resource.startswith('calendar_') and declared is not None:
+                return item|{'label':names[resource[9:]]+' Calendar','owner_email':declared.owner_email}
+            return item
+        return JSONResponse({'resources':[describe(item) for item in result],
+                             'pending':[describe(item) for item in pending]},headers=PRIVATE_HEADERS)
 
     @routes.post('/api/company/resources/owner-link')
     def issue_owner_link(body:OwnerLink,request:Request):
@@ -104,7 +115,7 @@ def router(studio,company_settings,company_database,staff_store,limit):
         context=call('company','SELECT appointment_system.owner_resource_link_context(%s,%s)',(body.operation_id,access))
         if context is None:raise ControlError('google_consent_unavailable',401)
         provider=resources.provider(context['resource'],client_id=context['client_id'])
-        attempt=Attempt.new(RESOURCE_ROLES[context['resource']]);identifier=uuid4();browser=secrets.token_urlsafe(32)
+        attempt=Attempt.new(resource_roles()[context['resource']]);identifier=uuid4();browser=secrets.token_urlsafe(32)
         encrypted=resources.cipher.seal_attempt(identifier,context['resource'],context['client_id'],attempt)
         saved=call('company','SELECT appointment_system.start_owner_resource_consent(%s,%s,%s,%s,%s,%s,%s,%s)',
           (body.operation_id,access,identifier,digest('state',attempt.state),digest('browser',browser),encrypted,uuid4(),context['client_id']))
@@ -119,7 +130,7 @@ def router(studio,company_settings,company_database,staff_store,limit):
         if body.resource not in ('client_sheet','agency_sheet'):raise ControlError('google_consent_unavailable',422)
         from .google_records import prepare_owner_workbook
         from .google_workspace import resource_id
-        role=RESOURCE_ROLES[body.resource]
+        role=resource_roles()[body.resource]
         from .storage import Store
         # The company database adapter exposes the same fixed Store operations.
         class CompanyStore:
@@ -138,7 +149,7 @@ def router(studio,company_settings,company_database,staff_store,limit):
     def start(body:Start,request:Request):
         auth,token,csrf=parent(request);limit(request,'studio');identifier=uuid4();grant_id=uuid4()
         provider=resources.provider(body.resource,callback='/api/'+('company' if auth=='company' else 'studio')+'/resources/callback')
-        attempt=Attempt.new(RESOURCE_ROLES[body.resource]);browser=secrets.token_urlsafe(32)
+        attempt=Attempt.new(resource_roles()[body.resource]);browser=secrets.token_urlsafe(32)
         encrypted=resources.cipher.seal_attempt(identifier,body.resource,provider.settings.client_id,attempt)
         saved=call(auth,'SELECT appointment_system.start_resource_consent(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
             (auth,token,csrf,studio.google.settings.client_id,identifier,body.resource,digest('state',attempt.state),

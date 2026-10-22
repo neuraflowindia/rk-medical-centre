@@ -107,6 +107,13 @@ class BackupSQL(BookingFixture):
             literal(booking['booking'])+",'receipt_recovery','client:synthetic',"+literal('e'*64)+",1,1,'{}'::jsonb,clock_timestamp());")
         self.db.sql('INSERT INTO appointment_system.historical_staff_appointment_history VALUES('+literal(operation)+
             ",clock_timestamp(),clock_timestamp(),86400,false,'Synthetic retained history');")
+        closure=str(uuid4())
+        self.db.sql('INSERT INTO appointment_system.resource_closure_actions(operation_id,actor,resource_selector,reason,starts_at,ends_at,claim_ids) VALUES ('+
+            literal(closure)+",'company:synthetic','all','Synthetic backup closure history',clock_timestamp()+interval '1 day',"
+            "clock_timestamp()+interval '2 days',ARRAY[]::uuid[]);")
+        self.addCleanup(self.db.sql,'DELETE FROM appointment_system.resource_closure_actions WHERE operation_id='+literal(closure)+';')
+        closure_query='SELECT to_jsonb(a) FROM appointment_system.resource_closure_actions a WHERE operation_id='+literal(closure)+';'
+        expected_closure=self.db.value(closure_query)
         challenge=str(uuid4());provider=str(uuid4());event='evt_backup_'+uuid4().hex
         self.db.sql('INSERT INTO appointment_system.historical_verification_receipts VALUES('+literal(challenge)+','+
             literal(provider)+",'synthetic-team','contact',clock_timestamp());")
@@ -128,6 +135,7 @@ class BackupSQL(BookingFixture):
             self.assertEqual(facts['table_counts']['appointment_system.conversion_retained_enquiries'],1)
             self.assertEqual(facts['table_counts']['appointment_system.historical_staff_operations'],1)
             self.assertEqual(facts['table_counts']['appointment_system.historical_staff_appointment_history'],1)
+            self.assertGreaterEqual(facts['table_counts']['appointment_system.resource_closure_actions'],1)
             self.assertEqual(facts['table_counts']['appointment_system.sheet_current_records'],1)
             self.assertEqual(facts['table_counts']['appointment_system.sheet_current_digests'],1)
             self.assertEqual(facts['table_counts']['appointment_system.company_sheet_reviews'],1)
@@ -144,11 +152,12 @@ class BackupSQL(BookingFixture):
                 if 'jsonb_object_agg(version,sha256)' in query:
                     self.assertEqual(original_query(target,'SELECT count(*) FROM appointment_system.bookings WHERE email IS NULL;'),'1')
                     self.assertEqual(json.loads(original_query(target,copy_query)),expected_copies)
+                    self.assertEqual(json.loads(original_query(target,closure_query)),expected_closure)
                     restored_facts.append(True)
                 return result
             with patch.object(IsolatedPostgres,'query',query_with_copy_proof):
                 proof=validate_archive(path,self.scope,manifest,self.identity,self.binary,self.ledger)
-            self.assertEqual(restored_facts,[True],'The independent restored database must preserve NULL contacts and both queued and settled immutable copy rows.')
+            self.assertEqual(restored_facts,[True],'The independent restored database must preserve NULL contacts, immutable copy rows and resource closure history exactly.')
             self.assertEqual(proof['migration_count'],len(self.ledger));self.assertEqual(proof['restored_authority'],'off_new_generation')
             self.assertEqual(len(proof['invariants_digest']),64)
 

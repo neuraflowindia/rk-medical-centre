@@ -7,3 +7,4 @@ scratch/
 .env*
 .appointment-rollbacks/
 .appointment-install.lock
+verification-results/

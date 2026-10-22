@@ -50,6 +50,10 @@ Clinic payment requires open supported booking admission and schedule browsing. 
 
 The browser rejects missing/malformed v2 availability. An explicitly selected method is retained when it becomes unavailable; it is never silently switched to clinic payment. New choice/checkout is blocked for that method, details stay in memory, and definite uncommitted payment failures refresh the live policy. Ambiguous attempts keep their exact saved identity and recovery path.
 
+## Optional private resource calendars
+
+Migration 040 adds an optional in-person calendar map without changing the booking database as the authority. Separate, exact-owner Calendar grants use the existing company consent and delivery lanes. No Meet, patient invitation, video-details email or patient duration is introduced. See [private-resource-calendars.md](private-resource-calendars.md) for the privacy contract, atomic closed cutover, failure handling and hosted account dependencies.
+
 ## Recovery and installation
 
 Backups must accept simultaneous appointments for different resources and legitimate unpaid confirmations. Independent restore checks also reject resource mismatches and clinic bookings with online payment records. Historical conversion inventories include resource closure actions.

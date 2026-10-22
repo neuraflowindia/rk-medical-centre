@@ -54,7 +54,7 @@ def render_message(job):
             place=location_facts(data.get('location'))
             if (data.get('meeting')=='in_person')!=(place is not None):raise ValueError()
         elif payment!='online' or data.get('meeting')=='in_person':raise ValueError()
-        if kind=='payment_review' and role in ('client','agency') and payment=='online':
+        if kind=='payment_review' and role in ('client','agency','resource') and payment=='online':
             subject='A payment needs review — '+brand
             lines=['A payment needs your attention. This is not an appointment confirmation.',
                    'Booking reference: '+reference,'Open the private studio to review the payment.']

@@ -1,0 +1,27 @@
+/** Disconnected generated-document review. Only loopback content and synthetic state. */
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const root=resolve(process.argv[2]||'.'),output=resolve(process.argv[3]||root),origin=process.env.CLINIC_REVIEW_ORIGIN||'http://127.0.0.1:4251';
+assert.equal(new URL(origin).hostname,'127.0.0.1','This fixture is loopback-only');
+const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES,'playwright-core/index.mjs')).href);
+const axe=readFileSync(process.env.AXE_SOURCE,'utf8');
+const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_BROWSER_EXECUTABLE,args:['--no-sandbox']});const result={local_only:true,real_messages:0,states:[],noScript:[],known_manual_limit:'Owner expressly retains ongoing decorative motion without a new movement control. Automated checks do not certify all WCAG motion requirements or physical screen-reader/device behavior.'};mkdirSync(output,{recursive:true});
+const paths=['/','/treatment','/about-clinic','/meet-doctor','/dr-sanjay-gupta','/dr-parul-gupta','/contact'];
+async function setup(options){const context=await browser.newContext(options);await context.addCookies([{name:'clinic_qa_mode',value:'on',url:origin}]);await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin!==origin)return route.abort();if(url.pathname==='/api/service-state')return route.fulfill({json:{enabled:true,activation_epoch:'891d05ec-8ab2-4a87-b537-1c30f2b694b6'}});if(url.pathname==='/api/contact/policy')return route.fulfill({json:{version:1,receipt_key_id:'qa-current'}});return route.continue();});return context;}
+try{
+ for(const spec of [{width:320,height:740},{width:390,height:844},{width:720,height:450,deviceScaleFactor:2,zoomEquivalent:true,physicalViewport:'1440x900 at 200 percent layout equivalent; not native browser preference'},{width:1920,height:1080}]){
+  const context=await setup({viewport:{width:spec.width,height:spec.height},deviceScaleFactor:spec.deviceScaleFactor||1,reducedMotion:'reduce'}),page=await context.newPage();
+  for(const path of paths){const errors=[];page.removeAllListeners('pageerror');page.on('pageerror',e=>errors.push(e.message));await page.goto(origin+path,{waitUntil:'networkidle'});await page.waitForFunction(()=>typeof window.designReview==='object');if(spec.zoom)await page.evaluate(zoom=>document.body.style.zoom=String(zoom),spec.zoom);await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(100);
+   const state=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth+1,h1:document.querySelectorAll('h1').length,main:document.querySelectorAll('main').length,animations:document.getAnimations().filter(a=>a.playState==='running').length,formDisabled:document.querySelector('[data-contact-fields]')?.disabled}));
+   await page.locator('.skip').focus();await page.keyboard.press('Enter');state.skipFocus=await page.evaluate(()=>document.activeElement.id);
+   await page.addScriptTag({content:axe});const audit=await page.evaluate(async()=>{const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}});return {violations:r.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),incomplete:r.incomplete.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)}))};});
+   result.states.push({path,...spec,reducedMotion:true,errors,...state,...audit});writeFileSync(resolve(output,'clinic-boundary-local-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({path,width:spec.width,zoom:spec.zoom||1,...state,errors,violations:audit.violations.map(v=>v.id)}));assert.deepEqual(errors,[]);assert.equal(state.overflow,false);assert.equal(state.h1,1);assert.equal(state.main,1);assert.equal(state.animations,0);assert.equal(state.skipFocus,'main');
+  }
+  await context.close();
+ }
+ const context=await setup({viewport:{width:390,height:844},javaScriptEnabled:false}),page=await context.newPage();
+ for(const path of paths){await page.goto(origin+path);const state={path,h1:await page.locator('main h1').count(),characters:(await page.locator('main').textContent()).trim().length,unboundControlsDisabled:await page.locator('main [data-unbound-control]').evaluateAll(nodes=>nodes.every(n=>n.disabled))};if(path==='/contact'){state.formMethod=await page.locator('[data-contact-form]').getAttribute('method');state.formDisabled=await page.locator('[data-contact-fields]').evaluate(e=>e.disabled);assert.equal(state.formMethod,'post');assert.equal(state.formDisabled,true);}if(path==='/')assert.equal(await page.locator('#visit-form input').first().isDisabled(),true);assert.equal(state.h1,1);assert(state.characters>160);assert.equal(state.unboundControlsDisabled,true);result.noScript.push(state);}
+ await context.close();result.passed=result.states.every(x=>!x.violations.length);writeFileSync(resolve(output,'clinic-boundary-local-results.json'),JSON.stringify(result,null,2)+'\n');assert.equal(result.passed,true,'Review exact automated accessibility findings in the receipt');
+}finally{await browser.close();writeFileSync(resolve(output,'clinic-boundary-local-results.json'),JSON.stringify(result,null,2)+'\n');}

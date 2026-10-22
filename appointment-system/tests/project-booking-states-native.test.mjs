@@ -2,7 +2,7 @@
 // This fixture cannot reach providers, customer data or either live website.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {displayProof} from '../tools/checks/website-display.mjs';
@@ -11,8 +11,10 @@ import {money} from '../browser/display-formatting.mjs';
 const root=process.env.BOOKING_WEBSITE_PROOF_PROJECT,site=process.env.BOOKING_WEBSITE_PROOF_SITE;
 const reference='11111111-1111-4111-8111-111111111111';
 test('actual project booking and receipt views distinguish payment, meeting, refund and unavailable states',{skip:!root||!site},async()=>{
- const profile=JSON.parse(readFileSync(resolve(root,'appointment-settings/booking-browser.json')));
- const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+ const browserProfile=resolve(root,'appointment-settings/booking-browser.json');
+ const profile=JSON.parse(readFileSync(existsSync(browserProfile)?browserProfile:resolve(root,'appointment-settings/project.json')));
+ const business=JSON.parse(readFileSync(resolve(root,'appointment-settings/business-settings.json'))),clinic=business.version===2;
+ const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
  const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']});
  const proof=await displayProof(root,site,{enabled:true});
  const cases=[
@@ -26,7 +28,7 @@ test('actual project booking and receipt views distinguish payment, meeting, ref
   {name:'unavailable',unavailable:true},
  ];
  try{
-  for(const path of ['/booking','/booking/receipt'])for(const scenario of cases){
+  for(const path of (clinic?['/booking']:['/booking','/booking/receipt']))for(const scenario of cases){
    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'}),page=await context.newPage();page.setDefaultTimeout(10000);
    const errors=[],calls=[];page.on('pageerror',error=>errors.push(error.message));
    const credential={version:1,installation_id:profile.installation_id,environment:profile.environment,request_id:reference,secret:'r1.current.'+'a'.repeat(43)};
@@ -60,7 +62,11 @@ test('actual project booking and receipt views distinguish payment, meeting, ref
      if(saved.meet_url)assert.equal(await page.locator('a[href="'+saved.meet_url+'"]').count(),1);
      else assert.equal(await page.locator('a[href^="https://meet.google.com/"]').count(),0);
      if(path==='/booking/receipt'){
-      await page.getByRole('button',{name:'Check status',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('button[type=button]')?.disabled);
+      const before=calls.filter(call=>call.path==='/api/checkout/status').length;
+      await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname==='/api/checkout/status'),
+       page.getByRole('button',{name:'Refresh saved booking',exact:true}).click()]);
+      await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(button=>button.textContent==='Refresh saved booking'&&!button.disabled));
+      assert.ok(calls.filter(call=>call.path==='/api/checkout/status').length>before,'Explicit refresh reads the saved receipt');
      }
     }
     assert.ok(calls.some(call=>call.path==='/api/checkout/status'),scenario.name+' did not check the saved booking');
@@ -69,9 +75,54 @@ test('actual project booking and receipt views distinguish payment, meeting, ref
    }catch(error){throw new Error(JSON.stringify({path,scenario:scenario.name,calls:calls.map(call=>call.path),errors,displayed:await page.locator('body').innerText()})+'\n'+error.message,{cause:error});}
    finally{await context.close();}
   }
-  const context=await browser.newContext(),page=await context.newPage();page.setDefaultTimeout(10000);
-  await context.route('**/*',route=>new URL(route.request().url()).origin===proof.origin?route.continue():route.abort());
-  await page.goto(proof.origin+'/booking/receipt');await page.getByText('This browser has no saved receipt.',{exact:false}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'Check status',exact:true}).isDisabled(),true);await context.close();
+  if(clinic){
+   const template=JSON.parse(readFileSync(new URL('./fixtures/clinic-sql-public-facts.json',import.meta.url)));
+   for(const resource of business.resources)for(const state of ['confirmed','cancelled','unavailable']){
+    const context=await browser.newContext(),page=await context.newPage();page.setDefaultTimeout(10000);const calls=[],errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    const saved={...template,request_id:reference,resource_id:resource.id,resource_name:resource.name,
+     service_name:business.services.find(item=>item.resource_id===resource.id).name,location:business.location,
+     appointment_state:state==='cancelled'?'cancelled':'confirmed',amount_due_paise:state==='cancelled'?0:template.amount_due_paise};
+    const summary=Object.fromEntries(['request_id','booking_revision','service_name','starts_at','ends_at','timezone',
+     'appointment_state','facts_version','resource_id','resource_name','display_duration'].map(key=>[key,saved[key]]));
+    await context.route('**/*',async route=>{
+     const request=route.request(),url=new URL(request.url());if(url.origin!==proof.origin)return route.abort();
+     if(!url.pathname.startsWith('/api/')||url.pathname==='/api/service-state')return route.continue();
+     calls.push(url.pathname);assert.equal(url.pathname,'/api/booking/details','Clinic lookup cannot create or resume a checkout');
+     const body=request.postDataJSON();assert.equal(body.full_name,'Synthetic Customer');assert.equal(body.phone,'+919876543210');
+     const value=body.request_id?{version:1,kind:'detail',receipt:saved,capabilities:{refresh:true,download_pdf:saved.appointment_state==='confirmed'}}:
+      {version:1,kind:'list',server_now:saved.server_now,items:[summary],next_cursor:null};
+     return route.fulfill({status:state==='unavailable'?503:200,contentType:'application/json',body:JSON.stringify(state==='unavailable'?{code:'temporarily_unavailable'}:value)});
+    });
+    try{
+     await page.goto(proof.origin+'/booking-details');await page.getByLabel('Full name',{exact:true}).fill('Synthetic Customer');
+     await page.getByLabel('Phone number',{exact:true}).fill('9876543210');await page.getByRole('button',{name:'View my bookings ↗',exact:true}).click();
+     if(state==='unavailable')await page.getByRole('alert').filter({hasText:/could not check/}).waitFor();
+     else{
+      await page.getByRole('heading',{name:'Your appointment details',exact:true}).waitFor();
+      const doctor=page.locator('.abs-booking-details dt').filter({hasText:/^Doctor$/}).locator('xpath=following-sibling::dd[1]');
+      assert.equal(await doctor.innerText(),resource.name);
+      assert.equal(await page.getByRole('button',{name:'Download appointment PDF',exact:true}).count(),state==='confirmed'?1:0);
+      assert.equal(await page.locator('.abs-booking-details').getByText('Duration',{exact:true}).count(),0);
+      assert.equal(await page.locator('a[href^="https://meet.google.com/"]').count(),0);
+      const before=calls.length;
+      await Promise.all([page.waitForResponse(response=>new URL(response.url()).pathname==='/api/booking/details'),
+       page.getByRole('button',{name:'Refresh details',exact:true}).click()]);
+      await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(button=>button.textContent==='Refresh details'&&!button.disabled));
+      assert.ok(calls.length>before,'Explicit clinic detail refresh reads the same saved appointment');
+     }
+     assert.deepEqual(errors,[]);assert.ok(calls.length>=1);
+    }finally{await context.close();}
+   }
+  }
+  const context=await browser.newContext(),page=await context.newPage();page.setDefaultTimeout(10000);const emptyCalls=[];
+  await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin!==proof.origin)return route.abort();if(url.pathname.startsWith('/api/'))emptyCalls.push(url.pathname);return route.continue();});
+  await page.goto(proof.origin+(clinic?'/booking-details':'/booking/receipt'));
+  await page.getByLabel('Full name',{exact:true}).waitFor();await page.getByLabel('Phone number',{exact:true}).waitFor();
+  assert.equal(await page.getByLabel('Full name',{exact:true}).inputValue(),'');assert.equal(await page.getByLabel('Phone number',{exact:true}).inputValue(),'');
+  assert.equal(await page.getByLabel('Full name',{exact:true}).getAttribute('required'),'');assert.equal(await page.getByLabel('Phone number',{exact:true}).getAttribute('required'),'');
+  assert.equal(await page.getByRole('button',{name:'Refresh saved booking',exact:true}).count(),0,'No saved credential can expose a saved-receipt refresh');
+  assert.ok(emptyCalls.every(path=>path==='/api/service-state'),'Merely opening the empty lookup must not read a customer booking or create an operation');
+  await context.close();
  }finally{await browser.close();await proof.close();}
 });

@@ -9,7 +9,7 @@ if(!root || !site)throw Error('Explicit isolated project and site required');
 const lines=createInterface({input:process.stdin,crlfDelay:Infinity}),pending=new Map();let sequence=0;
 lines.on('line',line=>{const value=JSON.parse(line),resolve=pending.get(value.id);pending.delete(value.id);resolve(value);});
 const bridge=(path,options={})=>new Promise(resolve=>{const id=++sequence;pending.set(id,resolve);process.stdout.write(JSON.stringify({id,path,...options})+'\n');});
-const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
 const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']}),proof=await displayProof(root,site);
 const settings=(await bridge('test:settings')).body,paths=settings.forms;
 try{
@@ -30,8 +30,16 @@ try{
     return route.fulfill({status:result.status,contentType:'application/json',headers:{'cache-control':'no-store',...result.headers},body:JSON.stringify(result.body)});
    });
    page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(proof.origin+path);
-   await page.locator('#visitor-name,#form-name,#prashna-name,#name').first().waitFor();
-   if(await page.locator('#visitor-name').count()){
+   await page.locator('#contact-name,#visitor-name,#form-name,#prashna-name,#name').first().waitFor();
+   const clinic=await page.locator('[data-contact-form]').count()>0;
+   if(clinic){
+    const form=page.locator('[data-contact-form]');
+    await form.locator('#contact-name').fill('Synthetic Customer');await form.locator('#contact-email').fill('customer@example.com');
+    assert.equal(await form.locator('#contact-phone').getAttribute('required'),null,'Clinic phone remains optional');
+    await form.locator('#contact-phone').fill('+919876543210');await form.locator('#contact-message').fill('A synthetic website enquiry.');
+    assert.equal(await form.locator('input[name="subject"]').count(),0,'Clinic adapter supplies its fixed subject');
+    await form.locator('button[type="submit"]').click();
+   }else if(await page.locator('#visitor-name').count()){
     await page.locator('#visitor-name').fill('Synthetic Customer');await page.locator('#visitor-email').fill('customer@example.com');
     await page.locator('#message').fill('A synthetic website enquiry.');await page.getByRole('button',{name:/Continue to email verification/}).click();
    }else if(path==='/'){
@@ -48,10 +56,10 @@ try{
     await page.locator('#name').fill('Synthetic Customer');await page.locator('#email').fill('customer@example.com');await page.locator('#phone').fill('+919876543210');
     await page.locator('#message').fill('A synthetic website enquiry.');await page.getByRole('button',{name:'Submit Message',exact:true}).click();
    }
-   await page.locator('#code,input[aria-label="Verification digit 1"]').waitFor();
+   await page.locator('#contact-code,#code,input[aria-label="Verification digit 1"]').waitFor();
    assert.ok(requestID,'The form must save its owned enquiry before asking for a code');
    // A reload loses all draft fields but retains only the owned reference.
-   await page.reload();await page.locator('#code,input[aria-label="Verification digit 1"]').waitFor();
+   await page.reload();await page.locator('#contact-code,#code,input[aria-label="Verification digit 1"]').waitFor();
    if(await page.getByRole('dialog',{name:'Verify your enquiry'}).count()){
     // A lost draft must not prevent reopening a saved enquiry after dismissal.
     await page.getByRole('button',{name:'Close email verification',exact:true}).click();
@@ -61,7 +69,10 @@ try{
     assert.equal(starts,1,'Reopening must not create another enquiry');
    }
    const code=(await bridge('test:code',{request_id:requestID})).body.value;
-   if(await page.locator('#code').count()){
+   if(clinic){
+    await page.locator('#contact-code').fill(code);await page.locator('[data-contact-verify]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-contact-status]')?.textContent==='The clinic has received your question.');
+   }else if(await page.locator('#code').count()){
     await page.locator('#code').fill(code);await page.getByRole('button',{name:/Verify & send enquiry/}).click();
     await page.locator('#outcome').waitFor();
    }else{

@@ -8,12 +8,14 @@ import {displayProof} from '../tools/checks/website-display.mjs';
 import {policy,availability} from './booking-browser-fixture.mjs';
 const root=process.env.BOOKING_WEBSITE_PROOF_PROJECT,site=process.env.BOOKING_WEBSITE_PROOF_SITE;
 test('actual booking form retries failed policy and schedule reads without starting checkout',{skip:!root||!site},async()=>{
- const {chromium}=await import(pathToFileURL(resolve(site,'node_modules/playwright-core/index.mjs')).href);
+ const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES||resolve(site,'node_modules'),'playwright-core/index.mjs')).href);
  const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']});
  const proof=await displayProof(root,site,{enabled:true});
  const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
  const page=await context.newPage();page.setDefaultTimeout(10000);
- const offered=policy();offered.policy.services=JSON.parse(readFileSync(resolve(root,'appointment-settings/business-settings.json'))).services;
+ const business=JSON.parse(readFileSync(resolve(root,'appointment-settings/business-settings.json'))),clinic=business.version===2;
+ const offered=policy();offered.policy.services=business.services;
+ if(clinic){offered.policy=business;offered.payment_availability=Object.fromEntries(business.payment_methods.map(method=>[method,{available:true,reason:null}]));}
  let policyFailure=true,schedule='failed';const calls=[],errors=[];
  page.on('pageerror',error=>errors.push(error.message));
  await context.route('**/*',async route=>{
@@ -26,6 +28,12 @@ test('actual booking form retries failed policy and schedule reads without start
    const selected=offered.policy.services.find(service=>service.id===url.searchParams.get('service_id')),questions=Number(url.searchParams.get('questions'));
    assert.ok(selected);const result=availability();result.date=url.searchParams.get('day');
    result.service={...selected,questions,amount_paise:selected.pricing.amount_paise*questions,currency:'INR',timezone:offered.policy.timezone,quote_version:offered.quote_version};
+   if(clinic){
+    const resource=business.resources.find(item=>item.id===selected.resource_id),starts=result.date+'T06:00:00Z';
+    Object.assign(result.service,{facts_version:2,resource_id:resource.id,resource_name:resource.name,location:business.location,
+     display_duration:business.display_duration,payment_methods:business.payment_methods});
+    result.slots=[{starts_at:starts,ends_at:new Date(Date.parse(starts)+selected.duration_minutes*60000).toISOString()}];
+   }
    return schedule==='failed'?send({code:'temporarily_unavailable'},503):send({...result,slots:schedule==='empty'?[]:result.slots});
   }
   return send({code:'unexpected_fixture_request'},500);
@@ -33,6 +41,32 @@ test('actual booking form retries failed policy and schedule reads without start
  try{
   await page.goto(proof.origin+'/booking');
   await page.locator('[role=alert]').filter({hasText:/\S/}).first().waitFor();
+  if(clinic){
+   const submit=page.locator('button[type=submit]'),slots=page.locator('.slot-choices input[type=radio]');
+   assert.equal(await submit.isDisabled(),true);policyFailure=false;
+   await page.getByRole('button',{name:'Reload appointment options',exact:true}).click();
+   const retry=page.getByRole('button',{name:'Check available times again',exact:true});await retry.waitFor();
+   assert.equal(await slots.count(),0);assert.equal(await submit.isDisabled(),true);
+   schedule='empty';await retry.click();
+   await page.getByText('No appointments are available on this date. Please choose another date.',{exact:true}).waitFor();
+   assert.equal(await submit.isDisabled(),true);
+   schedule='ready';await page.reload();await slots.first().waitFor();
+   for(const service of business.services){
+    const doctor=page.locator('.doctor-choices input[type=radio][value="'+service.id+'"]');await doctor.check();
+    await slots.first().waitFor();assert.equal(await doctor.isChecked(),true);
+   }
+   await slots.first().check();
+   await page.locator('input[id$="full_name"]').fill('Synthetic Customer');
+   await page.locator('input[id$="email"]').fill('customer@example.com');await page.locator('input[id$="phone"]').fill('+919876543210');
+   await page.locator('textarea[id$="notes"]').fill('A synthetic appointment question.');
+   await page.getByRole('radio',{name:/^Pay at the clinic/}).check();
+   assert.equal(await submit.isDisabled(),true,'An unchecked acknowledgement must prevent submission');
+   await page.locator('input[type=checkbox]').check();assert.equal(await submit.isDisabled(),false);
+   await page.locator('input[type=checkbox]').uncheck();assert.equal(await submit.isDisabled(),true);
+   assert.ok(calls.filter(path=>path==='/api/booking-policy').length>=3);
+   assert.ok(calls.every(path=>['/api/booking-policy','/api/availability'].includes(path)),'Read retry must never create a context, order, verification send or payment');
+   assert.deepEqual(errors,[]);return;
+  }
   const stepped=await page.locator('.sarsa-booking').count()>0;
   assert.equal(await page.locator('button[type=submit]').isDisabled(),true);
   policyFailure=false;

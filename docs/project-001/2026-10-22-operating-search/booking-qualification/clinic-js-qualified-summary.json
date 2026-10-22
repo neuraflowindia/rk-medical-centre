@@ -1,0 +1,353 @@
+{
+  "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "all_working_js_owners": 49,
+  "source_unchanged": true,
+  "original_maps_reconstructed": true,
+  "exclusions": [],
+  "provenance": [
+    {
+      "root": "/tmp/clinic-calendar-measurement-ssE3Wb",
+      "passed": 355,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 291,
+      "log_sha256": "afce5eeb7045a4c2b464f859411c3098ea56e5f56ace806bde945a2e65b3f959",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-m0e0cI",
+      "passed": 16,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 1,
+      "log_sha256": "796daad2dc4155253bc3bee3706abc49b47c765de22e3fc99eaaa079a4d928f7",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-PpcNvm",
+      "passed": 4,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 9,
+      "log_sha256": "b539032bdaa1d1494d96ae0ebce1bf98c35ce742c4e7bc5ead34e38054803ddc",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-5W7rjf",
+      "passed": 4,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 1,
+      "log_sha256": "f1a23b7a9e58879ad5d3bb3ec0a99337db0c4e38b73aaee01e06f93f1db6822d",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-WC26II",
+      "passed": 9,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 1,
+      "log_sha256": "e3fcb14ac3c3ebe9ca6e22ad9734c20511e8dfc534524b42337f6d2063e08704",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-1z7YMN",
+      "passed": 4,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 9,
+      "log_sha256": "87bf2f97ff096a934f5b9493dfa01a7009da33aa5e245c5e3cadbfe28b46d732",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    },
+    {
+      "root": "/tmp/clinic-calendar-measurement-supplement-1iwpNk",
+      "passed": 8,
+      "failures": 0,
+      "skipped": 0,
+      "observations": 6,
+      "log_sha256": "f74bca87701e07d190b993b72efba10e6ee2b0852353fcd25757f931c79fdf2f",
+      "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
+    }
+  ],
+  "inventory": {
+    "browser/booking/booking-details-fields.mjs": "booking-payments",
+    "browser/booking/booking-details-pdf.mjs": "booking-payments",
+    "browser/booking/booking-details.mjs": "booking-payments",
+    "browser/booking/controller.mjs": "booking-payments",
+    "browser/booking/credentials.mjs": "booking-payments",
+    "browser/booking/date-time-fields.mjs": "booking-payments",
+    "browser/booking/experience-contract.mjs": "booking-payments",
+    "browser/booking/index.mjs": "booking-payments",
+    "browser/booking/messages.mjs": "booking-payments",
+    "browser/booking/payment-recovery.mjs": "booking-payments",
+    "browser/booking/protocol.mjs": "booking-payments",
+    "browser/booking/razorpay.mjs": "booking-payments",
+    "browser/booking/receipt-actions.mjs": "booking-payments",
+    "browser/booking/receipt-fields.mjs": "booking-payments",
+    "browser/booking/receipt-pdf.mjs": "booking-payments",
+    "browser/booking/verification-fields.mjs": "booking-payments",
+    "browser/conditional-work.mjs": "shared-browser",
+    "browser/display-formatting.mjs": "shared-browser",
+    "browser/enquiry/controller.mjs": "enquiries",
+    "browser/enquiry/credentials.mjs": "enquiries",
+    "browser/enquiry/index.mjs": "enquiries",
+    "browser/enquiry/messages.mjs": "enquiries",
+    "browser/enquiry/protocol.mjs": "enquiries",
+    "browser/product-state.mjs": "shared-browser",
+    "browser/react-bindings.mjs": "shared-browser",
+    "browser/transport.mjs": "shared-browser",
+    "browser/visibility.js": "shared-browser",
+    "browser/visibility.mjs": "shared-browser",
+    "worker/index.mjs": "worker-projection",
+    "worker/installation.mjs": "worker-projection",
+    "worker/recovery.mjs": "worker-projection",
+    "worker/service-state.mjs": "worker-projection",
+    "hosting/routing.mjs": "hosting-installation",
+    "hosting/surface-policy.mjs": "hosting-installation",
+    "engine/appointment_system/company_assets/command-journal.js": "staff-company-control",
+    "engine/appointment_system/company_assets/control.js": "staff-company-control",
+    "engine/appointment_system/company_assets/google-repair.js": "staff-company-control",
+    "engine/appointment_system/company_assets/support.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/appointments.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/booking-guard.mjs": "staff-company-control",
+    "engine/appointment_system/studio_assets/calendar.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/enquiries.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/inbox.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/interface.js": "staff-company-control",
+    "engine/appointment_system/studio_assets/staff-actions.js": "staff-company-control",
+    "tools/build/page-modes.mjs": "hosting-installation",
+    "tools/build/surfaces.mjs": "hosting-installation",
+    "tools/checks/website-display.mjs": "hosting-installation",
+    "tools/install/source.mjs": "hosting-installation"
+  },
+  "domains": {
+    "booking-payments": {
+      "lines": {
+        "total": 758,
+        "covered": 752,
+        "skipped": 0,
+        "pct": 99.2
+      },
+      "statements": {
+        "total": 1582,
+        "covered": 1515,
+        "skipped": 0,
+        "pct": 95.76
+      },
+      "functions": {
+        "total": 342,
+        "covered": 332,
+        "skipped": 0,
+        "pct": 97.07
+      },
+      "branches": {
+        "total": 1747,
+        "covered": 1604,
+        "skipped": 0,
+        "pct": 91.81
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "shared-browser": {
+      "lines": {
+        "total": 206,
+        "covered": 203,
+        "skipped": 0,
+        "pct": 98.54
+      },
+      "statements": {
+        "total": 431,
+        "covered": 421,
+        "skipped": 0,
+        "pct": 97.67
+      },
+      "functions": {
+        "total": 89,
+        "covered": 85,
+        "skipped": 0,
+        "pct": 95.5
+      },
+      "branches": {
+        "total": 348,
+        "covered": 322,
+        "skipped": 0,
+        "pct": 92.52
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "enquiries": {
+      "lines": {
+        "total": 141,
+        "covered": 141,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 281,
+        "covered": 277,
+        "skipped": 0,
+        "pct": 98.57
+      },
+      "functions": {
+        "total": 59,
+        "covered": 59,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 269,
+        "covered": 255,
+        "skipped": 0,
+        "pct": 94.79
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "worker-projection": {
+      "lines": {
+        "total": 301,
+        "covered": 296,
+        "skipped": 0,
+        "pct": 98.33
+      },
+      "statements": {
+        "total": 425,
+        "covered": 408,
+        "skipped": 0,
+        "pct": 96
+      },
+      "functions": {
+        "total": 74,
+        "covered": 67,
+        "skipped": 0,
+        "pct": 90.54
+      },
+      "branches": {
+        "total": 445,
+        "covered": 419,
+        "skipped": 0,
+        "pct": 94.15
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "hosting-installation": {
+      "lines": {
+        "total": 262,
+        "covered": 253,
+        "skipped": 0,
+        "pct": 96.56
+      },
+      "statements": {
+        "total": 414,
+        "covered": 392,
+        "skipped": 0,
+        "pct": 94.68
+      },
+      "functions": {
+        "total": 65,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 93.84
+      },
+      "branches": {
+        "total": 414,
+        "covered": 388,
+        "skipped": 0,
+        "pct": 93.71
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "staff-company-control": {
+      "lines": {
+        "total": 1021,
+        "covered": 1008,
+        "skipped": 0,
+        "pct": 98.72
+      },
+      "statements": {
+        "total": 2312,
+        "covered": 2178,
+        "skipped": 0,
+        "pct": 94.2
+      },
+      "functions": {
+        "total": 234,
+        "covered": 226,
+        "skipped": 0,
+        "pct": 96.58
+      },
+      "branches": {
+        "total": 1614,
+        "covered": 1458,
+        "skipped": 0,
+        "pct": 90.33
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    }
+  },
+  "totals": {
+    "lines": {
+      "total": 2689,
+      "covered": 2653,
+      "skipped": 0,
+      "pct": 98.66
+    },
+    "statements": {
+      "total": 5445,
+      "covered": 5191,
+      "skipped": 0,
+      "pct": 95.33
+    },
+    "functions": {
+      "total": 863,
+      "covered": 830,
+      "skipped": 0,
+      "pct": 96.17
+    },
+    "branches": {
+      "total": 4837,
+      "covered": 4446,
+      "skipped": 0,
+      "pct": 91.91
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    }
+  },
+  "all_original_domains_meet_90_statements_and_branches": true,
+  "provider_actions": 0,
+  "customer_actions": 0,
+  "qualification_complete": false
+}

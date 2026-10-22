@@ -1,0 +1,18 @@
+/** Actual local UI + explicit supported motion-state API; not visual-acceptance screenshots. */
+import assert from 'node:assert/strict';import {resolve} from 'node:path';import {pathToFileURL} from 'node:url';
+const {chromium}=await import(pathToFileURL(resolve(process.env.BOOKING_BROWSER_NODE_MODULES,'playwright-core/index.mjs')).href);const origin='http://127.0.0.1:4252';
+const browser=await chromium.launch({headless:true,executablePath:process.env.BOOKING_CHROME_EXECUTABLE,args:['--no-sandbox']});const observations=[];
+try{for(const reduced of [false,true]){const context=await browser.newContext({viewport:reduced?{width:390,height:844}:{width:1440,height:900},reducedMotion:reduced?'reduce':'no-preference'});await context.addCookies([{name:'clinic_qa_mode',value:'on',url:origin}]);await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin!==origin)return route.abort();if(url.pathname==='/api/service-state')return route.fulfill({json:{enabled:true,activation_epoch:'891d05ec-8ab2-4a87-b537-1c30f2b694b6'}});if(url.pathname==='/api/contact/policy')return route.fulfill({json:{version:1,receipt_key_id:'qa-current'}});if(url.pathname.startsWith('/api/'))return route.fulfill({status:503,json:{code:'isolated_coverage_no_provider'}});return route.continue();});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ for(const path of ['/','/treatment','/about-clinic','/meet-doctor','/dr-sanjay-gupta','/dr-parul-gupta','/contact']){await page.goto(origin+path);await page.waitForFunction(()=>typeof window.designReview==='object');await page.waitForTimeout(250);
+  const ids=await page.evaluate(()=>window.designReview.status().map(s=>s.id));for(const id of ids){await page.evaluate(id=>document.querySelector(`[data-section-scene="${id}"]`)?.scrollIntoView({block:'center',behavior:'instant'}),id);await page.waitForTimeout(80);await page.evaluate(id=>{const motion=window.designReview;motion.pause();motion.seek(id,25);motion.seek(id,70);motion.play(id);},id);await page.waitForTimeout(80);await page.evaluate(id=>window.designReview.settle(id),id);}
+  await page.evaluate(()=>{window.designReview.setVisible(false);window.designReview.setVisible(true);});
+  for(const button of await page.locator('[data-review-toggle]').all()){await button.click();await button.click();}
+  const reader=page.locator('[data-read-review]').first();if(await reader.count()){await reader.click();await page.keyboard.press('Escape');await page.locator('#reader').waitFor({state:'hidden'});}
+  const photo=page.locator('[data-photo-open],[data-photo-select]').first();if(await photo.isVisible()){await photo.click();await page.waitForTimeout(180);await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowLeft');await page.keyboard.press('Escape');}
+  if(await page.locator('.menu-button').isVisible()){await page.locator('.menu-button').click();await page.waitForTimeout(340);await page.keyboard.press('Escape');await page.locator('#menu').waitFor({state:'hidden'});}
+  await page.locator('[data-privacy]').click();await page.waitForTimeout(100);await page.keyboard.press('Escape');const privacy=page.locator('.privacy-close');if(await privacy.isVisible())await privacy.click();
+  assert.equal(await page.locator('main h1').count(),1);assert.deepEqual(errors,[]);observations.push({path,reduced,scenes:ids.length});console.log(JSON.stringify(observations.at(-1)));
+ }
+ await context.close();}
+ console.log(JSON.stringify({passed:true,observations,scope:'Local interaction and source-counter evidence, separate from natural-timing visual review',real_provider_calls:0}));
+}finally{await browser.close();}

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /company/
+Disallow: /studio
+Disallow: /enquiries-studio
+Disallow: /__booking_display/
+Sitemap: https://www.rkmedicalcentre.com/sitemap.xml

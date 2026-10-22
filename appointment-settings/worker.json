@@ -10,7 +10,7 @@
     "BOOKING_PROJECT_ID": "rk-medical-centre",
     "BOOKING_ENVIRONMENT": "production",
     "BOOKING_PUBLIC_ORIGIN": "https://www.rkmedicalcentre.com",
-    "BOOKING_RELEASE_DIGEST": "9fe113a12c8b3f15c50fcab45d50d896420922fd86f4c791fbcc1bbbba19846e"
+    "BOOKING_RELEASE_DIGEST": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56"
   },
   "triggers": {
     "crons": [

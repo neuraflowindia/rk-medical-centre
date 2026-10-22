@@ -6,7 +6,7 @@ from types import MappingProxyType
 from cryptography.fernet import Fernet,MultiFernet,InvalidToken
 from .configuration import installation,owners,origin
 from .errors import Rejected,invalid
-from .google_oauth import OAuthSettings,GoogleOAuth,Grant,GoogleFailure,RESOURCE_ROLES,EMAIL_SCOPE
+from .google_oauth import OAuthSettings,GoogleOAuth,Grant,GoogleFailure,RESOURCE_ROLES,EMAIL_SCOPE,resource_roles,resource_owners
 from .keys import KeyRing,material
 from .protected_records import ProtectedRecords
 from .serialization import canonical,decode,object_fields,record_id,integer
@@ -45,7 +45,7 @@ class Resources:
         if (value['installation_id']!=facts['installation_id'] or value['environment']!=facts['environment']
             or value['purpose']!='google-resource-connections' or type(value['clients']) is not list
             or not 1<=len(value['clients'])<=8 or type(value['resources']) is not dict
-            or set(value['resources'])-set(RESOURCE_ROLES) or not value['resources']):raise invalid('google_resource_connections')
+            or set(value['resources'])-set(resource_roles()) or not value['resources']):raise invalid('google_resource_connections')
         clients={}
         for item in value['clients']:
             object_fields(item,{'client_id','client_secret','kind'})
@@ -55,7 +55,7 @@ class Resources:
         resources={}
         for name,spec in value['resources'].items():
             object_fields(spec,{'owner_email','active_client','retained_clients'})
-            if (spec['owner_email']!=owners()[RESOURCE_ROLES[name]] or type(spec['retained_clients']) is not list
+            if (spec['owner_email']!=resource_owners()[resource_roles()[name]] or type(spec['retained_clients']) is not list
                 or not 1<=len(spec['retained_clients'])<=8
                 or any(type(x) is not str or x not in clients for x in spec['retained_clients'])
                 or len(set(spec['retained_clients']))!=len(spec['retained_clients'])
@@ -122,7 +122,7 @@ class ResourceCipher:
 
     def open(self,saved,resource,*,now):
         try:
-            if (resource not in RESOURCE_ROLES or saved['owner_email']!=owners()[RESOURCE_ROLES[resource]]
+            if (resource not in resource_roles() or saved['owner_email']!=resource_owners()[resource_roles()[resource]]
                 or resource not in saved['resources'] or not CLIENT.fullmatch(saved['client_id'])):raise ValueError()
             if saved['grant_format']=='reauthorization-required':
                 raise GoogleFailure('google_reconnect_required')
@@ -130,16 +130,17 @@ class ResourceCipher:
                 value=self.protected.open(self.record(saved['grant_id']),saved['encrypted_grant'],purpose=PURPOSE)
                 object_fields(value,{'purpose','grant_id','client_id','resources','role','subject','email','refresh_token','scopes','refresh_expires_at'})
                 if (value['grant_id']!=saved['grant_id'] or value['client_id']!=saved['client_id'] or value['resources']!=saved['resources']
-                    or value['subject']!=saved['subject'] or value['email']!=saved['owner_email'] or value['role']!=RESOURCE_ROLES[resource]
+                    or value['subject']!=saved['subject'] or value['email']!=saved['owner_email'] or value['role']!=resource_roles()[resource]
                     or value['scopes']!=saved['scopes']):raise ValueError()
                 token=value['refresh_token'];expiry=datetime.fromisoformat(value['refresh_expires_at']) if value['refresh_expires_at'] else None
             else:
+                if resource.startswith('calendar_'):raise ValueError()
                 selected=self.readers.get(saved['grant_format'])
                 expected='calendar_refresh' if resource=='calendar' else 'drive_refresh'
                 if selected is None or selected[1]['purpose']!=expected:raise ValueError()
                 token=self.legacy_value(saved,saved['encrypted_grant'],saved['grant_format'])
                 expiry=datetime.fromisoformat(saved['grant_expires_at']) if saved.get('grant_expires_at') else None
-            grant=Grant(RESOURCE_ROLES[resource],saved['subject'],saved['owner_email'],token,normalized_scopes(saved['scopes']),expiry,tuple(saved['resources']))
+            grant=Grant(resource_roles()[resource],saved['subject'],saved['owner_email'],token,normalized_scopes(saved['scopes']),expiry,tuple(saved['resources']))
             if grant.refresh_expires_at is not None and grant.refresh_expires_at<=now:raise GoogleFailure('google_reconnect_required')
             return grant
         except (KeyError,TypeError,ValueError,Rejected):raise GoogleFailure('google_saved_grant_invalid') from None
@@ -170,7 +171,7 @@ class ResourceCipher:
 
     def seal_attempt(self,identifier,resource,client_id,attempt):
         from .google_oauth import Attempt
-        if (resource not in RESOURCE_ROLES or not isinstance(attempt,Attempt) or attempt.role!=RESOURCE_ROLES[resource]
+        if (resource not in resource_roles() or not isinstance(attempt,Attempt) or attempt.role!=resource_roles()[resource]
             or type(client_id) is not str or not CLIENT.fullmatch(client_id)):raise GoogleFailure('google_attempt_invalid')
         return self.protected.seal('google-resource-attempt:'+record_id(str(identifier)),dict(
           purpose='appointment:v1:google-resource-attempt',resource=resource,client_id=client_id,
@@ -183,6 +184,6 @@ class ResourceCipher:
               purpose='appointment:v1:google-resource-attempt')
             object_fields(value,{'purpose','resource','client_id','role','state','nonce','verifier'})
             if (value['resource']!=saved['resource'] or value['client_id']!=saved['client_id'] or value['state']!=state
-                or value['role']!=RESOURCE_ROLES[saved['resource']]):raise ValueError()
+                or value['role']!=resource_roles()[saved['resource']]):raise ValueError()
             return Attempt(value['role'],state,value['nonce'],value['verifier'])
         except (KeyError,TypeError,ValueError,Rejected):raise GoogleFailure('google_attempt_invalid') from None

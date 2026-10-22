@@ -1,5 +1,5 @@
 import {createBookingBrowser} from '../../appointment-system/browser/booking/index.mjs';
-import {productState} from '../../appointment-system/browser/product-state.mjs';
+import {productState} from '../clinic/product-state.mjs';
 const profile=__BOOKING_PROFILE__;
 
 export const bookingBrowser=createBookingBrowser({version:1,

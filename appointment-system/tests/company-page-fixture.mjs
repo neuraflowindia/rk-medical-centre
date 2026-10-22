@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 export {available,id,other,waitText} from './staff-page-fixture.mjs';
 import {id} from './staff-page-fixture.mjs';
 const assets=fileURLToPath(new URL('../engine/appointment_system/company_assets/',import.meta.url));
-export async function companyFixture(run,{login=true}={}){
+export async function companyFixture(run,{login=true,calendarButtons='<button type="button" data-google-resource="calendar">Connect the client’s Calendar</button>'}={}){
  const state={signed:false,calls:[],handlers:new Map(),errors:[],progress:'effective',snapshot:{enabled:false,revision:'1',restore_generation:id},
   business:{revision:'1',settings:{timezone:'Asia/Kolkata',slot_step_minutes:15,notice_minutes:60,horizon_days:90,buffer_before_minutes:0,buffer_after_minutes:0,
    meeting:'google_meet',booking_verification:{email:false},required_contacts:['phone'],weekly_windows:[{weekday:0,start:'09:00',end:'17:00'}],services:[
@@ -16,7 +16,7 @@ export async function companyFixture(run,{login=true}={}){
  const server=createServer(async(req,res)=>{
   try{
    const path=new URL(req.url,'http://fixture.invalid').pathname;res.setHeader('cache-control','no-store');
-   if(path==='/company/booking-control'){res.setHeader('content-type','text/html');return res.end((await readFile(resolve(assets,'control.html'),'utf8')).replaceAll('CLIENT_NAME','Synthetic Practice').replaceAll('PROJECT_NUMBER','fixture'));}
+   if(path==='/company/booking-control'){res.setHeader('content-type','text/html');return res.end((await readFile(resolve(assets,'control.html'),'utf8')).replaceAll('CALENDAR_RESOURCE_BUTTONS',calendarButtons).replaceAll('CLIENT_NAME','Synthetic Practice').replaceAll('PROJECT_NUMBER','fixture'));}
    const name=path.split('/').pop();
    if(path.startsWith('/api/company/assets/')&&['control.css','control.js','command-journal.js'].includes(name)){
     res.setHeader('content-type',name.endsWith('.css')?'text/css':'text/javascript');return res.end((await readFile(resolve(assets,name),'utf8')).replace('/*COMPANY_BROWSER_CONFIGURATION*/null',JSON.stringify({installation_id:id,environment:'test'})));

@@ -151,5 +151,9 @@
       "label": "Dr. Parul Gupta",
       "phone": "+919838655095"
     }
-  ]
+  ],
+  "resource_calendars": {
+    "dr-sanjay-gupta": "drsanjayguptamd@gmail.com",
+    "dr-parul-gupta": "dr.parulgupta23@gmail.com"
+  }
 }

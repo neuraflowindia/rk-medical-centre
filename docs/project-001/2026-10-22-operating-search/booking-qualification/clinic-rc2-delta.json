@@ -1,0 +1,44 @@
+{
+  "old_release": "1.2.0-rc.1",
+  "old_digest": "1a2728c371910399781e6a283c134d0395c4965b105b49d35244c9259187245d",
+  "release": "1.2.0-rc.2",
+  "release_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "declared_files": 604,
+  "sealed_successor": true,
+  "files": [
+    {
+      "path": "database/relations.json",
+      "old_sha256": "bb606f4e708bdda205529714a4a7fb0ff2c74dce713fbba41884adf61c75daab",
+      "new_sha256": "8fde99f50c727aff3679b1b2dac0f8c7edb21d35a97db7849dd77d503e1582da"
+    },
+    {
+      "path": "tests/booking-website-native.mjs",
+      "old_sha256": "defd19e3f0482d8aa3e2b13dbad501c8add42d7d45136b02f834fc7bb53c4682",
+      "new_sha256": "dff3d3267c00f92c08cb054b806863a27f00a29f76a88c2691aac3a2d63bc465"
+    },
+    {
+      "path": "tests/test_browser_journey.py",
+      "old_sha256": "e0e1f5fb45648c25e96935c0a20a105b90f7e219013f2ea28d34a9b2d0290fe3",
+      "new_sha256": "79246f711dae5c8f706b7fbcaf2d6c452c89b4d1900439230465eb2566b02322"
+    },
+    {
+      "path": "tests/test_sql_backup.py",
+      "old_sha256": "ca9064db6bbc33ac018e5b28243aacac5ff77f96f250f3e2b2fe7de777cbf10a",
+      "new_sha256": "8ca531b744b580e3e78da50aae2ad6609111bc8f7596772309170ee005aa437c"
+    },
+    {
+      "path": "tests/website-display-proof.test.mjs",
+      "old_sha256": null,
+      "new_sha256": "45eb33c8c408845e13e136a568e25f64782314fab71b4493a511afdab5dfcf9f"
+    },
+    {
+      "path": "tools/checks/website-display.mjs",
+      "old_sha256": "623638a21d35842aabcc92d985e50b595c0d2cd40e2130732aa08e176d54f9d2",
+      "new_sha256": "6e17684152c42ff3feee870d5195cc15a57f17739fa26f6ef1e189f02beca7c6"
+    }
+  ],
+  "release_json_regenerated_separately": true,
+  "all40_migration_bytes_unchanged": true,
+  "all142_working_python_owners_unchanged": true,
+  "scope": "Existing backup relation allowlist; narrower local display proof guard; receiving journey fixture corrections and positive backup restore proof. Final qualification receipts are separate."
+}

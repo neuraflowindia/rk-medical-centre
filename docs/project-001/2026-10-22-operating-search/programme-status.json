@@ -1,0 +1,28 @@
+{
+  "updated_at": "2026-10-22",
+  "implementation": "complete",
+  "package_release": "1.2.0-rc.2",
+  "package_digest": "328f2cea3414b6d90f5ca2fe68b85f6d775c8cfa8a97f943f935068acd626f56",
+  "package_manifest_files": 604,
+  "local_booking_qualification": "complete; source-bound reconciliation and successful final affected cases",
+  "public_site_publication": "prepared, not yet accepted",
+  "booking_enabled": false,
+  "contact_intake_open": false,
+  "account_dependencies": [
+    "deployed readback of saved protection/callback settings and callback activation",
+    "Google identity and record-workbook grants",
+    "one private Calendar consent per doctor",
+    "intended online-payment merchant and callbacks without real charges",
+    "independent encrypted recovery destination/key custody and real restore acceptance",
+    "controlled real joined operational acceptance"
+  ],
+  "owner_email_setting": "corrected original connection saved by owner; deployment/readback pending",
+  "real_charges_authorized": false,
+  "optional_analytics": "deferred/default denied",
+  "future_observations": [
+    "24-hour/7-day request/usage observations",
+    "Search Console/Bing submissions through correct owner properties",
+    "later indexing/query observation"
+  ],
+  "five_protection_callback_settings": "Owner confirmed allfive saved inProduction; deployment/readback pending"
+}
