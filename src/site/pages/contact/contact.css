@@ -72,7 +72,7 @@
   .page-contact__frontage .photo-figure__caption { max-width: 32ch; }
   .page-contact__address { position: relative; z-index: 3; margin-top: var(--space-4); padding: 18px var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
   .page-contact__address h3 { font: var(--type-name); line-height: var(--leading-h3); }
-  .page-contact__address address { margin-top: var(--space-2); color: var(--ink-body); line-height: 1.5; text-wrap: balance; }
+  .page-contact__address address { margin-top: var(--space-2); color: var(--ink-body); line-height: 1.5; text-wrap: pretty; }
   .page-contact__directions { width: 100%; margin-top: var(--space-4); }
   .page-contact__parking { display: grid; grid-template-columns: 20px 1fr; gap: 10px; margin-top: 14px; color: var(--ink-body); font: var(--type-notes); }
   .page-contact__parking .icon { margin-top: 1px; color: var(--action); }
@@ -237,6 +237,7 @@
     .page-contact__frontage { grid-column: 1 / 8; grid-row: 2; width: auto; margin: -112px 0 0 var(--space-6); }
     .page-contact__address { grid-column: 8 / 13; grid-row: 2; align-self: start; margin: -72px var(--space-6) 0 0; padding: 26px 28px 28px; }
     .page-contact__directions { width: 100%; }
+    .page-contact__address address { text-wrap: balance; }
 
     .page-contact__hours-copy .section-head__running { margin-right: 150px; }
     .page-contact__hours-arch { right: 0; top: -34px; width: 132px; height: 122px; }
