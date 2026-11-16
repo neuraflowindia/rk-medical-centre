@@ -36,7 +36,10 @@ export const findUs=Object.freeze({
   pin:clinicName,
   open:'Open in Google Maps',
   opens:essentials.place.opens,
-  href:directions
+  href:directions,
+  // The drawing's roads and parks were traced from OpenStreetMap, whose licence asks for this credit
+  // wherever a drawing made from its data is shown.
+  credit:'Map data © OpenStreetMap contributors'
  }),
  photo:Object.freeze({id:'frontage',ratio:'16:9',caption:photoCaptions.frontage}),
  card:Object.freeze({

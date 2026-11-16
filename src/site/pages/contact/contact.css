@@ -76,6 +76,8 @@
   .page-contact__directions { width: 100%; margin-top: var(--space-4); }
   .page-contact__parking { display: grid; grid-template-columns: 20px 1fr; gap: 10px; margin-top: 14px; color: var(--ink-body); font: var(--type-notes); }
   .page-contact__parking .icon { margin-top: 1px; color: var(--action); }
+  /* the credit the map's data asks for: small, and beside the map at every width */
+  .page-contact__map-credit { margin-top: var(--space-2); padding-left: 30px; color: var(--ink-muted); font: var(--type-meta); }
 
   /* ---------- 3 · hours: the timetable, flat as a ledger ---------- */
   .page-contact__hours { position: relative; background: var(--ground-light); padding: 36px 0 40px; overflow-x: clip; }

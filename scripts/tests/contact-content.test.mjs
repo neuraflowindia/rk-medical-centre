@@ -47,6 +47,7 @@ test('find us: the address, the map link and the parking line are the clinic\'s 
  // The drawn map names only the road and the two directions along it.
  assert.deepEqual([findUs.locator.road,findUs.locator.west,findUs.locator.east],['Ring Road','Tedhi Pulia','Munshi Pulia']);
  assert.match(findUs.locator.spoken,/south side of Ring Road/);
+ assert.match(findUs.locator.credit,/© OpenStreetMap contributors/);
 });
 
 test('the week is seven rows, Monday first, with the shared times',()=>{

@@ -9,6 +9,7 @@ import {address,directions} from '../../src/clinic/model.mjs';
 import {whatsappLink} from '../../src/clinic/standins.mjs';
 import {lockUnboundControls} from '../../src/site/runtime/render.mjs';
 import {text} from '../../src/site/lib/html.mjs';
+import {addressWords} from '../../src/site/pages/contact/contact.mjs';
 import {noticeWanted,bindNotice,bindContact} from '../../src/site/pages/contact/contact.behaviour.mjs';
 
 const PATH='/contact';
@@ -60,7 +61,11 @@ test('find us: the drawn map opens Google Maps, the frontage carries its caption
  for(const label of [findUs.locator.road,findUs.locator.west,findUs.locator.east,findUs.locator.pin,findUs.locator.open])assert.ok(has(page,label),label);
  assert.match(page,/src="\/client-photos\/frontage-from-ring-road-640\.webp"/);
  assert.ok(has(page,findUs.photo.caption));
- assert.ok(has(page,address));assert.ok(has(page,findUs.card.parking+'.'));
+ assert.ok(page.replaceAll('&nbsp;',' ').includes(`<address>${address}</address>`),'the whole address, as the clinic writes it');
+ assert.equal(addressWords('1, A Road, Sector 18, Town, UP - 226016'),'1, A Road, Sector&nbsp;18, Town, UP&nbsp;-&nbsp;226016');
+ assert.equal(addressWords('Plain <street>'),'Plain &lt;street&gt;');
+ assert.ok(has(page,findUs.card.parking+'.'));
+ assert.ok(has(page,findUs.locator.credit),'the map\'s data is credited beside it');
  assert.doesNotMatch(page,/clinic-gate|reception/,'the gate and reception photographs are never used');
 });
 

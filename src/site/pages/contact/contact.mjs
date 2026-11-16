@@ -78,16 +78,22 @@ function locator(){
   +`</div></div></figure>`;
 }
 
+/** The address as words that keep together where a break would read badly: "Sector 18", "UP - 226016". */
+export function addressWords(address){
+ return text(address).replace(/\b(Sector) (\d+)/gu,'$1&nbsp;$2').replace(/ - (\d{6})\b/u,'&nbsp;-&nbsp;$1');
+}
+
 function findPart(){
  const card=findUs.card,photo=findUs.photo;
  return `<section class="page-contact page-contact__find" id="find-us" aria-labelledby="find-title"><div class="wrap">`
   +sectionHead({runningHead:findUs.runningHead,heading:findUs.heading,emphasis:findUs.emphasis,id:'find-title'})
   +`<div class="page-contact__table">${locator()}`
   +photoFigure(photo.id,{ratio:photo.ratio,caption:photo.caption,sizes:'(min-width: 1024px) 520px, (min-width: 768px) 56vw, 84vw',className:'page-contact__frontage'})
-  +`<div class="page-contact__address" data-enter="card"><h3>${text(card.name)}</h3><address>${text(card.address)}</address>`
+  +`<div class="page-contact__address" data-enter="card"><h3>${text(card.name)}</h3><address>${addressWords(card.address)}</address>`
   // Outline at every width: the view already holds a filled Book button (the header's, or the phone bar's).
   +button({label:card.directions.label,href:card.directions.href,variant:'second',external:true,iconAfter:'out',note:card.opens,className:'page-contact__directions'})
-  +`<p class="page-contact__parking">${icon('car')}<span>${text(card.parking)}.</span></p></div>`
+  +`<p class="page-contact__parking">${icon('car')}<span>${text(card.parking)}.</span></p>`
+  +`<p class="page-contact__map-credit">${text(findUs.locator.credit)}</p></div>`
   +`</div></div></section>`;
 }
 
