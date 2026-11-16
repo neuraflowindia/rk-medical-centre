@@ -75,13 +75,15 @@
   @media (min-width: 1024px) {
     .doctor-card { padding: 32px 32px 34px; }
     .doctor-card__id { align-self: center; }
-    .doctor-card__profile--narrow { display: none; }
-    .doctor-card__profile--wide { display: inline-flex; margin-left: var(--space-2); }
-    .doctor-card__actions { align-items: center; }
     .doctor-card__objects { width: 112px; height: 112px; margin: 0 -42px -46px 0; }
   }
   @media (min-width: 1280px) {
     .doctor-card { padding: 36px 40px 38px; }
+    /* with room for three controls on one line, "Full profile" moves beside the buttons, and the
+       two cards' name blocks become the same height */
+    .doctor-card__profile--narrow { display: none; }
+    .doctor-card__profile--wide { display: inline-flex; margin-left: var(--space-2); }
+    .doctor-card__actions { grid-column: 1 / -1; align-items: center; padding-right: 96px; }
     .doctor-card__portrait { margin-top: -72px; }
     .doctor-card__objects { width: 148px; height: 148px; margin: 0 -54px -52px 0; }
   }

@@ -31,15 +31,19 @@ export function callRow(row,{avatar='',needFirst=false,attributes={}}={}){
   +`<span class="call-row__digits">${icon('phone')}${text(row.digits)}</span></a>`;
 }
 
+/** The raised row that opens WhatsApp with the first message written. Used by the call sheet and Contact. */
+export function whatsappRow(ctx,{attributes={}}={}){
+ const whatsapp=sheetWords.whatsapp;
+ return `<a${attrs({class:'call-row call-row--whatsapp',href:whatsapp.href,target:'_blank',rel:'noopener',...attributes})}>`
+  +`<span class="call-row__icon" aria-hidden="true">${icon('whatsapp')}</span>`
+  +`<span class="call-row__who"><span class="call-row__need">${text(sheetWords.whatsappNeed)}</span><strong class="call-row__name">${text(whatsapp.label)}</strong></span>`
+  +`<span class="call-row__digits">${icon('out')}<span class="visually-hidden">${text(sheetWords.opensWhatsapp)}</span></span></a>`;
+}
+
 /** Contents of the call sheet (phone) and call panel (laptop): both doctors by need, then WhatsApp. */
 export function callSheet(ctx){
  const rows=callRows().map(row=>`<li>${callRow(row,{needFirst:true,avatar:doctorAvatar(row.id)})}</li>`).join('');
- const whatsapp=sheetWords.whatsapp;
- return `<ul class="call-rows">${rows}`
-  +`<li><a class="call-row call-row--whatsapp" href="${text(whatsapp.href)}" target="_blank" rel="noopener">`
-  +`<span class="call-row__icon" aria-hidden="true">${icon('whatsapp')}</span>`
-  +`<span class="call-row__who"><span class="call-row__need">${text(sheetWords.whatsappNeed)}</span><strong class="call-row__name">${text(whatsapp.label)}</strong></span>`
-  +`<span class="call-row__digits">${icon('out')}<span class="visually-hidden">${text(sheetWords.opensWhatsapp)}</span></span></a></li></ul>`
+ return `<ul class="call-rows">${rows}<li>${whatsappRow(ctx)}</li></ul>`
   // Whether a call will be answered now: the same live line as the header's.
   +openSign(ctx,{form:'line',className:'call-rows__sign'});
 }

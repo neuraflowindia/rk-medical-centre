@@ -19,10 +19,11 @@ export function bindCallPanel(root,{signal,services,windowObject=globalThis.wind
   const inMenu=opener.closest('dialog'),trigger=inMenu?everywhere.querySelector('[data-open-menu]'):opener;
   services.call.open({doctor,trigger});
  };
+ // Heard before the page's own link handling: a Call control's address is only its script-less fallback.
  everywhere.addEventListener('click',event=>{
   const opener=event.target.closest?.('[data-open-call]');
   if(opener&&!event.defaultPrevented&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey&&!(event.button>0))open(event,opener);
- },{signal});
+ },{signal,capture:true});
  everywhere.addEventListener('keydown',event=>{
   const opener=event.key===' '?event.target.closest?.('a[data-open-call]'):null;
   if(opener)open(event,opener);

@@ -35,8 +35,23 @@ Object.assign(clinicPhotos,{
  frontage:crop('frontage','Clinic frontage','The clinic seen from Ring Road: a green wall, a blue board with both doctors’ names and the R. K. Medical Centre sign','frontage-from-ring-road',640,360,[640,1280]),
  waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,800])
 });
+Object.assign(clinicPhotos,{
+ // The wider "at work" portraits (Meet the doctors, profile covers). Never shown wider than 300 px.
+ 'at-work-sanjay':crop('at-work-sanjay','In his consulting room',`${doctors.sanjay.name} at his desk in the consulting room, reading from a tablet, with bookshelves behind him`,'dr-sanjay-gupta-at-work',300,375,[300,600]),
+ 'at-work-parul':crop('at-work-parul','In her consulting room',`${doctors.parul.name} at her desk in the consulting room, reading a patient’s notes`,'dr-parul-gupta-at-work',300,375,[300,600]),
+ // Each doctor's room, 3 : 2 (profiles).
+ 'room-sanjay':crop('room-sanjay',`${doctors.sanjay.name}’s consulting room`,`${doctors.sanjay.name} speaking from behind his desk, with framed certificates and a whiteboard on the wall`,'dr-sanjay-gupta-consulting-room',444,296,[444,888]),
+ 'room-parul':crop('room-parul',`${doctors.parul.name}’s consulting room`,`${doctors.parul.name} at her desk beside the ultrasound machine, with awards on the window shelf behind her`,'dr-parul-gupta-consulting-room',420,280,[420,840]),
+ // The walk through the clinic (About): arriving at the gate, then the glass doors. The waiting area is `waiting`.
+ 'walk-gate':crop('walk-gate','The gate on Ring Road','The clinic’s gate on Ring Road, under a blue board with both doctors’ names, beside the green wall','gate-under-blue-board',340,425,[340,680]),
+ 'walk-doors':crop('walk-doors','The glass doors','Glass doors marked with red crosses under a white canopy, with black grille shutters folded back on either side','glass-doors-with-red-crosses',360,450,[360,720])
+});
 /** The arch portraits of the two doctors (hero pair, doctor cards). */
 export const archPortraits={sanjay:'portrait-sanjay',parul:'portrait-parul'};
+/** The wider 4 : 5 "at work" portraits (Meet the doctors, profile covers). Never shown wider than 300 px. */
+export const workPortraits={sanjay:'at-work-sanjay',parul:'at-work-parul'};
+/** The 3 : 2 room picture of each doctor (profiles, "About the doctor"). */
+export const roomCrops={sanjay:'room-sanjay',parul:'room-parul'};
 /** Small square faces for rows that name a doctor (call rows, strips, booking). Decorative: alt is empty. */
 export const doctorAvatars={
  sanjay:{src:'/client-photos/dr-sanjay-gupta-avatar-168.webp',width:168,height:168,alt:''},
@@ -62,12 +77,19 @@ export const clinicObjects={
  'ultrasound-probe':object('ultrasound-probe',360,357)
 };
 
-// Certificates with their physical frames cropped away, for the site's own frame.
+// Certificates with their physical frames cropped away, for the site's own frame: all ten.
 // Keyed by the certificate's id in certificate-catalogue.mjs; a certificate without an entry
-// here is shown from its catalogue picture.
+// here would be shown from its catalogue picture.
 export const plainCertificates={
  'sanjay-gupta-certificate-08':{src:'/certificates/sanjay-gupta-certificate-08-plain-704.webp',width:704,height:464},
  'sanjay-gupta-certificate-03':{src:'/certificates/sanjay-gupta-certificate-03-plain-460.webp',width:460,height:650},
  'parul-gupta-certificate-01':{src:'/certificates/parul-gupta-certificate-01-plain-708.webp',width:708,height:528},
- 'parul-gupta-certificate-02':{src:'/certificates/parul-gupta-certificate-02-plain-710.webp',width:710,height:530}
+ 'parul-gupta-certificate-02':{src:'/certificates/parul-gupta-certificate-02-plain-710.webp',width:710,height:530},
+ 'sanjay-gupta-certificate-01':{src:'/certificates/sanjay-gupta-certificate-01-plain-482.webp',width:482,height:660},
+ 'sanjay-gupta-certificate-06':{src:'/certificates/sanjay-gupta-certificate-06-plain-646.webp',width:646,height:346},
+ 'sanjay-gupta-certificate-02':{src:'/certificates/sanjay-gupta-certificate-02-plain-648.webp',width:648,height:362},
+ 'parul-gupta-certificate-05':{src:'/certificates/parul-gupta-certificate-05-plain-644.webp',width:644,height:468},
+ 'parul-gupta-certificate-03':{src:'/certificates/parul-gupta-certificate-03-plain-692.webp',width:692,height:518},
+ // Photographed framed, at an angle and in dim light: straightened and its light evened out, nothing else.
+ 'parul-gupta-certificate-04':{src:'/certificates/parul-gupta-certificate-04-plain-640.webp',width:640,height:480}
 };

@@ -15,6 +15,8 @@
   .sheet__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
   .sheet__title { font: var(--type-feature); color: var(--ink); }
   .sheet__title:focus-visible { outline: none; }
+  .sheet__lockup { display: flex; align-items: center; gap: 10px; min-height: var(--tap); }
+  .sheet__lockup img { width: 31px; height: 36px; object-fit: contain; }
   .sheet__title--lockup { display: grid; gap: 1px; font: var(--type-lockup); letter-spacing: -.005em; }
   .sheet__title--lockup span { font: var(--type-lockup-place); color: var(--ink-muted); letter-spacing: 0; }
   .sheet__grip { display: block; width: 40px; height: 4px; margin: 0 auto 6px; border-radius: var(--radius-pill); background: var(--grip); }

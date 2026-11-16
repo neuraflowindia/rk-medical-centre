@@ -25,26 +25,27 @@ function label(item,className='certificate-frame__label'){
  * `item` is a record of clinic/certificate-catalogue.mjs (or of homeCertificates()).
  *   size   'small' · 'regular' · 'large' — the picture's height (the frame keeps the picture's own shape)
  *   view   true makes the document a control that opens the viewer on it
+ *   tone   'on-deep' for a frame on the deep ground (its label and focus ring change colour)
  *   tilt, lag  used by a wall that settles as it scrolls in (see certificateWall)
  */
-export function certificateFrame(item,{size='regular',view=false,tilt=0,lag=0,sizes='(min-width: 768px) 320px, 62vw'}={}){
- oneOf(size,CERTIFICATE_SIZES,'certificate size');
+export function certificateFrame(item,{size='regular',view=false,tone='',tilt=0,lag=0,sizes='(min-width: 768px) 320px, 62vw'}={}){
+ oneOf(size,CERTIFICATE_SIZES,'certificate size');oneOf(tone,['','on-deep'],'certificate tone');
  const picture=image(certificatePicture(item),{sizes});
  const mat=view
   ?`<button class="certificate-frame__mat certificate-frame__mat--view" type="button" aria-haspopup="dialog" aria-label="${text(`View: ${item.title}`)}" data-view-certificate="${text(item.id)}">${picture}</button>`
   :`<div class="certificate-frame__mat">${picture}</div>`;
- return `<figure${attrs({class:classes('certificate-frame',`certificate-frame--${size}`),'data-certificate':item.id,style:`--tilt:${Number(tilt)}deg;--lag:${Number(lag)}`})}>${mat}${label(item)}</figure>`;
+ return `<figure${attrs({class:classes('certificate-frame',`certificate-frame--${size}`,tone&&`certificate-frame--${tone}`),'data-certificate':item.id,style:`--tilt:${Number(tilt)}deg;--lag:${Number(lag)}`})}>${mat}${label(item)}</figure>`;
 }
 
 /**
  * A row of framed certificates (on phones a row the visitor moves).
  *   label   what the row holds, for assistive technology
  *   settle  true lets the documents settle into place as the row scrolls into view
- *   size, view  passed to every frame
+ *   size, view, tone  passed to every frame
  */
-export function certificateWall(items,{label:name='Certificates',settle=false,size='regular',view=false}={}){
+export function certificateWall(items,{label:name='Certificates',settle=false,size='regular',view=false,tone=''}={}){
  return `<ul${attrs({class:'certificate-wall','aria-label':name,'data-certificate-wall':true,'data-settle':settle})}>`
-  +items.map((item,index)=>`<li class="certificate-wall__item">${certificateFrame(item,{size,view,tilt:settle?TILTS[index%TILTS.length]:0,lag:settle?Math.round(index*12)/100:0})}</li>`).join('')+`</ul>`;
+  +items.map((item,index)=>`<li class="certificate-wall__item">${certificateFrame(item,{size,view,tone,tilt:settle?TILTS[index%TILTS.length]:0,lag:settle?Math.round(index*12)/100:0})}</li>`).join('')+`</ul>`;
 }
 
 /** The viewer's contents: one certificate large, with its caption, and the way to its neighbours. */
