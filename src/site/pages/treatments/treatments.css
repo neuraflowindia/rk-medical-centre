@@ -31,7 +31,8 @@
   /* each doctor's colour family; the name is always beside it */
   .page-treatments__group { --plate: var(--mist-sage); --strip: var(--wash-sage); --object-shadow: var(--elev-object-small); --card-shadow: var(--elev-card); }
   .page-treatments__group--rose { --plate: var(--mist-rose); --strip: var(--wash-rose); --object-shadow: var(--elev-object-small-rose); --card-shadow: var(--elev-card-rose); }
-  .page-treatments__group:focus-visible, .page-treatments__topic:focus-visible { outline-offset: 6px; }
+  /* a group or a row is focused only as the place an address lands on (like the page's own heading): no ring */
+  .page-treatments__group:focus-visible, .page-treatments__topic:focus-visible { outline: none; }
 
   /* the byline: flat, information */
   .page-treatments__byline { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; margin-bottom: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid var(--line-strong); }
