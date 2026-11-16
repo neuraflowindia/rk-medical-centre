@@ -237,10 +237,13 @@
     .page-treatments__strip-actions { grid-column: auto; }
     .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 0 0 auto; }
   }
-  /* A short laptop screen (about 650 px of page): the panel is drawn tighter so its buttons are never cut off. */
+  /* A short laptop screen (about 650 px of page): the title page and the panel are drawn tighter, so the first
+     row and the panel's buttons are on the first screen. */
   @media (min-width: 1024px) and (max-height: 739px) {
     .page-treatments__contents { --panel-top: var(--space-8); }
     .page-treatments__head { padding-top: var(--space-8); }
+    .page-treatments__head-copy { gap: var(--space-6); }
+    .page-treatments__index { padding-top: calc(var(--guide-hang) + var(--space-7)); }
     .page-treatments__panel { top: calc(var(--header-height) + var(--space-6)); padding-top: 28px; }
     .page-treatments__stage { margin-top: -50px; }
     .page-treatments__panel-title { margin-bottom: var(--space-3); }
