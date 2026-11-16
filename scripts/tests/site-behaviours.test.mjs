@@ -81,7 +81,7 @@ test('the footer: Pause motion, "How your details are used" and the privacy choi
  assert.equal(services.motion.state(),'paused');assert.equal(toggle.getAttribute('aria-pressed'),'true');assert.equal(toggle.querySelector('[data-motion-label]').textContent,'Play motion');assert.equal(toggle.querySelector('use').getAttribute('href'),'#i-play');
  paintMotionToggle(toggle,'on');assert.equal(toggle.querySelector('use').getAttribute('href'),'#i-pause');
  $('.site-footer [data-collection-notice]').click();
- assert.equal($('#reader-title').textContent,'How your details are used');assert.equal($('#reader-content').querySelectorAll('p').length,noticeWords().paragraphs.length);assert.ok($('#reader').open);
+ assert.equal($('#reader-title').textContent,'How your details are used');assert.equal($('#reader-content').querySelectorAll('p').length,noticeWords().paragraphs.length+(noticeWords().more?1:0),'the way to the full notice is one more paragraph, when there is one');assert.ok($('#reader').open);
  $('.site-footer [data-privacy]').click();
  assert.equal($('#reader-title').textContent,'Your privacy choices');
  $('#reader [data-privacy-accept]').click();assert.deepEqual(chosen,[false]);assert.equal($('#reader').open,false);

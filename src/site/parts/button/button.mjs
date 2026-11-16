@@ -57,9 +57,9 @@ export function bookingEntry(ctx,{place='page',size='regular',variant='main',cla
  * footer's numbers. `lead: true` marks the button that takes over as the main action while
  * booking is OFF: it then reads "Call Dr. Sanjay" and takes the filled look.
  */
-export function callButton(ctx,{doctor='',label='',variant='second',size='regular',lead=false,className='',attributes={}}={}){
+export function callButton(ctx,{doctor='',label='',labelMarkup='',variant='second',size='regular',lead=false,className='',attributes={}}={}){
  const shared={variant,size,icon:'phone',className:classes(className,lead&&'button--lead')};
- if(!doctor)return button({...shared,label:label||actionLabels.call,href:'#footer-calls',spoken:callWords.title,
+ if(!doctor)return button({...shared,label:label||actionLabels.call,labelMarkup,href:'#footer-calls',spoken:callWords.title,
   attributes:{'aria-haspopup':'dialog','data-open-call':'',...attributes}});
  if(!Object.hasOwn(doctors,doctor))throw new RangeError('Unknown doctor: '+doctor);
  const short=label||actionLabels.call,full=callDoctorLabel(doctor);

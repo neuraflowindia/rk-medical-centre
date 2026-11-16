@@ -121,7 +121,7 @@ test('the header: full on the public pages, quiet on the booking screens; the cu
  assert.match(full,/data-header-appointment/);assert.match(full,/data-open-sign="line"/);
  assert.match(full,/<a class="site-header__menu" href="#site-footer" role="button" aria-haspopup="dialog" aria-controls="menu" aria-expanded="false" aria-label="Open menu" data-open-menu>/);
  const slim=siteHeader(on,{chrome:'slim'});
- assert.match(slim,/site-header--slim/);assert.doesNotMatch(slim,/site-header__nav|data-header-appointment|data-open-menu/);assert.match(slim,/Need help\? Call/);
+ assert.match(slim,/site-header--slim/);assert.doesNotMatch(slim,/site-header__nav|data-header-appointment|data-open-menu/);assert.match(slim,/<span class="site-header__help-lead">Need help\? <\/span>Call<\/span>/,'a narrow phone shows "Call" alone');
  assert.throws(()=>siteHeader(on,{chrome:'wide'}),/Unknown header chrome/);
  assert.match(lockup({deep:true,nameId:'n'}),/<span class="lockup__tile"><img src="\/clinic-assets\/rk-medical-centre-logo\.webp" width="165" height="192" alt="" decoding="async"><\/span>.*id="n">R\.&nbsp;K\. Medical Centre/);
  assert.equal(count(mainLinks(on),/aria-current/g),0);assert.equal(LOGO.width,165);
