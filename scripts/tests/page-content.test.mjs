@@ -178,8 +178,9 @@ test('the footer is complete: address, hours, phones, pages, registrations and t
  assert.equal(footer.detailsNotice,'How your details are used');assert.equal(footer.privacyChoices,'Change privacy choices');
  assert.deepEqual(footer.motion,{pause:'Pause motion',play:'Play motion'});
  assert.equal(shared.detailsNotice.paragraphs.length,3);
- assert.equal(shared.copyrightLine(2026),'© 2026 R. K. Medical Centre · Lucknow');
- assert.equal(shared.copyrightLine(),`© ${new Date().getFullYear()} R. K. Medical Centre · Lucknow`);
+ assert.equal(shared.copyrightLine(2026),'© 2026 R. K. Medical Centre');
+ assert.deepEqual(shared.addressLines,['18/469/1, Tedhi Pulia Ring Road','Sector 18, Indira Nagar','Lucknow, UP - 226016']);assert.equal(shared.addressLines.join(', '),shared.addressCard.address);assert.equal(shared.addressCard.addressLines,shared.addressLines);
+ assert.equal(shared.copyrightLine(),`© ${new Date().getFullYear()} R. K. Medical Centre`);
  assert.equal(shared.practisingSince(),1992);
  assert.equal(shared.practisingSince({sanjay:{since:1992},parul:{since:1995}}),null,'no shared year when the doctors differ');
 });

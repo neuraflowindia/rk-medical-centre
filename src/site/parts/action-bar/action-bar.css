@@ -25,7 +25,7 @@
   }
 
   .call-rows { display: grid; gap: var(--space-3); }
-  .call-rows__sign { margin-top: var(--space-4); min-height: 28px; }
+  .call-rows__sign { display: flex; margin-top: 14px; padding: 14px 2px 0; border-top: 1px solid var(--line); }
   .call-row {
     display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; row-gap: 2px; min-height: 76px; padding: 12px 16px 12px 12px; border-radius: var(--radius-row); color: var(--ink);
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);

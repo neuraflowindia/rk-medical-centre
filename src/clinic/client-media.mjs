@@ -32,6 +32,11 @@ function crop(id,caption,alt,stem,width,height,widths){
 Object.assign(clinicPhotos,{
  'portrait-sanjay':crop('portrait-sanjay','In his consulting room',`${doctors.sanjay.name} at his desk in the consulting room`,'dr-sanjay-gupta-portrait',264,330,[264,528]),
  'portrait-parul':crop('portrait-parul','In her consulting room',`${doctors.parul.name} reading a patient’s notes in her consulting room`,'dr-parul-gupta-portrait',264,330,[264,528]),
+ // The first screen's pair: each doctor at the desk. The doctor cards use a closer crop of the same photographs.
+ 'desk-sanjay':crop('desk-sanjay','In his consulting room',`${doctors.sanjay.name} at his desk in the consulting room`,'dr-sanjay-gupta-at-desk',264,330,[264,528]),
+ 'desk-parul':crop('desk-parul','In her consulting room',`${doctors.parul.name} reading a patient’s notes in her consulting room`,'dr-parul-gupta-at-desk',264,330,[264,528]),
+ 'close-sanjay':crop('close-sanjay','In his consulting room',doctors.sanjay.name,'dr-sanjay-gupta-close-up',180,225,[180,360]),
+ 'close-parul':crop('close-parul','In her consulting room',doctors.parul.name,'dr-parul-gupta-close-up',180,225,[180,360]),
  frontage:crop('frontage','Clinic frontage','The clinic seen from Ring Road: a green wall, a blue board with both doctors’ names and the R. K. Medical Centre sign','frontage-from-ring-road',640,360,[640,1280]),
  waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,800])
 });
@@ -46,8 +51,12 @@ Object.assign(clinicPhotos,{
  'walk-gate':crop('walk-gate','The gate on Ring Road','The clinic’s gate on Ring Road, under a blue board with both doctors’ names, beside the green wall','gate-under-blue-board',340,425,[340,680]),
  'walk-doors':crop('walk-doors','The glass doors','Glass doors marked with red crosses under a white canopy, with black grille shutters folded back on either side','glass-doors-with-red-crosses',360,450,[360,720])
 });
-/** The arch portraits of the two doctors (hero pair, doctor cards). */
+/** The three-quarter arch portraits of the two doctors. */
 export const archPortraits={sanjay:'portrait-sanjay',parul:'portrait-parul'};
+/** Home's first screen: each doctor at the desk (264 px frames). */
+export const deskPortraits={sanjay:'desk-sanjay',parul:'desk-parul'};
+/** Home's doctor cards: a closer crop, so the same picture is not shown twice (176 px frames at most). */
+export const closePortraits={sanjay:'close-sanjay',parul:'close-parul'};
 /** The wider 4 : 5 "at work" portraits (Meet the doctors, profile covers). Never shown wider than 300 px. */
 export const workPortraits={sanjay:'at-work-sanjay',parul:'at-work-parul'};
 /** The 3 : 2 room picture of each doctor (profiles, "About the doctor"). */

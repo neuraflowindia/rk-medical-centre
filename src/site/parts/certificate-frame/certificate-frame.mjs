@@ -2,6 +2,7 @@
 // hairline), with a museum-label caption: what it is, who issued it and when, whose it is.
 import {doctors} from '../../../clinic/model.mjs';
 import {plainCertificates} from '../../../clinic/client-media.mjs';
+import {issuerLine} from '../../../clinic/page-content/shared.mjs';
 import {attrs,classes,image,oneOf,text} from '../../lib/html.mjs';
 import {roundButton} from '../button/button.mjs';
 
@@ -18,7 +19,7 @@ export function certificatePicture(item){
 const ownerOf=item=>item.doctorName||doctors[item.doctor]?.name||'';
 function label(item,className='certificate-frame__label'){
  const owner=ownerOf(item);
- return `<figcaption class="${className}"><strong>${text(item.title)}</strong><span>${text(item.issuer)}</span>${owner?`<span>${text(owner)}</span>`:''}</figcaption>`;
+ return `<figcaption class="${className}"><strong>${text(item.title)}</strong><span>${text(issuerLine(item.issuer))}</span>${owner?`<span>${text(owner)}</span>`:''}</figcaption>`;
 }
 
 /**
@@ -30,11 +31,13 @@ function label(item,className='certificate-frame__label'){
  */
 export function certificateFrame(item,{size='regular',view=false,tone='',tilt=0,lag=0,sizes='(min-width: 768px) 320px, 62vw'}={}){
  oneOf(size,CERTIFICATE_SIZES,'certificate size');oneOf(tone,['','on-deep'],'certificate tone');
- const picture=image(certificatePicture(item),{sizes});
+ const record=certificatePicture(item),picture=image(record,{sizes});
+ // the picture's shape (width over height), so a page can size the frame before the picture has loaded
+ const shape=Math.round(record.width/record.height*1000)/1000;
  const mat=view
   ?`<button class="certificate-frame__mat certificate-frame__mat--view" type="button" aria-haspopup="dialog" aria-label="${text(`View: ${item.title}`)}" data-view-certificate="${text(item.id)}">${picture}</button>`
   :`<div class="certificate-frame__mat">${picture}</div>`;
- return `<figure${attrs({class:classes('certificate-frame',`certificate-frame--${size}`,tone&&`certificate-frame--${tone}`),'data-certificate':item.id,style:`--tilt:${Number(tilt)}deg;--lag:${Number(lag)}`})}>${mat}${label(item)}</figure>`;
+ return `<figure${attrs({class:classes('certificate-frame',`certificate-frame--${size}`,tone&&`certificate-frame--${tone}`),'data-certificate':item.id,style:`--tilt:${Number(tilt)}deg;--lag:${Number(lag)};--ar:${shape}`})}>${mat}${label(item)}</figure>`;
 }
 
 /**

@@ -76,9 +76,8 @@
     transition: box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover), transform var(--dur-press) var(--ease-move);
   }
   .chip:active, .tab:active { transform: translateY(var(--press)); }
-  .tab { min-width: 56px; gap: 6px; }
-  .tab__count { color: var(--ink-muted); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; }
-  .tab[aria-selected="true"] .tab__count { color: var(--ink-body); }
+  .tab { min-width: 56px; gap: 7px; }
+  .tab__count { color: var(--ink-body); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; }
   .chip[data-chosen], .chip[aria-checked="true"], .tab[aria-selected="true"] { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
   .chip:focus-visible, .tab:focus-visible { border-radius: var(--radius-pill); }
   @media (hover: hover) and (pointer: fine) {

@@ -1,11 +1,11 @@
 /* The closing: one tall inset panel on the light ground, one decision. */
 @layer components {
   .closing { background: var(--ground-light); padding: calc(var(--section-pad) - 8px) 0 var(--space-8); overflow-x: clip; }
-  .closing__panel { position: relative; display: grid; gap: var(--space-6); padding: var(--space-7) var(--card-pad) var(--card-pad); border-radius: var(--radius-panel); background: var(--ground-tint); box-shadow: inset 0 0 0 1px var(--line-panel); overflow: clip; }
+  .closing__panel { position: relative; display: grid; gap: var(--space-5); padding: 28px var(--card-pad) var(--card-pad); border-radius: var(--radius-panel); background: var(--ground-tint); box-shadow: inset 0 0 0 1px var(--line-edge); overflow: clip; }
   .closing__arch { position: absolute; z-index: 0; right: -70px; bottom: -40px; width: 250px; height: 300px; border-radius: var(--radius-arch-open); background: var(--ground-tint-light); }
   .closing__copy, .closing__calls { position: relative; z-index: 1; }
   .closing__copy { display: grid; justify-items: start; }
-  .closing__calls .call-row { min-height: 72px; padding: 10px 14px 10px 10px; row-gap: 0; }
+  .closing__calls .call-row { min-height: 68px; padding: 8px 14px 8px 8px; row-gap: 0; }
   .closing__calls .call-row__need { display: none; }
   .closing__sign { margin-top: var(--space-3); min-height: 28px; }
   .closing__action { margin-top: var(--space-5); width: 100%; }

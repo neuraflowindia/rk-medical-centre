@@ -14,7 +14,7 @@
   .review-card__stars .icon--half { fill: url("#i-half-fill"); }
   .review-card__quote { margin: 14px 0 18px; color: var(--ink); font: var(--type-quote); }
   /* With scripts the words are held to five lines and "Read more" opens the whole review; without, they show in full. */
-  html[data-js] .review-card__quote p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+  html[data-js] .review-card__quote p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
   .review-card__more { align-self: flex-start; margin: -18px 0 -2px; }
   .review-card__by { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--line); }
   .review-card__avatar { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: var(--radius-round); color: var(--action-pressed); background: var(--chosen); box-shadow: var(--ring-action-faint); font: var(--type-avatar); letter-spacing: .04em; }
@@ -40,7 +40,10 @@
   .review-reader__item { padding: 22px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 80px; }
   .review-reader__item:last-child { border-bottom: 0; }
   .review-reader__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px var(--space-4); }
-  .review-reader__about { color: var(--ink-muted); font: var(--type-meta); }
+  /* a small label that says whom a review is about */
+  .review-reader__about { display: inline-flex; align-items: center; min-height: 28px; padding: 0 var(--space-3); border-radius: var(--radius-focus); background: var(--ground-light); color: var(--ink); font: var(--type-about); white-space: nowrap; box-shadow: inset 0 0 0 1px var(--line); }
+  .review-reader__about--sanjay { background: var(--wash-sage); }
+  .review-reader__about--parul { background: var(--wash-rose); }
   .review-reader__quote { margin: 10px 0 14px; color: var(--ink); font: var(--type-quote); max-width: 62ch; }
   .review-reader__item .review-card__by { margin-top: 0; padding-top: 0; border-top: 0; }
   .review-reader__item.is-pointed { margin-inline: -12px; padding-inline: var(--space-3); border-radius: var(--radius-row); background: var(--wash-mustard); border-bottom-color: transparent; }
@@ -50,15 +53,19 @@
     .review-shelf__bleed { margin-top: var(--head-gap); }
     .review-shelf__row { gap: var(--space-5); padding-inline: max(var(--gutter), (100vw - var(--content-width)) / 2); scroll-padding-inline: max(var(--gutter), (100vw - var(--content-width)) / 2); }
     .review-card { width: 348px; min-height: 348px; padding: 28px; }
-    .review-card.review-card--lead { width: 520px; padding: 36px 40px 30px; }
+    html[data-js] .review-card__quote p { -webkit-line-clamp: 5; line-clamp: 5; }
+    html[data-js] .review-card--lead .review-card__quote p { -webkit-line-clamp: 8; line-clamp: 8; }
+    .review-card.review-card--lead { width: 440px; padding: 36px 40px 30px; }
     .review-card--lead .review-card__quote { margin-top: 18px; line-height: 1.32; }
     .review-card--lead::before { content: "\201C"; position: absolute; right: 30px; top: 6px; color: var(--gold-ghost); font: var(--type-quote-mark); pointer-events: none; }
     .review-shelf__controls { margin-top: 28px; }
     .review-shelf__count { display: block; }
   }
   /* lead 520 + two cards of 340 + two gaps of 20 = the content width: three end on its edge, the fourth peeks */
+  @media (min-width: 1024px) {
+    .review-card.review-card--lead { width: 520px; }
+  }
   @media (min-width: 1280px) {
     .review-card { width: 340px; }
-    .review-card.review-card--lead { width: 520px; }
   }
 }
