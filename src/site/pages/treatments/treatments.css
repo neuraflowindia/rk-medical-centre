@@ -1,3 +1,240 @@
-/* treatments page: styles only for what sits inside .page-treatments */
+/* Treatments: a calm contents page. Everything here sits inside .page-treatments; the shared
+   parts bring their own look and are only placed here.
+   The sage index is a sheet with things resting on its edges: the guide row across its upper
+   edge, the two doctor cards across its lower edge and, on laptops, the open row's panel rising
+   into the title page. */
 @layer pages {
+
+  /* ---------- 1 · title page (ivory) ---------- */
+  .page-treatments__contents { --guide-hang: 36px; --arch: 50% 50% var(--radius-small) var(--radius-small) / 41% 41% var(--radius-small) var(--radius-small); position: relative; }
+  .page-treatments__head { background: var(--ground-light); padding-top: var(--space-8); }
+  .page-treatments__head-copy { display: grid; gap: var(--space-7); }
+  /* two lines at every width: the italic phrase has the second to itself */
+  .page-treatments__head-copy .section-head__title { max-width: 7.4em; text-wrap: wrap; }
+  /* near: the first-screen action, a raised row lying across the edge of the sage sheet */
+  .page-treatments__guide {
+    position: relative; z-index: 1; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px;
+    min-height: 72px; margin-bottom: calc(-1 * var(--guide-hang)); padding: 10px 18px 10px 10px; border-radius: var(--radius-row); color: var(--ink);
+    background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised);
+    transition: translate var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
+  }
+  .page-treatments__guide-tile { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: var(--radius-control); color: var(--action); background: var(--chosen); box-shadow: var(--ring-action-faint); }
+  .page-treatments__guide-tile .icon { width: 24px; height: 24px; }
+  .page-treatments__guide-words { display: grid; gap: 1px; min-width: 0; color: var(--ink-body); font: var(--type-row); }
+  .page-treatments__guide-words strong { color: var(--ink); font: var(--type-row-strong); }
+  .page-treatments__guide:active { translate: 0 var(--press); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
+  .page-treatments__guide:focus-visible { border-radius: var(--radius-row); }
+
+  /* ---------- 2 · the index (sage): two groups headed by their doctor, nine rows ---------- */
+  .page-treatments__index { background: var(--ground-tint); padding: calc(var(--guide-hang) + var(--space-7)) 0 var(--space-9); }
+  .page-treatments__groups { display: grid; gap: var(--space-8); }
+  /* each doctor's colour family; the name is always beside it */
+  .page-treatments__group { --plate: var(--mist-sage); --strip: var(--wash-sage); --object-shadow: var(--elev-object-small); --card-shadow: var(--elev-card); }
+  .page-treatments__group--rose { --plate: var(--mist-rose); --strip: var(--wash-rose); --object-shadow: var(--elev-object-small-rose); --card-shadow: var(--elev-card-rose); }
+  .page-treatments__group:focus-visible, .page-treatments__topic:focus-visible { outline-offset: 6px; }
+
+  /* the byline: flat, information */
+  .page-treatments__byline { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; margin-bottom: var(--space-4); padding-bottom: var(--space-4); border-bottom: 1px solid var(--line-strong); }
+  .page-treatments__byline-face { width: 56px; height: 56px; border-radius: var(--radius-control); object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
+  .page-treatments__byline-words { display: grid; gap: 2px; font: var(--type-formal); letter-spacing: 0; text-wrap: wrap; }
+  .page-treatments__byline-name { color: var(--ink); font: var(--type-name); letter-spacing: var(--tracking-display); }
+  .page-treatments__byline-role { color: var(--ink-body); font: var(--type-formal); }
+
+  .page-treatments__rows { display: grid; gap: var(--space-3); }
+  /* One row and its panel. Closed, the row is a raised control; open, it is pressed in and, where
+     it opens in place, row and panel become one paper card. The open state is written once, as
+     custom properties, because three things can open a row: the page's script, the browser's own
+     :target before the script takes over (and without scripts), and the laptop's first row. */
+  .page-treatments__topic {
+    --row-fill: linear-gradient(180deg, var(--surface-top), var(--surface)); --row-shadow: var(--ring-quiet), var(--elev-raised); --row-shadow-hover: var(--ring), var(--elev-raised-hover); --row-lift: var(--lift);
+    --panel-show: none; --mark-turn: 0deg; --mark-shift: 0px; --object-lift: 0px; --object-turn: 0deg; --object-size: 1;
+    --unit-fill: transparent; --unit-shadow: none; --unit-space: 0px; --unit-air: 0px;
+    margin: var(--unit-air) calc(-1 * var(--unit-space)) calc(var(--unit-air) * 1.5); padding: var(--unit-space); border-radius: var(--radius-card); background: var(--unit-fill); box-shadow: var(--unit-shadow);
+  }
+  .page-treatments__topic[data-open], .page-treatments__index:not([data-topics-bound]) .page-treatments__topic:target {
+    --row-fill: var(--chosen); --row-shadow: var(--ring), var(--elev-pressed); --row-shadow-hover: var(--ring), var(--elev-pressed); --row-lift: 0px;
+    --panel-show: block; --mark-turn: 180deg; --mark-shift: 4px; --object-lift: -5px; --object-turn: -6deg; --object-size: 1.14;
+    --unit-fill: var(--surface); --unit-shadow: var(--card-shadow); --unit-space: 6px; --unit-air: 6px;
+  }
+
+  .page-treatments__row {
+    display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; align-items: center; column-gap: 14px; min-height: 88px; padding: 10px 12px;
+    border-radius: var(--radius-row); color: var(--ink); background: var(--row-fill); box-shadow: var(--row-shadow);
+    transition: translate var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
+  }
+  .page-treatments__row:active { translate: 0 var(--press); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
+  .page-treatments__row:focus-visible { border-radius: var(--radius-row); }
+  /* far: the arch plate; subject: the object, larger than its plate */
+  .page-treatments__object { position: relative; display: grid; place-items: center; width: 60px; height: 60px; }
+  .page-treatments__object::before { content: ""; position: absolute; inset: 5px 8px 1px; border-radius: var(--arch); background: var(--plate); }
+  .page-treatments__object-art {
+    position: relative; width: 58px; height: 58px; max-width: none; object-fit: contain; filter: var(--object-shadow);
+    translate: 0 var(--object-lift); rotate: var(--object-turn); scale: var(--object-size);
+    transition: translate var(--dur-arrive) var(--ease-enter), rotate var(--dur-arrive) var(--ease-enter), scale var(--dur-arrive) var(--ease-enter);
+  }
+  /* wide, low objects are given a little more room so the nine read at one weight */
+  .page-treatments__object[data-object="blood-pressure-cuff"] .page-treatments__object-art, .page-treatments__object[data-object="doppler-probe"] .page-treatments__object-art, .page-treatments__object[data-object="folded-cloth"] .page-treatments__object-art { width: 66px; margin-left: -6px; }
+  .page-treatments__row-words { display: grid; gap: 2px; min-width: 0; }
+  .page-treatments__row-title { color: var(--ink); font: var(--type-h3); letter-spacing: var(--tracking-display); text-wrap: wrap; }
+  .page-treatments__row-deck { color: var(--ink-body); font: var(--type-row); }
+  .page-treatments__row-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; color: var(--action); rotate: var(--mark-turn); transition: rotate var(--dur-swap) var(--ease-move), translate var(--dur-hover) var(--ease-move); }
+
+  /* the open row's panel */
+  .page-treatments__panel-place { display: var(--panel-show); }
+  .page-treatments__panel { display: flow-root; padding: 18px 14px 14px; }
+  .page-treatments__stage, .page-treatments__panel-title { display: none; }
+  .page-treatments__facts > div + div { margin-top: var(--space-4); }
+  .page-treatments__facts dt { margin-bottom: 3px; color: var(--ink-muted); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .page-treatments__facts dd { max-width: 62ch; color: var(--ink-body); font: var(--type-body); text-wrap: pretty; }
+  .page-treatments__bring { display: grid; gap: 5px; margin-top: 2px; }
+  .page-treatments__bring li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 10px; }
+  .page-treatments__bring .icon { width: 18px; height: 18px; margin-top: 4px; color: var(--action); }
+  /* near: the doctor strip, a flat tinted surface that holds the two raised buttons */
+  .page-treatments__strip { clear: both; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px 12px; margin-top: var(--space-5); padding: 14px; border-radius: var(--radius-row); background: var(--strip); box-shadow: inset 0 0 0 1px var(--line-card); }
+  .page-treatments__strip-face { width: 48px; height: 48px; border-radius: var(--radius-control); object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
+  .page-treatments__strip-who { display: grid; gap: 1px; min-width: 0; color: var(--ink-body); font: var(--type-row); }
+  .page-treatments__strip-who strong { color: var(--ink); font: var(--type-row-strong); }
+  .page-treatments__strip-who span { font-variant-numeric: tabular-nums lining-nums; }
+  .page-treatments__strip-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
+  .page-treatments__strip-actions .button--main { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
+  .page-treatments__strip-actions .button--second { flex: 0 0 auto; min-width: 96px; }
+  html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 1 1 0; }
+
+  /* what the visitor starts: the panel's words appear, and where there is a stage the object arrives */
+  html[data-motion="on"] .page-treatments__topic[data-arriving] .page-treatments__facts, html[data-motion="on"] .page-treatments__topic[data-arriving] .page-treatments__strip, html[data-motion="on"] .page-treatments__topic[data-arriving] .page-treatments__panel-title { animation: page-treatments-words var(--dur-swap) var(--ease-move) both; }
+  html[data-motion="on"] .page-treatments__topic[data-arriving] .page-treatments__stage-object { animation: page-treatments-object var(--dur-arrive) var(--ease-enter) both; }
+  @keyframes page-treatments-words {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes page-treatments-object {
+    0% { opacity: 0; transform: translate(12px, -6px) rotate(4deg); filter: var(--elev-object-none); }
+    55% { opacity: 1; filter: var(--elev-object-half); }
+    100% { opacity: 1; transform: none; filter: var(--elev-object); }
+  }
+
+  /* ---------- 3 · the doctors: two cards across the lower edge of the sage sheet ---------- */
+  .page-treatments__doctors { display: grid; grid-template-columns: minmax(var(--gutter), 1fr) minmax(0, var(--content-width)) minmax(var(--gutter), 1fr); grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto; }
+  .page-treatments__doctors::before, .page-treatments__doctors::after { content: ""; grid-column: 1 / -1; z-index: 0; }
+  .page-treatments__doctors::before { grid-row: 1 / 3; background: var(--ground-tint); }
+  .page-treatments__doctors::after { grid-row: 3 / 5; background: var(--ground-light); }
+  .page-treatments__doctors-head, .page-treatments__doctors-cards { grid-column: 2; z-index: 1; }
+  .page-treatments__doctors-head { grid-row: 1; padding-bottom: var(--head-gap); }
+  .page-treatments__doctors-cards { grid-row: 2 / 4; display: grid; gap: var(--space-4); }
+  /* near: the cards are laid over the boundary, so they cast an ambient shadow */
+  .page-treatments__doctor-slot { border-radius: var(--radius-card); box-shadow: var(--elev-ambient); }
+  .page-treatments__doctor-slot--rose { box-shadow: var(--elev-ambient-rose); }
+  .page-treatments__doctor-slot .doctor-mini-card { height: 100%; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .page-treatments__guide:hover { translate: 0 var(--lift); box-shadow: var(--ring), var(--elev-raised-hover); }
+    .page-treatments__row:hover { translate: 0 var(--row-lift); box-shadow: var(--row-shadow-hover); }
+    .page-treatments__row:hover .page-treatments__object-art { rotate: -7deg; scale: 1.08; transition-duration: var(--dur-hover); }
+    .page-treatments__row:hover .page-treatments__row-mark { translate: 0 3px; }
+    .page-treatments__guide:active, .page-treatments__row:active { translate: 0 var(--press); }
+  }
+
+  @media (max-width: 359px) {
+    .page-treatments__row { grid-template-columns: 52px minmax(0, 1fr) auto; column-gap: 10px; padding-inline: 10px 8px; }
+    .page-treatments__object { width: 52px; height: 52px; }
+    .page-treatments__object-art { width: 50px; height: 50px; }
+    .page-treatments__object[data-object="blood-pressure-cuff"] .page-treatments__object-art, .page-treatments__object[data-object="doppler-probe"] .page-treatments__object-art, .page-treatments__object[data-object="folded-cloth"] .page-treatments__object-art { width: 58px; }
+    .page-treatments__strip-actions { flex-direction: column; }
+    .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: none; }
+  }
+
+  @media (min-width: 768px) {
+    .page-treatments__contents { --guide-hang: 40px; }
+    .page-treatments__head { padding-top: var(--space-9); }
+    .page-treatments__head-copy { gap: var(--space-8); }
+    .page-treatments__guide { justify-self: start; min-height: 80px; min-width: 420px; padding: 14px 28px 14px 14px; column-gap: var(--space-4); }
+    .page-treatments__index { padding: calc(var(--guide-hang) + var(--space-8)) 0 calc(var(--space-9) + var(--space-5)); }
+    .page-treatments__groups { gap: var(--space-9); }
+    .page-treatments__byline { margin-bottom: var(--space-5); padding-bottom: var(--space-5); }
+    .page-treatments__row { grid-template-columns: 68px minmax(0, 1fr) auto; column-gap: var(--space-5); min-height: 88px; padding: 12px 18px 12px 16px; }
+    .page-treatments__object { width: 68px; height: 68px; }
+    .page-treatments__object-art { width: 66px; height: 66px; }
+    .page-treatments__object[data-object="blood-pressure-cuff"] .page-treatments__object-art, .page-treatments__object[data-object="doppler-probe"] .page-treatments__object-art, .page-treatments__object[data-object="folded-cloth"] .page-treatments__object-art { width: 76px; margin-left: -8px; }
+    /* the panel gains its stage: a pale arch with a slow light (far) and the object, large (subject) */
+    .page-treatments__panel { padding: 24px 22px 16px; }
+    .page-treatments__stage { display: block; float: right; position: relative; width: 190px; height: 200px; margin: 0 0 var(--space-4) var(--space-7); }
+    .page-treatments__arch { position: absolute; left: 22px; right: 10px; top: 0; bottom: 18px; border-radius: var(--arch); background: var(--plate); overflow: hidden; }
+    .page-treatments__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+    html[data-motion="on"] .page-treatments__shaft { animation: page-treatments-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
+    html[data-motion="on"] .page-treatments__arch[data-running] .page-treatments__shaft { animation-play-state: running; }
+    .page-treatments__stage-object { position: absolute; left: 0; bottom: 0; width: 150px; height: 150px; object-fit: contain; object-position: left bottom; filter: var(--elev-object); }
+    .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: var(--space-6); padding: 14px 14px 14px 16px; }
+    .page-treatments__strip-actions { grid-column: auto; }
+    .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 0 0 auto; padding-inline: 22px; }
+    .page-treatments__doctors-cards { grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+  }
+  @keyframes page-treatments-shaft {
+    from { transform: translateX(-11%); }
+    to { transform: translateX(11%); }
+  }
+
+  /* ---------- laptops: the index on the left, the open row's panel beside it ---------- */
+  @media (min-width: 1024px) {
+    .page-treatments__contents { --index-share: 42%; --panel-share: .53; --panel-top: var(--space-9); --index-foot: 200px; --panel-foot: 56px; }
+    .page-treatments__head { padding-top: var(--space-9); }
+    .page-treatments__head-copy, .page-treatments__groups { width: var(--index-share); }
+    .page-treatments__guide { justify-self: stretch; min-width: 0; }
+    .page-treatments__index { padding-bottom: var(--index-foot); }
+    .page-treatments__rows { gap: 14px; }
+    /* beside the index a row is never a card of its own: the panel is */
+    .page-treatments__topic { margin: 0; padding: 0; background: none; box-shadow: none; }
+    .page-treatments__index:not(:has(.page-treatments__topic[data-open], .page-treatments__topic:target)) .page-treatments__group:first-child .page-treatments__topic:first-child {
+      --row-fill: var(--chosen); --row-shadow: var(--ring), var(--elev-pressed); --row-shadow-hover: var(--ring), var(--elev-pressed); --row-lift: 0px;
+      --panel-show: block; --mark-shift: 4px; --object-lift: -5px; --object-turn: -6deg; --object-size: 1.14;
+    }
+    .page-treatments__row-mark { rotate: -90deg; translate: var(--mark-shift) 0; }
+    /* The place is as tall as the index; the panel inside it keeps to the screen. It is the panel
+       that is sticky, because the index is taller than a laptop screen and the panel is not. The
+       index ends with room to spare, so the panel stays whole while the last rows are being read. */
+    .page-treatments__panel-place {
+      position: absolute; top: var(--panel-top); bottom: var(--panel-foot); right: max(var(--gutter), calc((100% - var(--content-width)) / 2));
+      width: calc(min(var(--content-width), 100% - 2 * var(--gutter)) * var(--panel-share));
+    }
+    .page-treatments__panel { position: sticky; top: calc(var(--header-height) + var(--space-7)); padding: 32px 32px 0; border-radius: var(--radius-panel); background: var(--surface); box-shadow: var(--card-shadow); }
+    .page-treatments__stage { width: 164px; height: 196px; margin: -54px -8px var(--space-3) var(--space-6); }
+    .page-treatments__arch { left: 10px; right: 14px; bottom: 22px; }
+    .page-treatments__stage-object { left: auto; right: -20px; width: 148px; height: 148px; object-position: right bottom; }
+    .page-treatments__panel-title { display: block; margin-bottom: var(--space-4); color: var(--ink); font: var(--type-name); letter-spacing: var(--tracking-display); }
+    .page-treatments__facts > div + div { margin-top: 18px; }
+    .page-treatments__facts dd { max-width: 48ch; }
+    /* near: the strip lies across the panel's lower edge */
+    .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr); margin: var(--space-6) -14px -22px; padding: 16px; border-radius: var(--radius-bar); box-shadow: inset 0 0 0 1px var(--line-card), var(--elev-ambient); }
+    .page-treatments__strip-actions { grid-column: 1 / -1; }
+    .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 1 1 0; }
+    .page-treatments__group--rose .page-treatments__strip { box-shadow: inset 0 0 0 1px var(--line-card), var(--elev-ambient-rose); }
+
+    .page-treatments__doctors-head { grid-row: 1 / 3; align-self: end; justify-self: start; width: 40%; padding-bottom: var(--space-5); }
+    .page-treatments__doctors-cards { justify-self: end; width: 56%; }
+  }
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .page-treatments__row:hover .page-treatments__row-mark { translate: 4px 0; }
+  }
+  @media (min-width: 1280px) {
+    .page-treatments__contents { --panel-top: 72px; }
+    .page-treatments__head { padding-top: 72px; }
+    .page-treatments__panel { top: calc(var(--header-height) + var(--space-8)); padding: 40px 40px 0; }
+    .page-treatments__stage { width: 216px; height: 248px; margin: -62px -6px var(--space-3) var(--space-7); }
+    .page-treatments__arch { left: 14px; bottom: 26px; }
+    .page-treatments__stage-object { right: -22px; width: 196px; height: 196px; }
+    .page-treatments__panel-title { margin-bottom: var(--space-5); font: var(--type-h2); letter-spacing: var(--tracking-h2); }
+    .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: var(--space-7); padding: 16px 16px 16px 18px; }
+    .page-treatments__strip-actions { grid-column: auto; }
+    .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 0 0 auto; }
+  }
+  /* A short laptop screen (about 650 px of page): the panel is drawn tighter so its buttons are never cut off. */
+  @media (min-width: 1024px) and (max-height: 739px) {
+    .page-treatments__contents { --panel-top: var(--space-8); }
+    .page-treatments__head { padding-top: var(--space-8); }
+    .page-treatments__panel { top: calc(var(--header-height) + var(--space-6)); padding-top: 28px; }
+    .page-treatments__stage { margin-top: -50px; }
+    .page-treatments__panel-title { margin-bottom: var(--space-3); }
+    .page-treatments__facts > div + div { margin-top: var(--space-3); }
+    .page-treatments__bring { gap: 2px; }
+    .page-treatments__strip { margin-top: var(--space-5); padding-block: 12px; }
+  }
 }
