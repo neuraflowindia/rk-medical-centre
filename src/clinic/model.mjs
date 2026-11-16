@@ -1,4 +1,4 @@
-export const doctors={parul:{name:'Dr. Parul Gupta',initials:'PG',role:"Women's health and pregnancy care",formal:'Obstetrics & Gynaecology',path:'/dr-parul-gupta',phone:'+91 98386 55095',tel:'+919838655095'},sanjay:{name:'Dr. Sanjay Gupta',initials:'SG',role:'General health and diabetes care',formal:'Physician & Diabetology',path:'/dr-sanjay-gupta',phone:'+91 94150 49410',tel:'+919415049410'}};
+export const doctors={parul:{name:'Dr. Parul Gupta',initials:'PG',role:'Women’s health and pregnancy care',formal:'Obstetrics & Gynaecology',path:'/dr-parul-gupta',phone:'+91 98386 55095',tel:'+919838655095'},sanjay:{name:'Dr. Sanjay Gupta',initials:'SG',role:'General health and diabetes care',formal:'Physician & Diabetology',path:'/dr-sanjay-gupta',phone:'+91 94150 49410',tel:'+919415049410'}};
 export const address='18/469/1, Tedhi Pulia Ring Road, Sector 18, Indira Nagar, Lucknow, UP - 226016';
 export const locality='Indira Nagar';
 export const city='Lucknow';

@@ -324,6 +324,13 @@ export const footer=Object.freeze({
 /** "© 2026 R. K. Medical Centre · Lucknow" */
 export function copyrightLine(year=new Date().getFullYear()){return `© ${year} ${clinicName} · ${city}`;}
 
+/** What the clinic is held to. `kind` is the small caps label beside a name. One list for every page that shows them. */
+export const clinicStandards=Object.freeze([
+ Object.freeze({id:'nabh',kind:'Accreditation',name:'NABH accredited'}),
+ Object.freeze({id:'iso',kind:'Quality standard',name:'ISO 9001:2015 certified'}),
+ Object.freeze({id:'observation',kind:'Day and night',name:'24-hour observation care'})
+]);
+
 /** The year both doctors began practising, or null if the two ever differ. */
 export function practisingSince(facts=doctorFacts){
  const years=new Set(doctorOrder.map(id=>facts[id].since));
