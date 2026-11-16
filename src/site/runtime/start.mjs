@@ -15,9 +15,9 @@ import {createIsland} from './booking-island.mjs';
 import {createSheets} from '../parts/sheet/sheet.behaviour.mjs';
 import {partBehaviours} from './parts.mjs';
 
-export function start({windowObject=window,documentObject=document}={}){
- const {history,location}=windowObject;
- bindVisibility({state:productState,profile:'public'});
+export function start({windowObject=window,documentObject=document,state=productState}={}){
+ const {history,location}=windowObject,life=new AbortController(),forLife={signal:life.signal};
+ const stopVisibility=bindVisibility({state,windowObject,documentObject,profile:'public'});
 
  const first=resolveAddress(location.pathname,knownPaths);
  if(first.found&&first.rewrite)history.replaceState(history.state,'',first.path+location.search+location.hash);
@@ -30,14 +30,14 @@ export function start({windowObject=window,documentObject=document}={}){
  const app=documentObject.querySelector('#app'),draft=createDraft(),scrolls=createScrollMemory();
  const motion=createMotion({documentObject,windowObject});
  let route=first.path,intent=0;
- const booking=bindBookingState({state:productState,displayAllowed,windowObject,documentObject,route:()=>route});
- const island=createIsland({state:productState,admissionAllowed,displayAllowed,draft});
+ const booking=bindBookingState({state,displayAllowed,windowObject,documentObject,route:()=>route});
+ const island=createIsland({state,admissionAllowed,displayAllowed,draft});
  const sheets=createSheets({documentObject});
  // Visit measurement is not in use; the visitor's choice is still kept, as it always was.
  const privacy=Object.freeze({choose:value=>savePreference(windowObject.localStorage,value)});
 
  const services={reader:sheets.reader,menu:sheets.menu,viewer:sheets.viewer,call:sheets.call,
-  navigate,productState,booking,motion,announce,draft,privacy};
+  navigate,productState:state,booking,motion,announce,draft,privacy};
  const view=createView({app,services,parts:partBehaviours,booking,applyMetadata:path=>applyPageMetadata(path,documentObject),
   prepare:ctx=>sheets.refresh(ctx),windowObject});
 
@@ -49,7 +49,7 @@ export function start({windowObject=window,documentObject=document}={}){
   route=resolved.path;
   sheets.closeAll('navigate');
   const page=pageFor(route);
-  productState.setProfile(page.island?'active':'public');
+  state.setProfile(page.island?'active':'public');
   if(route==='/booking')applyBookingQuery(draft,location.search);
   const shown=view.show(route,{first:firstLoad,search:location.search,scroll:restore??0});
   booking.sync();
@@ -89,8 +89,8 @@ export function start({windowObject=window,documentObject=document}={}){
   const resolved=resolveAddress(url.pathname,knownPaths);
   if(!resolved.found)return false;
   scrolls.save(history.state?.key,windowObject.scrollY);
-  const address=resolved.path+url.search+url.hash,state={key:scrolls.next()};
-  if(replace)history.replaceState(state,'',address);else history.pushState(state,'',address);
+  const address=resolved.path+url.search+url.hash,entry={key:scrolls.next()};
+  if(replace)history.replaceState(entry,'',address);else history.pushState(entry,'',address);
   show({focus:true,hash:url.hash});
   return true;
  }
@@ -98,9 +98,9 @@ export function start({windowObject=window,documentObject=document}={}){
  /** A booking screen opens only when booking is admitted right now; otherwise Contact. */
  async function enterBooking(path){
   const mine=++intent,turn=view.generation();
-  await productState.refresh({force:true});
+  await state.refresh({force:true});
   if(mine!==intent||turn!==view.generation())return;
-  navigate(admissionAllowed(productState.getSnapshot())?path:'/contact');
+  navigate(admissionAllowed(state.getSnapshot())?path:'/contact');
  }
  services.enterBooking=enterBooking;
  Object.freeze(services);
@@ -115,14 +115,17 @@ export function start({windowObject=window,documentObject=document}={}){
   if(action.kind==='place'){sheets.closeAll('navigate');goToPlace(action.hash,{push:!!action.push});}
   else if(action.kind==='booking')void enterBooking(action.path);
   else navigate(action.path+(action.hash||''));
- });
+ },forLife);
 
- windowObject.addEventListener('popstate',()=>{intent++;show({restore:scrolls.read(history.state?.key)});});
- windowObject.addEventListener('pagehide',()=>{island.close();});
- windowObject.addEventListener('pageshow',event=>{if(event.persisted)show({restore:windowObject.scrollY});});
+ windowObject.addEventListener('popstate',()=>{intent++;show({restore:scrolls.read(history.state?.key)});},forLife);
+ windowObject.addEventListener('pagehide',()=>{island.close();},forLife);
+ // A page brought back from the browser's back/forward store is bound again where it stood.
+ windowObject.addEventListener('pageshow',event=>{if(event.persisted)show({restore:windowObject.scrollY});},forLife);
 
  show({firstLoad:true,hash:location.hash});
- return Object.freeze({navigate,services,view});
+ return Object.freeze({navigate,enterBooking,services,view,route:()=>route,
+  /** Stop everything this start began (used when the app is taken down, and by tests). */
+  dispose(){life.abort();view.stop();island.dispose();booking.dispose();motion.dispose();stopVisibility();announcer.remove();}});
 }
 
 if(typeof window!=='undefined'&&typeof document!=='undefined'&&document.querySelector('#app'))start();

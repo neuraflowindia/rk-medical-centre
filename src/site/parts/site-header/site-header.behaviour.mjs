@@ -15,11 +15,13 @@ export const UP_TRAVEL=24;
  */
 export function headerTravel(state,y,{phone=true,blocked=false}={}){
  const delta=y-state.y;
- let down=delta>0?state.down+delta:0,up=delta<0?state.up-delta:0,away=state.away;
+ if(delta===0&&phone&&!blocked&&y>AWAY_AFTER)return state;
+ // Only travel below the starting line counts towards leaving.
+ const down=delta>0&&y>AWAY_AFTER?state.down+(y-Math.max(state.y,AWAY_AFTER)):0,up=delta<0?state.up-delta:0;
+ let away=state.away;
  if(!phone||blocked||y<=AWAY_AFTER)away=false;
  else if(down>=DOWN_TRAVEL)away=true;
  else if(up>=UP_TRAVEL)away=false;
- if(delta===0){down=state.down;up=state.up;}
  return {y,down,up,away};
 }
 

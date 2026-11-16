@@ -22,7 +22,9 @@ export function bindActionBar(root,{signal,services,windowObject=globalThis.wind
   const typing=documentObject.activeElement;
   facts.typing=!!typing&&/^(INPUT|TEXTAREA|SELECT)$/.test(typing.tagName||'');
   const show=barVisible(facts);
-  if(bar.classList.contains('is-shown')!==show){bar.classList.toggle('is-shown',show);bar.inert=!show;}
+  if(bar.classList.contains('is-shown')!==show)bar.classList.toggle('is-shown',show);
+  // A hidden bar must not be reachable by keyboard or assistive technology either.
+  if(bar.inert===show)bar.inert=!show;
  };
  if(Observer){
   const watch=(node,onChange,rootMargin='0px')=>{
