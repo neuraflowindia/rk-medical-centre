@@ -109,13 +109,18 @@ export function bindTreatments(root,{signal,ctx,services,windowObject=globalThis
   if(by)windowObject.scrollBy({top:by,left:0,behavior:motionAllowed()?'smooth':'instant'});
   return by;
  }
- /** After a row has been chosen beside the index: bring its panel back whole if the end of the index has carried it up. */
- function revealBeside(id){
+ /** Beside the index: bring the open row's panel back whole if the end of the index has carried it up under the header. */
+ function revealBeside(id,{instant=false}={}){
   const panel=items.get(id)?.panel;
   if(!panel)return 0;
   const by=besideScroll({panelTop:topOf(panel),stickyLine:Number.parseFloat(windowObject.getComputedStyle(panel).top)});
-  if(by)windowObject.scrollBy({top:by,left:0,behavior:motionAllowed()?'smooth':'instant'});
+  if(by)windowObject.scrollBy({top:by,left:0,behavior:!instant&&motionAllowed()?'smooth':'instant'});
   return by;
+ }
+ /** Run once the runtime has settled the new page (it scrolls one frame after the page is bound). */
+ function settled(callback){
+  const frame=next=>windowObject.requestAnimationFrame(next);
+  frame(()=>frame(()=>{if(!signal?.aborted)callback();}));
  }
 
  /** The visitor chose a row. */
@@ -145,16 +150,19 @@ export function bindTreatments(root,{signal,ctx,services,windowObject=globalThis
 
  if(arrivedByQuery({search:location.search,hash:location.hash})){
   // An older link (?topic=, ?service=, ?area=): tidy the address into the page's own place and
-  // bring that place into view. Two frames, so it runs after the runtime has settled the new page.
+  // bring that place into view, as the runtime does for a #place.
   const place=arrival.row||arrival.group,target=documentObject.getElementById(place);
   history.replaceState(history.state,'',addressFor(location.pathname,place));
-  const frame=callback=>windowObject.requestAnimationFrame(callback);
-  if(target)frame(()=>frame(()=>{
-   if(signal?.aborted)return;
+  if(target)settled(()=>{
    target.scrollIntoView({behavior:'instant',block:'start'});
    if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
    target.focus({preventScroll:true});
-  }));
+   if(arrival.row&&beside())revealBeside(arrival.row,{instant:true});
+  });
+ }else if(arrival.row&&beside()){
+  // A #place near the end of the index is scrolled to the top of the screen, which carries its
+  // panel up under the header: bring the panel back whole.
+  settled(()=>revealBeside(arrival.row,{instant:true}));
  }
 
  index.addEventListener('click',event=>{

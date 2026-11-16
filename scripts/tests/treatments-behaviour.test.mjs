@@ -238,6 +238,25 @@ test('arriving at a row\'s own place opens it and leaves the scrolling to the ru
  const wide=standIn({hash:'#women',width:1280});assert.equal(bind(wide).open(),rowIds[0]);
 });
 
+test('arriving beside the index at a row near its end brings the panel back whole, once the runtime has scrolled',()=>{
+ const page=standIn({width:1366,height:768,hash:'#ultrasound',panelLine:-178});bind(page);
+ assert.deepEqual(page.state.scrolls,[]);assert.equal(page.state.frames.length,1);
+ page.state.frames.shift()();page.state.frames.shift()();
+ assert.deepEqual(page.state.scrolls,[{top:-298,left:0,behavior:'instant'}]);
+ // an older link does the same after it has brought its row into view
+ const older=standIn({width:1440,search:'?service=gynecology',panelLine:85});bind(older);
+ older.state.frames.shift()();older.state.frames.shift()();
+ assert.deepEqual(older.state.intoView.map(item=>item.id),['womens-health']);
+ assert.deepEqual(older.state.scrolls,[{top:-35,left:0,behavior:'instant'}]);
+ // a panel that is whole is left alone, and a page that was left in the meantime is not touched
+ const whole=standIn({width:1440,hash:'#thyroid'});bind(whole);
+ whole.state.frames.shift()();whole.state.frames.shift()();
+ assert.deepEqual(whole.state.scrolls,[]);
+ const controller=new AbortController(),left=standIn({width:1440,hash:'#ultrasound',panelLine:-178});
+ bind(left,{signal:controller.signal});controller.abort();left.state.frames.shift()();left.state.frames.shift()();
+ assert.deepEqual(left.state.scrolls,[]);
+});
+
 test('an older ?topic= link opens its row, becomes the page\'s own address and is brought into view after the runtime has settled',()=>{
  const page=standIn({search:'?topic=blood-pressure'}),bound=bind(page);
  assert.equal(bound.open(),'blood-pressure');

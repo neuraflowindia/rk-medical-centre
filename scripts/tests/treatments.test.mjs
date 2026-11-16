@@ -170,7 +170,7 @@ test('every row is a link to its own place with its panel directly after it, car
  assert.deepEqual(attributeValues(html,'data-topic'),rowIds);
  for(const row of treatmentRows){
   const ids=topicIds(row.id),own=topicMarkup(html,row.id),words_=plain(own);
-  assert.match(own,new RegExp(`^<li class="page-treatments__topic" id="${ids.item}" data-topic="${row.id}"><a class="page-treatments__row" href="#${row.id}" aria-controls="${ids.panel}" data-topic-row data-enter>`));
+  assert.match(own,new RegExp(`^<li class="page-treatments__topic" id="${ids.item}" data-topic="${row.id}"><a class="page-treatments__row" href="#${row.id}" aria-controls="${ids.panel}" data-topic-row>`));
   assert.ok(own.includes(`<h3 class="page-treatments__row-title" id="${ids.title}">${text(row.title)}</h3><span class="page-treatments__row-deck">${text(row.deck)}</span>`));
   assert.ok(own.includes(`<div class="page-treatments__panel" id="${ids.panel}" role="region" aria-labelledby="${ids.title}" data-topic-panel>`));
   assert.ok(own.indexOf('</a>')<own.indexOf('page-treatments__panel-place'),'the panel follows its row');
@@ -179,7 +179,7 @@ test('every row is a link to its own place with its panel directly after it, car
   // the object: small in the row and large in the panel, the same file, always decorative
   const src=clinicObjects[row.object].src;
   assert.deepEqual(attributeValues(own,'src').filter(value=>value.includes('/clinic-assets/')),[src,src]);
-  assert.ok(own.includes(`<span class="page-treatments__object" data-object="${row.object}">`));
+  assert.ok(own.includes(`<span class="page-treatments__object" data-object="${row.object}" data-enter>`),'the object settles on entrance; the row itself stays put');
   assert.match(own,/<p class="page-treatments__panel-title" aria-hidden="true">/,'the larger name is for the eye only: no second heading');
   assert.doesNotMatch(own,/aria-expanded/,'the script says what is open; the page does not guess');
  }
@@ -231,8 +231,8 @@ test('an older link that names a topic is drawn with that row open; anything els
 
 test('nothing that moves on entrance wraps a panel (a moved wrapper would capture the laptop panel\'s place)',()=>{
  const html=renderedPage(PATH,'on'),index=section(html,'<section class="page-treatments__index"','<section class="page-treatments page-treatments__doctors"');
- assert.equal(count(index,/data-enter/g),11,'the two bylines and the nine rows enter; nothing else in the index does');
- assert.doesNotMatch(index,/<(?:li|ul|section|div)\b[^>]*data-enter/);
+ assert.equal(count(index,/data-enter/g),11,'the two bylines and the nine objects enter; nothing else in the index does');
+ assert.doesNotMatch(index,/<(?:li|ul|section|div|a)\b[^>]*data-enter/,'rows, lists and groups never move: the rhythm of the list stays even');
  assert.equal(count(html,/class="page-treatments__arch" data-ambient/g),9,'one slow light per panel; only the one that is shown runs');
 });
 

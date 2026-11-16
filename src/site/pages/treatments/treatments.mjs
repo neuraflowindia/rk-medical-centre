@@ -50,8 +50,9 @@ function panel(row,group,ctx){
 function topic(row,group,ctx,open){
  const ids=topicIds(row.id);
  return `<li${attrs({class:'page-treatments__topic',id:ids.item,'data-topic':row.id,'data-open':open})}>`
-  +`<a${attrs({class:'page-treatments__row',href:row.href,'aria-controls':ids.panel,'data-topic-row':true,'data-enter':true})}>`
-  +`<span${attrs({class:'page-treatments__object','data-object':row.object})}>${object(row.object,'page-treatments__object-art')}</span>`
+  +`<a${attrs({class:'page-treatments__row',href:row.href,'aria-controls':ids.panel,'data-topic-row':true})}>`
+  // The rows keep an even rhythm, so a row does not move on entrance: its object settles onto its plate instead.
+  +`<span${attrs({class:'page-treatments__object','data-object':row.object,'data-enter':true})}>${object(row.object,'page-treatments__object-art')}</span>`
   +`<span class="page-treatments__row-words"><h3${attrs({class:'page-treatments__row-title',id:ids.title})}>${text(row.title)}</h3><span class="page-treatments__row-deck">${text(row.deck)}</span></span>`
   +`<span class="page-treatments__row-mark" aria-hidden="true">${icon('down')}</span></a>`
   +panel(row,group,ctx)+`</li>`;
