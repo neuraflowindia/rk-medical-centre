@@ -142,7 +142,7 @@
     .page-about__standards-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 6.4fr); gap: 96px; align-items: stretch; }
     .page-about__standards-head { display: grid; align-content: space-between; gap: 40px; }
     /* near: a written record, set down beside the ledger */
-    .page-about__standards-object { display: block; width: 148px; height: auto; margin: 0 0 6px 10px; transform: rotate(-7deg); filter: var(--elev-object-on-deep, var(--elev-object)); }
+    .page-about__standards-object { display: block; width: 148px; height: auto; margin: 0 0 6px 10px; transform: rotate(-7deg); filter: var(--elev-object-on-deep); }
     .page-about__standard { padding: 28px 0 30px; }
 
     /* all three steps fit (the shelf then hides its own arrows), and each step stands a little lower than the one before */
