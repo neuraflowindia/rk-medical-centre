@@ -8,13 +8,14 @@ const NBSP='\u00A0';
 /**
  * Escape text and keep short pairs together so a line never ends on "Dr." or "R.":
  * "Dr. Sanjay Gupta" → "Dr.&nbsp;Sanjay Gupta", "R. K. Medical Centre" → "R.&nbsp;K. Medical Centre",
- * "10:00 am" → "10:00&nbsp;am".
+ * "10:00 am" → "10:00&nbsp;am", "since 1992" → "since&nbsp;1992".
  */
 export function text(value){
  return e(String(value)
   .replace(/\b(Dr|R|No|Reg)\. (?=\S)/gu,`$1.${NBSP}`)
   .replace(/(\d) (am|pm)\b/gu,`$1${NBSP}$2`)
   .replace(/\b(\d{5}) (\d{5})\b/gu,`$1${NBSP}$2`)
+  .replace(/\bsince (?=\d{4}\b)/gu,`since${NBSP}`)
  ).replaceAll(NBSP,'&nbsp;');
 }
 

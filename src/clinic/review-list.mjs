@@ -35,9 +35,12 @@ export function reviewId(name){
  return String(name).trim().toLowerCase().normalize('NFKD').replace(/\p{M}+/gu,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
 
-/** Some stored quotations carry their own straight quote marks; the template adds the marks. */
+/**
+ * Some stored quotations carry their own straight quote marks; the template adds the marks.
+ * The words are never changed; a typewriter apostrophe inside them is set as a proper one.
+ */
 export function plainQuote(text){
- return String(text).trim().replace(/^"([\s\S]*)"$/u,'$1').trim();
+ return String(text).trim().replace(/^"([\s\S]*)"$/u,'$1').trim().replace(/(?<=\p{L})'(?=\p{L})|(?<=\p{L})'(?=\s|$)/gu,'’');
 }
 
 /**
