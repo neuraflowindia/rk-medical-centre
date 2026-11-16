@@ -25,7 +25,7 @@
   }
 
   .call-rows { display: grid; gap: var(--space-3); }
-  .call-rows__sign { margin-top: var(--space-4); min-height: 28px; }
+  .call-rows__sign { display: flex; margin-top: 14px; padding: 14px 2px 0; border-top: 1px solid var(--line); }
   .call-row {
     display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; row-gap: 2px; min-height: 76px; padding: 12px 16px 12px 12px; border-radius: var(--radius-row); color: var(--ink);
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
@@ -52,5 +52,12 @@
     .call-row { grid-template-columns: auto 1fr auto; }
     .call-row:not(:has(.call-row__avatar, .call-row__icon)) { grid-template-columns: 1fr auto; }
     .call-row__avatar, .call-row__icon { grid-row: auto; }
+  }
+  /* a roomier row, where the rows are the subject of their section */
+  @media (min-width: 768px) {
+    .call-row--roomy { min-height: 88px; padding: var(--space-4) 22px var(--space-4) var(--space-4); }
+  }
+  @media (min-width: 1280px) {
+    .call-row--roomy { min-height: 96px; padding: 18px 26px 18px 18px; }
   }
 }

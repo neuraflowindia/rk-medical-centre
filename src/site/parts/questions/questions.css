@@ -2,7 +2,7 @@
 @layer components {
   .questions { border-top: 1px solid var(--line-strong); }
   .questions__row { border-bottom: 1px solid var(--line-strong); interpolate-size: allow-keywords; }
-  .questions__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: 10px 2px; color: var(--ink); transition: color var(--dur-hover); }
+  .questions__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: 8px 2px; color: var(--ink); transition: color var(--dur-hover); }
   .questions__question { font: var(--type-question); letter-spacing: -.008em; color: inherit; }
   .questions__mark { width: 36px; height: 36px; padding: 8px; border-radius: var(--radius-round); color: var(--action); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-question) var(--ease-move), box-shadow var(--dur-hover), background-color var(--dur-hover); }
   .questions__mark-upright { transform-box: view-box; transform-origin: 12px 12px; transition: transform var(--dur-question) var(--ease-move); }
@@ -10,7 +10,7 @@
   .questions__row[open] .questions__mark-upright { transform: scaleY(0); }
   .questions__summary:active .questions__mark { transform: translateY(var(--press)); }
   .questions__summary:focus-visible { outline-offset: -2px; border-radius: var(--radius-link); }
-  .questions__answer p { padding: 0 52px 18px 2px; max-width: 58ch; color: var(--ink-body); }
+  .questions__answer p { padding: 0 52px 16px 2px; max-width: 58ch; color: var(--ink-body); }
   /* Where the browser can animate to a natural height, the answer opens and closes smoothly; elsewhere at once. */
   .questions__row::details-content { block-size: 0; overflow: clip; transition: block-size var(--dur-question) var(--ease-move), content-visibility var(--dur-question) allow-discrete; }
   .questions__row[open]::details-content { block-size: auto; }

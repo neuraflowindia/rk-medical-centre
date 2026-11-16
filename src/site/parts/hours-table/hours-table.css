@@ -3,12 +3,27 @@
   .hours-table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line-strong); font-variant-numeric: tabular-nums lining-nums; }
   .hours-table th, .hours-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: baseline; font: var(--type-hours); white-space: nowrap; }
   .hours-table th:last-child, .hours-table td:last-child { padding-right: 0; }
-  .hours-table thead th { padding: 7px 0 6px; color: var(--ink-muted); font: var(--type-small); }
-  .hours-table tbody th { color: var(--ink); font-weight: 600; }
+  .hours-table thead th { padding-block: 6px 5px; color: var(--ink-muted); font: var(--type-small); }
+  /* the row's name and its "Today" tag each stay whole; where the column is too narrow for both, the tag drops under the name */
+  .hours-table tbody th { color: var(--ink); font-weight: 600; white-space: normal; }
+  .hours-table__days { display: inline-block; margin-right: var(--space-2); white-space: nowrap; }
   .hours-table td { color: var(--ink); font-weight: 500; }
   .hours-table .hours-table__none { color: var(--ink-muted); font-weight: 400; }
-  .hours-table__today { display: inline-block; margin-left: var(--space-2); padding: 1px 7px 2px; border-radius: var(--radius-focus); background: var(--chosen); color: var(--ink); font: var(--type-tag); line-height: var(--leading-tight); vertical-align: 1px; }
+  .hours-table tbody tr:last-child th, .hours-table tbody tr:last-child td { border-bottom-color: var(--line-strong); }
+  .hours-table__today { display: inline-block; padding: 1px 10px 2px; white-space: nowrap; border-radius: var(--radius-focus); background: var(--chosen); color: var(--ink); font: var(--type-tag); line-height: var(--leading-tight); vertical-align: 1px; }
   @media (max-width: 359px) {
-    .hours-table__today { display: block; width: fit-content; margin: 2px 0 0; }
+    .hours-table th, .hours-table td { padding-right: var(--space-2); }
+  }
+  @media (min-width: 768px) {
+    .hours-table th, .hours-table td { padding-block: 10px; }
+    .hours-table thead th { padding-block: 7px 6px; }
+  }
+  /* taller rows, where the timetable is the subject of its section */
+  .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: 7px; }
+  @media (min-width: 768px) {
+    .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: var(--space-3); }
+  }
+  @media (min-width: 1024px) {
+    .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: 13px; }
   }
 }

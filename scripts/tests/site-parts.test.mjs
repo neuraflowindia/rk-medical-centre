@@ -158,15 +158,15 @@ test('the hours timetable: a morning and an evening column, "Closed" where there
 });
 
 test('the closing: one decision, true at any hour and in either booking state',()=>{
- assert.deepEqual(closingTitle('open',true),{heading:'See a doctor today.',emphasis:'today.'});
- assert.deepEqual(closingTitle('later',false),{heading:'See a doctor today.',emphasis:'today.'});
- assert.deepEqual(closingTitle('closed',true),{heading:'Book your next visit.',emphasis:'next visit.'});
- assert.deepEqual(closingTitle('closed',false),{heading:'Arrange your next visit.',emphasis:'next visit.'});
+ assert.deepEqual(closingTitle('open',true),{heading:'See a doctor today.',emphasis:'today.',keep:'See a doctor'});
+ assert.deepEqual(closingTitle('later',false),{heading:'See a doctor today.',emphasis:'today.',keep:'See a doctor'});
+ assert.deepEqual(closingTitle('closed',true),{heading:'Book your next visit.',emphasis:'next visit.',keep:'Book your'});
+ assert.deepEqual(closingTitle('closed',false),{heading:'Arrange your next visit.',emphasis:'next visit.',keep:'Arrange your'});
  const both=closing(on);noShared(both);
  assert.match(both,/^<section class="closing" id="closing" aria-labelledby="closing-title" data-closing>/);
- assert.match(both,/<span data-closing-title>Book your <em>next&nbsp;visit\.<\/em><\/span>/,'before the clock is read the heading makes no promise about today');
+ assert.match(both,/<span data-closing-title><span class="keep">Book your<\/span> <em>next&nbsp;visit\.<\/em><\/span>/,'before the clock is read the heading makes no promise about today');
  assert.equal(count(both,/class="call-row"/g),2);assert.match(both,/href="\/booking" class="button button--main button--large"/);assert.match(both,/data-open-sign="closing"/);
- assert.match(closing(off),/Arrange your <em>next&nbsp;visit\.<\/em>/);
+ assert.match(closing(off),/<span class="keep">Arrange your<\/span> <em>next&nbsp;visit\.<\/em>/);
  const one=closing(on,{doctor:'parul'});
  assert.match(one,/data-closing-doctor="parul"/);assert.equal(count(one,/class="call-row"/g),1);assert.match(one,/href="\/booking\?doctor=parul"[^>]*>.*Book with Dr\.&nbsp;Parul/);
  assert.throws(()=>closing(on,{doctor:'nobody'}),/Unknown doctor/);
@@ -245,7 +245,10 @@ test('the review shelf prints every review once; tabs, cards and the reader come
  const reader=reviewReader(readerOrder('all'),{pointed:'aditi-sen'});
  assert.equal(count(reader,/<li class="review-reader__item/g),26);assert.equal(count(reader,/is-pointed/g),1);assert.match(reader,/id="review-aditi-sen"/);
  assert.match(reader,/All <span class="tab__count">26<\/span>.*Dr\.&nbsp;Sanjay <span class="tab__count">9<\/span>.*Dr\.&nbsp;Parul <span class="tab__count">10<\/span>/);
- assert.equal(count(reader,/<p class="review-reader__about">/g),allReviews.filter(review=>review.doctors.length).length,'a review about a doctor says so');
+ assert.equal(count(reader,/<p class="review-reader__about/g),26,'every review says whom it is about');
+ assert.equal(count(reader,/<p class="review-reader__about">/g),allReviews.filter(review=>review.doctors.length!==1).length,'one about both doctors or the clinic carries no doctor\'s tint');
+ assert.equal(count(reader,/review-reader__about--sanjay"><span class="visually-hidden">About <\/span>Dr\.&nbsp;Sanjay Gupta</g),allReviews.filter(review=>review.doctors.join()==='sanjay').length);
+ assert.equal(count(reader,/About <\/span>The clinic</g),allReviews.filter(review=>!review.doctors.length).length);
  assert.doesNotMatch(reviewReader(readerOrder('sanjay'),{filter:'sanjay',filters:['sanjay']}),/role="tab"|role="tabpanel"/);
  assert.equal(count(readerList(readerOrder('parul')),/<li /g),10);assert.equal(reviewTotal('all'),26);
 });
@@ -254,14 +257,14 @@ test('certificates: one frame for all ten, a wall that may settle, a viewer that
  for(const item of certificateCatalogue){const picture=certificatePicture(item);assert.equal(picture.src,plainCertificates[item.id].src,'every certificate has lost its physical frame');assert.equal(picture.alt,item.description);}
  assert.equal(certificatePicture({id:'other',description:'d',variants:[{src:'/certificates/a-480.webp',width:480,height:360},{src:'/certificates/a-720.webp',width:720,height:540}]}).sources.length,2);
  const [first]=homeCertificates(),frame=certificateFrame(first,{view:true,tone:'on-deep',size:'large'});noShared(frame);
- assert.match(frame,/^<figure class="certificate-frame certificate-frame--large certificate-frame--on-deep" data-certificate="sanjay-gupta-certificate-08" style="--tilt:0deg;--lag:0">/);
+ assert.match(frame,/^<figure class="certificate-frame certificate-frame--large certificate-frame--on-deep" data-certificate="sanjay-gupta-certificate-08" style="--tilt:0deg;--lag:0;--ar:1\.517">/);assert.match(frame,/<span>Harvard Medical School, 2016<\/span>/,'the second line reads with a comma');
  assert.match(frame,/<button class="certificate-frame__mat certificate-frame__mat--view" type="button" aria-haspopup="dialog" aria-label="View: Clinical diabetology course" data-view-certificate="sanjay-gupta-certificate-08">/);
  assert.match(frame,/<figcaption class="certificate-frame__label"><strong>Clinical diabetology course<\/strong><span>[^<]+<\/span><span>Dr\.&nbsp;Sanjay Gupta<\/span><\/figcaption>/);
  assert.match(certificateFrame(certificateCatalogue[0]),/<div class="certificate-frame__mat">/);
  assert.throws(()=>certificateFrame(first,{size:'giant'}),/Unknown certificate size/);assert.throws(()=>certificateFrame(first,{tone:'pink'}),/Unknown certificate tone/);
  const wall=certificateWall(homeCertificates(),{label:'Certificates',settle:true});
  assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item">/g),4);
- assert.match(wall,/style="--tilt:-2\.2deg;--lag:0".*style="--tilt:1\.6deg;--lag:0\.12".*--lag:0\.24.*--lag:0\.36/);
+ assert.match(wall,/style="--tilt:-2\.2deg;--lag:0;--ar:1\.517".*style="--tilt:1\.6deg;--lag:0\.12;--ar:0\.708".*--lag:0\.24.*--lag:0\.36/);
  assert.doesNotMatch(certificateWall(homeCertificates()),/data-settle|--tilt:-/);
  const viewer=certificateViewer(certificateCatalogue,2);
  assert.match(viewer,/^<figure class="certificate-viewer__figure" data-viewer-certificate="sanjay-gupta-certificate-08">/);assert.match(viewer,/3 of 10/);assert.match(viewer,/data-viewer-previous.*data-viewer-next/);
@@ -274,4 +277,14 @@ test('a still shelf and a sheet note',()=>{
  assert.match(shelf,/<div class="still-shelf__arrows" data-needs-script>.*aria-label="Back" data-shelf-previous.*aria-label="On" data-shelf-next/);
  assert.throws(()=>stillShelf(['x']),/needs a label/);
  assert.equal(sheetNote('Nothing & more'),'<p class="sheet__note">Nothing &amp; more</p>');
+});
+
+test('options a page may ask for: roomy call rows and timetable, a button that shows its icon alone on phones',()=>{
+ const row=callRows()[0];
+ assert.match(callRow(row,{roomy:true}),/^<a class="call-row call-row--roomy" /);assert.match(callRow(row),/^<a class="call-row" /);
+ assert.match(whatsappRow(on,{roomy:true}),/^<a class="call-row call-row--whatsapp call-row--roomy" /);assert.match(whatsappRow(on),/^<a class="call-row call-row--whatsapp" /);
+ assert.match(hoursTable(on,{roomy:true,className:'k'}),/^<table class="hours-table hours-table--roomy k" /);assert.match(hoursTable(on),/^<table class="hours-table" /);
+ const map=button({label:'Open in Google Maps',href:'https://maps.app.goo.gl/x',variant:'second',external:true,iconAfter:'out',labelHidden:'narrow'});
+ assert.match(map,/class="button button--second button--icon-narrow"/);assert.match(map,/<span class="button__label">Open in Google Maps<\/span>/,'the words stay for assistive technology');
+ assert.throws(()=>button({label:'x',labelHidden:'narrow'}),/needs an icon/);assert.throws(()=>button({label:'x',icon:'pin',labelHidden:'wide'}),/hidden label/);
 });

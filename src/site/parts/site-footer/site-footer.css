@@ -1,7 +1,7 @@
 /* The footer: deep ground, complete and compact. */
 @layer components {
-  .site-footer { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: 40px 0 calc(20px + env(safe-area-inset-bottom, 0px)); font: var(--type-row); line-height: 1.5; }
-  .site-footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .site-footer { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: 36px 0 calc(18px + env(safe-area-inset-bottom, 0px)); font: var(--type-row); line-height: 1.5; }
+  .site-footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
   .site-footer__brand { display: grid; gap: var(--space-2); justify-items: start; align-content: start; }
   .site-footer .lockup--deep { margin: 0 0 4px; }
   .site-footer .lockup__tile { width: 46px; height: 46px; border-radius: var(--radius-small); }
@@ -21,7 +21,7 @@
   .site-footer__digits { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
   .site-footer__registration { color: var(--ink-on-deep-muted); font: var(--type-meta); }
   .site-footer__nav { padding-top: 6px; border-top: 1px solid var(--line-on-deep); }
-  .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-4); }
+  .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, auto) minmax(0, auto); justify-content: start; column-gap: var(--space-4); }
   .site-footer__link { gap: 7px; font-weight: 500; }
   .site-footer :focus-visible { outline-color: var(--focus-on-deep); }
   .site-footer__link:active, .site-footer__phone:active { color: var(--ink-on-deep); }

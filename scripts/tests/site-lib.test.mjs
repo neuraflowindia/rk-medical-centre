@@ -30,6 +30,8 @@ test('state-aware words start in their own booking state and carry both',()=>{
 test('one phrase of a heading is set in italics and kept on one line',()=>{
  assert.equal(emphasise('Two doctors. One family practice.','One family practice.'),'Two doctors. <em>One&nbsp;family&nbsp;practice.</em>');
  assert.equal(emphasise('See a doctor today.','today.'),'See a doctor <em>today.</em>');
+ assert.equal(emphasise('Book your next visit.','next visit.',{keep:'Book your'}),'<span class="keep">Book your</span> <em>next&nbsp;visit.</em>');
+ assert.equal(emphasise('Care for health concerns','',{keep:'health concerns'}),'Care for <span class="keep">health concerns</span>');assert.equal(emphasise('Plain words','words',{keep:'absent'}),'Plain <em>words</em>');
  assert.equal(emphasise('Before you come, come early.','come'),'Before you come, <em>come</em> early.','the last match is the one set apart');
  assert.equal(emphasise('Plain <words>'),'Plain &lt;words&gt;');assert.equal(emphasise('Plain words','missing'),'Plain words');
 });

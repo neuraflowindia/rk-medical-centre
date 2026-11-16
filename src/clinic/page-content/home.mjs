@@ -7,7 +7,7 @@
 import {doctors,homeHeadline,locality} from '../model.mjs';
 import {topicById,doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
-import {archPortraits,clinicPhotos} from '../client-media.mjs';
+import {closePortraits,deskPortraits,clinicPhotos} from '../client-media.mjs';
 import {walkInAnswer,paymentAnswer,bookForSomeoneElseAnswer,observationCareSentence} from '../standins.mjs';
 import {pagePaths,actionLabels,bookWithLabel,bookWithPath,callDoctorSpoken,clinicStandards,degreesOf,feeLabel,practisingSince,addressCard,photoCaptions} from './shared.mjs';
 
@@ -35,15 +35,16 @@ const EMPHASIS='on your mind.';
  * together the two parts are exactly the clinic's headline in model.mjs.
  */
 export const hero=Object.freeze({
- heading:Object.freeze({plain:homeHeadline.slice(0,-EMPHASIS.length).trimEnd(),emphasis:EMPHASIS}),
+ // `keep` names two words that must not be parted by a line break.
+ heading:Object.freeze({plain:homeHeadline.slice(0,-EMPHASIS.length).trimEnd(),emphasis:EMPHASIS,keep:'health concerns'}),
  lead:`A physician and a gynaecologist caring for Lucknow families since ${since}.`,
  call:actionLabels.call,
  portraits:Object.freeze([
-  Object.freeze({id:'sanjay',photo:archPortraits.sanjay,name:doctors.sanjay.name,role:'Physician · Diabetes'}),
-  Object.freeze({id:'parul',photo:archPortraits.parul,name:doctors.parul.name,role:'Gynaecologist'})
+  Object.freeze({id:'sanjay',photo:deskPortraits.sanjay,name:doctors.sanjay.name,role:'Physician · Diabetes'}),
+  Object.freeze({id:'parul',photo:deskPortraits.parul,name:doctors.parul.name,role:'Gynaecologist'})
  ]),
- // A credit line beside the pair: it says the photographs are real, taken at the clinic.
- credit:`Photographed at the clinic, ${locality}`,
+ // A plate caption under the pair: it says the photographs are real, taken at the clinic.
+ credit:`Photographed at the clinic, ${locality}.`,
  object:'stethoscope-teal'
 });
 
@@ -56,7 +57,7 @@ const chipPlan=Object.freeze({
   {id:'diabetes',label:'Diabetes',topic:'diabetes',object:'glucose-meter',more:'More about diabetes care',answer:'Bring your reports and sugar readings, and talk through your ongoing care.'},
   {id:'blood-pressure',label:'Blood pressure',topic:'blood-pressure',object:'blood-pressure-cuff',more:'More about blood pressure',answer:'Bring the readings you take at home and talk through what they mean for you.'},
   {id:'thyroid',label:'Thyroid',topic:'thyroid',object:'report-clipboard',more:'More about thyroid concerns',answer:'Bring your thyroid reports and prescriptions, and discuss your follow-up care.'},
-  {id:'fever-infections',label:'Fever & infections',topic:'fever-infections',object:'thermometer',more:'More about fever and infections',answer:'For fever and common infections, including dengue, malaria and typhoid concerns.'},
+  {id:'fever-infections',label:'Fever & infections',topic:'fever-infections',object:'thermometer',more:'More about fever and infections',answer:'For fever and common infections, including dengue, malaria and typhoid.'},
   {id:'general-health',label:'General check-up',topic:'general-health',object:'stethoscope-general',more:'More about general health',answer:'Everyday health concerns, an illness that keeps returning, or a follow-up visit.'}
  ],
  parul:[
@@ -105,8 +106,8 @@ function doctorCard(id){
  return Object.freeze({
   id,
   tone:tones[id],
-  photo:archPortraits[id],
-  photoCaption:clinicPhotos[archPortraits[id]].caption,
+  photo:closePortraits[id],
+  photoCaption:clinicPhotos[closePortraits[id]].caption,
   name:doctor.name,
   specialty:doctor.role,
   formal:doctor.formal,
