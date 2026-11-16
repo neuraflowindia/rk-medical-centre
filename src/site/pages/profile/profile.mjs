@@ -6,7 +6,7 @@
 //   5 certificates  a gallery wall: five framed documents on a still shelf                        deep
 //   6 reviews       the shared shelf, this doctor's patients only                                 light
 //   then the shared closing with this doctor's own button and number.
-import {clinicObjects} from '../../../clinic/client-media.mjs';
+import {clinicObjects,clinicPhotos} from '../../../clinic/client-media.mjs';
 import {profilePage,workPortrait,roomPicture} from '../../../clinic/page-content/doctors.mjs';
 import {attrs,classes,image,text} from '../../lib/html.mjs';
 import {icon} from '../../icons/icons.mjs';
@@ -64,7 +64,8 @@ function about(words){
  const section=words.about,room=roomPicture(words.id);
  return `<section${attrs({class:`page-profile page-profile__about page-profile--${words.tone}`,id:section.id,'aria-labelledby':`${section.id}-title`})}><div class="wrap page-profile__about-grid">`
   +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,id:`${section.id}-title`,className:'page-profile__about-head'})
-  +`<div class="page-profile__room"><span class="page-profile__room-plate" aria-hidden="true"></span>`
+  // The frame is never wider than the photograph's own 1× width (444 px for Dr. Sanjay's room, 420 px for Dr. Parul's).
+  +`<div class="page-profile__room" style="--room:${Number(clinicPhotos[room].width)}px"><span class="page-profile__room-plate" aria-hidden="true"></span>`
   +photoFigure(room,{ratio:'3:2',caption:section.caption,sizes:'(min-width: 768px) 420px, 92vw'})+`</div>`
   +`<div class="page-profile__story">`
   +`<p class="page-profile__lede" data-enter style="--i:2">${text(section.lede)}</p>`

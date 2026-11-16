@@ -102,6 +102,7 @@ test('about the doctor: the heading first, the room photograph with its caption,
   const html=section(renderedPage(pathOf(id),'on'),'about'),words=profilePage(id).about,room=clinicPhotos[roomPicture(id)];
   assert.ok(html.indexOf('<h2')<html.indexOf('<img'),'the heading comes before the picture');
   assert.ok(html.includes(`src="${room.src}"`)&&html.includes('photo-figure--plain photo-figure--3x2'));
+  assert.ok(html.includes(`<div class="page-profile__room" style="--room:${room.width}px">`),'the frame is held to the photograph\'s own width');
   assert.ok(html.includes(`<figcaption class="photo-figure__caption">${text(words.caption)}</figcaption>`));
   assert.match(html,/<img[^>]*loading="lazy"/);
   assert.ok(html.includes(`>${text(words.lede)}</p>`)&&html.includes(`>${text(words.body)}</p>`));
