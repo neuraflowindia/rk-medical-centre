@@ -12,16 +12,15 @@ import {icon} from '../../icons/icons.mjs';
 import {bookButton,button,textLink} from '../../parts/button/button.mjs';
 import {sectionHead} from '../../parts/section-head/section-head.mjs';
 import {openSign} from '../../parts/open-sign/open-sign.mjs';
-import {callRow,doctorAvatar} from '../../parts/action-bar/action-bar.mjs';
+import {callRow,doctorAvatar,whatsappRow} from '../../parts/action-bar/action-bar.mjs';
 import {photoFigure} from '../../parts/photo-figure/photo-figure.mjs';
 import {hoursTable} from '../../parts/hours-table/hours-table.mjs';
 import {messageForm} from './message-form.mjs';
 
 // ---------- 1 · first screen ----------
 function openingPart(ctx){
- const rows=callRows().map(row=>`<li>${callRow(row,{avatar:doctorAvatar(row.id)})}</li>`).join('');
- // WAITING: request contact-02 — when the action bar part exports whatsappRow(ctx), it replaces this button.
- const whatsapp=button({label:words.whatsapp.label,href:words.whatsapp.href,variant:'second',icon:'whatsapp',iconAfter:'out',external:true,note:words.whatsapp.opens,className:'page-contact__whatsapp'});
+ // Each row leads with the need, as the call sheet does: a visitor chooses by what is wrong, not by a name.
+ const rows=callRows().map(row=>`<li>${callRow(row,{needFirst:true,avatar:doctorAvatar(row.id)})}</li>`).join('');
  return `<section class="page-contact page-contact__opening" aria-labelledby="contact-title" data-bar-lead><div class="wrap page-contact__opening-grid">`
   +`<div class="page-contact__opening-copy">`
   +sectionHead({runningHead:words.runningHead,heading:words.heading,emphasis:words.emphasis,level:1,id:'contact-title'})
@@ -30,7 +29,7 @@ function openingPart(ctx){
   // far: the arch and its slow light · subject: the paper card · near: the handset
   +`<div class="page-contact__stage"><div class="page-contact__arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></div>`
   +`<div class="page-contact__directory">${image(clinicObjects['telephone-handset'],{className:'page-contact__handset',eager:true,attributes:{fetchpriority:null}})}`
-  +`<ul class="call-rows page-contact__rows" aria-label="${text(words.directoryLabel)}">${rows}<li>${whatsapp}</li></ul>`
+  +`<ul class="call-rows page-contact__rows" aria-label="${text(words.directoryLabel)}">${rows}<li>${whatsappRow(ctx)}</li></ul>`
   +`<p class="page-contact__changes">${icon('info')}<span>${text(words.changes)}</span></p></div></div>`
   // Booking ON: the main button and the way back to a booking. OFF: both leave, and one line says to call.
   +`<div class="page-contact__actions">${bookButton(ctx,{size:'large',label:words.book,className:'page-contact__book'})}`
