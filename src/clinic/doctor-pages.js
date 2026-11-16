@@ -4,13 +4,14 @@ import {doctorRoomPhotos} from './client-media.mjs';
 import {topics,topicLink} from './care-catalogue.mjs';
 import {doctors,appointmentTimes,escapeHTML as e} from './model.mjs';
 import {intro,action,arrow,link,solidIcon} from './ui.js';
+import {openStatus} from './open-status.mjs';
 import {doctorCards,preparation,composition,qualifications,doctorFacts,factIcon,reviewCollection,appointmentSchedule,careLinks,doctorCareIcon} from './page-parts.js';
 
 export function doctorPage(){return `<section class="warm doctor-directory-page" id="opening" data-section-scene="D1"><div class="wrap">${intro('Meet the doctors','Read about each doctor’s experience and the concerns they see patients for.')}${doctorCards()}${appointmentSchedule()}</div></section>
 <section class="mint" id="feedback" data-section-scene="D4-new-reviews"><div class="wrap"><div class="section-heading"><p class="eyebrow">Patient feedback</p><h2>What patients have shared</h2><p>Read these six comments about the doctors and their care.</p></div>${reviewCollection('doctors')}</div></section>
 <section class="warm doctor-directory-preparation" id="before-booking" data-section-scene="D2"><div class="wrap"><h2>Before you book</h2><p class="lead">Keep your questions and any previous reports handy.</p>${preparation()}<div class="visit-ready" data-visit-ready>${factIcon('calendar')}<div><h3>Ready for your visit</h3><p>Check your doctor, date and starting time before leaving.</p></div></div></div></section>
 <section class="blue" id="next" data-section-scene="D3"><div class="wrap closing"><div><h2>Not sure which doctor to see?</h2><p>Compare the <strong>areas of care</strong> before choosing.</p></div>${action('See treatments','/treatment')}</div></section>`;}
-function profileTimes(){return `<div class="profile-appointment-times"><p class="profile-time-heading">${solidIcon('calendar')}<strong>Appointment starting times</strong></p><dl><div><dt>Monday to Saturday</dt><dd>${e(appointmentTimes.weekday)}</dd></div><div><dt>Sunday</dt><dd>${e(appointmentTimes.sunday)}</dd></div></dl></div>`;}
+function profileTimes(){return `<div class="profile-appointment-times"><p class="profile-time-heading">${solidIcon('calendar')}<strong>Appointment starting times</strong></p>${openStatus('dark')}<dl><div><dt>Monday to Saturday</dt><dd>${e(appointmentTimes.weekday)}</dd></div><div><dt>Sunday</dt><dd>${e(appointmentTimes.sunday)}</dd></div></dl></div>`;}
 
 function profileArtNotes(id){
  const items=id==='sanjay'?[['report','Earlier reports'],['meter','Readings you already record'],['medicine','Your medicine list']]:[['calendar','Records from check-ups'],['report','Earlier scan reports'],['medicine','Your medicine list']];

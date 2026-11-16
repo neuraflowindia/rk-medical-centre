@@ -18,4 +18,5 @@ import './clinic/clinic-photos.css';
 import './clinic/doctor-photos.css';
 import './clinic/doctor-certificates.css';
 import './clinic/photo-viewer.css';
+import './clinic/open-status.css';
 import './clinic/site.js';

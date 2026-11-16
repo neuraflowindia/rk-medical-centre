@@ -1,6 +1,7 @@
 import {doctors,doctorFacts,appointmentTimes,aboutDoctorIntroduction,escapeHTML as e} from './model.mjs';
 import {topics,doctorOrder,topicLink} from './care-catalogue.mjs';
 import {reviews} from './content.mjs';
+import {openStatus} from './open-status.mjs';
 import {art,link,arrow,solidIcon} from './ui.js';
 import {composition} from './artwork.js';
 import {homeArt} from './composition-data.mjs';
@@ -18,7 +19,7 @@ export function qualifications(id,full=false){
  return `<ul class="doctor-facts doctor-page-facts">${items.map(([icon,label])=>`<li${icon==='medal'?' class="doctor-page-medal"':''}><span class="doctor-page-fact-symbol" aria-hidden="true">${factIcon(icon)}</span><strong>${e(label)}</strong></li>`).join('')}</ul>${full?`<p class="doctor-education-full"><strong>Education${id==='parul'?' and recognition':''}:</strong> ${e(facts.fullEducation)}</p>`:''}`;
 }
 export function preparation(compact=false){return `<div class="preparation ${compact?'compact':''}">${[['report','Previous reports','Bring these if you have them.'],['medicine','Your medicines','A list of what you take is useful.'],['question','Your questions','Note anything you want to ask.']].map(([icon,h,p])=>`<article><span class="prep-art" data-motion-slot aria-hidden="true">${solidIcon(icon)}</span><div><h3>${h}</h3><p>${p}</p></div></article>`).join('')}</div>`;}
-export function appointmentSchedule(){return `<div class="appointment-schedule" id="appointment-times"><h3>${factIcon('calendar')}Appointment starting times</h3><ul><li><strong>Monday to Saturday:</strong> ${appointmentTimes.weekday}.</li><li><strong>Sunday:</strong> ${appointmentTimes.sunday}</li></ul><p data-booking-on="Choose an available time when booking." data-booking-off="Call the clinic about an available time.">Call the clinic about an available time.</p></div>`;}
+export function appointmentSchedule(){return `<div class="appointment-schedule" id="appointment-times"><h3>${factIcon('calendar')}Appointment starting times</h3>${openStatus('light')}<ul><li><strong>Monday to Saturday:</strong> ${appointmentTimes.weekday}.</li><li><strong>Sunday:</strong> ${appointmentTimes.sunday}</li></ul><p data-booking-on="Choose an available time when booking." data-booking-off="Call the clinic about an available time.">Call the clinic about an available time.</p></div>`;}
 const doctorCareIcons={diabetes:'meter','blood-pressure':'heart',thyroid:'report','fever-infections':'medicine','general-health':'person','womens-health':'heart',pregnancy:'calendar',ultrasound:'report'};
 export const doctorCareIcon=topic=>doctorCareIcons[topic]||'check-circle';
 export const careLinks=id=>doctorFacts[id].care.map(c=>`<li><a href="${link(topicLink(c.topic))}"><span class="doctor-care-icon" data-motion-slot aria-hidden="true">${solidIcon(doctorCareIcon(c.topic))}</span><strong>${e(c.text)}</strong>${arrow}</a></li>`).join('');

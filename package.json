@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:hosting": "node scripts/require-hosting-profile.mjs && vite build && node scripts/build-hosting.mjs",
-    "prepare:hosting": "node appointment-system/tools/install/source.mjs"
+    "prepare:hosting": "node appointment-system/tools/install/source.mjs",
+    "test": "node --test scripts/tests/*.test.mjs"
   },
   "keywords": [],
   "author": "",

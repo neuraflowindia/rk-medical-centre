@@ -1,5 +1,6 @@
 import {doctors,address,appointmentTimes,directions,escapeHTML as e} from './model.mjs';
 import {reviews} from './content.mjs';
+import {openStatus} from './open-status.mjs';
 export const base='';
 export const arrow='<span aria-hidden="true">↗</span>';
 // One filled icon family, shared by readable content and its motion slots.
@@ -45,7 +46,7 @@ export function footer(){
    <div><a class="brand" href="${link('/')}" aria-label="R. K. Medical Centre home"><img src="/clinic-assets/rk-medical-centre-logo.webp" width="44" height="44" alt=""><span>R. K. Medical Centre<small>Lucknow</small></span></a><p>Physician, diabetes and general health.<br>Women’s health, pregnancy and ultrasound.</p><address class="footer-address">${e(address)}</address></div>
    <nav aria-label="Footer navigation"><h2 class="footer-label">Find what you need</h2>${navLinks()}<a data-booking-only href="${link('/booking')}" ${route==='/booking'?'aria-current="page"':''}>Book an appointment</a></nav>
    <div><h2 class="footer-label">${solidIcon('phone')}Call the clinic</h2>${contacts}<p>For changes or cancellations, call the clinic.</p></div>
-   <div><h2 class="footer-label">${solidIcon('calendar')}Appointment times</h2><dl class="footer-hours"><div><dt>Monday–Saturday</dt><dd>${weekdayHours}</dd></div><div><dt>Sunday</dt><dd>${sundayHours}</dd></div></dl><a class="footer-directions" href="${e(directions)}" target="_blank" rel="noopener noreferrer">${solidIcon('pin')}<span>Open Google Maps ${arrow}</span></a></div>
+   <div><h2 class="footer-label">${solidIcon('calendar')}Appointment times</h2>${openStatus('dark')}<dl class="footer-hours"><div><dt>Monday–Saturday</dt><dd>${weekdayHours}</dd></div><div><dt>Sunday</dt><dd>${sundayHours}</dd></div></dl><a class="footer-directions" href="${e(directions)}" target="_blank" rel="noopener noreferrer">${solidIcon('pin')}<span>Open Google Maps ${arrow}</span></a></div>
   </div>
   <div class="wrap footer-credentials" role="list" aria-label="Clinic credentials"><span role="listitem">${solidIcon('check')}NABH accredited</span><span role="listitem">${solidIcon('check')}ISO 9001:2015 certified</span></div>
   <div class="footer-lower"><div class="wrap footer-lower-inner"><p>©&nbsp;${new Date().getFullYear()} R. K. Medical Centre · Lucknow</p><button type="button" class="text-link" data-privacy>Change privacy choices</button></div></div>

@@ -7,6 +7,7 @@ import {applyPageMetadata} from './page-metadata.mjs';
 import {bindVisibility} from '../../appointment-system/browser/visibility.mjs';
 bindVisibility({state:productState,profile:'public'});
 import {bindSharedPolish} from './shared-polish.js';
+import {bindOpenStatus} from './open-status.mjs';
 import {base,header,footer,setRoute,link,arrow,solidIcon} from './ui.js';
 import {home} from './home.js';
 import {bindHomeReviews} from './home-reviews.js';
@@ -71,7 +72,7 @@ function start(){const initialPath=pagePath(location.pathname);if(initialPath===
  bindClinicPhotos({signal});
  certificateController=bindDoctorCertificates({signal,visible:visible&&!document.hidden});
  document.querySelectorAll('[data-unbound-control]').forEach(control=>{if(!control.closest('[data-contact-form]'))control.disabled=false;control.removeAttribute('data-unbound-control');});
- syncBookingVisibility();bindSharedPolish({signal,previousNav});if(route==='/')homeReviewController=bindHomeReviews({signal,visible:visible&&!document.hidden});motion=createMotion();motion.setVisible(visible&&!document.hidden);document.querySelector('[data-privacy]').onclick=()=>prefs.open();
+ syncBookingVisibility();bindOpenStatus({signal});bindSharedPolish({signal,previousNav});if(route==='/')homeReviewController=bindHomeReviews({signal,visible:visible&&!document.hidden});motion=createMotion();motion.setVisible(visible&&!document.hidden);document.querySelector('[data-privacy]').onclick=()=>prefs.open();
  for(const img of document.images){if(img.matches('[data-client-photo-image],[data-certificate-image]'))continue;if(img.complete&&!img.naturalWidth)img.classList.add('media-failed');img.addEventListener('error',()=>img.classList.add('media-failed'),{signal,once:true});}
  prefs.measurement.setRoute(route);window.designReview={...motion,route,setVisible:applyVisibility,navigate,preferences:()=>prefs.measurement.snapshot(),promptStatus:()=>prompt?.status(),replayPrompt:()=>prompt?.replay()};
  const thisGeneration=generation;requestAnimationFrame(()=>{if(thisGeneration!==generation)return;if(restore!==null){motion?.settle();scrollTo(0,restore);}else if(route==='/treatment'&&selection.area){document.querySelector('#'+selection.area)?.scrollIntoView({behavior:'instant'});}else if(focus){scrollTo(0,0);document.querySelector('main h1')?.focus({preventScroll:true});}});

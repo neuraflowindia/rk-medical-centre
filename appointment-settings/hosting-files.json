@@ -334,6 +334,8 @@
     "src/clinic/layer-geometry.mjs",
     "src/clinic/model.mjs",
     "src/clinic/motion.js",
+    "src/clinic/open-status.css",
+    "src/clinic/open-status.mjs",
     "src/clinic/page-metadata.mjs",
     "src/clinic/page-parts.js",
     "src/clinic/page-schema.mjs",
