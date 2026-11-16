@@ -3,9 +3,9 @@
 @layer pages {
 
   /* ---------- 1 · first screen: the directory card ---------- */
-  .page-contact__opening { position: relative; z-index: 1; background: var(--ground-light); padding: var(--space-6) 0 36px; overflow-x: clip; }
+  .page-contact__opening { position: relative; z-index: 1; background: var(--ground-light); padding: var(--space-6) 0 30px; overflow-x: clip; }
   .page-contact__opening-grid { display: grid; gap: var(--space-4); }
-  .page-contact__sign { margin-top: 14px; min-height: 28px; }
+  .page-contact__sign { margin-top: var(--space-3); min-height: 28px; }
   .page-contact__stage { position: relative; margin-top: var(--space-5); }
   /* far: a flat sage arch standing behind the card */
   .page-contact__arch { position: absolute; z-index: 0; right: 14px; top: -46px; width: 54%; height: 150px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
@@ -33,8 +33,8 @@
   .page-contact__booking-off .icon { margin-top: 3px; color: var(--action); }
 
   /* ---------- 2 · find us: a drawn map with a picture pinned to it ---------- */
-  .page-contact__find { position: relative; background: var(--ground-tint); padding: 40px 0 44px; box-shadow: inset 0 1px 0 var(--line); }
-  .page-contact__table { display: grid; margin-top: var(--space-6); }
+  .page-contact__find { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
+  .page-contact__table { display: grid; margin-top: var(--space-5); }
   /* far: the map, in the photograph's own frame */
   .page-contact__map { padding: 5px; border-radius: var(--radius-media); background: var(--surface); box-shadow: var(--elev-photo); }
   .page-contact__map-window { position: relative; overflow: hidden; aspect-ratio: 16 / 9.4; border-radius: var(--radius-media-inner); background: var(--ground-tint-light); }
@@ -81,7 +81,7 @@
   .page-contact__parking .icon { margin-top: 1px; color: var(--action); }
 
   /* ---------- 3 · hours: the timetable, flat as a ledger ---------- */
-  .page-contact__hours { position: relative; background: var(--ground-light); padding: 40px 0 44px; overflow-x: clip; }
+  .page-contact__hours { position: relative; background: var(--ground-light); padding: 36px 0 40px; overflow-x: clip; }
   .page-contact__hours-grid { position: relative; display: grid; }
   .page-contact__hours-copy { display: contents; }
   .page-contact__hours-copy .section-head { order: 1; }
@@ -92,19 +92,19 @@
   .page-contact__ledger { order: 2; position: relative; z-index: 1; margin-top: var(--space-5); }
   /* WAITING: request contact-03 — the roomier rows become the timetable's own option */
   .page-contact__week tbody th, .page-contact__week tbody td { padding-block: 7px; }
-  .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-5); }
+  .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-4); }
   .page-contact__observation .icon { width: 24px; height: 24px; margin-top: 1px; color: var(--action); }
   .page-contact__observation h3 { font: var(--type-role); letter-spacing: 0; }
   .page-contact__observation p { margin-top: var(--space-1); max-width: 46ch; color: var(--ink-body); font: var(--type-notes); }
 
   /* ---------- 4 · the message form: a letter ---------- */
-  .page-contact__message { position: relative; background: var(--ground-tint); padding: 40px 0 44px; box-shadow: inset 0 1px 0 var(--line); }
+  .page-contact__message { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
   .page-contact__message-grid { position: relative; display: grid; }
   .page-contact__urgent { display: grid; grid-template-columns: 20px 1fr; gap: 10px; margin-top: var(--space-3); color: var(--ink-body); font: var(--type-body); }
   .page-contact__urgent .icon { margin-top: 3px; color: var(--action); }
   .page-contact__pen { display: none; }
 
-  .message-form { display: grid; margin-top: var(--space-4); }
+  .message-form { display: grid; margin-top: 14px; }
   /* the three steps: where the visitor is (the numbers are real: the order is fixed) */
   .message-form__steps { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; }
   .message-form__step { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-muted); font: var(--type-small); }
@@ -119,7 +119,7 @@
   .message-form[data-state="closed"] .message-form__why, .message-form[data-state="failed"] .message-form__why, .message-form[data-state="blocked"] .message-form__why { display: none; }
 
   /* the sheet: one screen at a time */
-  .message-form__sheet { position: relative; display: flex; flex-direction: column; gap: 18px; margin-top: var(--space-4); padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
+  .message-form__sheet { position: relative; display: flex; flex-direction: column; gap: var(--space-4); margin-top: 14px; padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
   .message-form__status { display: flex; align-items: center; gap: var(--space-2); color: var(--ink-body); font: var(--type-small); }
   .message-form__status:empty { display: none; }
   /* The status line is read out on every screen; it is seen only while something is under way. */
@@ -136,7 +136,7 @@
   .message-form__input { display: block; width: 100%; min-height: var(--control-height-large); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); appearance: none;
     background: var(--ground-light); box-shadow: var(--ring-quiet), var(--elev-pressed); color: var(--ink); font: var(--type-body);
     transition: box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move); }
-  .message-form__input--message { min-height: 104px; padding: 14px var(--space-4); resize: vertical; }
+  .message-form__input--message { min-height: 96px; padding: 14px var(--space-4); resize: vertical; }
   .message-form__input--code { max-width: 264px; font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .34em; text-align: center; padding-left: calc(var(--space-4) + .34em); }
   .message-form__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-control); background: var(--surface-top); box-shadow: var(--ring), var(--elev-pressed); }
   .message-form__input[aria-invalid="true"] { background: var(--error-wash); box-shadow: inset 0 0 0 1.5px var(--error), var(--elev-pressed); }
@@ -171,7 +171,7 @@
   .message-form__plain { margin-top: var(--space-5); }
 
   /* the full privacy notice: one raised row that opens in place */
-  .page-contact__notice { margin-top: var(--space-5); }
+  .page-contact__notice { margin-top: var(--space-4); }
   .page-contact__notice-open { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5); border-radius: var(--radius-row); color: var(--ink);
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
   .page-contact__notice-words { display: grid; gap: 1px; }
@@ -234,6 +234,9 @@
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
     .page-contact__map-label--north { left: var(--space-4); top: var(--space-4); }
+    .page-contact__map-label--west { left: 1.8%; top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
+    .page-contact__map-label--east { right: 1.6%; top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
+    .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); gap: 10px; width: auto; padding: 0 18px; }
     .page-contact__map-open .button__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
     .page-contact__pin-art { width: 62px; }
@@ -253,7 +256,8 @@
     .message-form__steps { gap: var(--space-2) var(--space-6); }
     .message-form__why { display: block; }
     .message-form__input--message { min-height: 132px; }
-    .message-form__sheet { padding: var(--space-7); gap: var(--space-5); }
+    .message-form { margin-top: var(--space-5); }
+    .message-form__sheet { margin-top: var(--space-5); padding: var(--space-7); gap: var(--space-5); }
     .message-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); align-items: start; }
     .message-form__field:first-of-type, .message-form__field:last-of-type { grid-column: 1 / -1; }
     .message-form__compose { grid-template-columns: 1fr auto; align-items: center; gap: var(--space-4); }
@@ -262,20 +266,21 @@
     .message-form__code-entry { grid-template-columns: 264px auto; align-items: start; justify-content: start; }
     .message-form__code-entry .message-form__confirm { margin-top: 27px; }
     .page-contact__notice { margin-top: var(--space-8); }
+    .page-contact__observation { margin-top: var(--space-7); }
     .page-contact__notice-open { min-height: 72px; padding: var(--space-4) var(--space-5) var(--space-4) var(--space-6); }
   }
 
   /* ---------- laptops ---------- */
   @media (min-width: 1024px) {
     .page-contact__opening { padding: 0; }
-    .page-contact__opening-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: 1fr auto 1fr; column-gap: var(--space-8); row-gap: 0; min-height: min(calc(100svh - var(--header-height)), 780px); }
+    .page-contact__opening-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); grid-template-rows: 1fr auto 1fr; column-gap: var(--space-7); row-gap: 0; min-height: min(calc(100svh - var(--header-height)), 780px); }
     .page-contact__opening-copy { grid-column: 1; grid-row: 1; align-self: end; padding-top: var(--space-9); }
     .page-contact__actions { grid-column: 1; grid-row: 2 / 4; align-self: start; margin-top: 34px; gap: var(--space-3); padding-bottom: var(--space-9); }
     .page-contact__stage { grid-column: 2; grid-row: 1 / 4; align-self: stretch; display: grid; align-content: center; justify-items: center; max-width: none; margin: 0; padding: 104px 0 72px; }
     /* the arch runs down into the sage section below: the two grounds meet inside it */
     .page-contact__arch { left: 50%; right: auto; top: 44px; bottom: 0; width: min(100%, 640px); height: auto; transform: translateX(-50%); }
-    .page-contact__directory { width: min(100% - 88px, 552px); padding: 18px 18px 14px; }
-    .page-contact__directory .call-row { min-height: 96px; padding: 18px 26px 18px 18px; }
+    .page-contact__directory { width: min(100% - 56px, 552px); padding: var(--space-4) var(--space-4) var(--space-3); }
+    .page-contact__directory .call-row { min-height: 92px; padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4); }
     .page-contact__handset { right: -58px; top: -70px; width: 138px; transform: rotate(-14deg); filter: var(--elev-object); }
     .page-contact__changes { margin: 14px 6px 4px; }
     .page-contact__book { min-width: 0; }
@@ -284,6 +289,9 @@
     .page-contact__find { padding-top: var(--section-pad); box-shadow: none; }
     .page-contact__table { column-gap: var(--space-7); }
     .page-contact__map-window { height: 440px; }
+    .page-contact__map-label--west { top: 38.9%; }
+    .page-contact__map-label--east { top: 51.3%; }
+    .page-contact__map-label--road { top: 42.9%; }
     .page-contact__pin-art { width: 72px; }
     .page-contact__pin-shadow { left: -24px; top: -8px; width: 48px; height: 16px; }
     .page-contact__frontage { grid-column: 1 / 7; margin: -150px 0 0 var(--space-8); max-width: 520px; }
@@ -314,7 +322,8 @@
   }
 
   @media (min-width: 1280px) {
-    .page-contact__opening-grid { grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); }
-    .page-contact__directory { width: min(100% - 96px, 568px); }
+    .page-contact__opening-grid { grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); column-gap: var(--space-8); }
+    .page-contact__directory { width: min(100% - 96px, 568px); padding: 18px 18px 14px; }
+    .page-contact__directory .call-row { min-height: 96px; padding: 18px 26px 18px 18px; }
   }
 }
