@@ -118,8 +118,9 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
  const read=name=>readFileSync(new URL(`../../src/site/${name}`,import.meta.url),'utf8');
  const names=css=>new Set([...css.matchAll(/(--[a-z0-9-]+)\s*:/g)].map(match=>match[1]));
  const tokens=names(read('styles/tokens.css'));
- // Set by the motion module on every entering part (motion.css), not a design token.
- const fromMotion=new Set(['--q']);
+ // Not design tokens: --q is set by the motion styles on every entering part; --room is set by
+ // the profile template on the room photograph's frame (the photograph's own width).
+ const fromMotion=new Set(['--q','--room']);
  for(const sheet of ['pages/doctors/doctors.css','pages/profile/profile.css']){
   const css=read(sheet),own=names(css);
   const used=[...new Set([...css.matchAll(/var\((--[a-z0-9-]+)/g)].map(match=>match[1]))];
@@ -127,4 +128,5 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
   assert.deepEqual(used.filter(name=>!tokens.has(name)&&!own.has(name)&&!fromMotion.has(name)),[],`${sheet} uses a token that does not exist`);
  }
  assert.match(read('motion/motion.css'),/--q:/,'the entrance progress still comes from the motion styles');
+ assert.match(read('pages/profile/profile.mjs'),/style="--room:\$\{/,'the profile template still sets the room photograph\'s width');
 });
