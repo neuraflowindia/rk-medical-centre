@@ -16,12 +16,14 @@ const SIZES=['regular','compact','large'];
  *   external true for a link that leaves the site (opens a new tab; say where in `spoken` or `note`)
  *   note     words for assistive technology only, after the label, e.g. "(opens Google Maps)"
  *   labelMarkup  ready-made inner markup instead of `label` (used for state-aware words)
+ *   labelHidden  'narrow': below 768 px the button shows its icon alone in a 48 px square (the label stays for assistive technology)
  */
 export function button({label='',labelMarkup='',href,variant='main',size='regular',icon:before='',iconAfter='',external=false,
- spoken='',note='',type='button',className='',attributes={}}={}){
- oneOf(variant,VARIANTS,'button variant');oneOf(size,SIZES,'button size');
+ spoken='',note='',type='button',labelHidden='',className='',attributes={}}={}){
+ oneOf(variant,VARIANTS,'button variant');oneOf(size,SIZES,'button size');oneOf(labelHidden,['','narrow'],'hidden label');
+ if(labelHidden&&!before&&!iconAfter)throw new RangeError('A button that hides its label needs an icon');
  const inner=`${before?icon(before):''}<span class="button__label">${labelMarkup||text(label)}</span>${iconAfter?icon(iconAfter):''}${note?`<span class="visually-hidden"> ${e(note)}</span>`:''}`;
- const shared={class:classes('button',`button--${variant}`,size!=='regular'&&`button--${size}`,className),'aria-label':spoken||null,...attributes};
+ const shared={class:classes('button',`button--${variant}`,size!=='regular'&&`button--${size}`,labelHidden&&'button--icon-narrow',className),'aria-label':spoken||null,...attributes};
  if(href===undefined||href===null)return `<button${attrs({type,...shared})}>${inner}</button>`;
  return `<a${attrs({href,...(external?{target:'_blank',rel:'noopener'}:{}),...shared})}>${inner}</a>`;
 }

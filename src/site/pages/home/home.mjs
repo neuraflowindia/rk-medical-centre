@@ -24,16 +24,16 @@ import {closing} from '../../parts/closing/closing.mjs';
 
 function heroSection(ctx){
  const portrait=item=>`<figure class="page-home__portrait page-home__portrait--${item.id}">`
-  +archPortrait(item.photo,{sizes:'(min-width: 1024px) 264px, 45vw',eager:true})
+  +archPortrait(item.photo,{sizes:'(min-width: 1024px) 264px, (min-width: 480px) 207px, 45vw',eager:true})
   +`<figcaption><strong>${text(item.name)}</strong><span>${text(item.role)}</span></figcaption></figure>`;
  return `<section class="page-home page-home__hero" aria-labelledby="hero-title"><div class="wrap page-home__hero-grid">`
-  +`<div class="page-home__hero-copy"><h1 id="hero-title">${emphasise(`${hero.heading.plain} ${hero.heading.emphasis}`,hero.heading.emphasis)}</h1>`
+  +`<div class="page-home__hero-copy"><h1 id="hero-title">${emphasise(`${hero.heading.plain} ${hero.heading.emphasis}`,hero.heading.emphasis,{keep:hero.heading.keep})}</h1>`
   +`<p class="page-home__lead">${text(hero.lead)}</p>`
   +`<div class="page-home__hero-actions" data-bar-lead>${bookingEntry(ctx,{place:'page',hook:'data-home-appointment-entry'})}${callButton(ctx,{label:hero.call})}</div></div>`
   +`<div class="page-home__stage"><div class="page-home__arch" aria-hidden="true" data-ambient><span class="page-home__shaft"></span></div>`
   +`<div class="page-home__pair">${hero.portraits.map(portrait).join('')}`
-  +image(clinicObjects[hero.object],{className:'page-home__hero-object'})
-  +`<p class="page-home__credit">${text(hero.credit)}</p></div></div></div>`
+  +image(clinicObjects[hero.object],{className:'page-home__hero-object'})+`</div>`
+  +`<p class="page-home__credit">${text(hero.credit)}</p></div></div>`
   +`<div class="wrap page-home__strip">${essentialsStrip(ctx)}</div></section>`;
 }
 
@@ -72,7 +72,7 @@ function visitingPart(ctx){
   +photoFigure(frontage.photo,{ratio:frontage.ratio,caption:frontage.caption,captionKey:frontage.key,sizes:'(min-width: 1024px) 694px, 92vw',className:'page-home__frontage'})
   +photoFigure(waiting.photo,{ratio:waiting.ratio,caption:waiting.caption,captionKey:waiting.key,sizes:'(min-width: 1024px) 300px, 44vw',className:'page-home__waiting'})
   +`<div class="page-home__address" data-enter="card">${image(clinicObjects[visitingSection.object],{className:'page-home__address-pin'})}`
-  +`<h3>${text(clinicName)}</h3><address>${text(card.address)}</address>${hoursTable(ctx,{className:'page-home__hours'})}`
+  +`<h3>${text(clinicName)}</h3><address>${card.addressLines.map((line,index,all)=>{const words=text(line+(index<all.length-1?', ':''));return index?`<span class="page-home__address-line">${words}</span>`:words;}).join('')}</address>${hoursTable(ctx,{className:'page-home__hours'})}`
   // Outline at every width: the view already holds a filled Book button (the header's, or the phone bar's).
   +button({label:card.directions.label,href:card.directions.href,variant:'second',external:true,iconAfter:'out',note:essentials.place.opens,className:'page-home__directions'})
   +`<ul class="page-home__notes"><li>${icon('car')}<span>${text(card.parking)}.</span></li><li>${icon('file')}<span>${text(card.bring)}</span></li></ul></div>`

@@ -1,7 +1,7 @@
 /* The Home doctor card: a tinted card whose portrait breaks its top edge. The chips are the one
    interactive moment: the answer sits directly under them at a fixed height, and one object arrives. */
 @layer components {
-  .doctor-card { --plate: var(--mist-sage); --object-shadow: var(--elev-object-small); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-3); padding: var(--card-pad); border-radius: var(--radius-card); background: var(--wash-sage); box-shadow: var(--elev-card); }
+  .doctor-card { --plate: var(--mist-sage); --object-shadow: var(--elev-object-small); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-3); padding: var(--card-pad) var(--card-pad) 38px; border-radius: var(--radius-card); background: var(--wash-sage); box-shadow: var(--elev-card); }
   .doctor-card--rose { --plate: var(--mist-rose); --object-shadow: var(--elev-object-small-rose); background: var(--wash-rose); box-shadow: var(--elev-card-rose); }
   .doctor-card__top { grid-column: 1 / -1; display: grid; grid-template-columns: 120px minmax(0, 1fr); column-gap: var(--space-4); align-items: start; }
   .doctor-card__portrait { position: relative; margin-top: calc(-36px - var(--card-pad)); }
@@ -12,8 +12,8 @@
   .doctor-card__name { font: var(--type-name); }
   .doctor-card__role { margin-top: 3px; color: var(--ink); font: var(--type-role); }
   .doctor-card__formal { color: var(--ink-body); font: var(--type-formal); }
-  /* a narrow name column lets the tag take two lines rather than leave the card */
-  .doctor-card__id .tag { margin-top: 7px; white-space: normal; padding-block: 5px; line-height: 1.2; }
+  /* the tag may use a little of the card's side padding; in a still narrower column it takes two lines rather than leave the card */
+  .doctor-card__id .tag { margin: 7px -12px 0 0; white-space: normal; padding-block: 5px; line-height: 1.2; }
   .doctor-card__profile--narrow { margin-block: -6px -12px; }
   .doctor-card__profile--wide { display: none; }
   .doctor-card__chips { grid-column: 1 / -1; margin-top: var(--space-4); }
@@ -23,9 +23,10 @@
   .doctor-card__answers { grid-column: 1 / -1; grid-row: 3; display: grid; align-content: start; margin-top: var(--space-4); }
   .doctor-card__answer { grid-area: 1 / 1; display: grid; align-content: start; justify-items: start; opacity: 0; visibility: hidden; transition: opacity var(--dur-swap) var(--ease-move), visibility 0s var(--dur-swap); }
   .doctor-card__answer[data-active] { opacity: 1; visibility: visible; transition-delay: 0s; }
-  .doctor-card__answer p { color: var(--ink-body); font: var(--type-answer); max-width: 44ch; padding-right: 96px; min-height: 4.65em; }
-  .doctor-card__answer .text-link { margin-top: 2px; }
-  .doctor-card__objects { grid-column: 1 / -1; grid-row: 3; justify-self: end; position: relative; z-index: 1; align-self: start; width: 92px; height: 92px; margin: var(--space-3) -12px 0 0; pointer-events: none; }
+  .doctor-card__answer p { color: var(--ink-body); font: var(--type-answer); max-width: 44ch; min-height: 3.1em; }
+  .doctor-card__answer .text-link { margin: -2px 0 -8px; }
+  /* on phones the object stands on the card's lower edge, under the buttons, so the answer keeps the card's full width */
+  .doctor-card__objects { grid-column: 1 / -1; grid-row: 4; justify-self: end; align-self: end; position: relative; z-index: 1; width: 76px; height: 76px; margin: 0 -10px -82px 0; pointer-events: none; }
   .doctor-card__objects img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; filter: var(--object-shadow); transition: opacity var(--dur-object-fade) var(--ease-move); }
   .doctor-card__objects img[data-active] { opacity: 1; }
   /* the object slides 12 px and settles 4 degrees; its shadow lands last */
@@ -35,7 +36,7 @@
     55% { opacity: 1; filter: var(--elev-object-half); }
     100% { opacity: 1; transform: none; filter: var(--object-shadow); }
   }
-  .doctor-card__actions { grid-column: 1 / -1; grid-row: 4; display: flex; gap: 10px; margin-top: 10px; }
+  .doctor-card__actions { grid-column: 1 / -1; grid-row: 4; display: flex; align-items: center; gap: 10px; margin-top: 10px; }
   .doctor-card__actions .button--main { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
   .doctor-card__actions .button--second { flex: 0 0 auto; min-width: 92px; padding-inline: var(--space-4); }
   html[data-booking-state="off"] .doctor-card__actions .button--lead { flex: 1 1 0; }
@@ -46,15 +47,13 @@
     .doctor-card__top { grid-template-columns: 104px minmax(0, 1fr); column-gap: var(--space-3); }
     .doctor-card__actions { flex-direction: column; }
     .doctor-card__actions .button--main { flex: none; }
-    .doctor-card__objects { width: 80px; height: 80px; }
-    .doctor-card__answer p { padding-right: 84px; }
+    .doctor-card__objects { margin-bottom: -84px; }
   }
   @media (min-width: 480px) {
     .doctor-card__top { grid-template-columns: 148px minmax(0, 1fr); column-gap: 22px; }
-    .doctor-card__objects { width: 108px; height: 108px; }
   }
   @media (min-width: 768px) {
-    .doctor-card { grid-template-rows: auto auto 1fr auto; column-gap: var(--space-5); }
+    .doctor-card { grid-template-rows: auto auto 1fr auto; column-gap: var(--space-5); padding: var(--card-pad); }
     .doctor-card__top { grid-template-columns: 176px minmax(0, 1fr); column-gap: 28px; }
     .doctor-card__id { gap: var(--space-1); padding-top: 2px; }
     .doctor-card__portrait figcaption { display: block; }
@@ -65,7 +64,8 @@
     .doctor-card .chip-row { gap: 10px; }
     .doctor-card .chip { padding: 0 18px; }
     .doctor-card__answers { grid-column: 1; margin-top: var(--space-5); }
-    .doctor-card__answer p { padding-right: 0; min-height: 0; }
+    .doctor-card__answer p { min-height: 0; }
+    .doctor-card__answer .text-link { margin: 2px 0 0; }
     .doctor-card__objects { grid-column: 2; grid-row: 3 / 5; align-self: end; width: 140px; height: 140px; margin: 0 -40px -40px 0; }
     .doctor-card__actions { grid-column: 1; margin-top: var(--space-3); gap: var(--space-3); }
     .doctor-card__actions .button--main { flex: 0 0 auto; padding-inline: 22px; }
@@ -74,7 +74,7 @@
   }
   @media (min-width: 1024px) {
     .doctor-card { padding: 32px 32px 34px; }
-    .doctor-card__id { align-self: center; }
+    .doctor-card__id { align-self: center; padding-top: 0; }
     .doctor-card__objects { width: 112px; height: 112px; margin: 0 -42px -46px 0; }
   }
   @media (min-width: 1280px) {
@@ -83,8 +83,9 @@
        two cards' name blocks become the same height */
     .doctor-card__profile--narrow { display: none; }
     .doctor-card__profile--wide { display: inline-flex; margin-left: var(--space-2); }
-    .doctor-card__actions { grid-column: 1 / -1; align-items: center; padding-right: 96px; }
+    .doctor-card__actions { grid-column: 1 / -1; }
     .doctor-card__portrait { margin-top: -72px; }
-    .doctor-card__objects { width: 148px; height: 148px; margin: 0 -54px -52px 0; }
+    /* the object keeps to the answer's row so the action row is clear */
+    .doctor-card__objects { grid-row: 3; width: 132px; height: 132px; margin: 0 -56px -6px 0; }
   }
 }

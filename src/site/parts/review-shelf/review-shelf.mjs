@@ -55,11 +55,17 @@ export function reviewShelf(ctx,{filter='all',limit=shelfLimits[filter],featured
   +`</div></div></div>`;
 }
 
+/** The small label that says whom a review is about, tinted like that doctor's card; "The clinic" when it names no doctor. */
+function aboutLabel(review){
+ const one=review.doctors.length===1?review.doctors[0]:'';
+ const who=review.doctors.length?review.doctors.map(id=>doctors[id].name).join(' and '):words.aboutClinic;
+ return `<p class="${classes('review-reader__about',one&&`review-reader__about--${one}`)}"><span class="visually-hidden">${text(words.about)} </span>${text(who)}</p>`;
+}
 /** The reader's contents for one tab: every review of that tab in full. `pointed` marks the one the visitor asked for. */
 export function readerList(reviews,{pointed=''}={}){
  return `<ol class="review-reader__list" data-reader-list>`+reviews.map(review=>
   `<li${attrs({class:classes('review-reader__item',review.id===pointed&&'is-pointed'),id:`review-${review.id}`})}>`
-  +`<div class="review-reader__top">${reviewStars(review)}${review.doctors.length?`<p class="review-reader__about"><span class="visually-hidden">${text(words.about)} </span>${text(review.doctors.map(id=>doctors[id].name).join(' and '))}</p>`:''}</div>`
+  +`<div class="review-reader__top">${reviewStars(review)}${aboutLabel(review)}</div>`
   +`<blockquote class="review-reader__quote"><p>${text(review.text)}</p></blockquote>`+reviewBy(review)+`</li>`).join('')+`</ol>`;
 }
 /** The reader: its own tabs, then the list. `filters` are the tabs to offer (one filter: no tabs). */
