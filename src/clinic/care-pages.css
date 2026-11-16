@@ -155,3 +155,4 @@
   .treatment-overview-topics{grid-row:2}
  }
 }
+.care-chapter .treatment-topic-title:focus{outline:none}.care-chapter .treatment-topic-title:focus-visible{outline:3px solid var(--teal);outline-offset:5px;border-radius:6px}

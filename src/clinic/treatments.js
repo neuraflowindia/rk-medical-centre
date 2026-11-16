@@ -4,6 +4,7 @@ import {doctors,escapeHTML as e} from './model.mjs';
 import {intro,action,link,arrow,next,solidIcon} from './ui.js';
 import {composition,preparation} from './page-parts.js';
 import {waitForPictures} from './picture-readiness.mjs';
+import {topicScrollTarget} from './topic-scroll.mjs';
 function topicComposition(t,area){return composition(topicArt[t.id],area).replace('data-composition=',`data-topic-key="${t.id}" data-composition=`);}
 const preparationIcons={'general-health':['report','medicine','question'],diabetes:['report','report','medicine'],'blood-pressure':['report','report','medicine'],thyroid:['report','report','question'],'fever-infections':['report','medicine','calendar'],'womens-health':['report','calendar','medicine'],pregnancy:['report','report','question'],ultrasound:['report','report','question']};
 const topicIcons={'general-health':'person',diabetes:'meter','blood-pressure':'heart',thyroid:'report','fever-infections':'medicine','womens-health':'heart',pregnancy:'family',ultrasound:'report'};
@@ -78,5 +79,15 @@ export function bindTreatments({signal,selection,onSelection,onArtChange=()=>{},
    clearTimeout(loading);timers.delete(loading);status.remove();
   }
  }
- for(const button of document.querySelectorAll('[data-topic]'))button.addEventListener('click',()=>void loadTopic(button),{signal});
+ // Phones and tablets: bring a changed detail that sits low on the screen into view,
+ // and move focus to its heading so keyboard and screen-reader users land there too.
+ function revealDetail(region){
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const target=topicScrollTarget({viewportWidth:innerWidth,viewportHeight:innerHeight,detailTop:region.getBoundingClientRect().top,scrollY,reducedMotion});
+  if(!target)return;
+  scrollTo({top:target.top,behavior:target.behavior});
+  const heading=region.querySelector('.treatment-topic-title');
+  if(heading){heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
+ }
+ for(const button of document.querySelectorAll('[data-topic]'))button.addEventListener('click',()=>{const t=topicById(button.dataset.topic),changed=selection[t.area]!==t.id;void loadTopic(button);if(changed)revealDetail(document.querySelector('#detail-'+t.area));},{signal});
 }

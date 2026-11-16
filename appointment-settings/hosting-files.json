@@ -325,6 +325,7 @@
     "src/clinic/shared-polish.js",
     "src/clinic/site.css",
     "src/clinic/site.js",
+    "src/clinic/topic-scroll.mjs",
     "src/clinic/treatments.js",
     "src/clinic/ui.js",
     "src/clinic/visit-draft.mjs",
