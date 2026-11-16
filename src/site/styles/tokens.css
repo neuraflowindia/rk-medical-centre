@@ -59,6 +59,14 @@
     --line-faint: rgba(27, 42, 39, .10);
     --line-on-deep: rgba(250, 246, 238, .22);
     --line-action: rgba(11, 94, 87, .22);
+    --line-card: rgba(27, 42, 39, .13);     /* the edge of a tinted card */
+    --line-panel: rgba(27, 42, 39, .12);
+    --line-ink: rgba(27, 42, 39, .55);      /* the edge of a certificate's paper */
+    --line-on-deep-strong: rgba(250, 246, 238, .55);
+    --wash-on-deep: rgba(250, 246, 238, .11);
+    --edge-light: rgba(255, 255, 255, .70); /* the lit top edge of a card */
+    --chosen-soft: rgba(207, 227, 220, .36);
+    --gold-ghost: rgba(156, 115, 37, .34);  /* the large quotation mark */
     --halo-action: rgba(11, 94, 87, .14);   /* hover ring around a chip or a pointed row */
     --scrim: rgba(13, 34, 31, .52);         /* behind a sheet or dialog */
     --grip: rgba(27, 42, 39, .22);          /* the small handle on a bottom sheet */
@@ -67,6 +75,10 @@
     --light-shaft: rgba(255, 253, 248, .50);
     --light-shaft-deep: rgba(250, 246, 238, .15);
     --clear: rgba(255, 253, 248, 0);
+    /* the two slow light shafts: a pale band with a faint shade either side */
+    --shaft-light: linear-gradient(104deg, rgba(23, 60, 56, 0) 22%, rgba(23, 60, 56, .07) 33%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, .62) 47%, rgba(255, 255, 255, .78) 50%, rgba(255, 255, 255, .62) 53%, rgba(255, 255, 255, 0) 60%, rgba(23, 60, 56, .07) 67%, rgba(23, 60, 56, 0) 78%);
+    --shaft-deep: linear-gradient(108deg, rgba(168, 213, 200, 0) 30%, rgba(168, 213, 200, .05) 38%, rgba(168, 213, 200, .15) 46%, rgba(214, 236, 226, .20) 50%, rgba(168, 213, 200, .15) 54%, rgba(168, 213, 200, .05) 62%, rgba(168, 213, 200, 0) 70%);
+    --mask-fade: linear-gradient(180deg, #000000 60%, transparent);
 
     /* type: two families, seven roles and one display numeral */
     --font-display: "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
@@ -101,7 +113,7 @@
     --type-label: 600 var(--size-label)/var(--leading-label) var(--font-text);
     --type-small: 500 var(--size-small)/var(--leading-label) var(--font-text);
     --type-caps: 600 var(--size-small)/var(--leading-label) var(--font-text);
-    --type-numeral: 500 var(--size-numeral)/.86 var(--font-display);
+    --type-numeral: 400 var(--size-numeral)/.86 var(--font-display);
     --type-control: 600 var(--size-body)/var(--leading-flat) var(--font-text);
     --type-control-small: 600 var(--size-label)/var(--leading-flat) var(--font-text);
     --type-digits: 600 var(--size-h3)/1.1 var(--font-text);
@@ -115,6 +127,34 @@
     --type-lockup: 500 var(--size-lead)/1.15 var(--font-display);       /* the clinic's name in the header */
     --type-lockup-place: 500 var(--size-small)/1.2 var(--font-text);
     --type-row-title: 500 var(--size-feature)/1.2 var(--font-display);  /* menu rows */
+    --type-sub: 400 var(--size-body)/var(--leading-lead) var(--font-text);          /* a section's intro; lead size from tablets up */
+    --type-strip-label: 500 var(--size-small)/1.5 var(--font-text);
+    --type-strip-value: 600 var(--size-body)/var(--leading-tight) var(--font-text);
+    --type-strip-value-wide: 500 var(--size-h3)/1.2 var(--font-display);
+    --type-caption-strong: 600 var(--size-label)/var(--leading-label) var(--font-text);
+    --type-caption: 400 var(--size-small)/1.45 var(--font-text);
+    --type-caption-italic: italic 400 var(--size-label)/var(--leading-tight) var(--font-display);
+    --type-name: 500 var(--size-feature)/1.15 var(--font-display);
+    --type-role: 600 var(--size-body)/1.35 var(--font-text);
+    --type-role-wide: 500 var(--size-lead)/1.35 var(--font-text);
+    --type-formal: 400 var(--size-label)/var(--leading-label) var(--font-text);
+    --type-answer: 400 var(--size-body)/1.55 var(--font-text);
+    --type-ledger: 500 var(--size-h3)/var(--leading-h3) var(--font-display);
+    --type-quote: 400 var(--size-body)/var(--leading-body) var(--font-text);
+    --type-pull-quote: italic 400 var(--size-feature)/1.34 var(--font-display);
+    --size-quote-mark: 132px;       /* the pull-quote's large quotation mark (the numeral's widest size) */
+    --type-quote-mark: 400 var(--size-quote-mark)/var(--leading-flat) var(--font-display);
+    --type-avatar: 600 var(--size-small)/var(--leading-flat) var(--font-text);
+    --type-question: 500 var(--size-h3)/var(--leading-h3) var(--font-display);
+    --type-count: 500 var(--size-label)/var(--leading-flat) var(--font-text);
+    --type-toggle: 600 var(--size-small)/var(--leading-flat) var(--font-text);
+    --type-closing: 500 var(--size-h1)/1.08 var(--font-display);
+    --type-numeral-plus: 400 calc(var(--size-numeral) / 2)/var(--leading-flat) var(--font-display);
+    --type-figure-words: 500 var(--size-h2)/var(--leading-h2) var(--font-display);
+    --type-who: 400 var(--size-label)/var(--leading-label) var(--font-text);
+    --type-credit: 400 var(--size-small)/1.2 var(--font-text);
+    --type-hours: 400 var(--size-label)/1.5 var(--font-text);
+    --type-notes: 400 var(--size-label)/1.45 var(--font-text);
 
     /* space */
     --space-1: 4px;
@@ -148,6 +188,12 @@
     --radius-bar: 20px;
     --radius-small: 12px;
     --radius-link: 10px;
+    --radius-stage: 120px 120px 22px 22px;  /* the sage panel behind the portrait pair on phones */
+    --radius-arch-open: 999px 999px 0 0;
+    --radius-media-inner: 23px;
+    --radius-strip-end: 0 18px 18px 0;
+    --radius-strip-foot: 0 0 18px 18px;
+    --radius-hair: 1px;
     --radius-tag: 8px;
     --radius-focus: 6px;
     --radius-frame: 3px;            /* certificate frames */
@@ -175,8 +221,16 @@
     --elev-menu: inset 0 1px 0 #FFFFFF, 0 1px 1px rgba(23, 60, 56, .22), 0 6px 12px -8px rgba(23, 60, 56, .40);
     --elev-bar: inset 0 0 0 1px rgba(27, 42, 39, .30), inset 0 1px 0 #FFFFFF, 0 2px 4px rgba(23, 60, 56, .14), 0 14px 22px -8px rgba(23, 60, 56, .26), 0 36px 64px -18px rgba(23, 60, 56, .44), 0 72px 120px -40px rgba(23, 60, 56, .38);
     --elev-on-deep: inset 0 1px 0 rgba(255, 255, 255, .80), 0 1px 1px rgba(4, 22, 20, .50), 0 10px 22px -12px rgba(4, 22, 20, .70);
-    --elev-object: drop-shadow(0 2px 2px rgba(23, 60, 56, .28)) drop-shadow(0 16px 14px rgba(23, 60, 56, .26));
-    --elev-object-small: drop-shadow(0 1px 1px rgba(23, 60, 56, .28)) drop-shadow(0 12px 10px rgba(23, 60, 56, .24));
+    --elev-object: drop-shadow(0 2px 2px rgba(23, 60, 56, .22)) drop-shadow(0 16px 14px rgba(23, 60, 56, .34));
+    --elev-object-small: drop-shadow(0 1px 1px rgba(23, 60, 56, .26)) drop-shadow(0 12px 10px rgba(23, 60, 56, .34));
+    --elev-object-soft: drop-shadow(0 2px 2px rgba(23, 60, 56, .16)) drop-shadow(0 18px 16px rgba(23, 60, 56, .26));
+    --elev-object-none: drop-shadow(0 1px 1px rgba(23, 60, 56, 0)) drop-shadow(0 4px 4px rgba(23, 60, 56, 0));
+    --elev-object-half: drop-shadow(0 1px 1px rgba(23, 60, 56, .10)) drop-shadow(0 8px 8px rgba(23, 60, 56, .12));
+    --elev-object-small-rose: drop-shadow(0 1px 1px rgba(70, 42, 40, .26)) drop-shadow(0 12px 10px rgba(70, 42, 40, .34));
+    --elev-card: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), var(--elev-ambient);
+    --elev-card-rose: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), var(--elev-ambient-rose);
+    --elev-certificate: inset 0 0 0 1px var(--line-strong), 0 2px 3px rgba(4, 22, 20, .30), 0 16px 22px -12px rgba(4, 22, 20, .50), 0 30px 46px -26px rgba(4, 22, 20, .55);
+    --elev-toggle-pressed: inset 0 0 0 1.5px var(--ink-on-deep), inset 0 2px 4px rgba(0, 0, 0, .35);
     --ring: inset 0 0 0 1.5px var(--action);
     --ring-hover: inset 0 0 0 1.5px var(--action-hover);
     --ring-quiet: inset 0 0 0 1px var(--control-border);
@@ -199,13 +253,18 @@
     --dur-sheet-move: 340ms;
     --dur-header: 320ms;
     --dur-bar: 360ms;
+    --dur-portrait: 500ms;          /* a portrait shifting against its card under the pointer */
+    --dur-question: 300ms;
+    --dur-object-fade: 160ms;
     --dur-arrive: 420ms;
     --dur-enter: 820ms;
     --dur-rule: 1100ms;
     --dur-settle: 900ms;
     --stagger: 90ms;
     --loop-light: 14s;              /* the first screen's light, each way */
+    --loop-light-start: -6s;        /* it begins mid-way, so the first movement is seen at once */
     --loop-light-slow: 16s;         /* the credentials light, each way */
+    --loop-light-slow-start: -7s;
     --loop-dot: 2.4s;               /* the ring around the open dot */
     --rise: 16px;                   /* how far words travel on entrance; they never fade */
     --rise-card: 28px;
@@ -220,6 +279,9 @@
     :root {
       --size-h1: 40px; --size-h2: 33px; --size-feature: 22px; --size-h3: 22px; --size-numeral: 88px;
       --gutter: 32px; --section-pad: 96px; --head-gap: 40px; --card-pad: 28px; --strip-in: 36px; --strip-out: 48px;
+      --type-sub: 400 var(--size-lead)/var(--leading-lead) var(--font-text);
+      --type-hours: 400 var(--size-body)/1.5 var(--font-text);
+      --radius-media-inner: 20px; --radius-strip-end: 0 20px 20px 0;
     }
   }
   @media (min-width: 1024px) {
@@ -239,6 +301,6 @@
   /* Motion is paused by the footer control, or by the device setting unless the visitor chose to play. */
   :root[data-motion="paused"] {
     --rise: 0px; --rise-card: 0px; --stagger: 0ms;
-    --dur-enter: 1ms; --dur-rule: 1ms; --dur-settle: 1ms; --dur-arrive: 1ms; --dur-swap: 1ms; --dur-sheet: 1ms; --dur-sheet-move: 1ms; --dur-header: 1ms; --dur-bar: 1ms; --dur-underline: 1ms;
+    --dur-enter: 1ms; --dur-rule: 1ms; --dur-settle: 1ms; --dur-arrive: 1ms; --dur-swap: 1ms; --dur-sheet: 1ms; --dur-sheet-move: 1ms; --dur-header: 1ms; --dur-bar: 1ms; --dur-underline: 1ms; --dur-portrait: 1ms; --dur-question: 1ms; --dur-object-fade: 1ms;
   }
 }

@@ -117,3 +117,34 @@ export function starFills(rating){
  const value=Number.isFinite(rating)?Math.max(0,Math.min(5,rating)):0;
  return Array.from({length:5},(_,index)=>Math.max(0,Math.min(1,value-index)));
 }
+
+// ---- The shelf: which reviews a visitor meets first under each tab. ----
+// A strong, specific review leads each tab (it is set large, as the pull-quote); the others
+// named here follow it, and every remaining review of that tab comes after them in list order.
+const shelfLeads=Object.freeze({
+ all:['Meera Raman','Ananya Sharma','Aditi Sen','Shweta Mukherjee','Rajesh Mehta','Sneha Kulkarni','Neha Agarwal','Suresh Kulkarni'],
+ sanjay:['Anita Deshmukh','Rajesh Mehta','Vikram Sengupta','Meera Raman','Sunita Rao','Deepak Singhania'],
+ parul:['Divya Menon','Ananya Sharma','Pooja Iyer','Sneha Kulkarni','Kavita Nair','Shweta Mukherjee']
+});
+/** How many cards the shelf shows under each tab; the reader always holds every review. */
+export const shelfLimits=Object.freeze({all:8,sanjay:6,parul:6});
+
+/** Every review of one tab in shelf order: the named leads first, then the rest. */
+export function shelfOrder(filter='all',leads=shelfLeads){
+ if(!reviewFilterKeys.includes(filter))throw new RangeError('Unknown review filter: '+filter);
+ const pool=reviewsFor(filter),first=(leads[filter]||[]).map(name=>{
+  const review=pool.find(item=>item.name===name);
+  if(!review)throw new Error(`${name} does not belong under the "${filter}" reviews`);
+  return review;
+ });
+ return Object.freeze([...first,...pool.filter(review=>!first.includes(review))]);
+}
+/** The cards the shelf shows under one tab. `limit` 0 means every review of the tab. */
+export function shelfSelection(filter='all',limit=shelfLimits[filter]){
+ const ordered=shelfOrder(filter);
+ return limit>0?ordered.slice(0,limit):ordered;
+}
+/** The reader's order: the general shelf order, narrowed to one tab. */
+export function readerOrder(filter='all'){
+ return shelfOrder('all').filter(review=>reviewMatches(review,filter));
+}

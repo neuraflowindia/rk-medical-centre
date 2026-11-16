@@ -18,3 +18,10 @@ export function syncBookingLink(anchor,enabled){
  if(enabled)anchor.setAttribute('href',href);else anchor.removeAttribute('href');
  anchor.hidden=!enabled;anchor.inert=!enabled;return true;
 }
+/** Change where a booking link leads, in either booking state (while OFF the address is kept aside, not on the link). */
+export function setBookingAddress(anchor,href){
+ if(!bookingDestination(href))return false;
+ if(anchor.hasAttribute('data-booking-href')||!anchor.hasAttribute('href'))anchor.setAttribute('data-booking-href',href);
+ if(anchor.hasAttribute('href'))anchor.setAttribute('href',href);
+ return true;
+}

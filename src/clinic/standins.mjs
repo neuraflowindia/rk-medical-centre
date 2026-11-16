@@ -8,10 +8,12 @@
 /** The marker repeated above every value in this file. */
 export const STAND_IN_NOTE='STAND-IN — replace with the clinic\'s confirmed fact';
 
+// Dr. Sanjay Gupta's degrees are NOT a stand-in: the clinic confirmed "MBBS, DGO", and they are
+// read from model.mjs. (One of his certificates shows MD (Medicine); the clinic will confirm the
+// final wording.) Read either doctor's degrees through degreesOf() in page-content/shared.mjs.
 // STAND-IN — replace with the clinic's confirmed fact
-// Each doctor's degrees, as shown after the formal specialty.
+// Dr. Parul Gupta's degrees, as shown after the formal specialty.
 export const doctorDegrees=Object.freeze({
- sanjay:'MBBS, MD (Medicine)',
  parul:'MBBS, MS (Obstetrics & Gynaecology)'
 });
 
@@ -74,7 +76,6 @@ export function whatsappLink(message=whatsappFirstMessage){
  * `key` is the export name in this file; `where` says where a visitor meets it.
  */
 export const standInRegister=Object.freeze([
- {key:'doctorDegrees.sanjay',label:'Dr. Sanjay Gupta’s degrees',value:doctorDegrees.sanjay,where:'Doctor cards, Meet the doctors, his profile'},
  {key:'doctorDegrees.parul',label:'Dr. Parul Gupta’s degrees',value:doctorDegrees.parul,where:'Doctor cards, Meet the doctors, her profile'},
  {key:'registrationCouncil',label:'Registering medical council',value:registrationCouncil,where:'Profiles, Meet the doctors, footer'},
  {key:'registrationNumbers.sanjay',label:'Dr. Sanjay Gupta’s registration number',value:registrationNumbers.sanjay,where:'His profile, Meet the doctors, footer'},

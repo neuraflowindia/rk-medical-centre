@@ -6,7 +6,7 @@ import * as standins from '../../src/clinic/standins.mjs';
 import {doctors,address,directions,homeHeadline,appointmentTimes} from '../../src/clinic/model.mjs';
 import {topics,topicById} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue} from '../../src/clinic/certificate-catalogue.mjs';
-import {clinicPhotos} from '../../src/clinic/client-media.mjs';
+import {clinicPhotos,clinicObjects} from '../../src/clinic/client-media.mjs';
 import {pageMetadata} from '../../src/clinic/page-metadata.mjs';
 import {bookingDestination} from '../../src/clinic/booking-links.mjs';
 import {clinicStatus,NEUTRAL} from '../../src/clinic/open-status.mjs';
@@ -88,7 +88,12 @@ test('the live sign has three short states in India time',()=>{
  assert.deepEqual(plainSign(shared.liveSign(at('2026-11-15T10:00:00Z'))),{state:'closed',label:'Closed now',detail:'opens Mon 10:00 am'}); // Sun 3:30 pm
  assert.equal(plain(shared.liveSignLine(shared.liveSign(at('2026-11-16T05:30:00Z')))),'Open now · until 1:30 pm');
  assert.equal(typeof shared.liveSign().state,'string','works with the present time too');
- function plainSign(sign){return {...sign,detail:plain(sign.detail)};}
+ // A narrow cell gets compact words: only the closed state differs, split so neither line is long.
+ const closed=shared.liveSign(at('2026-11-15T10:00:00Z')),open=shared.liveSign(at('2026-11-16T05:30:00Z')),later=shared.liveSign(at('2026-11-16T08:01:00Z'));
+ assert.deepEqual({label:closed.compact.label,detail:plain(closed.compact.detail)},{label:'Closed · opens',detail:'Mon 10:00 am'});
+ assert.deepEqual(open.compact,{label:open.label,detail:open.detail});assert.deepEqual(later.compact,{label:later.label,detail:later.detail});
+ for(const sign of [closed,open,later])assert.ok(sign.compact.label.length<=14&&plain(sign.compact.detail).length<=13,'compact words fit a narrow cell');
+ function plainSign({state,label,detail}){return {state,label,detail:plain(detail)};}
 });
 
 test('the live sign never disagrees with the existing open-now sign',()=>{
@@ -101,16 +106,18 @@ test('the live sign never disagrees with the existing open-now sign',()=>{
 
 test('the live sign copes with other timetables',()=>{
  const wednesdayOnly={weekday:[],sunday:[]},moment=at('2026-11-16T05:30:00Z');
- assert.deepEqual(shared.liveSign(moment,wednesdayOnly),{state:'closed',label:'Closed now',detail:'call for timings'});
+ assert.deepEqual(shared.liveSign(moment,wednesdayOnly),{state:'closed',label:'Closed now',detail:'call for timings',compact:{label:'Closed now',detail:'call for timings'}});
  const sundayOnly={weekday:[],sunday:[[600,810]]};
  assert.equal(plain(shared.liveSign(moment,sundayOnly).detail),'opens Sun 10:00 am');
  assert.deepEqual(shared.liveSignNeutral,{state:'pending',label:NEUTRAL.label,detail:NEUTRAL.detail});
+ assert.deepEqual({...shared.liveSignNeutralShort(),detail:plain(shared.liveSignNeutralShort().detail)},{state:'pending',label:'Hours',detail:'10:00 am daily'});
+ assert.equal(shared.liveSignNeutralShort({weekday:[[600,810]],sunday:[[660,810]]}).detail,'Mornings daily','no single starting time is claimed when the days differ');
 });
 
 test('the essentials strip gives the fee and the place; its first cell is the live sign',()=>{
  assert.equal(shared.feeLabel(),'₹800');
  assert.equal(shared.feeLabel({fee:null,fees:'Dr. A: ₹800; Dr. B: ₹900'}),'Dr. A: ₹800; Dr. B: ₹900','each fee is named if they ever differ');
- assert.deepEqual(shared.essentials.fee,{icon:'rupee',label:'Fee',labelWide:'Consultation fee',value:'₹800'});
+ assert.deepEqual(shared.essentials.fee,{icon:'banknote',label:'Fee',labelWide:'Consultation fee',value:'₹800'});
  assert.deepEqual(shared.essentials.place,{icon:'pin',label:'Tedhi Pulia, Ring Road',labelShort:'Tedhi Pulia',action:'Directions',href:directions,opens:'(opens Google Maps)'});
  assert.ok(shared.essentials.place.label.startsWith(shared.essentials.place.labelShort));
  assert.deepEqual(Object.keys(shared.essentials),['label','open','fee','place']);
@@ -156,13 +163,16 @@ test('captions, the address card and the review shelf words',()=>{
  assert.deepEqual(shared.reviewShelf.tabs,{all:'All',sanjay:'Dr. Sanjay',parul:'Dr. Parul'});
  assert.equal(shared.readAllReviewsLabel(26),'Read all 26 reviews');
  assert.equal(shared.reviewReaderTitle('Aditi Sen'),'Review from Aditi Sen');
- assert.equal(shared.ratingSpoken(4.5),'4.5 out of 5');assert.equal(shared.ratingSpoken(5),'5.0 out of 5');
+ assert.equal(shared.ratingSpoken(4.5),'Rated 4.5 out of 5');assert.equal(shared.ratingSpoken(5),'Rated 5 out of 5');
+ assert.equal(shared.reviewsTitle('all',26),'All 26 reviews');assert.equal(shared.reviewsTitle('parul',10),'10 reviews of Dr. Parul Gupta');
+ assert.equal(shared.readMoreOf('Aditi Sen'),'of the review by Aditi Sen');assert.equal(shared.shelfPosition(3,8),'3 of 8');
 });
 
 test('the footer is complete: address, hours, phones, pages, registrations and the three controls',()=>{
  const footer=shared.footer;
  assert.equal(footer.name,'R. K. Medical Centre');assert.equal(footer.address,address);assert.equal(footer.hoursLine,shared.hoursLine);
- assert.deepEqual(footer.pages.map(page=>page.path),['/','/treatment','/meet-doctor','/about-clinic','/contact']);
+ assert.deepEqual(footer.pages.map(page=>[page.path,page.label]),[['/treatment','Treatments'],['/meet-doctor','Meet the doctors'],['/about-clinic','About the clinic'],['/contact','Contact']]);
+ assert.equal(shared.privacyChoices.title,'Your privacy choices');assert.ok(shared.privacyChoices.paragraphs.length>=1&&shared.privacyChoices.accept);
  assert.deepEqual(footer.registrations.map(row=>row.line),[standins.registrationLine('sanjay'),standins.registrationLine('parul')]);
  assert.deepEqual(footer.registrations.map(row=>row.path),['/dr-sanjay-gupta','/dr-parul-gupta']);
  assert.equal(footer.detailsNotice,'How your details are used');assert.equal(footer.privacyChoices,'Change privacy choices');
@@ -190,7 +200,7 @@ test('the main heading is the clinic\'s headline with its last three words set a
  for(const portrait of home.hero.portraits)assert.ok(Object.hasOwn(clinicPhotos,portrait.photo));
 });
 
-test('each doctor\'s chips are the agreed ones, with answers drawn from the care catalogue',()=>{
+test('each doctor\'s chips are the agreed ones, each with a short answer and its own object',()=>{
  assert.deepEqual(home.doctorChips('sanjay').map(chip=>chip.label),['Diabetes','Blood pressure','Thyroid','Fever & infections','General check-up']);
  assert.deepEqual(home.doctorChips('parul').map(chip=>chip.label),['Periods & PCOS','Pregnancy','After childbirth','Ultrasound']);
  const all=['sanjay','parul'].flatMap(id=>home.doctorChips(id).map(chip=>({...chip,doctor:id})));
@@ -199,13 +209,14 @@ test('each doctor\'s chips are the agreed ones, with answers drawn from the care
   const topic=topicById(chip.topic);
   assert.equal(topic.doctor,chip.doctor,chip.label+' belongs to this doctor');
   assert.ok(chip.answer.length>0&&chip.answer.length<=140,chip.label+' answer is at most 140 characters');
-  if(chip.id!=='after-childbirth')assert.equal(chip.answer,topic.short);
+  assert.match(chip.answer,/[.]$/,chip.label+' answer is a whole sentence');
   assert.equal(chip.href,'/treatment#'+chip.id);assert.equal(chip.more.href,chip.href);assert.match(chip.more.label,/^More about /);
-  assert.equal(chip.image,topic.image);
+  assert.ok(Object.hasOwn(clinicObjects,chip.object),chip.label+' has an object picture that exists');
   assert.equal(chip.bookHref,`/booking?doctor=${chip.doctor}&topic=${chip.topic}`);assert.equal(bookingDestination(chip.bookHref),true);
  }
  const after=all.find(chip=>chip.id==='after-childbirth');
- assert.equal(after.answer,'Ask your questions about care after childbirth.');assert.equal(after.topic,'pregnancy');
+ assert.equal(after.answer,'Care for you in the weeks after delivery. Bring your pregnancy records.');assert.equal(after.topic,'pregnancy');
+ assert.equal(new Set(all.map(chip=>chip.object)).size,9,'every chip brings a different object, so the picture always changes');
  for(const id of ['sanjay','parul'])assert.equal(new Set(home.doctorChips(id).map(chip=>chip.answer)).size,home.doctorChips(id).length,'every chip changes the answer');
  assert.deepEqual(new Set(all.map(chip=>chip.topic)),new Set(topics.map(topic=>topic.id)),'every care topic is reachable from a chip');
  assert.throws(()=>home.doctorChips('nobody'),RangeError);
@@ -218,8 +229,11 @@ test('the doctor cards carry only what differs between the doctors',()=>{
  assert.equal(section.intro,'Both trained at King George’s Medical University and have practised in Lucknow since 1992.');
  assert.equal(section.chipPrompt,'What would you like help with?');
  assert.deepEqual(section.cards.map(card=>card.id),['sanjay','parul']);
- assert.equal(sanjay.formalLine,'Physician & Diabetology · MBBS, MD (Medicine)');
- assert.equal(parul.formalLine,'Obstetrics & Gynaecology · MBBS, MS (Obstetrics & Gynaecology)');
+ assert.equal(sanjay.formalLine,'Physician & Diabetology · MBBS, DGO','his degrees are the clinic\'s confirmed ones');
+ assert.equal(parul.formalLine,'Obstetrics & Gynaecology · MBBS, MS','a bracket that only repeats the specialty beside it is left out');
+ assert.equal(home.degreesBeside('Physician','MBBS, MD (Medicine)'),'MBBS, MD (Medicine)');assert.equal(home.degreesBeside('Medicine','MBBS, MD (Medicine)'),'MBBS, MD');
+ assert.equal(section.emphasis,'One family practice.');assert.ok(section.heading.endsWith(section.emphasis));
+ assert.deepEqual([sanjay.photoCaption,parul.photoCaption],['In his consulting room','In her consulting room']);
  assert.equal(sanjay.specialty,doctors.sanjay.role);assert.equal(sanjay.tag,null);assert.equal(parul.tag,'KGMU gold medalist');
  assert.deepEqual([sanjay.tone,parul.tone],['sage','rose']);
  assert.deepEqual(sanjay.book,{label:'Book with Dr. Sanjay',href:'/booking?doctor=sanjay'});
@@ -238,24 +252,32 @@ test('the doctor cards carry only what differs between the doctors',()=>{
 test('credentials: one numeral, four ledger rows, four certificates',()=>{
  assert.equal(home.yearsNumeral(2026),'30+');assert.equal(home.yearsNumeral(2031),'30+');assert.equal(home.yearsNumeral(2032),'40+');
  assert.equal(home.yearsNumeral(1990),'0+');assert.equal(home.yearsNumeral(2026,2010),'10+');assert.match(home.yearsNumeral(),/^\d+\+$/);
- assert.equal(home.credentialsHeading(2026),'30+ years caring for Lucknow families');
+ assert.equal(home.credentialsHeading(2026),'30+ years caring for Lucknow families.');
+ assert.ok(home.credentials.numeralCaption.endsWith(home.credentials.numeralEmphasis));
+ assert.deepEqual(home.credentials.rows.map(row=>row.category),['Honour','Accreditation','Quality standard','Day and night']);
  assert.equal(home.credentials.runningHead,'Credentials');
  assert.deepEqual(home.credentials.rows.map(row=>[row.title,row.detail]),[['KGMU gold medalist','Dr. Parul Gupta'],['NABH accredited',null],['ISO 9001:2015 certified',null],['24-hour observation care',null]]);
  assert.deepEqual(home.credentials.allCertificates,{label:'All certificates',href:'/meet-doctor'});
  const four=home.homeCertificates();
- assert.deepEqual(four.map(item=>item.doctor),['sanjay','parul','sanjay','parul']);
+ assert.deepEqual(four.map(item=>item.doctor),['sanjay','sanjay','parul','parul'],'two of each doctor');
+ assert.equal(new Set(four.map(item=>item.id)).size,4);
  for(const item of four){
   const record=certificateCatalogue.find(entry=>entry.id===item.id);
   assert.equal(item.title,record.title);assert.equal(item.issuer,record.issuer);assert.equal(item.variants,record.variants);
   assert.equal(item.doctorName,doctors[item.doctor].name);
  }
- assert.equal(home.homeCertificates(1).length,2);assert.equal(home.homeCertificates(9).length,certificateCatalogue.length);
+ assert.equal(home.homeCertificates([certificateCatalogue[0].id]).length,1);
+ assert.throws(()=>home.homeCertificates(['no-such-certificate']),RangeError);
 });
 
 test('reviews and visiting us: headings, captions and the address card',()=>{
- assert.deepEqual(home.reviewsSection,{runningHead:'In patients’ words',heading:'In our patients’ words.'});
- assert.equal(home.visitingSection.runningHead,'Visiting us');assert.equal(home.visitingSection.heading,'Find us on Ring Road, Indira Nagar.');
- assert.deepEqual(home.visitingSection.photos.map(photo=>[photo.photo,photo.ratio]),[['street-frontage','16:9'],['waiting-area','4:5']]);
+ assert.deepEqual(home.reviewsSection,{runningHead:'Reviews',heading:'In our patients’ words.',emphasis:'words.'});
+ assert.equal(home.visitingSection.runningHead,'Visiting us');assert.equal(plain(home.visitingSection.heading),'Find us on Ring Road, Indira Nagar.');
+ assert.ok(home.visitingSection.heading.endsWith(home.visitingSection.emphasis));
+ assert.deepEqual(home.visitingSection.photos.map(photo=>[photo.photo,photo.ratio,photo.key]),[['frontage','16:9','Outside'],['waiting','4:5','Inside']]);
+ assert.ok(Object.hasOwn(clinicObjects,home.visitingSection.object));
+ for(const name of [home.hero.object,...home.questionsSection.objects])assert.ok(Object.hasOwn(clinicObjects,name));
+ assert.match(home.hero.credit,/^Photographed at the clinic/);
  for(const photo of home.visitingSection.photos){assert.ok(Object.hasOwn(clinicPhotos,photo.photo));assert.ok(photo.caption.length>20);}
  assert.equal(home.visitingSection.card,shared.addressCard);
 });

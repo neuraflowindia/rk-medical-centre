@@ -1,39 +1,52 @@
-// `motion` is the site's motion service; while it says motion is not allowed (the footer's
-// "Pause motion", or the device setting), dialogs open and close at once.
-export function bindDialog(dialog,{motion=null}={}){
- const abort=new AbortController(),signal=abort.signal,query=matchMedia('(prefers-reduced-motion: reduce)');
- const preference={get matches(){return motion?!motion.allowed():query.matches;},addEventListener:(type,listener,options)=>query.addEventListener(type,listener,options)};
- let trigger=null,closing=false,animation=null,disposed=false;
- const stop=()=>{animation?.cancel();animation=null;};
- const finishClose=()=>{stop();if(dialog.open)dialog.close();};
+// One controller per <dialog>: open it as a modal, close it by its own button, by Escape or by a
+// tap on the dimmed page, and give focus back to whatever opened it. How a dialog arrives and
+// leaves is drawn by the stylesheet (and follows the site's motion setting there); this file
+// only decides what is open and where focus goes.
+export function bindDialog(dialog,{documentObject=dialog.ownerDocument||globalThis.document}={}){
+ const abort=new AbortController(),signal=abort.signal,root=documentObject.documentElement;
+ let trigger=null,disposed=false;
+ const mark=()=>root.classList.toggle('dialog-open',!!documentObject.querySelector('dialog[open]'));
+
+ /** `reason` "navigate" closes without giving focus back (the page is changing). */
  function close(reason='dismiss'){
   if(!dialog.open)return;
-  dialog.dataset.closeReason=reason;
-  if(reason==='navigate'||preference.matches){closing=true;finishClose();return;}
-  if(closing)return;
-  closing=true;stop();
-  const own=dialog.animate([{opacity:1,transform:'none'},{opacity:0,transform:'translateY(8px) scale(.98)'}],{duration:180,easing:'cubic-bezier(.32,.72,0,1)',fill:'forwards'});
-  animation=own;own.finished.then(()=>{if(animation===own)finishClose();},()=>{});
+  dialog.setAttribute('data-close-reason',reason);
+  dialog.close();
  }
- dialog.querySelector('[data-close]').addEventListener('click',()=>close(),{signal});
- dialog.addEventListener('cancel',event=>{event.preventDefault();close();},{signal});
- dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)close();},{signal});
- dialog.addEventListener('close',()=>{
-  if(dialog.open)return; // Ignore a queued close event after an immediate reopen.
-  closing=false;stop();document.documentElement.classList.toggle('dialog-open',!!document.querySelector('dialog[open]'));
-  const reason=dialog.dataset.closeReason;dialog.dispatchEvent(new CustomEvent('restoring',{detail:reason}));
-  if(reason!=='navigate'&&trigger?.isConnected)trigger.focus({preventScroll:true});
+ for(const control of dialog.querySelectorAll('[data-close]'))control.addEventListener('click',()=>close(),{signal});
+ // A tap on the dimmed page around the dialog closes it.
+ dialog.addEventListener('click',event=>{
+  if(event.target!==dialog)return;
+  const box=dialog.getBoundingClientRect();
+  if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)close();
  },{signal});
- preference.addEventListener('change',()=>{if(preference.matches){if(closing)finishClose();else stop();}},{signal});
- return {
-  open({focusHeading=false}={}){
-   if(disposed)return;
-   if(dialog.open){if(closing){stop();closing=false;dialog.dataset.closeReason='';}return;}
-   document.querySelectorAll('dialog[open]').forEach(d=>{d.dataset.closeReason='navigate';d.close();});
-   stop();trigger=document.activeElement;dialog.dataset.closeReason='';closing=false;dialog.showModal();document.documentElement.classList.add('dialog-open');
+ dialog.addEventListener('close',()=>{
+  mark();
+  const reason=dialog.getAttribute('data-close-reason');
+  if(reason!=='navigate'&&trigger?.isConnected)trigger.focus({preventScroll:true});
+  trigger=null;
+ },{signal});
+
+ return Object.freeze({
+  /**
+   * Show the dialog. Focus goes to its heading (`focusHeading`, for dialogs that are read) or
+   * to its close button; `trigger` is where focus returns afterwards (default: what has focus now).
+   */
+  open({focusHeading=false,trigger:from=null}={}){
+   if(disposed||dialog.open)return;
+   for(const other of documentObject.querySelectorAll('dialog[open]')){other.setAttribute('data-close-reason','navigate');other.close();}
+   trigger=from||documentObject.activeElement;
+   dialog.setAttribute('data-close-reason','');
+   dialog.showModal();mark();
    (focusHeading?dialog.querySelector('h2'):dialog.querySelector('[data-close]'))?.focus({preventScroll:true});
-   if(!preference.matches)animation=dialog.animate([{opacity:.2,transform:dialog.id==='menu'?'translateY(-32px) scale(.96)':'translateY(16px) scale(.96)'},{opacity:1,transform:'none'}],{duration:dialog.id==='menu'?300:260,easing:'cubic-bezier(.32,.72,0,1)'});
-  },close,
-  dispose(){if(disposed)return;disposed=true;const wasOpen=dialog.open;stop();dialog.dataset.closeReason='navigate';if(wasOpen)dialog.close();document.documentElement.classList.toggle('dialog-open',!!document.querySelector('dialog[open]'));if(wasOpen)dialog.dispatchEvent(new CustomEvent('restoring',{detail:'navigate'}));abort.abort();}
- };
+  },
+  close,
+  isOpen:()=>dialog.open,
+  dispose(){
+   if(disposed)return;
+   disposed=true;
+   if(dialog.open){dialog.setAttribute('data-close-reason','navigate');dialog.close();}
+   mark();abort.abort();
+  }
+ });
 }

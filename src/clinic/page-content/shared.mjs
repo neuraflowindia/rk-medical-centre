@@ -4,10 +4,10 @@
 // Facts come from model.mjs (and stand-ins from standins.mjs); this module only arranges them
 // into the words a template prints. No markup lives in this file: where one phrase needs
 // emphasis or a link, it is given as separate fields and the template decides the tags.
-import {doctors,doctorFacts,address,locality,city,directions,appointmentTimes,clinicOverview} from '../model.mjs';
+import {doctors,doctorFacts,address,locality,city,directions,appointmentTimes,clinicOverview,consultationSessions} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {clinicClock,sessionsFor,formatTime,NEUTRAL} from '../open-status.mjs';
-import {registrationLine,whatsappNumber,whatsappLink,parkingLine} from '../standins.mjs';
+import {doctorDegrees,registrationLine,whatsappNumber,whatsappLink,parkingLine} from '../standins.mjs';
 
 export const clinicName='R. K. Medical Centre';
 /** "Indira Nagar, Lucknow": the second line of the header lockup. */
@@ -53,6 +53,17 @@ export const navigationLabels=Object.freeze({
 /** Is this navigation link the current page? "Doctors" also covers both doctor profiles. */
 export function navigationCurrent(path,route){
  return path===route||(path===pagePaths.doctors&&(route===pagePaths.sanjay||route===pagePaths.parul));
+}
+
+/**
+ * A doctor's degrees, from wherever they are known: a confirmed fact in model.mjs
+ * (Dr. Sanjay Gupta: "MBBS, DGO"), otherwise the marked stand-in (Dr. Parul Gupta).
+ */
+export function degreesOf(id){
+ if(!Object.hasOwn(doctors,id))throw new RangeError('Unknown doctor: '+id);
+ const known=doctorFacts[id].degrees||doctorDegrees[id];
+ if(!known)throw new Error('No degrees are recorded for '+doctors[id].name);
+ return known;
 }
 
 /** "Dr. Sanjay Gupta" → "Dr. Sanjay": the short name used on buttons and tabs. */
@@ -108,23 +119,34 @@ const SHORT_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
  *   opens later today   → {state:'later',  label:'Opens today', detail:'6:00 pm'}
  *   closed for the day  → {state:'closed', label:'Closed now',  detail:'opens Mon 10:00 am'}
  * Times are the first and last appointment starting times in model.mjs.
+ * `compact` is the same sign for a narrow cell, where "opens Mon 10:00 am" does not fit on one
+ * line: the closed state is split as "Closed · opens" over "Mon 10:00 am".
  */
 export function liveSign(date=new Date(),sessions){
  const {day,minutes}=clinicClock(date),today=sessionsFor(day,sessions);
+ const sign=(state,label,detail,compact={label,detail})=>({state,label,detail,compact});
  const current=today.find(([start,end])=>minutes>=start&&minutes<=end);
- if(current)return {state:'open',label:'Open now',detail:`until ${formatTime(current[1])}`};
+ if(current)return sign('open','Open now',`until ${formatTime(current[1])}`);
  const later=today.find(([start])=>start>minutes);
- if(later)return {state:'later',label:'Opens today',detail:formatTime(later[0])};
+ if(later)return sign('later','Opens today',formatTime(later[0]));
  for(let ahead=1;ahead<=7;ahead++){
-  const next=sessionsFor((day+ahead)%7,sessions)[0];
-  if(next)return {state:'closed',label:'Closed now',detail:`opens ${SHORT_DAYS[(day+ahead)%7]} ${formatTime(next[0])}`};
+  const next=sessionsFor((day+ahead)%7,sessions)[0],when=next&&`${SHORT_DAYS[(day+ahead)%7]} ${formatTime(next[0])}`;
+  if(next)return sign('closed','Closed now',`opens ${when}`,{label:'Closed · opens',detail:when});
  }
- return {state:'closed',label:'Closed now',detail:'call for timings'};
+ return sign('closed','Closed now','call for timings');
 }
 /** The sign on one line, as the laptop header shows it: "Open now · until 1:30 pm". */
 export function liveSignLine(sign){return `${sign.label} · ${sign.detail}`;}
 /** What the sign says before the browser has worked out the time (and with scripts off). */
 export const liveSignNeutral=Object.freeze({state:'pending',label:NEUTRAL.label,detail:NEUTRAL.detail});
+/**
+ * The same, short enough for a narrow cell: "Hours / 10:00 am daily" while every day starts at
+ * the same time, otherwise "Hours / Mornings daily".
+ */
+export function liveSignNeutralShort(sessions=consultationSessions){
+ const starts=new Set([sessions.weekday[0][0],sessions.sunday[0][0]]);
+ return Object.freeze({state:'pending',label:'Hours',detail:starts.size===1?`${formatTime([...starts][0])} daily`:'Mornings daily'});
+}
 
 /** "₹800", or each doctor's fee if they ever differ. */
 export function feeLabel(overview=clinicOverview()){
@@ -135,7 +157,8 @@ export function feeLabel(overview=clinicOverview()){
 export const essentials=Object.freeze({
  label:'Visit essentials',
  open:Object.freeze({icon:'clock'}),
- fee:Object.freeze({icon:'rupee',label:'Fee',labelWide:'Consultation fee',value:feeLabel()}),
+ // A banknote, not a rupee sign: the amount beside it already carries the sign.
+ fee:Object.freeze({icon:'banknote',label:'Fee',labelWide:'Consultation fee',value:feeLabel()}),
  place:Object.freeze({icon:'pin',label:'Tedhi Pulia, Ring Road',labelShort:'Tedhi Pulia',action:'Directions',href:directions,opens:'(opens Google Maps)'})
 });
 
@@ -147,6 +170,28 @@ export function weekHoursFrom(times=appointmentTimes){
   Object.freeze({days:'Sunday',short:'Sun',hours:sundayHours.replace(/\.$/u,''),note:sundayNote.replace(/\.$/u,'')})
  ]);
 }
+const clockOnly=minutes=>formatTime(minutes).replace(/\s*[ap]m$/u,'');
+/**
+ * The week as a small timetable: one row per run of days, a morning and an evening column.
+ * Times are written without am/pm because the column says which half of the day it is;
+ * a missing session reads "Closed". `days` lists the weekdays a row covers (Sunday is 0).
+ */
+export function timetableFrom(sessions=consultationSessions){
+ const cell=list=>{const found=list[0];return found?`${clockOnly(found[0])}–${clockOnly(found[1])}`:null;};
+ const row=(label,days,list)=>Object.freeze({label,days:Object.freeze(days),
+  morning:cell(list.filter(([start])=>start<720)),evening:cell(list.filter(([start])=>start>=720))});
+ return Object.freeze([row('Mon–Sat',[1,2,3,4,5,6],sessions.weekday),row('Sunday',[0],sessions.sunday)]);
+}
+export const timetable=Object.freeze({
+ caption:'Appointment times',
+ days:'Days',
+ morning:'Morning',
+ evening:'Evening',
+ closed:'Closed',
+ today:'Today',
+ rows:timetableFrom()
+});
+
 /** The week's appointment times as rows, for an address card or a timetable. */
 export const weekHours=weekHoursFrom();
 /** The week on one line, for the footer. */
@@ -215,16 +260,27 @@ export const addressCard=Object.freeze({
 /** Words of the shared review shelf and its reader. */
 export const reviewShelf=Object.freeze({
  tabs:Object.freeze({all:'All',sanjay:doctorShortName('sanjay'),parul:doctorShortName('parul')}),
- tabsLabel:'Reviews by doctor',
+ tabsLabel:'Show reviews for',
  shelfLabel:'Patient reviews',
- previous:'Previous review',
- next:'Next review',
+ previous:'Previous reviews',
+ next:'Next reviews',
  readMore:actionLabels.readMore,
- verified:'Verified patient'
+ verified:'Verified patient',
+ close:'Close reviews',
+ // Spoken before the doctor's name on a review in the reader.
+ about:'About'
 });
 export const readAllReviewsLabel=count=>`Read all ${count} reviews`;
 export const reviewReaderTitle=name=>`Review from ${name}`;
-export const ratingSpoken=rating=>`${Number(rating).toFixed(1)} out of 5`;
+/** The reader's heading for a tab: "All 26 reviews", "9 reviews of Dr. Sanjay Gupta". */
+export function reviewsTitle(filter,count){
+ return filter==='all'?`All ${count} reviews`:`${count} reviews of ${doctors[filter].name}`;
+}
+/** Spoken after "Read more" so each such link names its review. */
+export const readMoreOf=name=>`of the review by ${name}`;
+/** "3 of 8": where the shelf stands. */
+export const shelfPosition=(index,total)=>`${index} of ${total}`;
+export const ratingSpoken=rating=>`Rated ${Number.isInteger(Number(rating))?Number(rating):Number(rating).toFixed(1)} out of 5`;
 
 /** The notice opened by "How your details are used". */
 export const detailsNotice=Object.freeze({
@@ -252,7 +308,13 @@ export const footer=Object.freeze({
  phonesLabel:'Call the clinic',
  changes:'For changes or cancellations, call the clinic.',
  pagesLabel:'Pages',
- pages:Object.freeze([Object.freeze({path:pagePaths.home,label:'Home'}),...mainNavigation]),
+ // The footer names each page in full.
+ pages:Object.freeze([
+  Object.freeze({path:pagePaths.treatments,label:'Treatments'}),
+  Object.freeze({path:pagePaths.doctors,label:'Meet the doctors'}),
+  Object.freeze({path:pagePaths.about,label:'About the clinic'}),
+  Object.freeze({path:pagePaths.contact,label:'Contact'})
+ ]),
  registrations:Object.freeze(doctorOrder.map(id=>Object.freeze({id,name:doctors[id].name,path:doctors[id].path,line:registrationLine(id)}))),
  directions:Object.freeze({label:actionLabels.directions,href:directions}),
  detailsNotice:detailsNotice.title,

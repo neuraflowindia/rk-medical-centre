@@ -1,19 +1,26 @@
 // Motion for the whole site, in one small module.
 //
-//  Entrances   `data-enter` on an element (optional order: style="--i:2"). It starts when the
-//              element's top passes 84% of the screen height, once. Words rise and never fade.
-//              Anything already on screen when a page opens is in place at once.
+//  Entrances   `data-enter` on a part (words, "card", "photo" or "rule"). A part follows the scroll:
+//              it starts to settle when its top crosses 85% of the screen and is at rest when it
+//              reaches 45%, so nothing is finished before it comes to the middle. It runs once and
+//              never goes back; words move and never fade. Anything already on screen when a page
+//              opens is simply in place. `data-enter-after="0.12"` starts a part a little later
+//              than a neighbour beside it.
 //  Ambient     `data-ambient` on a slowly moving layer. A loop runs only while it is on screen,
 //              the tab is visible and motion is allowed; at most two run at once, one on phones.
 //  Preference  "Pause motion" in the footer. The choice is kept on the device under `rk-motion`.
 //              The device's reduced-motion setting counts as paused until the visitor chooses to play.
 //
-// The styles in motion.css apply only under html[data-motion="on"], which this module sets,
-// so a page without scripts is simply still.
+// The script only ever writes one number per part (`--p`, 0 to 1); motion.css turns it into
+// movement, and only under html[data-motion="on"]. A page without scripts is simply still.
 
 export const MOTION_KEY='rk-motion';
-/** Where an entrance starts: when the element's top crosses this share of the screen height. */
-export const ENTER_LINE=.84;
+/** A part starts when its top crosses this share of the screen height … */
+export const ENTER_START=.85;
+/** … and is at rest when its top reaches this share. */
+export const ENTER_END=.45;
+/** How closely the movement follows the scroll: the time, in ms, to close about two thirds of a gap. */
+export const FOLLOW_MS=170;
 /** How many ambient loops may run at once. */
 export const LOOP_LIMIT=Object.freeze({phone:1,wide:2});
 /** Phones are narrower than this. */
@@ -33,10 +40,27 @@ export function motionState(stored,reduced){
  if(stored==='paused'||stored==='on')return stored;
  return reduced?'paused':'on';
 }
-/** Is the element already on screen when the page opens? Then it must not animate in. */
-export function alreadyOnScreen(top,viewportHeight){
- return top<viewportHeight;
+const clamp=(value,low,high)=>Math.max(low,Math.min(high,value));
+/** A soft landing: fast at first, slower at the end. */
+export function soften(t){return 1-Math.pow(1-clamp(t,0,1),1.6);}
+/**
+ * Where on the page's scroll a part begins and how far the scroll must travel for it to come
+ * to rest. `top` is the part's distance from the top of the page. A part too near the page's
+ * end to reach the rest line still comes to rest by the time the page can scroll no further.
+ */
+export function partRange({top,viewport,maxScroll}){
+ let end=top-viewport*ENTER_END,start=top-viewport*ENTER_START;
+ if(end>maxScroll){end=maxScroll;start=Math.min(start,end-viewport*.3);}
+ return {start,span:Math.max(1,end-start)};
 }
+/** How far along a part is for a scroll position (0 to 1). `after` delays its start by that share. */
+export function partProgress({y,start,span,after=0}){
+ return clamp((y-start)/span*(1+after)-after,0,1);
+}
+/** The share of the remaining gap to close in `dt` milliseconds. */
+export function followShare(dt){return 1-Math.exp(-Math.max(0,dt)/FOLLOW_MS);}
+/** Is the part already on screen (or above it) at this scroll position? Then it must not animate in. */
+export function alreadyOnScreen(y,start){return y>start+4;}
 /**
  * Which ambient loops run now. `visible` is a list of {key, ratio, weight}: `ratio` is how much
  * of the layer is on screen (0–1) and `weight` ranks kinds of loop (a light shaft outranks a
@@ -55,16 +79,24 @@ export function loopLimit(width){return width<WIDE_FROM?LOOP_LIMIT.phone:LOOP_LI
 export function toggleFace(state,words){
  return state==='paused'?{label:words.play,icon:'play',pressed:true}:{label:words.pause,icon:'pause',pressed:false};
 }
+/** A part's distance from the top of the page, unaffected by its own movement. */
+export function pageTop(element){
+ // A part laid out as "contents" has no box of its own: measure its first child instead.
+ let node=element.offsetParent===null&&element.firstElementChild&&!element.offsetHeight?element.firstElementChild:element,y=0;
+ for(;node;node=node.offsetParent)y+=node.offsetTop||0;
+ return y;
+}
 
 /**
  * Start motion for the page. Everything from the browser can be replaced in tests.
  * Returns the service the parts use: state(), allowed(), set(), toggle(), subscribe(), observe().
  */
 export function createMotion({documentObject=document,windowObject=window,storage=windowObject.localStorage,
- Observer=windowObject.IntersectionObserver,reducedQuery=windowObject.matchMedia?.('(prefers-reduced-motion: reduce)')}={}){
+ Observer=windowObject.IntersectionObserver,reducedQuery=windowObject.matchMedia?.('(prefers-reduced-motion: reduce)'),
+ frame=callback=>windowObject.requestAnimationFrame(callback)}={}){
  const root=documentObject.documentElement,listeners=new Set();
  let state=motionState(readPreference(storage),!!reducedQuery?.matches);
- let enterObserver=null,ambientObserver=null;
+ let ambientObserver=null,parts=[],ticking=false,lastTime=0,scope=null;
  const ambient=new Map();
 
  const allowed=()=>state==='on';
@@ -80,9 +112,44 @@ export function createMotion({documentObject=document,windowObject=window,storag
   }
  }
 
+ // ---- entrances that follow the scroll ----
+ const rest=part=>{part.done=true;part.element.style.removeProperty('--p');};
+ function measure(){
+  const viewport=windowObject.innerHeight,maxScroll=Math.max(0,root.scrollHeight-viewport);
+  for(const part of parts)if(!part.done)Object.assign(part,partRange({top:pageTop(part.element),viewport,maxScroll}));
+ }
+ function tick(time){
+  const dt=Math.min(64,time-(lastTime||time-16));lastTime=time;
+  const share=followShare(dt),y=windowObject.scrollY;let active=false;
+  for(const part of parts){
+   if(part.done)continue;
+   part.best=Math.max(part.best,partProgress({y,start:part.start,span:part.span,after:part.after}));
+   part.current+=(part.best-part.current)*share;
+   if(part.best>=1&&part.current>.997){rest(part);continue;}
+   part.element.style.setProperty('--p',soften(part.current).toFixed(4));
+   if(part.best-part.current>.002)active=true;
+  }
+  if(active)frame(tick);else{ticking=false;lastTime=0;}
+ }
+ function requestTick(){
+  if(ticking||!allowed()||!parts.some(part=>!part.done))return;
+  ticking=true;frame(tick);
+ }
+ /** Put every waiting part where it belongs for the current state and scroll position. */
+ function arm(){
+  if(!allowed()){for(const part of parts)if(!part.done)rest(part);return;}
+  measure();
+  const y=windowObject.scrollY;
+  for(const part of parts){
+   if(part.done)continue;
+   if(alreadyOnScreen(y,part.start))rest(part);else if(part.best===0)part.element.style.setProperty('--p','0');
+  }
+  requestTick();
+ }
+
  function apply(){
   if(root.getAttribute('data-motion')!==state)root.setAttribute('data-motion',state);
-  runLoops();
+  runLoops();arm();
  }
 
  function set(next,{keep=true}={}){
@@ -95,31 +162,18 @@ export function createMotion({documentObject=document,windowObject=window,storag
  }
 
  function stopObserving(){
-  enterObserver?.disconnect();ambientObserver?.disconnect();enterObserver=null;ambientObserver=null;
+  ambientObserver?.disconnect();ambientObserver=null;
   for(const key of ambient.keys())key.removeAttribute('data-running');
   ambient.clear();
+  for(const part of parts)part.element.style?.removeProperty('--p');
+  parts=[];scope=null;
  }
 
- /** Watch one drawn page: mark what is already on screen, then let the rest enter on sight. */
- function observe(scope,{signal}={}){
-  stopObserving();
-  const height=windowObject.innerHeight;
-  const waiting=[];
-  for(const element of scope.querySelectorAll('[data-enter]')){
-   if(element.hasAttribute('data-entered'))continue;
-   if(!Observer||alreadyOnScreen(element.getBoundingClientRect().top,height))element.setAttribute('data-entered','');
-   else waiting.push(element);
-  }
-  if(Observer&&waiting.length){
-   enterObserver=new Observer(entries=>{
-    for(const entry of entries){
-     if(!entry.isIntersecting)continue;
-     entry.target.setAttribute('data-entered','');enterObserver?.unobserve(entry.target);
-    }
-   },{rootMargin:`0px 0px -${Math.round((1-ENTER_LINE)*100)}% 0px`,threshold:0});
-   for(const element of waiting)enterObserver.observe(element);
-  }
-  const loops=[...scope.querySelectorAll('[data-ambient]')];
+ /** Watch one drawn page: what is already on screen stays put, the rest settles as it is scrolled to. */
+ function observe(page,{signal}={}){
+  stopObserving();scope=page;
+  parts=[...page.querySelectorAll('[data-enter]')].map(element=>({element,after:Number(element.getAttribute('data-enter-after'))||0,current:0,best:0,done:false,start:0,span:1}));
+  const loops=[...page.querySelectorAll('[data-ambient]')];
   if(Observer&&loops.length){
    ambientObserver=new Observer(entries=>{
     for(const entry of entries){const record=ambient.get(entry.target);if(record)record.ratio=entry.isIntersecting?Math.max(entry.intersectionRatio,.001):0;}
@@ -130,18 +184,22 @@ export function createMotion({documentObject=document,windowObject=window,storag
     ambientObserver.observe(element);
    }
   }
-  signal?.addEventListener('abort',stopObserving,{once:true});
+  signal?.addEventListener('abort',()=>{if(scope===page)stopObserving();},{once:true});
   apply();
  }
 
+ const onScroll=()=>requestTick();
+ const onResize=()=>{runLoops();if(allowed()){measure();requestTick();}};
  const onVisibility=()=>runLoops();
- const onResize=()=>runLoops();
  const onReduced=()=>{if(readPreference(storage)===null)set(motionState(null,!!reducedQuery.matches),{keep:false});};
  const onStorage=event=>{if(event.key===MOTION_KEY||event.key===null)set(motionState(readPreference(storage),!!reducedQuery?.matches),{keep:false});};
- documentObject.addEventListener('visibilitychange',onVisibility);
+ windowObject.addEventListener('scroll',onScroll,{passive:true});
  windowObject.addEventListener('resize',onResize);
+ windowObject.addEventListener('load',onResize);
  windowObject.addEventListener('storage',onStorage);
+ documentObject.addEventListener('visibilitychange',onVisibility);
  reducedQuery?.addEventListener?.('change',onReduced);
+ documentObject.fonts?.ready?.then(()=>{if(allowed()){measure();requestTick();}});
 
  return Object.freeze({
   state:()=>state,
@@ -153,12 +211,17 @@ export function createMotion({documentObject=document,windowObject=window,storag
    signal?.addEventListener('abort',stop,{once:true});return stop;
   },
   observe,
+  /** Call after something changed the page's height (a row opened, cards were swapped). */
+  remeasure(){if(allowed()){measure();requestTick();}},
   running:()=>[...ambient.keys()].filter(key=>key.hasAttribute('data-running')),
+  waiting:()=>parts.filter(part=>!part.done).length,
   dispose(){
    stopObserving();listeners.clear();
-   documentObject.removeEventListener('visibilitychange',onVisibility);
+   windowObject.removeEventListener('scroll',onScroll);
    windowObject.removeEventListener('resize',onResize);
+   windowObject.removeEventListener('load',onResize);
    windowObject.removeEventListener('storage',onStorage);
+   documentObject.removeEventListener('visibilitychange',onVisibility);
    reducedQuery?.removeEventListener?.('change',onReduced);
   }
  });
