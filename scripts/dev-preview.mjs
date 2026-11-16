@@ -42,6 +42,14 @@
  *                                            appointment-settings/business-settings.json
  *     GET  /api/availability?service_id&day&questions
  *                                            starting times worked out from the same settings
+ *     POST /api/checkout-context, /api/checkout, /api/checkout/status, /api/checkout/email-details
+ *                                            a pretend booking paid at the clinic: confirmed at once and kept
+ *                                            in memory, so the confirmation, the saved receipt and its
+ *                                            email-copy action can be looked at. Online payment answers
+ *                                            "temporarily unavailable"; a time booked here is then taken;
+ *                                            the note "preview: no answer" gets no answer the first time.
+ *     POST /api/booking/details              "Find your booking": bookings made here, plus two ready-made
+ *                                            ones for the name Asha Verma, phone +91 98765 43210
  *     everything else under /api             503 "preview only" (nothing is saved or sent)
  *
  * After changing source files, run `npm run build:hosting` again and reload the page.
@@ -258,6 +266,105 @@ export function createStubs({settings=null,clock=Date.now,epoch=randomUUID()}={}
    schedule_browsing_open:true,receipt_access:{version:1,key_id:'preview'},payment_availability:availability});
  }
 
+ // ---- pretend bookings: pay at the clinic, kept in memory for the life of the preview ----
+ const bookings=new Map(),hiccups=new Set();
+ const reference=/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
+ const sameName=value=>String(value??'').trim().replace(/\s+/g,' ').toLowerCase();
+ const samePhone=value=>String(value??'').replace(/[^0-9+]/g,'');
+ const serviceFor=id=>settings.services.find(item=>item.id===id&&item.enabled);
+ const localDay=instant=>new Date(instant+zoneOffsetMinutes(settings.timezone,new Date(instant))*60000).toISOString().slice(0,10);
+ const taken=(service,start)=>[...bookings.values()].some(entry=>entry.receipt.resource_id===service.resource_id
+  &&entry.receipt.appointment_state==='confirmed'&&Date.parse(entry.receipt.starts_at)===start);
+ /** A day's starting times for one doctor, in milliseconds: after the notice time and not already booked here. */
+ function freeStarts(service,day){
+  const earliest=clock()+(settings.notice_minutes||0)*60000;
+  const offset=zoneOffsetMinutes(settings.timezone,new Date(day+'T12:00:00Z'));
+  const [year,month,date]=day.split('-').map(Number);
+  return dayStarts(settings,service.resource_id,day).map(minute=>Date.UTC(year,month-1,date,0,minute)-offset*60000)
+   .filter(start=>start>earliest&&!taken(service,start));
+ }
+ function keep({request_id,service,starts_at,email,name,phone,state='confirmed'}){
+  const resource=settings.resources.find(item=>item.id===service.resource_id),amount=service.pricing.amount_paise;
+  const receipt={request_id,appointment_state:state,order_state:'not_required',payment_state:'due_at_clinic',service_name:service.name,currency:'INR',
+   timezone:settings.timezone,amount_paise:amount,captured_paise:0,refunded_paise:0,amount_due_paise:state==='cancelled'?0:amount,
+   starts_at,ends_at:new Date(Date.parse(starts_at)+service.duration_minutes*60000).toISOString(),server_now:now(),hold_expires_at:null,
+   booking_revision:1,meeting_mode:'in_person',meeting_state:'not_created',meet_url:null,facts_version:2,resource_id:resource.id,resource_name:resource.name,
+   payment_method:'at_clinic',location:settings.location,display_duration:settings.display_duration,
+   acknowledgement_state:email?'pending':'not_requested',meeting_email_state:'not_requested',payment_checked_at:null,payment_evidence_source:null,
+   next_actions:['check_status','choose_new_time'],
+   email_copy:{operation_id:null,booking_revision:null,state:'not_requested',has_booking_email:!!email,target_hint:null,next_request_at:null,
+    remaining_requests:3,can_request:true,blocked_reason:null}};
+  // at most 50 are kept: the oldest one made here goes first (the two seeded ones stay)
+  if(bookings.size>=50){const oldest=[...bookings].find(([,entry])=>!entry.seeded);if(oldest)bookings.delete(oldest[0]);}
+  const entry={receipt,name:sameName(name),phone:samePhone(phone),seeded:false};bookings.set(request_id,entry);return entry;
+ }
+ const fresh=entry=>({...entry.receipt,server_now:now()});
+ if(settings){
+  // Two bookings to look at without booking first: name "Asha Verma", phone +91 98765 43210.
+  const at=(days,minute)=>{const day=localDay(clock()+days*86400000),[year,month,date]=day.split('-').map(Number);
+   return new Date(Date.UTC(year,month-1,date,0,minute)-zoneOffsetMinutes(settings.timezone,new Date(day+'T12:00:00Z'))*60000).toISOString();};
+  const seed=(request_id,index,days,state)=>{const service=settings.services.filter(item=>item.enabled)[index];
+   if(service)keep({request_id,service,starts_at:at(days,10*60+20),email:'',name:'Asha Verma',phone:'+919876543210',state}).seeded=true;};
+  seed('5a1c0de0-0001-4000-8000-000000000001',0,1,'confirmed');seed('5a1c0de0-0002-4000-8000-000000000002',1,-7,'cancelled');
+ }
+ /** The last press of the booking screen. Pay at the clinic is confirmed at once; each refusal can be reached by hand. */
+ function checkout(body){
+  if(!settings)return json(503,{code:'temporarily_unavailable'});
+  const id=body?.request_id;
+  if(typeof id!=='string'||!reference.test(id))return json(422,{code:'invalid_request'});
+  if(bookings.has(id))return json(200,{receipt:fresh(bookings.get(id)),checkout:null}); // the same request, sent again
+  if(body.payment_method==='online')return json(503,{code:'payment_not_configured'});
+  if(body.payment_method!=='at_clinic')return json(422,{code:'invalid_request'});
+  if(typeof body.full_name!=='string'||body.full_name.trim().length<2||typeof body.phone!=='string'||!body.phone.trim())return json(422,{code:'invalid_details'});
+  const service=typeof body.service_id==='string'?serviceFor(body.service_id):null;
+  if(!service)return json(409,{code:'service_unavailable'});
+  const start=typeof body.starts_at==='string'?Date.parse(body.starts_at):NaN;
+  if(!Number.isFinite(start)||!freeStarts(service,localDay(start)).includes(start))return json(409,{code:'time_unavailable'});
+  // notes "preview: no answer": the first press gets no answer, so "Checking your booking" can be looked at
+  if(body.notes==='preview: no answer'&&!hiccups.has(id)){hiccups.add(id);return json(503,{code:'temporarily_unavailable'});}
+  hiccups.delete(id);
+  const email=typeof body.email==='string'&&body.email.trim()?body.email.trim():'';
+  const entry=keep({request_id:id,service,starts_at:new Date(start).toISOString(),email,name:body.full_name,phone:body.phone});
+  return json(200,{receipt:fresh(entry),checkout:null});
+ }
+ function checkoutStatus(body){
+  const entry=bookings.get(body?.request_id);
+  if(!entry)return json(404,{code:'access_unavailable'});
+  const reply=fresh(entry);
+  // an email copy asked for is "delivered" by the read after the one that first shows it as pending
+  if(entry.receipt.email_copy.state==='pending'){
+   if(entry.copyShown)entry.receipt={...entry.receipt,email_copy:{...entry.receipt.email_copy,state:'delivered',can_request:true,blocked_reason:null}};
+   else entry.copyShown=true;
+  }
+  return json(200,reply);
+ }
+ function emailDetails(body){
+  const entry=bookings.get(body?.request_id);
+  if(!entry)return json(404,{code:'access_unavailable'});
+  const {operation_id,expected_revision}=body;
+  if(typeof operation_id!=='string'||!reference.test(operation_id)||expected_revision!==entry.receipt.booking_revision)return json(409,{code:'booking_changed'});
+  const copy={operation_id,booking_revision:expected_revision,state:'pending',has_booking_email:entry.receipt.email_copy.has_booking_email,
+   target_hint:'p***@example.com',next_request_at:null,remaining_requests:Math.max(0,entry.receipt.email_copy.remaining_requests-1),can_request:false,blocked_reason:'delivery_pending'};
+  entry.receipt={...entry.receipt,email_copy:copy};entry.copyShown=false;
+  return json(200,{code:'receipt_copy_accepted',request_id:entry.receipt.request_id,operation_id,booking_revision:expected_revision,email_copy:copy});
+ }
+ /** "Find your booking": the list for a name and phone, or one booking of that list in full. */
+ function bookingDetails(body){
+  if(!settings)return json(503,{code:'temporarily_unavailable'});
+  if(typeof body?.full_name!=='string'||typeof body?.phone!=='string')return json(422,{code:'invalid_request'});
+  const mine=entry=>entry.name===sameName(body.full_name)&&entry.phone===samePhone(body.phone);
+  if(body.request_id!==undefined){
+   const entry=bookings.get(body.request_id);
+   if(!entry||!mine(entry))return json(404,{code:'booking_not_found'});
+   const {next_actions,email_copy,...detail}=fresh(entry);
+   return json(200,{version:1,kind:'detail',receipt:detail,capabilities:{refresh:true,download_pdf:detail.appointment_state==='confirmed'}});
+  }
+  const summary=({appointment_state,booking_revision,ends_at,request_id,service_name,starts_at,timezone,facts_version,resource_id,resource_name,display_duration})=>
+   ({appointment_state,booking_revision,ends_at,request_id,service_name,starts_at,timezone,facts_version,resource_id,resource_name,display_duration});
+  const items=[...bookings.values()].filter(mine).map(entry=>summary(entry.receipt)).sort((a,b)=>Date.parse(b.starts_at)-Date.parse(a.starts_at)).slice(0,20);
+  return json(200,{version:1,kind:'list',server_now:now(),items,next_cursor:null});
+ }
+
  function availability(search){
   if(!settings)return json(503,{code:'temporarily_unavailable'});
   const query=new URLSearchParams(search),day=query.get('day')||'',questions=Number(query.get('questions')||1);
@@ -265,11 +372,7 @@ export function createStubs({settings=null,clock=Date.now,epoch=randomUUID()}={}
   if(!service)return json(409,{code:'service_unavailable'});
   if(!validDay(day)||questions!==1)return json(422,{code:'invalid_request'});
   const resource=settings.resources.find(item=>item.id===service.resource_id);
-  const earliest=clock()+(settings.notice_minutes||0)*60000;
-  const offset=zoneOffsetMinutes(settings.timezone,new Date(day+'T12:00:00Z'));
-  const [year,month,date]=day.split('-').map(Number);
-  const slots=dayStarts(settings,resource.id,day).map(minute=>Date.UTC(year,month-1,date,0,minute)-offset*60000)
-   .filter(start=>start>earliest).map(start=>({starts_at:new Date(start).toISOString(),ends_at:new Date(start+service.duration_minutes*60000).toISOString()}));
+  const slots=freeStarts(service,day).map(start=>({starts_at:new Date(start).toISOString(),ends_at:new Date(start+service.duration_minutes*60000).toISOString()}));
   return json(200,{date:day,server_now:now(),service:{id:service.id,quote_version:quoteVersion,timezone:settings.timezone,questions,
    currency:'INR',amount_paise:service.pricing.amount_paise,duration_minutes:service.duration_minutes,facts_version:2,
    resource_id:resource.id,resource_name:resource.name,display_duration:settings.display_duration,location:settings.location,
@@ -284,9 +387,16 @@ export function createStubs({settings=null,clock=Date.now,epoch=randomUUID()}={}
   if(contactAction&&method==='POST')return contact(contactState,contactAction[1],body);
   if(path==='/api/booking-policy'&&method==='GET')return bookingPolicy();
   if(path==='/api/availability'&&method==='GET')return availability(search);
+  if(method==='POST'){
+   if(path==='/api/checkout-context')return settings?json(200,{ready:true}):json(503,{code:'temporarily_unavailable'});
+   if(path==='/api/checkout')return checkout(body);
+   if(path==='/api/checkout/status')return checkoutStatus(body);
+   if(path==='/api/checkout/email-details')return emailDetails(body);
+   if(path==='/api/booking/details')return bookingDetails(body);
+  }
   return json(503,{code:'temporarily_unavailable'},{'x-preview':'not-simulated'});
  }
- return {serviceState,contactPolicy,contact,bookingPolicy,availability,answer,epoch};
+ return {serviceState,contactPolicy,contact,bookingPolicy,availability,checkout,checkoutStatus,emailDetails,bookingDetails,answer,epoch};
 }
 
 /** The preview's own list of pages, in both states. Plain on purpose: it is a tool, not a page of the site. */
