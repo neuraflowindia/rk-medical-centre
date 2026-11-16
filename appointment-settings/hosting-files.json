@@ -309,6 +309,7 @@
     "scripts/display-build.mjs",
     "scripts/public-asset-boundary.mjs",
     "scripts/require-hosting-profile.mjs",
+    "src/booking/booking-steps.mjs",
     "src/booking/browser.mjs",
     "src/booking/clinic-booking.css",
     "src/booking/clinic-booking.jsx",

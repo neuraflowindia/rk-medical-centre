@@ -18,4 +18,12 @@
     .hours-table th, .hours-table td { padding-block: 10px; }
     .hours-table thead th { padding-block: 7px 6px; }
   }
+  /* taller rows, where the timetable is the subject of its section */
+  .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: 7px; }
+  @media (min-width: 768px) {
+    .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: var(--space-3); }
+  }
+  @media (min-width: 1024px) {
+    .hours-table--roomy tbody th, .hours-table--roomy tbody td { padding-block: 13px; }
+  }
 }
