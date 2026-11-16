@@ -45,7 +45,7 @@ test('the cover: the doctor\'s face, name and standing, both actions, and the se
   assert.ok(html.includes(`<h1 class="page-profile__name" id="profile-title">${text(doctor.name)}</h1>`));
   assert.ok(html.includes(`<p class="page-profile__kicker"><span>${text(doctor.formal)}</span></p>`));
   assert.ok(html.includes(`<p class="page-profile__role">${text(doctor.role)}</p>`));
-  assert.ok(html.includes(`<span>${text(words.degrees)}</span><span class="page-profile__registration">${text(words.registration)}</span>`));
+  assert.ok(html.includes(`<span>${text(words.degrees)}</span> <span class="page-profile__registration">${text(words.registration)}</span>`));
   assert.ok(html.includes(`>${text(words.credit)}<span class="wide-only">, ${text(words.creditPlace)}</span>`));
   // actions: the lead for the phone bar
   const actions=html.slice(html.indexOf('data-bar-lead'),html.indexOf('data-next-session'));

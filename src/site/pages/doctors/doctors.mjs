@@ -18,7 +18,8 @@ function sitter(item){
   +`<div class="page-doctors__frame"><span class="page-doctors__plate" aria-hidden="true"><span class="page-doctors__shaft"></span></span>`
   +photoFigure(workPortrait(item.id),{ratio:'4:5',frame:'arch',sizes:'(min-width: 1024px) 300px, (min-width: 768px) 240px, 44vw',loading:'eager',enter:false})
   +`</div>`
-  +`<p class="page-doctors__caption"><strong>${text(item.name)}</strong><span>${text(item.role)}</span><em>${text(item.credit)}</em></p></div>`;
+  // The spaces between the three parts keep them apart for a screen reader and for copied text.
+  +`<p class="page-doctors__caption"><strong>${text(item.name)}</strong> <span>${text(item.role)}</span> <em>${text(item.credit)}</em></p></div>`;
 }
 
 function opening(){
@@ -35,7 +36,7 @@ function leaf(item,ctx){
  const face=avatarOf(item.id);
  return `<article${attrs({class:`page-doctors__leaf page-doctors__leaf--${item.tone}`,'data-doctor':item.id,'aria-labelledby':`see-${item.id}`})}>`
   +`<header class="page-doctors__leaf-head">${image(face,{className:'page-doctors__face'})}`
-  +`<p class="page-doctors__leaf-role">${text(item.role)}</p><h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3></header>`
+  +`<h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3><p class="page-doctors__leaf-role">${text(item.role)}</p></header>`
   +`<ul class="page-doctors__concerns">${item.concerns.map(concern=>`<li>${icon('check')}<span>${text(concern)}</span></li>`).join('')}</ul>`
   +`<div class="page-doctors__facts"><p class="page-doctors__formal">${text(item.formalLine)}</p><p class="page-doctors__registration">${text(item.registration)}</p>`
   +(item.tag?tag({label:item.tag,icon:'medal',tone:'gold'}):'')+`</div>`

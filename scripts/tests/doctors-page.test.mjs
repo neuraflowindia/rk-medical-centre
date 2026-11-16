@@ -45,7 +45,7 @@ test('the opening is a double portrait: both doctors in the wider at-work crop, 
  for(const item of words.portraits){
   const photo=clinicPhotos[workPortrait(item.id)];
   assert.ok(html.includes(`src="${photo.src}"`),`${item.id}: the at-work portrait`);
-  assert.ok(html.includes(`<strong>${text(item.name)}</strong><span>${text(item.role)}</span><em>${text(item.credit)}</em>`));
+  assert.ok(html.includes(`<strong>${text(item.name)}</strong> <span>${text(item.role)}</span> <em>${text(item.credit)}</em>`));
  }
  assert.equal(count(html,/<img\b/g),2);assert.equal(count(html,/photo-figure--arch photo-figure--4x5/g),2);
  assert.doesNotMatch(html,/loading="lazy"|data-enter/,'first-screen pictures load at once and nothing in the first screen enters');
@@ -61,8 +61,7 @@ test('the spread: one page per doctor with a plain list, the formal facts and th
  for(const item of words.choose.leaves){
   const page=leaf(html,item.id),doctor=doctors[item.id];
   assert.ok(page.includes(`page-doctors__leaf--${item.tone}`));
-  assert.ok(page.includes(`<h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3>`));
-  assert.ok(page.includes(`<p class="page-doctors__leaf-role">${text(item.role)}</p>`));
+  assert.ok(page.includes(`<h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3><p class="page-doctors__leaf-role">${text(item.role)}</p>`),'the heading comes before the line under it');
   assert.ok(page.includes(`src="${doctorAvatars[item.id].src}"`)&&/<img[^>]*alt=""/.test(page),'the small face is decorative');
   const listed=[...page.matchAll(/<li><svg[^>]*><use href="#i-check"\/><\/svg><span>([^<]*)<\/span><\/li>/g)].map(match=>match[1]);
   assert.deepEqual(listed,item.concerns.map(text));

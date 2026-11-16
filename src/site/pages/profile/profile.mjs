@@ -23,7 +23,7 @@ import {closing} from '../../parts/closing/closing.mjs';
 export function sessionLine(session){
  return `<p${attrs({class:'page-profile__session','data-next-session':true,'data-state':session.state,'data-nosnippet':true})}>${icon('clock')}`
   +`<span class="page-profile__session-words"><span class="page-profile__session-label" data-session-label>${text(session.label)}</span>`
-  +`<span class="page-profile__session-sep" aria-hidden="true">: </span><strong class="page-profile__session-detail" data-session-detail>${text(session.detail)}</strong></span></p>`;
+  +`<span class="page-profile__session-sep">: </span><strong class="page-profile__session-detail" data-session-detail>${text(session.detail)}</strong></span></p>`;
 }
 
 function cover(ctx,words){
@@ -41,7 +41,7 @@ function cover(ctx,words){
   +`<p class="page-profile__kicker"><span>${text(words.runningHead)}</span></p>`
   +`<h1 class="page-profile__name" id="profile-title">${text(words.heading)}</h1>`
   +`<p class="page-profile__role">${text(words.role)}</p>`
-  +`<p class="page-profile__standing"><span>${text(words.degrees)}</span><span class="page-profile__registration">${text(words.registration)}</span></p>`
+  +`<p class="page-profile__standing"><span>${text(words.degrees)}</span> <span class="page-profile__registration">${text(words.registration)}</span></p>`
   +`<div class="page-profile__actions" data-bar-lead>${bookButton(ctx,{doctor:id})}${call}</div>`
   +sessionLine(words.session)
   +`</div></div>`
