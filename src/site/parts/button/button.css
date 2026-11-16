@@ -40,7 +40,7 @@
 
   /* ---------- text link: the arrow moves, a line appears ---------- */
   .text-link {
-    display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); color: var(--action); font: var(--type-link);
+    display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); color: var(--action); font: var(--type-link); white-space: nowrap;
     text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 4px;
     transition: color var(--dur-hover), text-decoration-color var(--dur-hover);
   }

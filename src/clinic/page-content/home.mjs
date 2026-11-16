@@ -9,7 +9,7 @@ import {topicById,doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
 import {archPortraits,clinicPhotos} from '../client-media.mjs';
 import {walkInAnswer,paymentAnswer,bookForSomeoneElseAnswer,observationCareSentence} from '../standins.mjs';
-import {pagePaths,actionLabels,bookWithLabel,bookWithPath,callDoctorSpoken,degreesOf,feeLabel,practisingSince,addressCard,photoCaptions} from './shared.mjs';
+import {pagePaths,actionLabels,bookWithLabel,bookWithPath,callDoctorSpoken,clinicStandards,degreesOf,feeLabel,practisingSince,addressCard,photoCaptions} from './shared.mjs';
 
 const since=practisingSince();
 // The Home words say "since 1992" for both doctors at once; they need one shared year.
@@ -162,9 +162,8 @@ export const credentials=Object.freeze({
  // `category` is the small label at the row's left on wide screens (spoken everywhere).
  rows:Object.freeze([
   Object.freeze({category:'Honour',title:'KGMU gold medalist',detail:doctors.parul.name,icon:'medal'}),
-  Object.freeze({category:'Accreditation',title:'NABH accredited',detail:null,icon:null}),
-  Object.freeze({category:'Quality standard',title:'ISO 9001:2015 certified',detail:null,icon:null}),
-  Object.freeze({category:'Day and night',title:'24-hour observation care',detail:null,icon:null})
+  // The clinic's standards have one home (shared.mjs); About explains each of them.
+  ...clinicStandards.map(item=>Object.freeze({category:item.kind,title:item.name,detail:null,icon:null}))
  ]),
  certificatesLabel:'Certificates',
  // "All certificates" opens the certificate viewer; without scripts it leads to Meet the doctors.

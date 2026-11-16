@@ -16,7 +16,8 @@ test('each review keeps its own words and its own details',()=>{
  for(const source of reviewSources)for(const raw of reviews[source]){
   const merged=allReviews.find(review=>review.name===raw.name),details=reviewWithDetails(raw);
   assert.equal(merged.text,plainQuote(raw.text));
-  assert.ok(raw.text.includes(merged.text),'no word was added or changed');
+  assert.ok(raw.text.replaceAll("'",'’').includes(merged.text),'no word was added or changed (only a typewriter apostrophe becomes a proper one)');
+  assert.doesNotMatch(merged.text,/\p{L}'\p{L}/u,'no typewriter apostrophe is left inside a word');
   assert.equal(merged.rating,details.rating);assert.equal(merged.locality,details.locality);
   assert.equal(merged.topic,details.topic);assert.equal(merged.icon,details.icon);assert.equal(merged.verified,true);
   assert.ok(merged.rating>=4&&merged.rating<=5);assert.match(merged.locality,/Lucknow$/);
@@ -28,6 +29,7 @@ test('stored quote marks are removed so the page adds its own, and inner marks s
  assert.equal(plainQuote('"Kind and careful."'),'Kind and careful.');
  assert.equal(plainQuote('  She said "come early" and we did.  '),'She said "come early" and we did.');
  assert.equal(plainQuote('Plain words.'),'Plain words.');
+ assert.equal(plainQuote("Dr. Gupta's care for my father's diabetes, and the doctors' advice."),'Dr. Gupta’s care for my father’s diabetes, and the doctors’ advice.');
  for(const review of allReviews)assert.doesNotMatch(review.text,/^"|"$/);
 });
 

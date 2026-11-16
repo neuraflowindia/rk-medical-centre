@@ -68,7 +68,7 @@
   .page-home__ledger-row:last-child { box-shadow: 0 1px 0 var(--line-on-deep); }
   .page-home__ledger dt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; color: var(--ink-on-deep-soft); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
   .page-home__ledger dd { display: flex; align-items: center; gap: 10px; color: var(--ink-on-deep); font: var(--type-ledger); }
-  .page-home__ledger dd > span { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--space-2); }
+  .page-home__ledger dd > span { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--space-3); }
   .page-home__ledger-who { color: var(--ink-on-deep-soft); font: var(--type-who); }
   .page-home__ledger-icon { order: 2; margin-left: auto; width: 26px; height: 26px; color: var(--gold-on-deep); }
   /* the documents straddle the edge: half on the deep ground, half on the light one below */
@@ -134,7 +134,7 @@
     .page-home__ledger-row { grid-template-columns: 11.5em 1fr; align-items: baseline; gap: var(--space-4); padding: 19px 0 20px; }
     .page-home__ledger dt { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
     .page-home__ledger dd { align-items: baseline; }
-    .page-home__ledger dd > span { column-gap: 10px; }
+    .page-home__ledger dd > span { column-gap: 14px; }
     .page-home__ledger-icon { align-self: center; }
     /* four documents share the row: their height is worked out from the row's width and their shapes */
     .page-home__certificates { --certificate-mat: 9px; --certificate-height: clamp(100px, calc((min(100vw - 2 * var(--gutter), var(--content-width)) - 8 * var(--certificate-mat) - 122px) / 4.906), 212px); margin-top: var(--space-9); }

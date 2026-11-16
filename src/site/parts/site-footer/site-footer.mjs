@@ -10,7 +10,7 @@ export function siteFooter(ctx){
  const hours=weekHours.map(row=>`<span>${text(`${row.short} ${row.hours}`)}</span>`).join(' ');
  const people=footer.registrations.map(row=>{
   const doctor=doctors[row.id];
-  return `<li class="site-footer__doctor"><a class="site-footer__name" href="${row.path}"${ctx.path===row.path?' aria-current="page"':''}>${text(row.name)}</a>`
+  return `<li class="site-footer__doctor"><strong class="site-footer__name">${text(row.name)}</strong>`
    +`<a class="site-footer__phone" href="tel:${doctor.tel}" aria-label="${text(`Call ${row.name} at ${doctor.phone}`)}">${icon('phone')}<span class="site-footer__digits">${text(doctor.phone)}</span></a>`
    +`<span class="site-footer__registration">${text(row.line)}</span></li>`;
  }).join('');

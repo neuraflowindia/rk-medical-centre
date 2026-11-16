@@ -21,31 +21,42 @@ export function viewerTitle(doctor=''){
  return doctor&&Object.hasOwn(doctors,doctor)?viewerWords.of(doctors[doctor].name):viewerWords.all;
 }
 
-/** Open the viewer on `items` at `index`. */
-export function openCertificateViewer(services,{items,index=0,title=viewerWords.all,trigger=null,signal}={}){
- if(!services?.viewer||!items?.length)return;
- let at=Math.max(0,Math.min(items.length-1,index));
- const draw=()=>{
+/**
+ * Step through `total` slides in the viewer. `draw(index)` returns one slide's markup, with its own
+ * [data-viewer-previous] / [data-viewer-next] buttons if there is more than one. The ends are flat
+ * (no wrapping); ← and → move; focus stays on the arrow that was pressed.
+ */
+export function openViewerWalk(services,{total,index=0,title='',draw,trigger=null,signal}={}){
+ if(!services?.viewer||!(total>0)||typeof draw!=='function')return;
+ let at=Math.max(0,Math.min(total-1,index));
+ const arrow=direction=>services.viewer.content()?.querySelector(direction<0?'[data-viewer-previous]':'[data-viewer-next]');
+ const paint=()=>{
   const content=services.viewer.content();
   if(!content)return;
-  content.innerHTML=certificateViewer(items,at);
-  const previous=content.querySelector('[data-viewer-previous]'),next=content.querySelector('[data-viewer-next]');
+  content.innerHTML=draw(at);
+  const previous=arrow(-1),next=arrow(1);
   if(previous){previous.disabled=at===0;previous.addEventListener('click',()=>move(-1));}
-  if(next){next.disabled=at===items.length-1;next.addEventListener('click',()=>move(1));}
+  if(next){next.disabled=at===total-1;next.addEventListener('click',()=>move(1));}
  };
  const move=direction=>{
-  const to=viewerStep(at,direction,items.length);
+  const to=viewerStep(at,direction,total);
   if(to===at)return;
-  const focused=services.viewer.content()?.querySelector(direction<0?'[data-viewer-previous]':'[data-viewer-next]')===services.viewer.node()?.ownerDocument?.activeElement;
-  at=to;draw();
-  if(focused){const again=services.viewer.content()?.querySelector(direction<0?'[data-viewer-previous]':'[data-viewer-next]');(again&&!again.disabled?again:services.viewer.content()?.querySelector('button:not(:disabled)'))?.focus();}
+  const focused=arrow(direction)===services.viewer.node()?.ownerDocument?.activeElement;
+  at=to;paint();
+  if(focused){const again=arrow(direction);(again&&!again.disabled?again:services.viewer.content()?.querySelector('button:not(:disabled)'))?.focus();}
  };
- services.viewer.open({title,html:certificateViewer(items,at),trigger});
- draw();
+ services.viewer.open({title,html:draw(at),trigger});
+ paint();
  const node=services.viewer.node();
  const onKey=event=>{if(event.key==='ArrowRight'){event.preventDefault();move(1);}else if(event.key==='ArrowLeft'){event.preventDefault();move(-1);}};
  node?.addEventListener('keydown',onKey,{signal});
  node?.addEventListener('close',()=>node.removeEventListener('keydown',onKey),{once:true});
+}
+
+/** Open the viewer on certificates `items` at `index`. */
+export function openCertificateViewer(services,{items,index=0,title=viewerWords.all,trigger=null,signal}={}){
+ if(!items?.length)return;
+ openViewerWalk(services,{total:items.length,index,title,draw:at=>certificateViewer(items,at),trigger,signal});
 }
 
 export function bindCertificates(root,{signal,services}={}){

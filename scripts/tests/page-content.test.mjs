@@ -53,7 +53,7 @@ test('"Doctors" is the current link on both doctor profiles',()=>{
 test('names, numbers and needs are read from the clinic facts',()=>{
  assert.equal(shared.doctorShortName('sanjay'),'Dr. Sanjay');assert.equal(shared.doctorShortName('parul'),'Dr. Parul');
  assert.equal(shared.localPhone('sanjay'),'94150 49410');assert.equal(shared.localPhone('parul'),'98386 55095');
- assert.equal(shared.doctorNeed('sanjay'),'General health and diabetes');assert.equal(shared.doctorNeed('parul'),'Women\'s health and pregnancy');
+ assert.equal(shared.doctorNeed('sanjay'),'General health and diabetes');assert.equal(shared.doctorNeed('parul'),'Women’s health and pregnancy');
  assert.equal(shared.bookWithLabel('parul'),'Book with Dr. Parul');assert.equal(shared.callDoctorLabel('sanjay'),'Call Dr. Sanjay');
  assert.equal(shared.callDoctorSpoken('sanjay'),'Call Dr. Sanjay Gupta at +91 94150 49410');
 });
@@ -136,7 +136,7 @@ test('the week\'s hours are the published appointment times, as rows and as one 
 test('call rows, the call sheet and the action bar carry both doctors and WhatsApp',()=>{
  const rows=shared.callRows();
  assert.deepEqual(rows.map(row=>row.id),['sanjay','parul']);
- assert.deepEqual(rows[1],{id:'parul',name:'Dr. Parul Gupta',need:'Women\'s health and pregnancy',phone:'+91 98386 55095',digits:'98386 55095',href:'tel:+919838655095',spoken:'Call Dr. Parul Gupta at +91 98386 55095'});
+ assert.deepEqual(rows[1],{id:'parul',name:'Dr. Parul Gupta',need:'Women’s health and pregnancy',phone:'+91 98386 55095',digits:'98386 55095',href:'tel:+919838655095',spoken:'Call Dr. Parul Gupta at +91 98386 55095'});
  assert.equal(shared.closingCallLine(rows[0]),'Dr. Sanjay Gupta · 94150 49410');
  assert.equal(shared.callSheet.title,'Call the clinic');
  assert.deepEqual(shared.callSheet.whatsapp,{label:'WhatsApp the clinic',number:standins.whatsappNumber,href:standins.whatsappLink()});
@@ -309,9 +309,8 @@ test('no markup and no typewriter quotes in any word a visitor reads',()=>{
   }
  }
  const visible=[...strings(home),...strings(shared)].filter(text=>!addresses.test(text));
- const straight=visible.filter(text=>text.includes('\''));
- // The clinic facts in model.mjs spell "Women's health and pregnancy care" with a straight apostrophe; nothing new may.
- for(const text of straight)assert.ok(strings(doctors).some(fact=>fact.includes('\'')&&text.includes(fact.replace(/\s+care$/u,''))),`"${text}" has a straight apostrophe`);
+ // No visible word carries a typewriter apostrophe, the clinic's own facts included.
+ for(const text of [...visible,...strings(doctors)])assert.doesNotMatch(text,/'/,`"${text}" has a straight apostrophe`);
 });
 
 test('the words cannot be changed by accident',()=>{
