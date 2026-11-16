@@ -6,14 +6,14 @@
 // degrees are read through degreesOf() and registrations through registrationLine() (their one
 // home is standins.mjs and model.mjs); words shared with Home come from home.mjs and shared.mjs.
 // No markup lives in this file: emphasis and links are separate fields.
-import {doctors,doctorFacts} from '../model.mjs';
+import {doctors,doctorFacts,locality,city} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificatesFor} from '../certificate-catalogue.mjs';
-import {clinicPhotos,archPortraits,doctorAvatars} from '../client-media.mjs';
+import {workPortraits,roomCrops,doctorAvatars} from '../client-media.mjs';
 import {clinicClock,sessionsFor,formatTime,NEUTRAL} from '../open-status.mjs';
 import {registrationLine} from '../standins.mjs';
 import {hero,doctorChips,doctorsSection,degreesBeside} from './home.mjs';
-import {pagePaths,actionLabels,bookWithLabel,callDoctorSpoken,degreesOf,doctorShortName,localPhone} from './shared.mjs';
+import {clinicName,pagePaths,actionLabels,bookWithLabel,callDoctorSpoken,degreesOf,doctorShortName,localPhone} from './shared.mjs';
 
 function known(id){
  if(!Object.hasOwn(doctors,id))throw new RangeError('Unknown doctor: '+id);
@@ -39,23 +39,16 @@ export function formalLine(id){return homeCard(id).formalLine;}
 export function degreesLine(id){return degreesBeside(doctors[known(id)].formal,degreesOf(id));}
 
 // ---- photographs ----
-// WAITING: request doctors-01 — the wider 4 : 5 "at work" crops and the 3 : 2 room crops. Until
-// they are in public/, Home's arch portraits stand in and the room picture is left out.
-const hasPhoto=(id,photos)=>Object.hasOwn(photos,id);
-/** The 4 : 5 "at work" portrait of a doctor (Meet the doctors, profile cover). Never shown wider than 300 px. */
-export function workPortrait(id,photos=clinicPhotos){
- const wanted=`at-work-${known(id)}`;
- return hasPhoto(wanted,photos)?wanted:archPortraits[id];
-}
-/** The 3 : 2 picture of a doctor's consulting room, or null while it does not exist yet. */
-export function roomPicture(id,photos=clinicPhotos){
- const wanted=`room-${known(id)}`;
- return hasPhoto(wanted,photos)?wanted:null;
-}
+/** The wider 4 : 5 "at work" portrait of a doctor (Meet the doctors, profile cover). Never shown wider than 300 px. */
+export function workPortrait(id){return workPortraits[known(id)];}
+/** The 3 : 2 picture of a doctor's consulting room (profile, "About the doctor"). Never shown wider than 444 px. */
+export function roomPicture(id){return roomCrops[known(id)];}
 /** A doctor's small square face (decorative: the name is always beside it). */
 export function avatarOf(id){return doctorAvatars[known(id)];}
 /** What each portrait shows, as its credit: a moment at work, and where. */
 export const portraitCredit=Object.freeze(Object.fromEntries(doctorOrder.map(id=>[id,`In ${pronouns[id].possessive} consulting room`])));
+/** Where: added to the credit where there is room for it. */
+export const portraitPlace=locality;
 
 // ---- what each doctor sees patients for (the nine Home chips, in the same words) ----
 /** [{id, label, href}] — `href` is the topic's row on the Treatments page, exactly where the Home chip leads. */
@@ -117,7 +110,9 @@ export const doctorsPage=Object.freeze({
   emphasis:'King George’s, Lucknow.',
   intro:`Both doctors trained at ${university}, where ${doctors.parul.name} was a gold medalist.`,
   wallLabel:'Certificates of both doctors',
-  links:Object.freeze(doctorOrder.map(id=>Object.freeze({id,label:`${doctorShortName(id)}’s certificates`,href:`${doctors[id].path}#certificates`})))
+  // Each profile shows all five of its doctor's certificates.
+  linksLead:'See all five for',
+  links:Object.freeze(doctorOrder.map(id=>Object.freeze({id,label:doctorShortName(id),spoken:`All five certificates of ${doctors[id].name}`,href:`${doctors[id].path}#certificates`})))
  })
 });
 
@@ -191,7 +186,8 @@ export function profilePage(id){
   degrees:degreesLine(id),
   registration:registrationLine(id),
   tag:honourTag(id),
-  credit:`${portraitCredit[id]}, Indira Nagar`,
+  credit:portraitCredit[id],
+  creditPlace:portraitPlace,
   book:bookWithLabel(id),
   call:Object.freeze({label:`${actionLabels.call} ${localPhone(id)}`,href:`tel:${doctor.tel}`,spoken:callDoctorSpoken(id)}),
   session:nextSessionNeutral,
@@ -226,7 +222,8 @@ export function profilePage(id){
    previous:'Previous certificate',
    next:'Next certificate',
    hint:'Select a certificate to see it larger.',
-   items:certificatesFor(id)
+   // On a doctor's own page every document is theirs, so the label does not repeat the name.
+   items:Object.freeze(certificatesFor(id).map(item=>Object.freeze({...item,doctor:null})))
   }),
   // 6 · reviews
   reviews:Object.freeze({
@@ -244,7 +241,7 @@ export function profilePage(id){
  * as they are. These are proposals for clinic/page-metadata.mjs, which this module does not edit.
  */
 export const proposedDescriptions=Object.freeze({
- [pagePaths.doctors]:'Meet Dr. Sanjay Gupta, physician, and Dr. Parul Gupta, gynaecologist, at R. K. Medical Centre, Lucknow: who treats what, and how to book or call.',
- [pagePaths.sanjay]:'Dr. Sanjay Gupta, physician and diabetologist in Indira Nagar, Lucknow, in practice since 1992: what he treats, his next clinic session, booking and calls.',
- [pagePaths.parul]:'Dr. Parul Gupta, a senior woman gynaecologist and KGMU gold medalist in Indira Nagar, Lucknow: periods, PCOS and pregnancy care, booking and calls.'
+ [pagePaths.doctors]:`Meet ${doctors.sanjay.name}, physician, and ${doctors.parul.name}, gynaecologist, at ${clinicName}, ${city}: who treats what, and how to book or call.`,
+ [pagePaths.sanjay]:`${doctors.sanjay.name}, physician and diabetologist in ${locality}, ${city}, in practice since ${doctorFacts.sanjay.since}: what he treats, his next clinic session, booking and calls.`,
+ [pagePaths.parul]:`${doctors.parul.name}, a senior woman gynaecologist and KGMU gold medalist in ${locality}, ${city}: periods, PCOS and pregnancy care, booking and calls.`
 });

@@ -31,9 +31,9 @@ function opening(){
 }
 
 /** One page of the spread: who this doctor is for, as a plain list, then the formal facts and the actions. */
-function leaf(item,ctx,index){
+function leaf(item,ctx){
  const face=avatarOf(item.id);
- return `<article${attrs({class:`page-doctors__leaf page-doctors__leaf--${item.tone}`,'data-doctor':item.id,'aria-labelledby':`see-${item.id}`,'data-enter':'card',style:`--i:${index}`})}>`
+ return `<article${attrs({class:`page-doctors__leaf page-doctors__leaf--${item.tone}`,'data-doctor':item.id,'aria-labelledby':`see-${item.id}`})}>`
   +`<header class="page-doctors__leaf-head">${image(face,{className:'page-doctors__face'})}`
   +`<p class="page-doctors__leaf-role">${text(item.role)}</p><h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3></header>`
   +`<ul class="page-doctors__concerns">${item.concerns.map(concern=>`<li>${icon('check')}<span>${text(concern)}</span></li>`).join('')}</ul>`
@@ -48,7 +48,7 @@ function choose(ctx){
  const section=words.choose;
  return `<section class="page-doctors page-doctors__choose" id="${section.id}" aria-labelledby="${section.id}-title"><div class="wrap">`
   +sectionHead({runningHead:section.runningHead,heading:section.heading,id:`${section.id}-title`})
-  +`<div class="page-doctors__spread">${section.leaves.map((item,index)=>leaf(item,ctx,index)).join('')}</div>`
+  +`<div class="page-doctors__spread" data-enter="card">${section.leaves.map(item=>leaf(item,ctx)).join('')}</div>`
   +`<p class="page-doctors__more"><span>${text(section.more.lead)}</span> ${textLink({label:section.more.label,href:section.more.href})}</p>`
   +`</div></section>`;
 }
@@ -59,7 +59,8 @@ function training(){
   +`<div class="wrap page-doctors__training-head">`
   +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,intro:section.intro,id:`${section.id}-title`})+`</div>`
   +`<div class="page-doctors__wall">${certificateWall(meetCertificates(),{label:section.wallLabel,view:true})}</div>`
-  +`<ul class="wrap page-doctors__wall-links">${section.links.map(link=>`<li>${textLink({label:link.label,href:link.href})}</li>`).join('')}</ul>`
+  +`<p class="wrap page-doctors__wall-links"><span>${text(section.linksLead)}</span>`
+  +section.links.map(link=>textLink({label:link.label,href:link.href,attributes:{'aria-label':link.spoken}})).join('')+`</p>`
   +`</div></section>`;
 }
 

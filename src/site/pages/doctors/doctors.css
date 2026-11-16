@@ -3,7 +3,7 @@
 @layer pages {
 
   /* ---------- 1 · opening: a double portrait ---------- */
-  .page-doctors__opening { position: relative; background: var(--ground-light); padding: var(--space-6) 0 var(--space-8); overflow-x: clip; }
+  .page-doctors__opening { position: relative; background: var(--ground-light); padding: var(--space-6) 0 40px; overflow-x: clip; }
   .page-doctors__stage { display: grid; gap: 30px; }
   .page-doctors__centre .section-head { max-width: none; }
   .page-doctors__jump { display: none; }
@@ -60,7 +60,7 @@
   .page-doctors__leaf-title { grid-column: 2; grid-row: 1; font: var(--type-name); }
   /* a plain list in the display face: information, so it is flat */
   .page-doctors__concerns { display: grid; align-content: start; }
-  .page-doctors__concerns li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: var(--space-3); align-items: center; min-height: 46px; padding: 8px 0; border-top: 1px solid var(--line); color: var(--ink); font: var(--type-ledger); }
+  .page-doctors__concerns li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: var(--space-3); align-items: center; min-height: 44px; padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink); font: var(--type-ledger); }
   .page-doctors__concerns li:last-child { border-bottom: 1px solid var(--line); }
   .page-doctors__concerns .icon { width: 18px; height: 18px; color: var(--action); }
   .page-doctors__facts { display: grid; align-content: start; justify-items: start; gap: 3px; }
@@ -76,10 +76,10 @@
   .page-doctors__more { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; margin-top: var(--space-5); color: var(--ink-body); font: var(--type-formal); }
 
   /* ---------- 3 · training and honours: a museum label and four documents ---------- */
-  .page-doctors__training { background: var(--ground-light); padding: var(--section-pad) 0 var(--space-5); }
+  .page-doctors__training { background: var(--ground-light); padding: calc(var(--section-pad) - 8px) 0 var(--space-4); }
   .page-doctors__training-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
   .page-doctors__wall { --certificate-height: 132px; margin-top: var(--head-gap); }
-  .page-doctors__wall-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-6); margin-top: var(--space-2); }
+  .page-doctors__wall-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-5); margin-top: var(--space-2); color: var(--ink-body); font: var(--type-formal); }
 
   @media (max-width: 359px) {
     .page-doctors__pair { --tuck: 34px; column-gap: 14px; }
@@ -107,7 +107,7 @@
     .page-doctors__more { margin-top: var(--space-6); }
 
     /* the four documents stand two to a row: each doctor's pair together */
-    .page-doctors__training { padding-bottom: var(--space-6); }
+    .page-doctors__training { padding: var(--section-pad) 0 var(--space-6); }
     .page-doctors__wall { --certificate-height: 190px; --certificate-mat: 9px; width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; }
     /* held narrow enough that a third document never joins a row */
     .page-doctors__wall .certificate-wall { max-width: 720px; }
@@ -118,14 +118,14 @@
   @media (min-width: 1024px) {
     /* a triptych: portrait · heading · portrait, the second set a little lower */
     .page-doctors__opening { padding: 56px 0 80px; }
-    .page-doctors__stage { --frame: 240px; grid-template-columns: var(--frame) minmax(0, 1fr) var(--frame); column-gap: 56px; gap: 0 56px; align-items: start; }
+    .page-doctors__stage { --frame: 208px; grid-template-columns: var(--frame) minmax(0, 1fr) var(--frame); gap: 0 40px; align-items: start; }
     .page-doctors__pair { display: contents; }
     .page-doctors__sitter { display: grid; align-content: start; gap: 22px; grid-row: 1; }
     .page-doctors__sitter--sanjay { grid-column: 1; }
     .page-doctors__sitter--parul { grid-column: 3; margin-top: 56px; }
     .page-doctors__sitter--sanjay .page-doctors__frame, .page-doctors__sitter--parul .page-doctors__frame { grid-column: auto; grid-row: auto; margin-top: 0; }
     .page-doctors__sitter--sanjay .page-doctors__caption, .page-doctors__sitter--parul .page-doctors__caption { grid-column: auto; grid-row: auto; align-self: start; justify-items: start; text-align: left; padding: 0 0 0 10px; }
-    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; padding-bottom: 40px; }
+    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 40px; }
     .page-doctors__jump { display: block; margin-top: var(--space-5); }
 
     .page-doctors__leaf { padding: 44px 48px 44px; }
@@ -141,7 +141,7 @@
     .page-doctors__training { padding-bottom: var(--space-7); }
     .page-doctors__training-grid { width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); grid-template-rows: auto 1fr; column-gap: var(--space-9); align-items: start; }
     .page-doctors__training-head { grid-column: 1; grid-row: 1; width: auto; margin: 0; }
-    .page-doctors__wall-links { grid-column: 1; grid-row: 2; width: auto; margin: var(--space-5) 0 0; display: grid; }
+    .page-doctors__wall-links { grid-column: 1; grid-row: 2; width: auto; margin: var(--space-4) 0 0; }
     .page-doctors__wall { --certificate-height: 176px; grid-column: 2; grid-row: 1 / 3; width: auto; margin: 6px 0 0; }
   }
   /* the two pages share their rows, so lists, facts and buttons line up across the fold */
@@ -153,7 +153,8 @@
   }
 
   @media (min-width: 1280px) {
-    .page-doctors__stage { --frame: 300px; column-gap: 72px; }
+    /* the frames grow with the screen, so the heading between them always keeps its two lines */
+    .page-doctors__stage { --frame: clamp(264px, 21vw, 300px); column-gap: 72px; }
     .page-doctors__wall { --certificate-height: 196px; --certificate-mat: 10px; }
   }
 }

@@ -34,7 +34,7 @@ function cover(ctx,words){
   +`<div class="${classes('page-profile__sitter',words.tag&&'page-profile__sitter--tagged')}"><span class="page-profile__plate" aria-hidden="true" data-ambient><span class="page-profile__shaft"></span></span>`
   +photoFigure(workPortrait(id),{ratio:'4:5',frame:'arch',sizes:'(min-width: 1024px) 300px, 200px',loading:'eager',enter:false})
   +(words.tag?tag({label:words.tag,icon:'medal',tone:'gold',className:'page-profile__honour'}):'')
-  +`<p class="page-profile__credit">${text(words.credit)}</p></div>`
+  +`<p class="page-profile__credit">${text(words.credit)}<span class="wide-only">, ${text(words.creditPlace)}</span></p></div>`
   +`<div class="page-profile__identity">`
   // The cover is centred on phones, so its running head is the page's own: the same caps with a hairline either side.
   +`<p class="page-profile__kicker"><span>${text(words.runningHead)}</span></p>`
@@ -61,10 +61,10 @@ function care(words){
 
 function about(words){
  const section=words.about,room=roomPicture(words.id);
- return `<section${attrs({class:`page-profile page-profile__about page-profile--${words.tone}`,id:section.id,'aria-labelledby':`${section.id}-title`})}><div${attrs({class:'wrap page-profile__about-grid','data-with-room':!!room})}>`
+ return `<section${attrs({class:`page-profile page-profile__about page-profile--${words.tone}`,id:section.id,'aria-labelledby':`${section.id}-title`})}><div class="wrap page-profile__about-grid">`
   +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,id:`${section.id}-title`,className:'page-profile__about-head'})
-  +(room?`<div class="page-profile__room"><span class="page-profile__room-plate" aria-hidden="true"></span>`
-   +photoFigure(room,{ratio:'3:2',caption:section.caption,sizes:'(min-width: 1024px) 444px, (min-width: 768px) 420px, 92vw'})+`</div>`:'')
+  +`<div class="page-profile__room"><span class="page-profile__room-plate" aria-hidden="true"></span>`
+  +photoFigure(room,{ratio:'3:2',caption:section.caption,sizes:'(min-width: 768px) 420px, 92vw'})+`</div>`
   +`<div class="page-profile__story">`
   +`<p class="page-profile__lede" data-enter style="--i:2">${text(section.lede)}</p>`
   +`<p class="page-profile__body" data-enter style="--i:3">${text(section.body)}</p>`
