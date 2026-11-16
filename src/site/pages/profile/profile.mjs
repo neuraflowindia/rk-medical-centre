@@ -31,9 +31,10 @@ function cover(ctx,words){
  // Call shows the digits in both booking states; while booking is OFF it is the main action and takes the filled look.
  const call=button({label:words.call.label,href:words.call.href,icon:'phone',variant:'second',className:'button--lead',spoken:words.call.spoken,attributes:{'data-open-call':id}});
  return `<section${attrs({class:`page-profile page-profile__cover page-profile--${words.tone}`,'data-doctor':id,'aria-labelledby':'profile-title'})}><div class="wrap page-profile__cover-grid">`
-  +`<div class="${classes('page-profile__sitter',words.tag&&'page-profile__sitter--tagged')}"><span class="page-profile__plate" aria-hidden="true" data-ambient><span class="page-profile__shaft"></span></span>`
+  +`<div class="${classes('page-profile__sitter',words.tag&&'page-profile__sitter--tagged')}">`
+  +`<div class="page-profile__frame"><span class="page-profile__plate" aria-hidden="true" data-ambient><span class="page-profile__shaft"></span></span>`
   +photoFigure(workPortrait(id),{ratio:'4:5',frame:'arch',sizes:'(min-width: 1024px) 300px, 200px',loading:'eager',enter:false})
-  +(words.tag?tag({label:words.tag,icon:'medal',tone:'gold',className:'page-profile__honour'}):'')
+  +(words.tag?tag({label:words.tag,icon:'medal',tone:'gold',className:'page-profile__honour'}):'')+`</div>`
   +`<p class="page-profile__credit">${text(words.credit)}<span class="wide-only">, ${text(words.creditPlace)}</span></p></div>`
   +`<div class="page-profile__identity">`
   // The cover is centred on phones, so its running head is the page's own: the same caps with a hairline either side.

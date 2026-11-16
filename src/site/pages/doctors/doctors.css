@@ -54,6 +54,9 @@
   .page-doctors__leaf { position: relative; display: grid; align-content: start; gap: var(--space-5); padding: var(--space-6) var(--card-pad) var(--card-pad); }
   .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light); }
   .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 0 0 1px var(--line-card), inset 0 18px 20px -20px var(--line-strong); }
+  /* as the sheet arrives its two pages part from the fold: the spread opens */
+  html[data-motion="on"] .page-doctors__leaf--sage { transform: translateY(calc((1 - var(--q, 1)) * 14px)); }
+  html[data-motion="on"] .page-doctors__leaf--rose { transform: translateY(calc((1 - var(--q, 1)) * -14px)); }
   .page-doctors__leaf-head { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; }
   .page-doctors__face { grid-row: 1 / 3; width: 56px; height: 56px; border-radius: var(--radius-control); box-shadow: 0 0 0 3px var(--surface), var(--elev-photo); }
   .page-doctors__leaf-role { grid-column: 2; grid-row: 2; color: var(--ink-body); font: var(--type-formal); }
@@ -65,7 +68,7 @@
   .page-doctors__concerns .icon { width: 18px; height: 18px; color: var(--action); }
   .page-doctors__facts { display: grid; align-content: start; justify-items: start; gap: 3px; }
   .page-doctors__formal { color: var(--ink-body); font: var(--type-formal); }
-  .page-doctors__registration { color: var(--ink-muted); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
+  .page-doctors__registration { color: var(--ink-body); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
   .page-doctors__facts .tag { margin-top: 9px; }
   .page-doctors__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
   .page-doctors__actions .button--main { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
@@ -103,6 +106,8 @@
     .page-doctors__leaf { padding: 34px var(--card-pad) var(--card-pad); gap: var(--space-6); }
     .page-doctors__leaf--sage { border-radius: var(--radius-card) 0 0 var(--radius-card); }
     .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), inset 20px 0 22px -22px var(--line-strong); }
+    html[data-motion="on"] .page-doctors__leaf--sage { transform: translateX(calc((1 - var(--q, 1)) * 20px)); }
+    html[data-motion="on"] .page-doctors__leaf--rose { transform: translateX(calc((1 - var(--q, 1)) * -20px)); }
     .page-doctors__concerns li { min-height: 50px; }
     .page-doctors__more { margin-top: var(--space-6); }
 
