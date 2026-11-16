@@ -20,7 +20,7 @@ import {messageForm} from './message-form.mjs';
 // ---------- 1 · first screen ----------
 function openingPart(ctx){
  // Each row leads with the need, as the call sheet does: a visitor chooses by what is wrong, not by a name.
- const rows=callRows().map(row=>`<li>${callRow(row,{needFirst:true,avatar:doctorAvatar(row.id)})}</li>`).join('');
+ const rows=callRows().map(row=>`<li>${callRow(row,{needFirst:true,roomy:true,avatar:doctorAvatar(row.id)})}</li>`).join('');
  return `<section class="page-contact page-contact__opening" aria-labelledby="contact-title" data-bar-lead><div class="wrap page-contact__opening-grid">`
   +`<div class="page-contact__opening-copy">`
   +sectionHead({runningHead:words.runningHead,heading:words.heading,emphasis:words.emphasis,level:1,id:'contact-title'})
@@ -29,7 +29,7 @@ function openingPart(ctx){
   // far: the arch and its slow light · subject: the paper card · near: the handset
   +`<div class="page-contact__stage"><div class="page-contact__arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></div>`
   +`<div class="page-contact__directory">${image(clinicObjects['telephone-handset'],{className:'page-contact__handset',eager:true,attributes:{fetchpriority:null}})}`
-  +`<ul class="call-rows page-contact__rows" aria-label="${text(words.directoryLabel)}">${rows}<li>${whatsappRow(ctx)}</li></ul>`
+  +`<ul class="call-rows page-contact__rows" aria-label="${text(words.directoryLabel)}">${rows}<li>${whatsappRow(ctx,{roomy:true})}</li></ul>`
   +`<p class="page-contact__changes">${icon('info')}<span>${text(words.changes)}</span></p></div></div>`
   // Booking ON: the main button and the way back to a booking. OFF: both leave, and one line says to call.
   +`<div class="page-contact__actions">${bookButton(ctx,{size:'large',label:words.book,className:'page-contact__book'})}`
@@ -74,7 +74,7 @@ function locator(){
   +label('north',`${icon('route')}${text(map.north)}`)
   // The whole drawing opens Google Maps; this second link is the same one, for the pointer only.
   +`<a${attrs({class:'page-contact__map-hit',href:map.href,target:'_blank',rel:'noopener',tabindex:'-1','aria-hidden':'true'})}></a>`
-  +button({label:map.open,href:map.href,variant:'second',size:'compact',external:true,iconAfter:'out',note:map.opens,className:'page-contact__map-open'})
+  +button({label:map.open,href:map.href,variant:'second',size:'compact',external:true,iconAfter:'out',note:map.opens,labelHidden:'narrow',className:'page-contact__map-open'})
   +`</div></div></figure>`;
 }
 
@@ -100,7 +100,7 @@ function hoursPart(ctx){
   +`<div class="page-contact__observation" data-enter>${icon('shield')}<div><h3>${text(note.title)}</h3><p>${text(note.text)}</p></div></div></div>`
   // The timetable is flat (it is information); the calendar on its pale arch is the one accent.
   +`<span class="page-contact__hours-arch" aria-hidden="true"></span>`+image(clinicObjects['desk-calendar'],{className:'page-contact__calendar'})
-  +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,className:'page-contact__week'})}</div>`
+  +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,roomy:true,className:'page-contact__week'})}</div>`
   +`</div></section>`;
 }
 

@@ -62,9 +62,8 @@
   .page-contact__pin-shadow { position: absolute; left: -15px; top: -5px; width: 30px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, var(--line-strong), var(--clear));
     opacity: calc((var(--q, 1) - .55) * 2.3); transform: scale(calc(.4 + var(--q, 1) * .6)); }
   .page-contact__map-hit { position: absolute; z-index: 1; inset: 0; border-radius: var(--radius-media-inner); }
-  /* WAITING: request contact-03 — on phones the map's control is its corner mark alone; the words stay for assistive technology */
-  .page-contact__map-open { position: absolute; z-index: 4; right: var(--space-3); top: var(--space-3); gap: 0; width: var(--tap); padding: 0; }
-  .page-contact__map-open .button__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* on phones the map's control is its corner mark alone (the button's own narrow form); "Get directions" is just below */
+  .page-contact__map-open { position: absolute; z-index: 4; right: var(--space-3); top: var(--space-3); }
   @media (hover: hover) and (pointer: fine) {
     .page-contact__map-window:has(.page-contact__map-hit:hover, .page-contact__map-open:hover) .page-contact__pin-hop { transform: translateY(-5px); }
   }
@@ -88,8 +87,6 @@
   .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); }
   .page-contact__calendar { position: absolute; z-index: 1; right: 3px; top: -10px; width: 64px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
   .page-contact__ledger { order: 2; position: relative; z-index: 1; margin-top: var(--space-5); }
-  /* WAITING: request contact-03 — the roomier rows become the timetable's own option */
-  .page-contact__week tbody th, .page-contact__week tbody td { padding-block: 7px; }
   .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-4); }
   .page-contact__observation .icon { width: 24px; height: 24px; margin-top: 1px; color: var(--action); }
   .page-contact__observation h3 { font: var(--type-role); letter-spacing: 0; }
@@ -222,8 +219,6 @@
     .page-contact__arch { right: 44px; top: -72px; width: 52%; height: 220px; }
     .page-contact__light { display: block; }
     .page-contact__directory { padding: var(--space-4) var(--space-4) var(--space-3); }
-    /* WAITING: request contact-03 — the roomier row becomes the call row's own option */
-    .page-contact__directory .call-row { min-height: 88px; padding: var(--space-4) 22px var(--space-4) var(--space-4); }
     .page-contact__handset { right: -30px; top: -92px; width: 116px; }
     .page-contact__actions { gap: var(--space-2); }
 
@@ -235,8 +230,7 @@
     .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
     .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
-    .page-contact__map-open { right: var(--space-4); top: var(--space-4); gap: 10px; width: auto; padding: 0 18px; }
-    .page-contact__map-open .button__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+    .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
     .page-contact__pin-art { width: 62px; }
     .page-contact__pin-shadow { left: -20px; top: -7px; width: 40px; height: 14px; }
     .page-contact__map-label--pin { margin-top: var(--space-3); }
@@ -248,7 +242,6 @@
     .page-contact__hours-arch { right: 0; top: -34px; width: 132px; height: 122px; }
     .page-contact__calendar { right: 14px; top: -14px; width: 104px; }
     .page-contact__ledger { margin-top: var(--head-gap); }
-    .page-contact__week tbody th, .page-contact__week tbody td { padding-block: var(--space-3); } /* WAITING: request contact-03 */
     .page-contact__observation { max-width: 620px; margin-top: var(--space-7); }
 
     .message-form__steps { gap: var(--space-2) var(--space-6); }
@@ -278,7 +271,6 @@
     /* the arch runs down into the sage section below: the two grounds meet inside it */
     .page-contact__arch { left: 50%; right: auto; top: 44px; bottom: 0; width: min(100%, 640px); height: auto; transform: translateX(-50%); }
     .page-contact__directory { width: min(100% - 56px, 552px); padding: var(--space-4) var(--space-4) var(--space-3); }
-    .page-contact__directory .call-row { min-height: 92px; padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4); } /* WAITING: request contact-03 */
     .page-contact__handset { right: -58px; top: -70px; width: 138px; transform: rotate(-14deg); filter: var(--elev-object); }
     .page-contact__changes { margin: 14px 6px 4px; }
     .page-contact__book { min-width: 0; }
@@ -302,7 +294,6 @@
     .page-contact__ledger { grid-column: 7 / 13; grid-row: 1; margin-top: 126px; }
     .page-contact__hours-arch { right: 28px; top: 0; width: 176px; height: 127px; }
     .page-contact__calendar { right: 52px; top: 16px; width: 128px; transform: rotate(4deg); filter: var(--elev-object); }
-    .page-contact__week tbody th, .page-contact__week tbody td { padding-block: 13px; } /* WAITING: request contact-03 */
     .page-contact__observation { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); max-width: 440px; }
 
     .page-contact__message-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
@@ -322,6 +313,5 @@
   @media (min-width: 1280px) {
     .page-contact__opening-grid { grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); column-gap: var(--space-8); }
     .page-contact__directory { width: min(100% - 96px, 568px); padding: 18px 18px 14px; }
-    .page-contact__directory .call-row { min-height: 96px; padding: 18px 26px 18px 18px; } /* WAITING: request contact-03 */
   }
 }
