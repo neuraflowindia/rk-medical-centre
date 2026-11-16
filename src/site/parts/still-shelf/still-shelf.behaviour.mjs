@@ -13,6 +13,8 @@ export function shelfEnds({scrollLeft,max,slack=2}){
  return {atStart:scrollLeft<=slack,atEnd:scrollLeft>=max-slack};
 }
 
+/** Can the row not move at all (pure)? Then its arrows are not shown. */
+export function shelfStill(max,slack=2){return max<=slack;}
 /** Which card stands at the row's start (pure): the one whose left edge is nearest; the last one at the row's end. */
 export function shelfIndex({lefts,start,scrollLeft,max,slack=2}){
  if(!lefts.length)return -1;
@@ -39,6 +41,9 @@ export function bindShelf(row,{previous,next,signal,smooth=()=>true,item,onMove}
   const {max}=metrics(),ends=shelfEnds({scrollLeft:row.scrollLeft,max});
   if(previous)previous.disabled=ends.atStart;
   if(next)next.disabled=ends.atEnd;
+  // When every card fits there is nothing to move: two dead arrows are worse than none.
+  const arrows=previous?.parentElement,still=shelfStill(max);
+  if(arrows&&arrows===next?.parentElement&&arrows.hidden!==still)arrows.hidden=still;
   if(onMove){
    const cards=shown(),start=row.getBoundingClientRect().left+(parseFloat(style()?.paddingLeft||'0')||0);
    onMove({index:shelfIndex({lefts:cards.map(card=>card.getBoundingClientRect().left),start,scrollLeft:row.scrollLeft,max}),total:cards.length});

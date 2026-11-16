@@ -20,6 +20,10 @@
   .certificate-frame__label { display: grid; gap: 1px; margin-top: 14px; width: 0; min-width: 100%; }
   .certificate-frame__label strong { color: var(--ink); font: var(--type-caption-strong); line-height: 1.3; }
   .certificate-frame__label span { color: var(--ink-muted); font: var(--type-meta); }
+  /* on the deep ground: 11.20 : 1 and 7.79 : 1 */
+  .certificate-frame--on-deep .certificate-frame__label strong { color: var(--ink-on-deep); }
+  .certificate-frame--on-deep .certificate-frame__label span { color: var(--ink-on-deep-soft); }
+  .certificate-frame--on-deep .certificate-frame__mat--view:focus-visible { outline-color: var(--focus-on-deep); }
 
   /* The documents settle as the row scrolls into view: each starts a little low and tilted and comes
      to rest, one after another, over about half a screen. Only where the browser links animation to

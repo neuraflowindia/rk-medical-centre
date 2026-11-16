@@ -37,7 +37,8 @@ export function bindSiteHeader(root,{signal,services,windowObject=globalThis.win
  let state={y:windowObject.scrollY,down:0,up:0,away:false},ticking=false;
  const update=()=>{
   ticking=false;
-  const blocked=documentObject.documentElement.classList.contains('dialog-open')||header.contains(documentObject.activeElement);
+  // The header stays while a dialog is open, and while someone is moving through it with the keyboard.
+  const blocked=documentObject.documentElement.classList.contains('dialog-open')||!!header.querySelector(':focus-visible');
   state=headerTravel(state,windowObject.scrollY,{phone:phone.matches,blocked});
   header.classList.toggle('is-away',state.away);
   header.classList.toggle('is-scrolled',state.y>8);

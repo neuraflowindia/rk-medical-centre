@@ -38,6 +38,9 @@
   .call-row__name { color: var(--ink); font-weight: 600; }
   .call-row__need { color: var(--ink-body); }
   .call-row__digits { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--action); font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .01em; white-space: nowrap; }
+  /* the WhatsApp row has no digits to drop under the name: icon, words, arrow on one line at every width */
+  .call-row--whatsapp { grid-template-columns: auto 1fr auto; }
+  .call-row--whatsapp .call-row__icon { grid-row: auto; }
   .call-row:active { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
   .call-row:focus-visible { border-radius: var(--radius-row); }
   .call-row.is-pointed { box-shadow: var(--ring), var(--halo-wide), var(--elev-raised); }
