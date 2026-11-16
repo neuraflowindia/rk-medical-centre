@@ -8,7 +8,7 @@ export function paintClosing(node,signState,enabled){
  const title=closingTitle(signState,enabled);
  if(node.getAttribute('data-heading')===title.heading)return false;
  node.setAttribute('data-heading',title.heading);
- node.innerHTML=emphasise(title.heading,title.emphasis);
+ node.innerHTML=emphasise(title.heading,title.emphasis,{keep:title.keep});
  return true;
 }
 

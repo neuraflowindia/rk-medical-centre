@@ -249,8 +249,11 @@ export const photoCaptions=Object.freeze({
 });
 
 /** The address card that sits with the place photographs. */
+/** The address in three short lines (street, area, city) for a narrow card; joined with ", " they are the address. */
+export const addressLines=Object.freeze((parts=>[parts.slice(0,2),parts.slice(2,4),parts.slice(4)].map(line=>line.join(', ')))(address.split(', ')));
 export const addressCard=Object.freeze({
  address,
+ addressLines,
  hours:weekHours,
  directions:Object.freeze({label:actionLabels.directions,href:directions}),
  parking:parkingLine,
@@ -268,8 +271,11 @@ export const reviewShelf=Object.freeze({
  verified:'Verified patient',
  close:'Close reviews',
  // Spoken before the doctor's name on a review in the reader.
- about:'About'
+ about:'About',
+ aboutClinic:'The clinic'
 });
+/** A certificate's second line as printed: "Harvard Medical School, 2016". */
+export const issuerLine=issuer=>String(issuer).replace(/\s+·\s+/gu,', ');
 export const readAllReviewsLabel=count=>`Read all ${count} reviews`;
 export const reviewReaderTitle=name=>`Review from ${name}`;
 /** The reader's heading for a tab: "All 26 reviews", "9 reviews of Dr. Sanjay Gupta". */
@@ -321,8 +327,8 @@ export const footer=Object.freeze({
  privacyChoices:'Change privacy choices',
  motion:Object.freeze({pause:'Pause motion',play:'Play motion'})
 });
-/** "© 2026 R. K. Medical Centre · Lucknow" */
-export function copyrightLine(year=new Date().getFullYear()){return `© ${year} ${clinicName} · ${city}`;}
+/** "© 2026 R. K. Medical Centre" (the footer's lockup already names the place) */
+export function copyrightLine(year=new Date().getFullYear()){return `© ${year} ${clinicName}`;}
 
 /** What the clinic is held to. `kind` is the small caps label beside a name. One list for every page that shows them. */
 export const clinicStandards=Object.freeze([

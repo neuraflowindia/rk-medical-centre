@@ -54,13 +54,17 @@ export function stateText(ctx,{on,off,tag='span',className=''}){
  * A heading's words with one phrase in italics that never breaks across lines:
  * emphasise('Two doctors. One family practice.','One family practice.') → 'Two doctors. <em>One&nbsp;family&nbsp;practice.</em>'
  * Without a matching phrase the words are returned escaped, unchanged.
+ * `keep` names words before the italic phrase that must stay on one line:
+ * emphasise('Book your next visit.','next visit.',{keep:'Book your'}) → '<span class="keep">Book your</span> <em>next&nbsp;visit.</em>'
  */
-export function emphasise(words,phrase=''){
+export function emphasise(words,phrase='',{keep=''}={}){
  const all=String(words),part=String(phrase||'');
  const at=part?all.lastIndexOf(part):-1;
- if(at<0)return text(all);
+ const held=keep?text(keep):'';
+ const hold=plain=>{const escaped=text(plain);return held&&escaped.includes(held)?escaped.replace(held,`<span class="keep">${held}</span>`):escaped;};
+ if(at<0)return hold(all);
  const before=all.slice(0,at),after=all.slice(at+part.length);
- return `${text(before)}<em>${e(part).replaceAll(' ','&nbsp;')}</em>${text(after)}`;
+ return `${hold(before)}<em>${e(part).replaceAll(' ','&nbsp;')}</em>${text(after)}`;
 }
 
 /** "a.webp 264w, b.webp 528w" from [{src,width}]. */
