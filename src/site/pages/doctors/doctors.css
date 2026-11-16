@@ -52,8 +52,8 @@
   /* one sheet with a fold: two pages, never two cards */
   .page-doctors__spread { display: grid; margin-top: var(--head-gap); }
   .page-doctors__leaf { position: relative; display: grid; align-content: start; gap: var(--space-5); padding: var(--space-6) var(--card-pad) var(--card-pad); }
-  .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), var(--elev-ambient); }
-  .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 0 0 1px var(--line-card), inset 0 18px 20px -20px var(--line-strong), var(--elev-ambient-rose); }
+  .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: var(--elev-card); }
+  .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 18px 20px -20px var(--line-strong), var(--elev-card-rose); }
   /* as the sheet arrives its two pages part from the fold: the spread opens */
   html[data-motion="on"] .page-doctors__leaf--sage { transform: translateY(calc((1 - var(--q, 1)) * 14px)); }
   html[data-motion="on"] .page-doctors__leaf--rose { transform: translateY(calc((1 - var(--q, 1)) * -14px)); }
@@ -105,7 +105,7 @@
     .page-doctors__spread { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
     .page-doctors__leaf { padding: 34px var(--card-pad) var(--card-pad); gap: var(--space-6); }
     .page-doctors__leaf--sage { border-radius: var(--radius-card) 0 0 var(--radius-card); }
-    .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), inset 20px 0 22px -22px var(--line-strong), var(--elev-ambient-rose); }
+    .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 20px 0 22px -22px var(--line-strong), var(--elev-card-rose); }
     html[data-motion="on"] .page-doctors__leaf--sage { transform: translateX(calc((1 - var(--q, 1)) * 20px)); }
     html[data-motion="on"] .page-doctors__leaf--rose { transform: translateX(calc((1 - var(--q, 1)) * -20px)); }
     .page-doctors__concerns li { min-height: 50px; }
@@ -123,7 +123,9 @@
   @media (min-width: 1024px) {
     /* a triptych: portrait · heading · portrait, the second set a little lower */
     .page-doctors__opening { padding: 56px 0 80px; }
-    .page-doctors__stage { --frame: 208px; grid-template-columns: var(--frame) minmax(0, 1fr) var(--frame); gap: 0 40px; align-items: start; }
+    /* the middle column is never narrower than the heading's longer line (8.8 times its size);
+       the frames take what is left, up to their own limit */
+    .page-doctors__stage { --frame: 208px; grid-template-columns: minmax(0, var(--frame)) minmax(calc(var(--size-h1) * 8.8), 1fr) minmax(0, var(--frame)); gap: 0 40px; align-items: start; }
     .page-doctors__pair { display: contents; }
     .page-doctors__sitter { display: grid; align-content: start; gap: 22px; grid-row: 1; }
     .page-doctors__sitter--sanjay { grid-column: 1; }
@@ -158,8 +160,7 @@
   }
 
   @media (min-width: 1280px) {
-    /* the frames grow with the screen, so the heading between them always keeps its two lines */
-    .page-doctors__stage { --frame: clamp(264px, 21vw, 300px); column-gap: 72px; }
+    .page-doctors__stage { --frame: 300px; column-gap: clamp(40px, 4.4vw, 72px); }
     .page-doctors__wall { --certificate-height: 196px; --certificate-mat: 10px; }
   }
 }

@@ -112,3 +112,19 @@ test('the page is the same for the same input and does not depend on the clock',
  assert.equal(early,late);
  assert.notEqual(renderDoctors(pageContext({path:PATH,mode:'off',now:new Date('2026-01-01T00:00:00Z')})),early);
 });
+
+test('the stylesheets of both pages use only tokens that exist',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const read=name=>readFileSync(new URL(`../../src/site/${name}`,import.meta.url),'utf8');
+ const names=css=>new Set([...css.matchAll(/(--[a-z0-9-]+)\s*:/g)].map(match=>match[1]));
+ const tokens=names(read('styles/tokens.css'));
+ // Set by the motion module on every entering part (motion.css), not a design token.
+ const fromMotion=new Set(['--q']);
+ for(const sheet of ['pages/doctors/doctors.css','pages/profile/profile.css']){
+  const css=read(sheet),own=names(css);
+  const used=[...new Set([...css.matchAll(/var\((--[a-z0-9-]+)/g)].map(match=>match[1]))];
+  assert.ok(used.length>20,`${sheet} is styled through tokens`);
+  assert.deepEqual(used.filter(name=>!tokens.has(name)&&!own.has(name)&&!fromMotion.has(name)),[],`${sheet} uses a token that does not exist`);
+ }
+ assert.match(read('motion/motion.css'),/--q:/,'the entrance progress still comes from the motion styles');
+});
