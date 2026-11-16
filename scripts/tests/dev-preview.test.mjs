@@ -7,7 +7,7 @@ import {parseArguments,cleanPath,pageFile,readCookies,chooseStates,route,content
 // The stand-in answers are checked with the booking package's own readers, so they stay true to what the pages expect.
 import {checkedDisplay} from '../../appointment-system/browser/product-state.mjs';
 import {createEnquiryAPI} from '../../appointment-system/browser/enquiry/protocol.mjs';
-import {checkedPolicy,checkedAvailability} from '../../appointment-system/browser/booking/protocol.mjs';
+import {checkedPolicy,checkedAvailability,checkedCheckout,checkedReceipt,checkedReceiptFacts,checkedEmailCopy} from '../../appointment-system/browser/booking/protocol.mjs';
 
 const publicPaths=['/','/treatment','/about-clinic','/meet-doctor','/dr-sanjay-gupta','/dr-parul-gupta','/contact'];
 const manifest={version:1,installation_id:'test',public_paths:publicPaths,booking_paths:['/booking','/booking-details','/booking-help'],
@@ -213,7 +213,7 @@ test('doctors, fee and starting times pass the booking screen\'s own checks',()=
 test('without readable settings, and for anything not simulated, the answer is a plain "unavailable"',()=>{
  const bare=createStubs({settings:null});
  assert.equal(bare.bookingPolicy().status,503);assert.equal(bare.availability('?service_id=x&day=2026-11-17').status,503);
- const reply=createStubs({settings}).answer({method:'POST',path:'/api/checkout',search:'',booking:'on',contact:'open',body:{}});
+ const reply=createStubs({settings}).answer({method:'POST',path:'/api/booking-verification/start',search:'',booking:'on',contact:'open',body:{}});
  assert.equal(reply.status,503);assert.equal(reply.headers['x-preview'],'not-simulated');assert.deepEqual(JSON.parse(reply.body),{code:'temporarily_unavailable'});
  assert.equal(createStubs({settings}).answer({method:'GET',path:'/api/contact/start',search:'',booking:'on',contact:'open'}).status,503,'the message form only accepts POST');
  assert.equal(readSettings('/nowhere/at/all.json'),null);
@@ -305,4 +305,64 @@ test('--help prints the usage notes and starts nothing; otherwise the preview st
  const page=await fetch(running.origin+'/');
  assert.match(await page.text(),/\/ off</);
  await assert.rejects(main(['--dist',join(dist,'nothing-here')],()=>{}),/No built site/);
+});
+
+test('a pretend booking paid at the clinic: confirmed, kept, read again, emailed and found again',()=>{
+ let time=Date.parse('2026-11-16T03:00:00Z'); // Monday 8:30 am in India
+ const stubs=createStubs({settings,clock:()=>time});
+ const post=(path,body,booking='on')=>stubs.answer({method:'POST',path,search:'',booking,contact:'open',body});
+ const read=reply=>JSON.parse(reply.body);
+ const times=()=>read(stubs.answer({method:'GET',path:'/api/availability',search:'?service_id=dr-sanjay-gupta&day=2026-11-18&questions=1',booking:'on',contact:'open'})).slots.map(slot=>slot.starts_at);
+ assert.deepEqual(read(post('/api/checkout-context',{})),{ready:true});
+ const [first,second]=times(),id='11111111-2222-4333-8444-555555555555';
+ const press={request_id:id,normalization_version:3,full_name:' Ravi  Kumar ',email:'ravi@example.com',phone:'+919812345678',service_id:'dr-sanjay-gupta',
+  quote_version:'x',starts_at:first,payment_method:'at_clinic',questions:1,notes:'',birth_date:null,birth_time:'',birth_place:''};
+ // each refusal can be reached by hand
+ assert.deepEqual([post('/api/checkout',{...press,payment_method:'online'}).status,read(post('/api/checkout',{...press,payment_method:'online'})).code],[503,'payment_not_configured']);
+ assert.equal(read(post('/api/checkout',{...press,full_name:'R'})).code,'invalid_details');assert.equal(read(post('/api/checkout',{...press,phone:' '})).code,'invalid_details');
+ assert.equal(read(post('/api/checkout',{...press,starts_at:'2026-11-18T00:00:00.000Z'})).code,'time_unavailable');assert.equal(read(post('/api/checkout',{...press,starts_at:'soon'})).code,'time_unavailable');
+ assert.equal(read(post('/api/checkout',{...press,service_id:'nobody'})).code,'service_unavailable');assert.equal(post('/api/checkout',{...press,request_id:'short'}).status,422);
+ assert.equal(post('/api/checkout',{...press,payment_method:'cheque'}).status,422);assert.equal(post('/api/checkout',undefined).status,422);
+ const silent=post('/api/checkout',{...press,notes:'preview: no answer'});
+ assert.deepEqual([silent.status,read(silent).code],[503,'temporarily_unavailable'],'the first press with that note gets no answer');
+ // the same request sent again is confirmed
+ const done=read(post('/api/checkout',{...press,notes:'preview: no answer'})),receipt=checkedCheckout(done,id).receipt;
+ assert.equal(done.checkout,null);assert.equal(receipt.appointment_state,'confirmed');assert.equal(receipt.payment_state,'due_at_clinic');assert.equal(receipt.amount_due_paise,80000);
+ assert.equal(receipt.resource_name,'Dr. Sanjay Gupta');assert.equal(receipt.starts_at,first);assert.equal(receipt.acknowledgement_state,'pending');assert.equal(receipt.email_copy.has_booking_email,true);
+ assert.deepEqual(read(post('/api/checkout',press)).receipt.request_id,id,'pressing again returns the same booking');
+ // the time is now taken, here and in the day's list
+ assert.equal(times().includes(first),false);assert.equal(times()[0],second);
+ assert.equal(read(post('/api/checkout',{...press,request_id:'22222222-2222-4333-8444-555555555555'})).code,'time_unavailable');
+ // read again, later
+ time+=60000;const again=checkedReceipt(read(post('/api/checkout/status',{request_id:id})),id);
+ assert.equal(again.server_now,new Date(time).toISOString());assert.equal(post('/api/checkout/status',{request_id:'33333333-2222-4333-8444-555555555555'}).status,404);
+ // an email copy: accepted, pending, then delivered
+ const operation='44444444-2222-4333-8444-555555555555',copy=read(post('/api/checkout/email-details',{request_id:id,operation_id:operation,expected_revision:1}));
+ checkedEmailCopy(copy.email_copy);
+ assert.deepEqual([copy.code,copy.request_id,copy.operation_id,copy.booking_revision,copy.email_copy.state,copy.email_copy.remaining_requests,copy.email_copy.has_booking_email],['receipt_copy_accepted',id,operation,1,'pending',2,true]);
+ assert.equal(checkedReceipt(read(post('/api/checkout/status',{request_id:id})),id).email_copy.state,'pending');
+ const settled=checkedReceipt(read(post('/api/checkout/status',{request_id:id})),id).email_copy;
+ assert.equal(checkedReceipt(read(post('/api/checkout/status',{request_id:id})),id).email_copy.state,'delivered');assert.equal(settled.state,'pending');
+ assert.equal(post('/api/checkout/email-details',{request_id:id,operation_id:operation,expected_revision:2}).status,409);assert.equal(post('/api/checkout/email-details',{request_id:'x'}).status,404);
+ // "Find your booking": the list, then one booking in full (the keys are exactly those the package's reader demands)
+ const list=read(post('/api/booking/details',{full_name:'ravi kumar',phone:'+919812345678'}));
+ assert.deepEqual(Object.keys(list).sort(),['items','kind','next_cursor','server_now','version']);assert.equal(list.items.length,1);
+ assert.deepEqual(Object.keys(list.items[0]).sort(),['appointment_state','booking_revision','display_duration','ends_at','facts_version','request_id','resource_id','resource_name','service_name','starts_at','timezone']);
+ const detail=read(post('/api/booking/details',{full_name:'Ravi Kumar',phone:'+919812345678',request_id:id}));
+ assert.equal(Object.keys(detail.receipt).length,29);assert.equal('next_actions' in detail.receipt||'email_copy' in detail.receipt,false);assert.deepEqual(detail.capabilities,{refresh:true,download_pdf:true});
+ assert.equal(checkedReceiptFacts(detail.receipt,id).request_id,id);
+ assert.deepEqual(read(post('/api/booking/details',{full_name:'Nobody Here',phone:'+919800000000'})).items,[]);
+ assert.equal(read(post('/api/booking/details',{full_name:'Someone Else',phone:'+919812345678',request_id:id})).code,'booking_not_found');assert.equal(post('/api/booking/details',{full_name:'x'}).status,422);
+ // the two ready-made bookings
+ const seeded=read(post('/api/booking/details',{full_name:'Asha Verma',phone:'+919876543210'})).items;
+ assert.deepEqual(seeded.map(item=>[item.appointment_state,item.resource_name,item.starts_at]),[['confirmed','Dr. Sanjay Gupta','2026-11-17T04:50:00.000Z'],['cancelled','Dr. Parul Gupta','2026-11-09T04:50:00.000Z']]);
+ const cancelled=read(post('/api/booking/details',{full_name:'Asha Verma',phone:'+919876543210',request_id:seeded[1].request_id}));
+ assert.equal(cancelled.receipt.amount_due_paise,0);assert.equal(cancelled.capabilities.download_pdf,false);checkedReceiptFacts(cancelled.receipt,seeded[1].request_id);
+ // only 50 are kept, and the ready-made two stay
+ for(let index=0;index<52;index++)post('/api/checkout',{...press,request_id:`aaaaaaaa-0000-4000-8000-${String(index).padStart(12,'0')}`,starts_at:second,service_id:index%2?'dr-parul-gupta':'dr-sanjay-gupta',phone:'+9198000'+String(index).padStart(5,'0')});
+ assert.equal(read(post('/api/booking/details',{full_name:'Asha Verma',phone:'+919876543210'})).items.length,2);
+ // while booking is off, or without settings, nothing of this answers
+ const bare=createStubs({});
+ for(const path of ['/api/checkout-context','/api/checkout','/api/booking/details'])assert.equal(bare.answer({method:'POST',path,search:'',booking:'on',contact:'open',body:{...press,full_name:'A B',phone:'1'}}).status,503);
+ assert.equal(stubs.answer({method:'GET',path:'/api/checkout',search:'',booking:'on',contact:'open'}).status,503);
 });
