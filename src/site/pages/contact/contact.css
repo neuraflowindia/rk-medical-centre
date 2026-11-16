@@ -49,10 +49,10 @@
   .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; }
   .page-contact__map-label .icon { width: 16px; height: 16px; }
   .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
-  .page-contact__map-label--west { left: 2%; top: 29%; transform: translateY(-50%); }
-  .page-contact__map-label--east { right: 1.8%; top: 41%; transform: translateY(-50%); }
-  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: 9px; padding: 4px 10px 5px; transform: translateX(-50%); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); }
-  .page-contact__map-label--north { left: 10px; top: 10px; gap: 5px; min-height: 30px; padding: 0 10px 0 7px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); }
+  .page-contact__map-label--west { left: var(--space-3); top: 29%; transform: translateY(-50%); }
+  .page-contact__map-label--east { right: var(--space-3); top: 41%; transform: translateY(-50%); }
+  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: 9px; padding: 4px var(--space-3) 5px; transform: translateX(-50%); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); }
+  .page-contact__map-label--north { left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); }
   .page-contact__map-label--north .icon { color: var(--action); }
   /* near: the pin on the clinic's spot. Its tip is the point; it comes down as the map is scrolled to. */
   .page-contact__pin { position: absolute; z-index: 3; left: 50.3%; top: 52.8%; width: 0; height: 0; --rise: 0px; pointer-events: none; }
@@ -63,7 +63,7 @@
     opacity: calc((var(--q, 1) - .55) * 2.3); transform: scale(calc(.4 + var(--q, 1) * .6)); }
   .page-contact__map-hit { position: absolute; z-index: 1; inset: 0; border-radius: var(--radius-media-inner); }
   /* WAITING: request contact-03 — on phones the map's control is its corner mark alone; the words stay for assistive technology */
-  .page-contact__map-open { position: absolute; z-index: 4; right: 10px; top: 10px; gap: 0; width: var(--tap); padding: 0; }
+  .page-contact__map-open { position: absolute; z-index: 4; right: var(--space-3); top: var(--space-3); gap: 0; width: var(--tap); padding: 0; }
   .page-contact__map-open .button__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (hover: hover) and (pointer: fine) {
     .page-contact__map-window:has(.page-contact__map-hit:hover, .page-contact__map-open:hover) .page-contact__pin-hop { transform: translateY(-5px); }
@@ -232,8 +232,8 @@
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
     .page-contact__map-label--north { left: var(--space-4); top: var(--space-4); }
-    .page-contact__map-label--west { left: 1.8%; top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
-    .page-contact__map-label--east { right: 1.6%; top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); gap: 10px; width: auto; padding: 0 18px; }
     .page-contact__map-open .button__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
