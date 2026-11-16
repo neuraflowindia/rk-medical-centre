@@ -1,3 +1,14 @@
-/* section-head: styles of the shared part. Selectors start with .section-head */
+/* A section's heading: a caps running head with a hairline, the heading, and at most one sentence. */
 @layer components {
+  .section-head { max-width: 720px; }
+  .section-head__running { display: flex; align-items: center; gap: var(--space-4); margin-bottom: 18px; color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .section-head__running::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); transform-origin: left center; }
+  .section-head__intro { margin-top: 14px; max-width: 56ch; color: var(--ink-body); font: var(--type-sub); }
+  .section-head--on-deep .section-head__running { color: var(--link-on-deep); }
+  .section-head--on-deep .section-head__running::after { background: var(--line-on-deep); }
+  .section-head--on-deep .section-head__title { color: var(--ink-on-deep); }
+  .section-head--on-deep .section-head__intro { color: var(--ink-on-deep-soft); }
+  @media (min-width: 768px) {
+    .section-head__intro { margin-top: var(--space-4); }
+  }
 }

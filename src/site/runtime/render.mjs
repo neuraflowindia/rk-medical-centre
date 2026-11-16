@@ -72,7 +72,7 @@ export function releaseControls(root){
  * behaviour, and stop everything of the previous page first. `parts` is the list of shared
  * behaviours (each `(root, {signal, ctx, services})`); they find their own markup or do nothing.
  */
-export function createView({app,services,parts=[],booking,applyMetadata=()=>{},now=()=>new Date(),windowObject=window}){
+export function createView({app,services,parts=[],booking,applyMetadata=()=>{},prepare=()=>{},now=()=>new Date(),windowObject=window}){
  let scope=null,generation=0,current=null;
  function show(path,{first=false,search='',scroll=0}={}){
   generation++;scope?.abort();scope=new AbortController();
@@ -88,6 +88,8 @@ export function createView({app,services,parts=[],booking,applyMetadata=()=>{},n
   const main=app.querySelector('#main'),heading=main?.querySelector('h1')||null;
   heading?.setAttribute('tabindex','-1');
   applyMetadata(path);
+  // Whatever sits outside the app but depends on the page (the sheets) is drawn before anything is bound.
+  prepare(ctx);
   const context=Object.freeze({signal,ctx,services});
   for(const bind of parts)bind(app,context);
   pageFor(path).bind?.(main,context);

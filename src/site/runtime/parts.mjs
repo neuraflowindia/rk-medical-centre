@@ -5,6 +5,7 @@ import {bindSiteHeader} from '../parts/site-header/site-header.behaviour.mjs';
 import {bindSiteFooter} from '../parts/site-footer/site-footer.behaviour.mjs';
 import {bindOpenSigns} from '../parts/open-sign/open-sign.behaviour.mjs';
 import {bindEssentialsStrip} from '../parts/essentials-strip/essentials-strip.behaviour.mjs';
+import {bindHoursTable} from '../parts/hours-table/hours-table.behaviour.mjs';
 import {bindClosing} from '../parts/closing/closing.behaviour.mjs';
 import {bindActionBar} from '../parts/action-bar/action-bar.behaviour.mjs';
 import {bindCallPanel} from '../parts/call-panel/call-panel.behaviour.mjs';
@@ -14,10 +15,14 @@ import {bindCertificates} from '../parts/certificate-frame/certificate-frame.beh
 import {bindStillShelf} from '../parts/still-shelf/still-shelf.behaviour.mjs';
 import {bindQuestions} from '../parts/questions/questions.behaviour.mjs';
 
-/** The closing heading follows the same clock as the live signs, so the two are bound together. */
+/**
+ * Everything that follows the clinic's clock is painted together, every half minute: the live
+ * signs (wherever they are, the call sheet's included), the closing heading and the "Today" tag.
+ */
 export function bindClock(root,context){
- const repaint=bindClosing(root,context);
- bindOpenSigns(root,{signal:context.signal,onPaint:repaint||undefined});
+ const everywhere=root.ownerDocument||root;
+ const closing=bindClosing(root,context),today=bindHoursTable(root,context);
+ bindOpenSigns(everywhere,{signal:context.signal,onPaint:sign=>{closing?.(sign);today?.();}});
 }
 
 export const partBehaviours=Object.freeze([

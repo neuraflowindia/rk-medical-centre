@@ -1,8 +1,65 @@
-/* essentials-strip: styles of the shared part. (Skeleton: a plain strip; the finished strip follows.) */
+/* The essentials strip: three answers on one line, on a paper surface that overlaps a section boundary. */
 @layer components {
-  .essentials-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-7); padding: var(--space-3); border-radius: var(--radius-row); background: var(--surface); box-shadow: var(--elev-ambient); }
-  .essentials-strip__cell, .essentials-strip__link { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
-  .essentials-strip__text { display: grid; min-width: 0; }
-  .essentials-strip .open-sign__words { display: grid; }
+  .essentials-strip { display: grid; grid-template-columns: 1.3fr .7fr 1.2fr; border-radius: var(--radius-row); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
+  .essentials-strip__cell { position: relative; display: flex; min-width: 0; }
+  .essentials-strip__cell + .essentials-strip__cell::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 1px; background: var(--line); }
+  .essentials-strip__cell:not(.essentials-strip__cell--place), .essentials-strip__link {
+    display: grid; grid-template-columns: auto 1fr; align-content: center; align-items: center; column-gap: 6px; row-gap: 3px; padding: 11px 6px 12px 13px; min-height: 68px; width: 100%;
+  }
+  .essentials-strip__icon { display: grid; place-items: center; width: 17px; height: 21px; color: var(--action); }
+  .essentials-strip__icon .icon { width: 17px; height: 17px; }
+  .essentials-strip__text { display: contents; min-width: 0; }
+  .essentials-strip__label { color: var(--ink-body); font: var(--type-strip-label); white-space: nowrap; }
+  .essentials-strip__value { grid-column: 1 / -1; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  .essentials-strip__go { display: none; }
+
+  /* the live cell: an open sign laid out as a strip cell */
+  .essentials-strip .open-sign { display: contents; }
+  .essentials-strip .open-sign__dot { width: 11px; height: 11px; margin: 5px 3px; }
+  .essentials-strip .open-sign__words { display: contents; }
   .essentials-strip .open-sign__sep { display: none; }
+  /* a narrow cell shows the compact words ("Closed · opens" over "Mon 10:00 am"); the full ones return at 1024 */
+  .essentials-strip .open-sign__full { display: none; }
+  .essentials-strip .open-sign__compact { display: inline; }
+  .essentials-strip .open-sign__label { color: var(--ink); font: var(--type-strip-label); font-weight: 600; white-space: nowrap; }
+  .essentials-strip .open-sign__detail { grid-column: 1 / -1; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+
+  .essentials-strip__link { border-radius: var(--radius-strip-end); transition: background-color var(--dur-hover); }
+  .essentials-strip__link .essentials-strip__value { display: inline-flex; align-items: center; gap: 3px; color: var(--action); }
+  .essentials-strip__out { width: 17px; height: 17px; transition: transform var(--dur-hover) var(--ease-move); }
+  .essentials-strip__link:active { background: var(--chosen); }
+  .essentials-strip__link:focus-visible { outline-offset: -3px; border-radius: var(--radius-strip-end); }
+  @media (hover: hover) and (pointer: fine) {
+    .essentials-strip__link:hover { background: var(--chosen-soft); }
+    .essentials-strip__link:hover .essentials-strip__out { transform: translate(2px, -2px); }
+    .essentials-strip__link:hover .essentials-strip__go { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+  }
+  @media (max-width: 359px) {
+    .essentials-strip { grid-template-columns: 1fr 1fr; }
+    .essentials-strip__cell--place { grid-column: 1 / -1; }
+    .essentials-strip__cell.essentials-strip__cell--place::before { left: 14px; right: 14px; top: 0; bottom: auto; width: auto; height: 1px; }
+    .essentials-strip__link { min-height: 56px; border-radius: var(--radius-strip-foot); }
+  }
+  @media (min-width: 768px) {
+    .essentials-strip { grid-template-columns: 1.1fr .8fr 1.2fr; border-radius: var(--radius-bar); }
+    .essentials-strip__cell:not(.essentials-strip__cell--place), .essentials-strip__link { column-gap: 14px; padding: 20px 20px 20px 24px; min-height: calc(var(--strip-in) + var(--strip-out)); align-items: center; }
+    .essentials-strip__icon { width: 24px; height: 24px; }
+    .essentials-strip__icon .icon { width: 22px; height: 22px; }
+    .essentials-strip__text, .essentials-strip .open-sign__words { display: grid; gap: 2px; min-width: 0; overflow: hidden; }
+    .essentials-strip .open-sign__dot { margin: 6.5px; }
+    .essentials-strip__value, .essentials-strip .open-sign__detail { grid-column: auto; font: var(--type-strip-value-wide); letter-spacing: -.005em; }
+    .essentials-strip__cell + .essentials-strip__cell::before { top: 18px; bottom: 18px; }
+    .essentials-strip__label, .essentials-strip .open-sign__label { font-size: var(--size-label); }
+    .essentials-strip__link .essentials-strip__value { gap: 6px; }
+    .essentials-strip__out { width: 20px; height: 20px; }
+    .essentials-strip__go { place-items: center; width: 44px; height: 44px; border-radius: var(--radius-round); color: var(--action); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
+    .essentials-strip__link:active .essentials-strip__go { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
+  }
+  @media (min-width: 1024px) {
+    .essentials-strip .open-sign__full { display: inline; }
+    .essentials-strip .open-sign__compact { display: none; }
+    .essentials-strip__link { grid-template-columns: auto 1fr auto; }
+    .essentials-strip__link .essentials-strip__out { display: none; }
+    .essentials-strip__go { display: grid; }
+  }
 }

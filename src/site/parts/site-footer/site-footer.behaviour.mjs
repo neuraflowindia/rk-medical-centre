@@ -17,7 +17,7 @@ export function paintMotionToggle(control,state,words=footer.motion){
 export function detailsNoticeMarkup(){return paragraphs(detailsNotice.paragraphs);}
 /** The privacy choices, as markup for the reader. */
 export function privacyChoicesMarkup(){
- return paragraphs(privacyChoices.paragraphs)+`<p class="reader__actions">${button({label:privacyChoices.accept,variant:'second',attributes:{'data-privacy-accept':true}})}</p>`;
+ return paragraphs(privacyChoices.paragraphs)+`<p class="sheet__actions">${button({label:privacyChoices.accept,variant:'second',attributes:{'data-privacy-accept':true}})}</p>`;
 }
 
 export function bindSiteFooter(root,{signal,services}={}){

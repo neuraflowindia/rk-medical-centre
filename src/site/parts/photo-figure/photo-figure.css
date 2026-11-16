@@ -1,3 +1,25 @@
-/* photo-figure: styles of the shared part. Selectors start with .photo-figure */
+/* Photographs in the site's one frame: a thin paper mat and a soft, wide shadow. Captions sit below.
+   Roots: .photo-figure · .arch-frame (the arch-topped portrait frame) */
 @layer components {
+  .arch-frame { position: relative; padding: 5px; border-radius: var(--radius-arch); background: var(--surface); box-shadow: var(--elev-photo); }
+  .arch-frame img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-arch-inner); }
+
+  .photo-figure { position: relative; }
+  .photo-figure__frame { padding: 5px; border-radius: var(--radius-media); background: var(--surface); box-shadow: var(--elev-photo); }
+  .photo-figure__frame img { width: 100%; object-fit: cover; border-radius: var(--radius-media-inner); }
+  .photo-figure--16x9 .photo-figure__frame img { aspect-ratio: 16 / 9; }
+  .photo-figure--4x5 .photo-figure__frame img { aspect-ratio: 4 / 5; }
+  .photo-figure--3x2 .photo-figure__frame img { aspect-ratio: 3 / 2; }
+  .photo-figure--1x1 .photo-figure__frame img { aspect-ratio: 1; }
+  .photo-figure--arch .photo-figure__frame { border-radius: var(--radius-arch); }
+  .photo-figure--arch .photo-figure__frame img { border-radius: var(--radius-arch-inner); }
+  .photo-figure__caption { padding: 14px 0 0 4px; color: var(--ink-body); font: var(--type-caption); }
+  .photo-figure__key { display: block; margin-bottom: 2px; color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  @media (min-width: 768px) {
+    .photo-figure__frame { padding: 8px; }
+    .photo-figure__caption { padding: var(--space-4) 0 0 var(--space-2); }
+  }
+  @media (min-width: 1024px) {
+    .arch-frame { padding: 8px; }
+  }
 }

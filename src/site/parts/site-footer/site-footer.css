@@ -1,21 +1,57 @@
-/* The footer: deep ground, complete and compact. (Skeleton: layout only; the finished look follows.) */
+/* The footer: deep ground, complete and compact. */
 @layer components {
-  .site-footer { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: var(--space-9) 0 calc(var(--space-7) + env(safe-area-inset-bottom, 0px)); font: var(--type-row); }
-  .site-footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-7); }
-  .site-footer__brand { display: grid; gap: var(--space-3); justify-items: start; }
-  .site-footer__hours { display: grid; gap: 2px; font-variant-numeric: tabular-nums lining-nums; }
-  .site-footer__doctors { display: grid; gap: var(--space-5); }
-  .site-footer__doctor { display: grid; gap: 2px; justify-items: start; }
+  .site-footer { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: 40px 0 calc(20px + env(safe-area-inset-bottom, 0px)); font: var(--type-row); line-height: 1.5; }
+  .site-footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .site-footer__brand { display: grid; gap: var(--space-2); justify-items: start; align-content: start; }
+  .site-footer .lockup--deep { margin: 0 0 4px; }
+  .site-footer .lockup__tile { width: 46px; height: 46px; border-radius: var(--radius-small); }
+  .site-footer .lockup__tile img { width: 26px; height: 30px; }
+  .site-footer__address { max-width: 46ch; color: var(--ink-on-deep-soft); }
+  .site-footer__hours { display: grid; color: var(--ink-on-deep-soft); font-variant-numeric: tabular-nums lining-nums; }
+  .site-footer__doctors { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); padding-top: 18px; border-top: 1px solid var(--line-on-deep); }
+  .site-footer__doctor { display: grid; justify-items: start; align-content: start; }
   .site-footer__name { color: var(--ink-on-deep); font-weight: 600; }
-  .site-footer__phone { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); color: var(--link-on-deep); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+  .site-footer__phone, .site-footer__link {
+    display: inline-flex; align-items: center; min-height: var(--tap); color: var(--link-on-deep); text-align: left;
+    text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 4px;
+    transition: color var(--dur-hover), text-decoration-color var(--dur-hover);
+  }
+  .site-footer__phone { gap: var(--space-2); font-weight: 600; }
+  .site-footer__phone .icon { width: 17px; height: 17px; }
+  .site-footer__digits { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
   .site-footer__registration { color: var(--ink-on-deep-muted); font: var(--type-meta); }
-  .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 var(--space-5); }
-  .site-footer__link { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--ink-on-deep); text-align: left; }
-  .site-footer__base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); margin-top: var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--line-on-deep); color: var(--ink-on-deep-muted); font: var(--type-meta); }
-  .site-footer__controls { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
-  .site-footer__control { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); color: var(--ink-on-deep-soft); }
+  .site-footer__nav { padding-top: 6px; border-top: 1px solid var(--line-on-deep); }
+  .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--space-4); }
+  .site-footer__link { gap: 7px; font-weight: 500; }
   .site-footer :focus-visible { outline-color: var(--focus-on-deep); }
+  .site-footer__link:active, .site-footer__phone:active { color: var(--ink-on-deep); }
+  @media (hover: hover) and (pointer: fine) {
+    .site-footer__link:hover, .site-footer__phone:hover, .site-footer__name:hover { color: var(--ink-on-deep); text-decoration-color: currentColor; }
+  }
+  .site-footer__base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px var(--space-5); margin-top: var(--space-3); padding-top: 14px; border-top: 1px solid var(--line-on-deep); color: var(--ink-on-deep-muted); font: var(--type-meta); }
+  .site-footer__motion { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 0 14px; border-radius: var(--radius-control); color: var(--ink-on-deep); font: var(--type-toggle); box-shadow: inset 0 0 0 1.5px var(--line-on-deep-strong); transition: background-color var(--dur-hover), box-shadow var(--dur-hover), transform var(--dur-press); }
+  .site-footer__motion .icon { width: 18px; height: 18px; }
+  .site-footer__motion:active { transform: translateY(var(--press)); }
+  .site-footer__motion[aria-pressed="true"] { background: var(--wash-on-deep); box-shadow: var(--elev-toggle-pressed); }
+  @media (hover: hover) and (pointer: fine) {
+    .site-footer__motion:hover { background: var(--wash-on-deep); box-shadow: var(--ring-on-deep); }
+  }
+  @media (max-width: 359px) {
+    .site-footer__phone .icon { display: none; }
+  }
   @media (min-width: 768px) {
-    .site-footer__grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); }
+    .site-footer { padding: 72px 0 28px; }
+    .site-footer__grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px 48px; }
+    .site-footer__brand { gap: var(--space-3); }
+    .site-footer__doctors { grid-column: 1; gap: var(--space-6); padding-top: var(--space-6); }
+    .site-footer__nav { grid-column: 2; grid-row: 1 / 3; padding-top: 0; border-top: 0; }
+    .site-footer__base { margin-top: 40px; padding-top: 18px; }
+  }
+  @media (min-width: 1024px) {
+    .site-footer__grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.3fr) auto; gap: 72px; }
+    .site-footer__doctors { grid-column: 2; padding-top: 4px; border-top: 0; }
+    .site-footer__nav { grid-column: 3; grid-row: 1; }
+    .site-footer__nav ul { grid-template-columns: minmax(0, 1fr); }
+    .site-footer__base { margin-top: 56px; }
   }
 }

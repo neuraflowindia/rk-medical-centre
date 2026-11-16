@@ -23,3 +23,12 @@ export function photoFigure(photoId,{ratio='16:9',frame='plain',caption='',capti
  return `<figure${attrs({class:classes('photo-figure',`photo-figure--${frame}`,`photo-figure--${ratio.replace(':','x')}`,className),...(enter&&loading!=='eager'?{'data-enter':'photo'}:{})})}>`
   +`<div class="photo-figure__frame">${image(record,{sizes,alt,eager:loading==='eager'})}</div>${words}</figure>`;
 }
+
+/**
+ * A portrait in the arch-topped frame, without a caption of its own (the part that uses it
+ * places the name beside or below). Portraits are never shown wider than 264 px.
+ */
+export function archPortrait(photoId,{sizes='(min-width: 1024px) 264px, 45vw',alt,eager=false,className=''}={}){
+ if(!Object.hasOwn(clinicPhotos,photoId))throw new RangeError('Unknown photograph: '+photoId);
+ return `<div${attrs({class:classes('arch-frame',className)})}>${image(clinicPhotos[photoId],{sizes,alt,eager})}</div>`;
+}

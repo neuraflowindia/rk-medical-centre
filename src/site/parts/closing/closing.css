@@ -1,3 +1,42 @@
-/* closing: styles of the shared part. Selectors start with .closing */
+/* The closing: one tall inset panel on the light ground, one decision. */
 @layer components {
+  .closing { background: var(--ground-light); padding: calc(var(--section-pad) - 8px) 0 var(--space-8); overflow-x: clip; }
+  .closing__panel { position: relative; display: grid; gap: var(--space-6); padding: var(--space-7) var(--card-pad) var(--card-pad); border-radius: var(--radius-panel); background: var(--ground-tint); box-shadow: inset 0 0 0 1px var(--line-panel); overflow: clip; }
+  .closing__arch { position: absolute; z-index: 0; right: -70px; bottom: -40px; width: 250px; height: 300px; border-radius: var(--radius-arch-open); background: var(--ground-tint-light); }
+  .closing__copy, .closing__calls { position: relative; z-index: 1; }
+  .closing__copy { display: grid; justify-items: start; }
+  .closing__calls .call-row { min-height: 72px; padding: 10px 14px 10px 10px; row-gap: 0; }
+  .closing__calls .call-row__need { display: none; }
+  .closing__sign { margin-top: var(--space-3); min-height: 28px; }
+  .closing__action { margin-top: var(--space-5); width: 100%; }
+  .closing__action .button { width: 100%; }
+  /* While booking is off there is no booking button here: the call rows are the action. */
+  html[data-booking-state="off"] .closing__action { display: none; }
+  .closing__object { display: none; }
+  @media (min-width: 768px) {
+    .closing { padding: var(--section-pad) 0; }
+    .closing__panel { gap: 36px; padding: 52px 48px 48px; }
+    .closing__arch { right: 6%; bottom: 0; width: 38%; height: 80%; }
+    .closing__action, .closing__action .button { width: auto; }
+    .closing__action { margin-top: 28px; }
+    .closing__sign { margin-top: var(--space-4); }
+    .closing__calls .call-row { min-height: 88px; padding: 16px 22px 16px 16px; }
+    .closing__calls .call-row__need { display: inline; }
+  }
+  @media (min-width: 1024px) {
+    .closing { padding: var(--section-pad) 0 calc(var(--section-pad) + 16px); }
+    .closing__panel { grid-template-columns: minmax(0, 4.4fr) minmax(0, 6.6fr); align-items: center; gap: 44px; padding: 72px 56px; min-height: 440px; overflow: visible; }
+    .closing__calls .call-row__need { font-size: var(--size-small); }
+    .closing__title { font: var(--type-closing); letter-spacing: var(--tracking-h1); }
+    .closing__arch { right: 9%; width: 34%; height: 90%; }
+    .closing__object { display: block; position: absolute; z-index: 2; right: -14px; top: -46px; width: 124px; height: auto; transform: rotate(-14deg); filter: var(--elev-object); pointer-events: none; }
+  }
+  @media (min-width: 1280px) {
+    /* the handset hangs over the panel's corner, but never past the screen on a 1280-wide laptop */
+    .closing__object { right: clamp(-34px, calc(-10px - (100vw - 1280px) * .3), -10px); width: 138px; }
+    /* the pale arch stands behind the call rows: a little wider than them, on the same centre */
+    .closing__arch { width: 608px; right: 56px; height: 86%; }
+    .closing__panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 72px; padding: 84px 88px 84px 80px; min-height: 460px; }
+    .closing__calls .call-row__need { font-size: var(--size-label); }
+  }
 }

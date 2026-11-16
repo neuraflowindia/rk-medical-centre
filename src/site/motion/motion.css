@@ -1,3 +1,11 @@
-/* Entrances and ambient loops. Nothing here applies unless scripts have set html[data-motion="on"]. */
+/* Entrances. Each part marked data-enter carries one number from the motion module: --p, from 0
+   (not yet arrived) to 1 (at rest). It follows the scroll, runs once and never goes back. Without
+   that number a part is simply at rest, so a page without scripts, or with motion paused, is still.
+   Words move and never fade; cards travel further; photographs unroll downward; hairlines draw from the left. */
 @layer motion {
+  [data-enter] { --q: var(--p, 1); }
+  html[data-motion="on"] [data-enter]:not([data-enter="rule"], [data-enter="photo"]) { transform: translateY(calc((1 - var(--q)) * var(--rise))); }
+  html[data-motion="on"] [data-enter="card"] { transform: translateY(calc((1 - var(--q)) * var(--rise-card))); }
+  html[data-motion="on"] [data-enter="rule"]::before, html[data-motion="on"] [data-enter="rule"]::after { transform: scaleX(var(--q)); }
+  html[data-motion="on"] [data-enter="photo"] .photo-figure__frame { clip-path: inset(0 0 calc((1 - var(--q)) * 34%) 0 round var(--radius-media)); }
 }

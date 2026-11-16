@@ -17,12 +17,16 @@
   .lockup__tile { display: inline-grid; place-items: center; flex: none; width: 48px; height: 52px; border-radius: var(--radius-control); background: var(--ground-light); }
 
   .site-header__nav, .site-header__sign, .site-header__book { display: none; }
-  .site-header__menu { position: relative; display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 12px 0 10px; margin-right: -4px; color: var(--ink); font: var(--type-control-small); isolation: isolate; }
+  .site-header__menu { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: var(--tap); min-height: var(--tap); padding: 0 12px 0 10px; margin-right: -4px; color: var(--ink); font: var(--type-control-small); isolation: isolate; }
   .site-header__menu::before { content: ""; position: absolute; z-index: -1; inset: 5px 0; border-radius: var(--radius-small); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-menu); transition: box-shadow var(--dur-hover), background-color var(--dur-hover); }
   .site-header__menu .icon { width: 22px; height: 22px; }
   .site-header__menu:active::before { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
   .site-header__menu:focus-visible { border-radius: var(--radius-control); }
   .site-header--slim .site-header__help { margin-left: auto; }
+  @media (max-width: 359px) {
+    .site-header__menu { padding: 0 11px; }
+    .site-header__menu span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  }
 
   @media (min-width: 768px) {
     .site-header__book { display: inline-flex; }

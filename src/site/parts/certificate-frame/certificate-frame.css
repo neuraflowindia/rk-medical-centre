@@ -1,7 +1,54 @@
-/* certificate-frame: styles of the shared part. Roots: .certificate-frame · .certificate-wall · .certificate-viewer (Skeleton: a plain row; the finished frames follow.) */
+/* Certificates as framed documents. Roots: .certificate-frame · .certificate-wall · .certificate-viewer
+   The picture's height is set by --certificate-height (a page may set it on a parent); the frame keeps each picture's own shape. */
 @layer components {
-  .certificate-wall { display: flex; gap: var(--space-5); overflow-x: auto; padding-block: var(--space-4); }
-  .certificate-frame { flex: none; width: min(240px, 62vw); }
-  .certificate-frame__mat { padding: 10px; background: var(--wash-mustard); border-radius: var(--radius-frame); box-shadow: inset 0 0 0 1px var(--line-strong); }
-  .certificate-frame__label { display: grid; margin-top: var(--space-2); font: var(--type-meta); }
+  .certificate-wall { position: relative; display: flex; gap: 18px; overflow-x: auto; padding: 0 var(--gutter) 14px; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); scrollbar-width: none; overscroll-behavior-x: contain; }
+  .certificate-wall::-webkit-scrollbar { display: none; }
+  .certificate-wall__item { flex: none; min-width: 132px; scroll-snap-align: start; }
+
+  .certificate-frame { display: grid; justify-items: start; transform-origin: 50% 30%; }
+  .certificate-frame__mat { display: block; padding: var(--certificate-mat, 7px); border-radius: var(--radius-frame); background: var(--wash-mustard); box-shadow: var(--elev-certificate); }
+  .certificate-frame__mat img { height: var(--certificate-height, 124px); width: auto; max-width: none; border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
+  .certificate-frame--small { --certificate-height: 96px; }
+  .certificate-frame--large { --certificate-height: 180px; }
+  .certificate-frame__mat--view { cursor: zoom-in; transition: transform var(--dur-hover) var(--ease-move); }
+  .certificate-frame__mat--view:active { transform: translateY(var(--press)); }
+  .certificate-frame__mat--view:focus-visible { outline-offset: 4px; border-radius: var(--radius-frame); }
+  @media (hover: hover) and (pointer: fine) {
+    .certificate-frame__mat--view:hover { transform: translateY(var(--lift)); }
+  }
+  /* the label takes its document's width and wraps inside it */
+  .certificate-frame__label { display: grid; gap: 1px; margin-top: 14px; width: 0; min-width: 100%; }
+  .certificate-frame__label strong { color: var(--ink); font: var(--type-caption-strong); line-height: 1.3; }
+  .certificate-frame__label span { color: var(--ink-muted); font: var(--type-meta); }
+
+  /* The documents settle as the row scrolls into view: each starts a little low and tilted and comes
+     to rest, one after another, over about half a screen. Only where the browser links animation to
+     scrolling, and only while motion is on; elsewhere the documents simply stand straight. */
+  @supports (animation-timeline: view()) {
+    html[data-motion="on"] .certificate-wall[data-settle] { view-timeline: --certificate-wall block; }
+    html[data-motion="on"] .certificate-wall[data-settle] .certificate-frame {
+      animation-name: certificate-frame-settle; animation-fill-mode: both; animation-timing-function: cubic-bezier(.33, 1, .68, 1);
+      animation-timeline: --certificate-wall; animation-range: cover calc(var(--lag, 0) * 38%) cover calc(var(--lag, 0) * 38% + 25%);
+    }
+  }
+  @keyframes certificate-frame-settle {
+    from { transform: translateY(44px) rotate(var(--tilt, 0deg)); }
+    to { transform: none; }
+  }
+
+  /* the viewer: one document, large */
+  .certificate-viewer { inset: 0; margin: auto; width: min(880px, 100% - 24px); height: fit-content; max-height: calc(100dvh - 24px); padding: var(--space-4) var(--space-5) var(--space-5); border-radius: var(--radius-card); transform: translateY(18px) scale(.985); overflow-y: auto; }
+  @starting-style { .certificate-viewer[open] { transform: translateY(18px) scale(.985); } }
+  .certificate-viewer .sheet__head { min-height: 52px; margin-bottom: var(--space-3); }
+  .certificate-viewer__figure { display: grid; justify-items: center; gap: var(--space-4); }
+  .certificate-viewer__mat { padding: 10px; border-radius: var(--radius-frame); background: var(--wash-mustard); box-shadow: inset 0 0 0 1px var(--line-strong), var(--elev-ambient); }
+  .certificate-viewer__mat img { width: auto; max-width: 100%; max-height: min(62dvh, 640px); border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
+  .certificate-viewer__label { display: grid; gap: 1px; justify-items: center; text-align: center; }
+  .certificate-viewer__label strong { color: var(--ink); font: var(--type-caption-strong); }
+  .certificate-viewer__label span { color: var(--ink-muted); font: var(--type-meta); }
+  .certificate-viewer__controls { display: flex; align-items: center; justify-content: center; gap: var(--space-5); margin-top: var(--space-5); }
+  .certificate-viewer__count { min-width: 5em; text-align: center; color: var(--ink-muted); font: var(--type-count); font-variant-numeric: tabular-nums lining-nums; }
+  @media (min-width: 768px) {
+    .certificate-viewer { padding: 22px var(--space-7) var(--space-7); }
+  }
 }

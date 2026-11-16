@@ -22,11 +22,10 @@ export function siteFooter(ctx){
   +`<ul class="site-footer__doctors" id="footer-calls" aria-label="${text(footer.phonesLabel)}">${people}</ul>`
   +`<nav class="site-footer__nav" aria-label="${text(footer.pagesLabel)}"><ul>${pages}`
   +`<li><a class="site-footer__link" href="${bookingPaths.book}">${text(entryWords.header.on.label)}</a></li>`
-  +`<li><button class="site-footer__link" type="button" data-collection-notice data-needs-script>${text(footer.detailsNotice)}</button></li>`
+  +`<li data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-collection-notice>${text(footer.detailsNotice)}</button></li>`
+  +`<li data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-privacy>${text(footer.privacyChoices)}</button></li>`
   +`</ul></nav></div>`
   +`<div class="wrap site-footer__base"><p>${text(copyrightLine(ctx.now.getFullYear()))}</p>`
-  +`<div class="site-footer__controls" data-needs-script>`
-  +`<button class="site-footer__control" type="button" data-privacy>${text(footer.privacyChoices)}</button>`
-  +`<button class="site-footer__control" type="button" aria-pressed="false" data-motion-toggle>${icon('pause')}<span data-motion-label>${text(footer.motion.pause)}</span></button>`
-  +`</div></div></footer>`;
+  +`<button class="site-footer__motion" type="button" aria-pressed="false" data-motion-toggle data-needs-script>${icon('pause')}<span data-motion-label>${text(footer.motion.pause)}</span></button>`
+  +`</div></footer>`;
 }

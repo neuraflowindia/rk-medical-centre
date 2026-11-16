@@ -22,3 +22,52 @@ export const clinicPhotos={
 export const clinicAlbum=['waiting-area','reception','entrance','sanjay-room','parul-room','street-frontage','clinic-gate'];
 export const doctorPortraits={sanjay:'sanjay-portrait',parul:'parul-portrait'};
 export const doctorRoomPhotos={sanjay:'sanjay-room',parul:'parul-room'};
+
+// ---- The version-2 look: tight crops with one colour grade, exported at 1× and 2×. ----
+// A crop record's width and height are its 1× size; `sources` lists every exported width.
+function crop(id,caption,alt,stem,width,height,widths){
+ const sources=widths.map(size=>({width:size,src:`/client-photos/${stem}-${size}.webp`}));
+ return {id,caption,alt,width,height,src:sources[0].src,sources};
+}
+Object.assign(clinicPhotos,{
+ 'portrait-sanjay':crop('portrait-sanjay','In his consulting room',`${doctors.sanjay.name} at his desk in the consulting room`,'dr-sanjay-gupta-portrait',264,330,[264,528]),
+ 'portrait-parul':crop('portrait-parul','In her consulting room',`${doctors.parul.name} reading a patient’s notes in her consulting room`,'dr-parul-gupta-portrait',264,330,[264,528]),
+ frontage:crop('frontage','Clinic frontage','The clinic seen from Ring Road: a green wall, a blue board with both doctors’ names and the R. K. Medical Centre sign','frontage-from-ring-road',640,360,[640,1280]),
+ waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,800])
+});
+/** The arch portraits of the two doctors (hero pair, doctor cards). */
+export const archPortraits={sanjay:'portrait-sanjay',parul:'portrait-parul'};
+/** Small square faces for rows that name a doctor (call rows, strips, booking). Decorative: alt is empty. */
+export const doctorAvatars={
+ sanjay:{src:'/client-photos/dr-sanjay-gupta-avatar-168.webp',width:168,height:168,alt:''},
+ parul:{src:'/client-photos/dr-parul-gupta-avatar-168.webp',width:168,height:168,alt:''}
+};
+
+// Paper-cut and studio objects, trimmed to their own outline. Accents only: always decorative.
+const object=(name,width,height)=>({src:`/clinic-assets/object-${name}-${width}.webp`,width,height,alt:''});
+export const clinicObjects={
+ 'blood-pressure-cuff':object('blood-pressure-cuff',420,263),
+ 'desk-calendar':object('desk-calendar',360,325),
+ 'doppler-probe':object('doppler-probe',420,236),
+ 'folded-cloth':object('folded-cloth',400,167),
+ 'glucose-meter':object('glucose-meter',291,360),
+ 'map-pin':object('map-pin',224,300),
+ pen:object('pen',239,360),
+ 'question-list':object('question-list',324,380),
+ 'report-clipboard':object('report-clipboard',295,360),
+ 'stethoscope-general':object('stethoscope-general',273,360),
+ 'stethoscope-teal':object('stethoscope-teal',420,413),
+ 'telephone-handset':object('telephone-handset',354,400),
+ thermometer:object('thermometer',227,360),
+ 'ultrasound-probe':object('ultrasound-probe',360,357)
+};
+
+// Certificates with their physical frames cropped away, for the site's own frame.
+// Keyed by the certificate's id in certificate-catalogue.mjs; a certificate without an entry
+// here is shown from its catalogue picture.
+export const plainCertificates={
+ 'sanjay-gupta-certificate-08':{src:'/certificates/sanjay-gupta-certificate-08-plain-704.webp',width:704,height:464},
+ 'sanjay-gupta-certificate-03':{src:'/certificates/sanjay-gupta-certificate-03-plain-460.webp',width:460,height:650},
+ 'parul-gupta-certificate-01':{src:'/certificates/parul-gupta-certificate-01-plain-708.webp',width:708,height:528},
+ 'parul-gupta-certificate-02':{src:'/certificates/parul-gupta-certificate-02-plain-710.webp',width:710,height:530}
+};

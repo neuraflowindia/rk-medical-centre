@@ -1,0 +1,14 @@
+/* The week as a small timetable: tabular figures, hairlines, and a flat "Today" tag. */
+@layer components {
+  .hours-table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line-strong); font-variant-numeric: tabular-nums lining-nums; }
+  .hours-table th, .hours-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: baseline; font: var(--type-hours); white-space: nowrap; }
+  .hours-table th:last-child, .hours-table td:last-child { padding-right: 0; }
+  .hours-table thead th { padding: 7px 0 6px; color: var(--ink-muted); font: var(--type-small); }
+  .hours-table tbody th { color: var(--ink); font-weight: 600; }
+  .hours-table td { color: var(--ink); font-weight: 500; }
+  .hours-table .hours-table__none { color: var(--ink-muted); font-weight: 400; }
+  .hours-table__today { display: inline-block; margin-left: var(--space-2); padding: 1px 7px 2px; border-radius: var(--radius-focus); background: var(--chosen); color: var(--ink); font: var(--type-tag); line-height: var(--leading-tight); vertical-align: 1px; }
+  @media (max-width: 359px) {
+    .hours-table__today { display: block; width: fit-content; margin: 2px 0 0; }
+  }
+}

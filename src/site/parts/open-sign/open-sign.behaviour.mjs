@@ -2,12 +2,15 @@
 // half minute. A failure leaves the neutral line in place and never stops the page.
 import {liveSign} from '../../../clinic/page-content/shared.mjs';
 
-/** Put one sign into a state. Writes only what changed. */
+/** Put one sign into a state. Writes only what changed. A sign with compact words gets those too. */
 export function paintOpenSign(node,sign){
  if(node.getAttribute('data-state')!==sign.state)node.setAttribute('data-state',sign.state);
- const label=node.querySelector('[data-open-label]'),detail=node.querySelector('[data-open-detail]');
- if(label&&label.textContent!==sign.label)label.textContent=sign.label;
- if(detail&&detail.textContent!==sign.detail)detail.textContent=sign.detail;
+ const compact=sign.compact||sign;
+ for(const [selector,words] of [['[data-open-label]',sign.label],['[data-open-detail]',sign.detail],
+  ['[data-open-label-compact]',compact.label],['[data-open-detail-compact]',compact.detail]]){
+  const target=node.querySelector(selector);
+  if(target&&target.textContent!==words)target.textContent=words;
+ }
 }
 
 /**
@@ -16,10 +19,9 @@ export function paintOpenSign(node,sign){
  */
 export function bindOpenSigns(root,{signal,now=()=>new Date(),every=30000,timers=globalThis,onPaint}={}){
  try{
-  const nodes=[...root.querySelectorAll('[data-open-sign]')];
-  if(!nodes.length&&!onPaint)return ()=>{};
+  // Signs are looked up at every tick: a sheet's sign is drawn after the page is bound.
   const update=()=>{
-   try{const sign=liveSign(now());for(const node of nodes)paintOpenSign(node,sign);onPaint?.(sign);}
+   try{const sign=liveSign(now());for(const node of root.querySelectorAll('[data-open-sign]'))paintOpenSign(node,sign);onPaint?.(sign);}
    catch{/* the sign stays as it was; the page carries on */}
   };
   update();

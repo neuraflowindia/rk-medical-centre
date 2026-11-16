@@ -1,7 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as standins from '../../src/clinic/standins.mjs';
-import {doctors} from '../../src/clinic/model.mjs';
+import {doctors,doctorFacts} from '../../src/clinic/model.mjs';
+import {degreesOf} from '../../src/clinic/page-content/shared.mjs';
 
 const source=readFileSync(new URL('../../src/clinic/standins.mjs',import.meta.url),'utf8');
 const marker='// '+standins.STAND_IN_NOTE;
@@ -21,7 +22,11 @@ test('every stand-in value is exported under a clear name and carries the marker
 });
 
 test('the values are the ones agreed in the concept brief',()=>{
- assert.deepEqual(standins.doctorDegrees,{sanjay:'MBBS, MD (Medicine)',parul:'MBBS, MS (Obstetrics & Gynaecology)'});
+ assert.deepEqual(standins.doctorDegrees,{parul:'MBBS, MS (Obstetrics & Gynaecology)'},'only Dr. Parul Gupta’s degrees await confirmation');
+ assert.equal(doctorFacts.sanjay.degrees,'MBBS, DGO','Dr. Sanjay Gupta’s degrees are a confirmed fact, kept with the facts');
+ assert.equal(degreesOf('sanjay'),'MBBS, DGO');assert.equal(degreesOf('parul'),standins.doctorDegrees.parul);
+ assert.throws(()=>degreesOf('nobody'),RangeError);
+ assert.doesNotMatch(standins.standInRegister.map(item=>item.key+item.value).join(' '),/sanjay.*MD \(Medicine\)|doctorDegrees\.sanjay/,'his degrees are not in the register');
  assert.equal(standins.registrationCouncil,'UP Medical Council');
  assert.deepEqual(standins.registrationNumbers,{sanjay:'38164',parul:'38209'});
  assert.equal(standins.whatsappFirstMessage,'Hello, I would like to ask about an appointment.');
@@ -52,7 +57,7 @@ test('a registration line names the council and the doctor\'s number',()=>{
 
 test('the register lists every stand-in once, with the value actually in use',()=>{
  const register=standins.standInRegister;
- assert.equal(register.length,12);
+ assert.equal(register.length,11);
  assert.equal(new Set(register.map(item=>item.key)).size,register.length);
  for(const item of register){
   const [name,part]=item.key.split('.');
@@ -65,6 +70,6 @@ test('the register lists every stand-in once, with the value actually in use',()
 
 test('stand-ins cannot be changed by accident and hold no markup',()=>{
  assert.ok(Object.isFrozen(standins.doctorDegrees)&&Object.isFrozen(standins.registrationNumbers)&&Object.isFrozen(standins.standInRegister));
- assert.throws(()=>{standins.doctorDegrees.sanjay='MBBS';},TypeError);
+ assert.throws(()=>{standins.doctorDegrees.parul='MBBS';},TypeError);assert.throws(()=>{standins.doctorDegrees.sanjay='MBBS';},TypeError);
  for(const item of standins.standInRegister)assert.doesNotMatch(item.value,/[<>]/);
 });

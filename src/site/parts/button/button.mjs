@@ -87,9 +87,13 @@ export function chip({label,href,chosen=false,className='',attributes={}}){
  return `<a${attrs({class:classes('chip',className),href,'data-chip':true,'data-chosen':chosen,...attributes})}><span class="chip__label">${text(label)}</span></a>`;
 }
 
-/** One tab of a tab list (a real <button role="tab">; its part's behaviour moves the selection). */
-export function tab({label,id,controls,selected=false,className='',attributes={}}){
- return `<button${attrs({type:'button',class:classes('tab',className),role:'tab',id,'aria-controls':controls,'aria-selected':selected?'true':'false',tabindex:selected?null:'-1',...attributes})}>${text(label)}</button>`;
+/**
+ * One tab of a tab list (a real <button role="tab">; its part's behaviour moves the selection).
+ *   count  a number shown after the label ("All 26")
+ */
+export function tab({label,id,controls,selected=false,count=null,className='',attributes={}}){
+ const number=count===null?'':` <span class="tab__count">${text(count)}</span>`;
+ return `<button${attrs({type:'button',class:classes('tab',className),role:'tab',id,'aria-controls':controls,'aria-selected':selected?'true':'false',tabindex:selected?null:'-1',...attributes})}>${text(label)}${number}</button>`;
 }
 
 /** A flat label: information, never pressable. tone: 'gold' (honours) or 'plain'. */

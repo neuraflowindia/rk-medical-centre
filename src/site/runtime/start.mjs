@@ -5,6 +5,7 @@ import {bindVisibility} from '../../../appointment-system/browser/visibility.mjs
 import {productState,admissionAllowed,displayAllowed} from '../../clinic/product-state.mjs';
 import {applyPageMetadata} from '../../clinic/page-metadata.mjs';
 import {createDraft,applyBookingQuery} from '../../clinic/visit-draft.mjs';
+import {savePreference} from '../../clinic/visitor-preferences.mjs';
 import {createMotion} from '../motion/motion.mjs';
 import {knownPaths,pageFor} from './registry.mjs';
 import {resolveAddress,linkAction,createScrollMemory} from './router.mjs';
@@ -31,11 +32,14 @@ export function start({windowObject=window,documentObject=document}={}){
  let route=first.path,intent=0;
  const booking=bindBookingState({state:productState,displayAllowed,windowObject,documentObject,route:()=>route});
  const island=createIsland({state:productState,admissionAllowed,displayAllowed,draft});
- const sheets=createSheets({documentObject,motion});
+ const sheets=createSheets({documentObject});
+ // Visit measurement is not in use; the visitor's choice is still kept, as it always was.
+ const privacy=Object.freeze({choose:value=>savePreference(windowObject.localStorage,value)});
 
  const services={reader:sheets.reader,menu:sheets.menu,viewer:sheets.viewer,call:sheets.call,
-  navigate,productState,booking,motion,announce,draft};
- const view=createView({app,services,parts:partBehaviours,booking,applyMetadata:path=>applyPageMetadata(path,documentObject),windowObject});
+  navigate,productState,booking,motion,announce,draft,privacy};
+ const view=createView({app,services,parts:partBehaviours,booking,applyMetadata:path=>applyPageMetadata(path,documentObject),
+  prepare:ctx=>sheets.refresh(ctx),windowObject});
 
  history.scrollRestoration='manual';
  history.replaceState({...history.state,key:scrolls.next()},'');
@@ -48,7 +52,6 @@ export function start({windowObject=window,documentObject=document}={}){
   productState.setProfile(page.island?'active':'public');
   if(route==='/booking')applyBookingQuery(draft,location.search);
   const shown=view.show(route,{first:firstLoad,search:location.search,scroll:restore??0});
-  sheets.refresh(shown.ctx);
   booking.sync();
   if(page.island){const node=documentObject.querySelector('#clinic-booking-root');if(node)island.open(node,{kind:page.island,signal:shown.signal});}
   motion.observe(app,{signal:shown.signal});
@@ -118,7 +121,7 @@ export function start({windowObject=window,documentObject=document}={}){
  windowObject.addEventListener('pagehide',()=>{island.close();});
  windowObject.addEventListener('pageshow',event=>{if(event.persisted)show({restore:windowObject.scrollY});});
 
- show({firstLoad:true,hash:location.hash,restore:location.hash?null:undefined===history.state?.scroll?null:null});
+ show({firstLoad:true,hash:location.hash});
  return Object.freeze({navigate,services,view});
 }
 

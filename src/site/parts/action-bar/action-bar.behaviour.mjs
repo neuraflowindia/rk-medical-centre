@@ -25,18 +25,15 @@ export function bindActionBar(root,{signal,services,windowObject=globalThis.wind
   if(bar.classList.contains('is-shown')!==show){bar.classList.toggle('is-shown',show);bar.inert=!show;}
  };
  if(Observer){
-  const observer=new Observer(entries=>{
-   for(const entry of entries){
-    if(entry.target===lead){facts.leadInView=entry.isIntersecting;facts.leadPassed=!entry.isIntersecting&&entry.boundingClientRect.bottom<=0;}
-    else if(entry.target===closing)facts.closingInView=entry.isIntersecting;
-    else if(entry.target===footer)facts.footerInView=entry.isIntersecting;
-   }
-   paint();
-  },{threshold:0});
-  if(lead){facts.leadInView=true;facts.leadPassed=false;observer.observe(lead);}
-  if(closing)observer.observe(closing);
-  if(footer)observer.observe(footer);
-  signal?.addEventListener('abort',()=>observer.disconnect(),{once:true});
+  const watch=(node,onChange,rootMargin='0px')=>{
+   if(!node)return;
+   const observer=new Observer(entries=>{onChange(entries[entries.length-1]);paint();},{threshold:0,rootMargin});
+   observer.observe(node);signal?.addEventListener('abort',()=>observer.disconnect(),{once:true});
+  };
+  // The page's own first buttons count as "in view" until they have left through the top edge.
+  if(lead){facts.leadInView=true;facts.leadPassed=false;watch(lead,entry=>{facts.leadInView=entry.isIntersecting;facts.leadPassed=!entry.isIntersecting&&entry.boundingClientRect.top<=0;});}
+  watch(closing,entry=>{facts.closingInView=entry.isIntersecting;},'0px 0px -22% 0px');
+  watch(footer,entry=>{facts.footerInView=entry.isIntersecting;});
  }
  documentObject.addEventListener('focusin',paint,{signal});
  documentObject.addEventListener('focusout',paint,{signal});

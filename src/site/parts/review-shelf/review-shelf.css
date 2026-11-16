@@ -1,9 +1,64 @@
-/* review-shelf: styles of the shared part. Roots: .review-shelf · .review-card · .review-reader (Skeleton: a plain moving row; the finished shelf follows.) */
+/* The review shelf: flat cards on a row the visitor moves. The first card is the pull-quote.
+   Roots: .review-shelf · .review-card · .review-reader */
 @layer components {
-  .review-shelf__row { display: flex; gap: var(--space-4); overflow-x: auto; padding: var(--space-4) var(--gutter); scroll-snap-type: x mandatory; }
-  .review-card { flex: 0 0 min(320px, 82vw); display: grid; gap: var(--space-3); padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); scroll-snap-align: start; }
+  .review-shelf__head { display: grid; gap: 18px; }
+  .review-shelf__bleed { margin-top: var(--space-5); }
+  .review-shelf__row { position: relative; display: flex; gap: 14px; overflow-x: auto; padding: 4px var(--gutter) 6px; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); scrollbar-width: none; overscroll-behavior-x: contain; }
+  .review-shelf__row::-webkit-scrollbar { display: none; }
+  .review-shelf__row:focus-visible { outline-offset: -2px; border-radius: var(--radius-card); }
+
+  .review-card { position: relative; flex: none; scroll-snap-align: start; display: flex; flex-direction: column; width: min(300px, 82vw); padding: 22px; border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); }
   .review-card__stars { display: inline-flex; gap: 2px; color: var(--gold); }
-  .review-card__by { display: flex; align-items: center; gap: var(--space-3); }
-  .review-card__who { display: grid; min-width: 0; }
-  .review-shelf__controls, .review-shelf__tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); padding-inline: var(--gutter); }
+  .review-card__stars .icon { width: 18px; height: 18px; fill: currentColor; stroke: currentColor; stroke-width: 1; }
+  .review-card__stars .icon--empty { fill: none; }
+  .review-card__stars .icon--half { fill: url("#i-half-fill"); }
+  .review-card__quote { margin: 14px 0 18px; color: var(--ink); font: var(--type-quote); }
+  /* With scripts the words are held to five lines and "Read more" opens the whole review; without, they show in full. */
+  html[data-js] .review-card__quote p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+  .review-card__more { align-self: flex-start; margin: -18px 0 -2px; }
+  .review-card__by { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  .review-card__avatar { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: var(--radius-round); color: var(--action-pressed); background: var(--chosen); box-shadow: var(--ring-action-faint); font: var(--type-avatar); letter-spacing: .04em; }
+  .review-card__who { display: grid; gap: 1px; min-width: 0; font: var(--type-row); }
+  .review-card__who strong { color: var(--ink); }
+  .review-card__who span { color: var(--ink-muted); font-size: var(--size-small); }
+  .review-card--lead { width: min(320px, 86vw); background: var(--wash-mustard); box-shadow: inset 0 0 0 1px var(--gold-line); }
+  .review-card--lead .review-card__quote { margin-top: var(--space-3); font: var(--type-pull-quote); letter-spacing: -.005em; }
+  html[data-js] .review-card--lead .review-card__quote p { -webkit-line-clamp: 8; line-clamp: 8; }
+  .review-card--lead .review-card__by { border-top-color: var(--gold-line); }
+  .review-card--lead .review-card__avatar { background: var(--surface); box-shadow: inset 0 0 0 1px var(--gold-line); color: var(--gold-text); }
+  .review-card--lead .review-card__who span { color: var(--ink-body); }
+
+  .review-shelf__controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); }
+  .review-shelf__all { padding: 0 18px; }
+  .review-shelf__arrows { display: flex; align-items: center; gap: 10px; }
+  .review-shelf__count { display: none; margin-left: 6px; color: var(--ink-muted); font: var(--type-count); font-variant-numeric: tabular-nums lining-nums; }
+
+  /* the reader: every review in full */
+  .review-reader { display: contents; }
+  .review-reader__tabs { margin: -2px calc(-1 * var(--gutter)) 0; padding: 0 var(--gutter) var(--space-4); box-shadow: 0 1px 0 var(--line); position: sticky; top: calc(-1 * var(--space-3)); z-index: 1; background: var(--surface); }
+  .review-reader__panel:focus-visible { outline-offset: -4px; }
+  .review-reader__item { padding: 22px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 80px; }
+  .review-reader__item:last-child { border-bottom: 0; }
+  .review-reader__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px var(--space-4); }
+  .review-reader__about { color: var(--ink-muted); font: var(--type-meta); }
+  .review-reader__quote { margin: 10px 0 14px; color: var(--ink); font: var(--type-quote); max-width: 62ch; }
+  .review-reader__item .review-card__by { margin-top: 0; padding-top: 0; border-top: 0; }
+  .review-reader__item.is-pointed { margin-inline: -12px; padding-inline: var(--space-3); border-radius: var(--radius-row); background: var(--wash-mustard); border-bottom-color: transparent; }
+
+  @media (min-width: 768px) {
+    .review-shelf__head { grid-template-columns: 1fr auto; align-items: end; gap: var(--space-7); }
+    .review-shelf__bleed { margin-top: var(--head-gap); }
+    .review-shelf__row { gap: var(--space-5); padding-inline: max(var(--gutter), (100vw - var(--content-width)) / 2); scroll-padding-inline: max(var(--gutter), (100vw - var(--content-width)) / 2); }
+    .review-card { width: 348px; min-height: 348px; padding: 28px; }
+    .review-card.review-card--lead { width: 520px; padding: 36px 40px 30px; }
+    .review-card--lead .review-card__quote { margin-top: 18px; line-height: 1.32; }
+    .review-card--lead::before { content: "\201C"; position: absolute; right: 30px; top: 6px; color: var(--gold-ghost); font: var(--type-quote-mark); pointer-events: none; }
+    .review-shelf__controls { margin-top: 28px; }
+    .review-shelf__count { display: block; }
+  }
+  /* lead 520 + two cards of 340 + two gaps of 20 = the content width: three end on its edge, the fourth peeks */
+  @media (min-width: 1280px) {
+    .review-card { width: 340px; }
+    .review-card.review-card--lead { width: 520px; }
+  }
 }
