@@ -50,10 +50,10 @@
   /* ---------- 2 · who should I see: a split spread ---------- */
   .page-doctors__choose { position: relative; background: var(--ground-tint); padding: var(--section-pad) 0; box-shadow: inset 0 1px 0 var(--line); }
   /* one sheet with a fold: two pages, never two cards */
-  .page-doctors__spread { display: grid; margin-top: var(--head-gap); border-radius: var(--radius-card); box-shadow: var(--elev-ambient); }
+  .page-doctors__spread { display: grid; margin-top: var(--head-gap); }
   .page-doctors__leaf { position: relative; display: grid; align-content: start; gap: var(--space-5); padding: var(--space-6) var(--card-pad) var(--card-pad); }
-  .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light); }
-  .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 0 0 1px var(--line-card), inset 0 18px 20px -20px var(--line-strong); }
+  .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), var(--elev-ambient); }
+  .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 0 0 1px var(--line-card), inset 0 18px 20px -20px var(--line-strong), var(--elev-ambient-rose); }
   /* as the sheet arrives its two pages part from the fold: the spread opens */
   html[data-motion="on"] .page-doctors__leaf--sage { transform: translateY(calc((1 - var(--q, 1)) * 14px)); }
   html[data-motion="on"] .page-doctors__leaf--rose { transform: translateY(calc((1 - var(--q, 1)) * -14px)); }
@@ -105,7 +105,7 @@
     .page-doctors__spread { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
     .page-doctors__leaf { padding: 34px var(--card-pad) var(--card-pad); gap: var(--space-6); }
     .page-doctors__leaf--sage { border-radius: var(--radius-card) 0 0 var(--radius-card); }
-    .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), inset 20px 0 22px -22px var(--line-strong); }
+    .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 0 0 0 1px var(--line-card), inset 0 1px 0 var(--edge-light), inset 20px 0 22px -22px var(--line-strong), var(--elev-ambient-rose); }
     html[data-motion="on"] .page-doctors__leaf--sage { transform: translateX(calc((1 - var(--q, 1)) * 20px)); }
     html[data-motion="on"] .page-doctors__leaf--rose { transform: translateX(calc((1 - var(--q, 1)) * -20px)); }
     .page-doctors__concerns li { min-height: 50px; }
