@@ -1,3 +1,157 @@
-/* about page: styles only for what sits inside .page-about */
+/* About the clinic: five sections, each its own composition. Everything here sits inside
+   .page-about; the shared parts bring their own look and are only placed here. */
 @layer pages {
+
+  /* ---------- 1 · cover: a feature opener ---------- */
+  .page-about__cover { position: relative; background: var(--ground-light); padding: 26px 0 34px; overflow-x: clip; }
+  .page-about__cover-grid { display: grid; gap: 22px; }
+  .page-about__cover-actions { display: none; }
+  .page-about__stage { position: relative; padding-top: 48px; }
+  /* far: a sage half-disc rising behind the photograph; it carries the page's one slow light */
+  .page-about__disc { position: absolute; z-index: 0; left: 4%; right: 4%; top: 0; aspect-ratio: 2 / 1; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
+  .page-about__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+  html[data-motion="on"] .page-about__shaft { animation: page-about-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
+  html[data-motion="on"] .page-about__disc[data-running] .page-about__shaft { animation-play-state: running; }
+  @keyframes page-about-shaft {
+    from { transform: translateX(-12%); }
+    to { transform: translateX(12%); }
+  }
+  /* subject: the frontage in the postcard frame, its caption below */
+  .page-about__frontage { position: relative; z-index: 1; }
+  .page-about__frontage .photo-figure__caption { max-width: 36ch; }
+  /* once, as the page opens, the photograph is laid down */
+  html[data-motion="on"] .page-about__frontage .photo-figure__frame { animation: page-about-lay var(--dur-settle) var(--ease-enter) both; }
+  @keyframes page-about-lay {
+    from { transform: rotate(-1.2deg) translateY(10px); }
+    to { transform: none; }
+  }
+  /* near: the pin, over the photograph's corner */
+  .page-about__pin { position: absolute; z-index: 2; right: 22px; top: 8px; width: 50px; height: auto; transform: rotate(9deg); filter: var(--elev-object-small); pointer-events: none; }
+
+  /* ---------- 2 · story: the long read ---------- */
+  .page-about__story { background: var(--ground-tint); padding: calc(var(--section-pad) - 16px) 0; box-shadow: inset 0 1px 0 var(--line); }
+  .page-about__story-grid { display: grid; gap: 24px; }
+  .page-about__year { display: grid; gap: 10px; padding-top: 4px; }
+  .page-about__numeral { display: block; margin-left: -.04em; color: var(--ink); font: var(--type-numeral); letter-spacing: -.035em; font-variant-numeric: lining-nums; }
+  .page-about__year-words { display: block; max-width: 10em; font: var(--type-figure-words); letter-spacing: var(--tracking-h2); }
+  .page-about__story-column { display: grid; gap: 14px; max-width: 34em; color: var(--ink-body); }
+  .page-about__story-opening { color: var(--ink); font: var(--type-lead); }
+  /* a sentence of the story set large, between two hairlines that draw from the left */
+  .page-about__pulled { position: relative; margin: 2px 0; padding: 18px 0 20px; color: var(--ink); font: var(--type-pull-quote); text-wrap: balance; }
+  .page-about__pulled::before, .page-about__pulled::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--line-strong); transform-origin: left center; }
+  .page-about__pulled::before { top: 0; }
+  .page-about__pulled::after { bottom: 0; }
+
+  /* ---------- 3 · standards: a quiet ledger ---------- */
+  .page-about__standards { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: calc(var(--section-pad) - 10px) 0 calc(var(--section-pad) - 12px); }
+  .page-about__standards-object { display: none; }
+  .page-about__standards-grid { display: grid; gap: 24px; }
+  .page-about__ledger { display: grid; }
+  .page-about__standard { position: relative; display: grid; gap: 6px; padding: 18px 0 20px; }
+  .page-about__standard::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line-on-deep); transform-origin: left center; }
+  .page-about__standard:last-child::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line-on-deep); transform-origin: left center; }
+  .page-about__standard dt { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px var(--space-4); }
+  .page-about__standard-name { color: var(--ink-on-deep); font: var(--type-name); }
+  /* the kind is heard everywhere and seen from tablet width, where the row has room for it */
+  .page-about__standard-kind { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; color: var(--link-on-deep); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .page-about__standard dd { max-width: 46ch; color: var(--ink-on-deep-soft); }
+
+  /* ---------- 4 · walk: a numbered path on a shelf ---------- */
+  .page-about__walk { background: var(--ground-light); padding: calc(var(--section-pad) - 10px) 0 calc(var(--section-pad) - 18px); }
+  .page-about__shelf { margin-top: calc(var(--head-gap) - 6px); }
+  .page-about__walk .still-shelf__item { width: 268px; }
+  .page-about__step { display: grid; align-content: start; }
+  .page-about__step-photo { position: relative; }
+  html[data-js] .page-about__step-photo .photo-figure__frame { cursor: zoom-in; }
+  /* near: the raised button that opens the photograph large */
+  .page-about__step-view { position: absolute; z-index: 2; right: 16px; top: 16px; }
+  /* the path: a numeral, then a hairline running on toward the next step */
+  .page-about__step-number { display: flex; align-items: center; gap: 14px; margin-top: 14px; color: var(--ink); font: var(--type-h2); font-variant-numeric: lining-nums; }
+  .page-about__step-number::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); transform-origin: left center; }
+  .page-about__step-title { margin-top: 6px; text-wrap: balance; }
+  .page-about__step-line { margin-top: 6px; max-width: 30ch; color: var(--ink-body); font: var(--type-notes); }
+
+  /* a walk photograph in the viewer dialog */
+  .page-about__viewer { display: grid; justify-items: center; gap: var(--space-4); }
+  .page-about__viewer-frame { padding: 6px; border-radius: var(--radius-media); background: var(--surface-top); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
+  .page-about__viewer-frame img { width: auto; max-width: 100%; max-height: min(58dvh, 620px); border-radius: var(--radius-media-inner); }
+  .page-about__viewer-words { display: grid; gap: 2px; justify-items: center; max-width: 44ch; text-align: center; }
+  .page-about__viewer-words strong { color: var(--ink); font: var(--type-h3); }
+  .page-about__viewer-words span { color: var(--ink-body); font: var(--type-notes); }
+  .page-about__viewer-controls { display: flex; align-items: center; justify-content: center; gap: var(--space-5); margin-top: var(--space-5); }
+  .page-about__viewer-count { min-width: 5em; text-align: center; color: var(--ink-muted); font: var(--type-count); font-variant-numeric: tabular-nums lining-nums; }
+
+  /* ---------- 5 · the doctors: credits ---------- */
+  .page-about__doctors { background: var(--ground-tint); padding: calc(var(--section-pad) - 12px) 0 calc(var(--section-pad) - 22px); box-shadow: inset 0 1px 0 var(--line); }
+  .page-about__doctors-grid { display: grid; gap: 24px; }
+  .page-about__cards { display: grid; gap: var(--space-3); }
+  .page-about__cards > li { display: grid; }
+  /* the certificates teaser: two framed documents from tablet width, then one ruled line to all of them */
+  .page-about__documents { display: none; }
+  .page-about__certificates { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--space-4); margin-top: 20px; padding-top: 6px; }
+  .page-about__certificates::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line-strong); transform-origin: left center; }
+  .page-about__certificates-label { color: var(--ink-body); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+
+  @media (min-width: 768px) {
+    .page-about__cover { padding: 44px 0 68px; }
+    .page-about__cover-grid { gap: 36px; }
+    .page-about__stage { width: min(100%, 656px); padding-top: 84px; }
+    .page-about__pin { right: 40px; top: 22px; width: 70px; }
+
+    .page-about__story { padding: var(--section-pad) 0; }
+    .page-about__story-grid { gap: var(--head-gap); }
+    .page-about__year { gap: 14px; padding-top: 10px; }
+    .page-about__story-column { gap: var(--space-4); }
+    .page-about__pulled { margin: 8px 0; padding: 26px 0 28px; }
+
+    .page-about__standards { padding: var(--section-pad) 0; }
+    .page-about__standards-grid { gap: var(--head-gap); }
+    .page-about__standard { gap: 8px; padding: 26px 0 28px; }
+    .page-about__standard-kind { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+
+    .page-about__walk { padding: var(--section-pad) 0 calc(var(--section-pad) - 6px); }
+    .page-about__shelf { margin-top: var(--head-gap); }
+    .page-about__walk .still-shelf__item { width: 300px; }
+    .page-about__step-number { margin-top: 24px; }
+
+    .page-about__doctors { padding: var(--section-pad) 0; }
+    .page-about__doctors-grid { gap: var(--head-gap); }
+    .page-about__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+    .page-about__documents { --certificate-height: 104px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); margin-top: 30px; }
+    .page-about__documents > li { padding-inline: var(--card-pad); }
+    .page-about__certificates { margin-top: 26px; }
+  }
+
+  @media (min-width: 1024px) {
+    .page-about__cover { padding: 0 0 76px; }
+    .page-about__cover-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center;
+      min-height: calc(clamp(600px, 100svh, 820px) - var(--header-height) - 76px); }
+    .page-about__cover-copy { padding: 24px 0 40px; }
+    .page-about__cover-copy .section-head__intro { max-width: 31ch; }
+    .page-about__cover-actions { display: flex; align-items: center; gap: 24px; margin-top: 34px; }
+    .page-about__stage { justify-self: end; padding-top: 104px; }
+    .page-about__disc { left: 5%; right: 5%; }
+    .page-about__pin { right: 54px; top: 34px; width: 88px; }
+
+    .page-about__story-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 96px; align-items: start; }
+    .page-about__story-column { gap: var(--space-5); padding-top: 34px; }
+    .page-about__pulled { margin: 12px 0; }
+
+    .page-about__standards-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 6.4fr); gap: 96px; align-items: stretch; }
+    .page-about__standards-head { display: grid; align-content: space-between; gap: 40px; }
+    /* near: a written record, set down beside the ledger */
+    .page-about__standards-object { display: block; width: 148px; height: auto; margin: 0 0 6px 10px; transform: rotate(-7deg); filter: var(--elev-object-on-deep, var(--elev-object)); }
+    .page-about__standard { padding: 28px 0 30px; }
+
+    /* all three steps fit: no row to move, and each step stands a little lower than the one before */
+    .page-about__walk { padding-bottom: var(--section-pad); }
+    .page-about__walk .still-shelf__row { justify-content: space-between; overflow: visible; }
+    .page-about__walk .still-shelf__item { width: min(344px, (100% - 96px) / 3); }
+    .page-about__walk .still-shelf__item:nth-child(2) { margin-top: 36px; }
+    .page-about__walk .still-shelf__item:nth-child(3) { margin-top: 72px; }
+    /* WAITING: request about-03 — the shelf will hide its own arrows where its row cannot move */
+    .page-about__walk .still-shelf__arrows { display: none; }
+
+    .page-about__doctors-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); gap: var(--space-9); align-items: start; }
+  }
 }
