@@ -23,11 +23,15 @@
   .site-header__menu:active::before { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
   .site-header__menu:focus-visible { border-radius: var(--radius-control); }
   .site-header--slim .site-header__help { margin-left: auto; }
+  .site-header__help-lead { display: none; }
   @media (max-width: 359px) {
     .site-header__menu { padding: 0 11px; }
     .site-header__menu span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   }
 
+  @media (min-width: 480px) {
+    .site-header__help-lead { display: inline; }
+  }
   @media (min-width: 768px) {
     .site-header__book { display: inline-flex; }
     .site-header__row { gap: var(--space-4); }
