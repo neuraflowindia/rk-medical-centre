@@ -47,6 +47,8 @@ export const navigationLabels=Object.freeze({
  closeMenu:'Close menu',
  menuButton:'Menu',
  help:'Need help? Call',
+ // The first words of `help`: a narrow phone shows only what follows them.
+ helpLead:'Need help?',
  skip:'Skip to content'
 });
 
