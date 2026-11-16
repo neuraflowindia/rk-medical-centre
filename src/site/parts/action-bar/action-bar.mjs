@@ -3,7 +3,7 @@
 // are out of view (see the behaviour for the rules).
 import {actionBar as words,bookingPaths,callRows,callSheet as sheetWords,essentials} from '../../../clinic/page-content/shared.mjs';
 import {doctorAvatars} from '../../../clinic/client-media.mjs';
-import {attrs,image,text} from '../../lib/html.mjs';
+import {attrs,classes,image,text} from '../../lib/html.mjs';
 import {icon} from '../../icons/icons.mjs';
 import {openSign} from '../open-sign/open-sign.mjs';
 
@@ -21,20 +21,23 @@ export function doctorAvatar(id,className='call-row__avatar'){
  return image(doctorAvatars[id],{className});
 }
 
-/** One raised row that dials a doctor: need, name, digits. Used by the call sheet and the closing. */
-export function callRow(row,{avatar='',needFirst=false,attributes={}}={}){
+/**
+ * One raised row that dials a doctor: need, name, digits. Used by the call sheet and the closing.
+ *   roomy  true where the rows are the subject of their section: taller, with more padding, from 768 px
+ */
+export function callRow(row,{avatar='',needFirst=false,roomy=false,attributes={}}={}){
  const who=needFirst
   ?`<span class="call-row__need">${text(row.need)}</span><strong class="call-row__name">${text(row.name)}</strong>`
   :`<strong class="call-row__name">${text(row.name)}</strong><span class="call-row__need">${text(row.need)}</span>`;
- return `<a${attrs({class:'call-row',href:row.href,'aria-label':row.spoken,'data-call-row':row.id,...attributes})}>${avatar}`
+ return `<a${attrs({class:classes('call-row',roomy&&'call-row--roomy'),href:row.href,'aria-label':row.spoken,'data-call-row':row.id,...attributes})}>${avatar}`
   +`<span class="call-row__who">${who}</span>`
   +`<span class="call-row__digits">${icon('phone')}${text(row.digits)}</span></a>`;
 }
 
 /** The raised row that opens WhatsApp with the first message written. Used by the call sheet and Contact. */
-export function whatsappRow(ctx,{attributes={}}={}){
+export function whatsappRow(ctx,{roomy=false,attributes={}}={}){
  const whatsapp=sheetWords.whatsapp;
- return `<a${attrs({class:'call-row call-row--whatsapp',href:whatsapp.href,target:'_blank',rel:'noopener',...attributes})}>`
+ return `<a${attrs({class:classes('call-row','call-row--whatsapp',roomy&&'call-row--roomy'),href:whatsapp.href,target:'_blank',rel:'noopener',...attributes})}>`
   +`<span class="call-row__icon" aria-hidden="true">${icon('whatsapp')}</span>`
   +`<span class="call-row__who"><span class="call-row__need">${text(sheetWords.whatsappNeed)}</span><strong class="call-row__name">${text(whatsapp.label)}</strong></span>`
   +`<span class="call-row__digits">${icon('out')}<span class="visually-hidden">${text(sheetWords.opensWhatsapp)}</span></span></a>`;

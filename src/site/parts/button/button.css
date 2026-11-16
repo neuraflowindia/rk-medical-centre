@@ -19,6 +19,15 @@
   .button--outline-on-deep { color: var(--ink-on-deep); box-shadow: var(--ring-on-deep); }
   .button--compact { min-height: var(--tap); padding: 0 18px; font: var(--type-control-small); }
   .button--large { min-height: var(--control-height-large); padding: 0 28px; }
+  /* below 768 px the button shows its icon alone in a 48 px square; the label stays for assistive technology */
+  .button--icon-narrow { gap: 0; width: var(--tap); min-height: var(--tap); padding: 0; }
+  .button--icon-narrow .button__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (min-width: 768px) {
+    .button--icon-narrow { gap: 10px; width: auto; min-height: var(--control-height); padding: 0 22px; }
+    .button--icon-narrow.button--compact { min-height: var(--tap); padding: 0 18px; }
+    .button--icon-narrow.button--large { min-height: var(--control-height-large); padding: 0 28px; }
+    .button--icon-narrow .button__label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  }
   .button:active { transform: translateY(var(--press)); transition-duration: var(--dur-press); }
   .button--main:active { background: var(--action-pressed); box-shadow: var(--elev-main-pressed); }
   .button--second:active { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }

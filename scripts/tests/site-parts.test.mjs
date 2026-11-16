@@ -278,3 +278,13 @@ test('a still shelf and a sheet note',()=>{
  assert.throws(()=>stillShelf(['x']),/needs a label/);
  assert.equal(sheetNote('Nothing & more'),'<p class="sheet__note">Nothing &amp; more</p>');
 });
+
+test('options a page may ask for: roomy call rows and timetable, a button that shows its icon alone on phones',()=>{
+ const row=callRows()[0];
+ assert.match(callRow(row,{roomy:true}),/^<a class="call-row call-row--roomy" /);assert.match(callRow(row),/^<a class="call-row" /);
+ assert.match(whatsappRow(on,{roomy:true}),/^<a class="call-row call-row--whatsapp call-row--roomy" /);assert.match(whatsappRow(on),/^<a class="call-row call-row--whatsapp" /);
+ assert.match(hoursTable(on,{roomy:true,className:'k'}),/^<table class="hours-table hours-table--roomy k" /);assert.match(hoursTable(on),/^<table class="hours-table" /);
+ const map=button({label:'Open in Google Maps',href:'https://maps.app.goo.gl/x',variant:'second',external:true,iconAfter:'out',labelHidden:'narrow'});
+ assert.match(map,/class="button button--second button--icon-narrow"/);assert.match(map,/<span class="button__label">Open in Google Maps<\/span>/,'the words stay for assistive technology');
+ assert.throws(()=>button({label:'x',labelHidden:'narrow'}),/needs an icon/);assert.throws(()=>button({label:'x',icon:'pin',labelHidden:'wide'}),/hidden label/);
+});

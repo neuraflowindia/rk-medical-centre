@@ -53,4 +53,11 @@
     .call-row:not(:has(.call-row__avatar, .call-row__icon)) { grid-template-columns: 1fr auto; }
     .call-row__avatar, .call-row__icon { grid-row: auto; }
   }
+  /* a roomier row, where the rows are the subject of their section */
+  @media (min-width: 768px) {
+    .call-row--roomy { min-height: 88px; padding: var(--space-4) 22px var(--space-4) var(--space-4); }
+  }
+  @media (min-width: 1280px) {
+    .call-row--roomy { min-height: 96px; padding: 18px 26px 18px 18px; }
+  }
 }
