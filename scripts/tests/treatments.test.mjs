@@ -248,3 +248,13 @@ test('the stylesheet styles only what the page prints, and knows the three ways 
  assert.match(css,/:not\(:has\(\.page-treatments__topic\[data-open\], \.page-treatments__topic:target\)\) \.page-treatments__group:first-child \.page-treatments__topic:first-child/);
  for(const object of new Set([...css.matchAll(/\[data-object="([^"]+)"\]/g)].map(match=>match[1])))assert.ok(treatmentRows.some(row=>row.object===object),`${object} is not a row's object`);
 });
+
+test('every custom property the stylesheet reads exists: a token, the motion module\'s progress, or one the page sets itself',()=>{
+ const css=readFileSync(new URL('../../src/site/pages/treatments/treatments.css',import.meta.url),'utf8').replace(/\/\*[\s\S]*?\*\//g,'');
+ const tokens=readFileSync(new URL('../../src/site/styles/tokens.css',import.meta.url),'utf8');
+ const defined=text_=>new Set([...text_.matchAll(/(--[a-z0-9-]+)\s*:/g)].map(match=>match[1]));
+ const known=new Set([...defined(tokens),...defined(css),'--q']);
+ const read=new Set([...css.matchAll(/var\((--[a-z0-9-]+)/g)].map(match=>match[1]));
+ assert.ok(read.size>40);
+ for(const name of read)assert.ok(known.has(name),`${name} is read but defined nowhere`);
+});

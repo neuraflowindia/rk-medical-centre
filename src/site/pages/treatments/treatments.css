@@ -29,8 +29,8 @@
   .page-treatments__index { background: var(--ground-tint); padding: calc(var(--guide-hang) + var(--space-7)) 0 var(--space-9); }
   .page-treatments__groups { display: grid; gap: var(--space-8); }
   /* each doctor's colour family; the name is always beside it */
-  .page-treatments__group { --plate: var(--mist-sage); --strip: var(--wash-sage); --object-shadow: var(--elev-object-small); --card-shadow: var(--elev-card); }
-  .page-treatments__group--rose { --plate: var(--mist-rose); --strip: var(--wash-rose); --object-shadow: var(--elev-object-small-rose); --card-shadow: var(--elev-card-rose); }
+  .page-treatments__group { --plate: var(--mist-sage); --strip: var(--wash-sage); --edge: var(--line-edge); --object-shadow: var(--elev-object-small); --card-shadow: var(--elev-card); }
+  .page-treatments__group--rose { --plate: var(--mist-rose); --strip: var(--wash-rose); --edge: var(--line-edge-rose); --object-shadow: var(--elev-object-small-rose); --card-shadow: var(--elev-card-rose); }
   /* a group or a row is focused only as the place an address lands on (like the page's own heading): no ring */
   .page-treatments__group:focus-visible, .page-treatments__topic:focus-visible { outline: none; }
 
@@ -92,7 +92,7 @@
   .page-treatments__bring li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 10px; }
   .page-treatments__bring .icon { width: 18px; height: 18px; margin-top: 4px; color: var(--action); }
   /* near: the doctor strip, a flat tinted surface that holds the two raised buttons */
-  .page-treatments__strip { clear: both; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px 12px; margin-top: var(--space-5); padding: 14px; border-radius: var(--radius-row); background: var(--strip); box-shadow: inset 0 0 0 1px var(--line-card); }
+  .page-treatments__strip { clear: both; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px 12px; margin-top: var(--space-5); padding: 14px; border-radius: var(--radius-row); background: var(--strip); box-shadow: inset 0 0 0 1px var(--edge); }
   .page-treatments__strip-face { width: 48px; height: 48px; border-radius: var(--radius-control); object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
   .page-treatments__strip-who { display: grid; gap: 1px; min-width: 0; color: var(--ink-body); font: var(--type-row); }
   .page-treatments__strip-who strong { color: var(--ink); font: var(--type-row-strong); }
@@ -213,11 +213,11 @@
     .page-treatments__facts > div + div { margin-top: 18px; }
     .page-treatments__facts dd { max-width: 48ch; }
     /* near: the strip lies across the panel's lower edge */
-    .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr); margin: var(--space-6) -14px -22px; padding: 16px; border-radius: var(--radius-bar); box-shadow: inset 0 0 0 1px var(--line-card), var(--elev-ambient); }
+    .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr); margin: var(--space-6) -14px -22px; padding: 16px; border-radius: var(--radius-bar); box-shadow: inset 0 0 0 1px var(--edge), var(--elev-ambient); }
     .page-treatments__strip-actions { grid-column: 1 / -1; }
     .page-treatments__strip-actions .button--main, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 1 1 0; }
     .page-treatments__strip-actions .button--second { min-width: 104px; }
-    .page-treatments__group--rose .page-treatments__strip { box-shadow: inset 0 0 0 1px var(--line-card), var(--elev-ambient-rose); }
+    .page-treatments__group--rose .page-treatments__strip { box-shadow: inset 0 0 0 1px var(--edge), var(--elev-ambient-rose); }
 
     .page-treatments__doctors-head { grid-row: 1 / 3; align-self: end; justify-self: start; width: 40%; padding-bottom: var(--space-5); }
     .page-treatments__doctors-cards { justify-self: end; width: 56%; }
