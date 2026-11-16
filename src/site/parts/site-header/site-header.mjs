@@ -30,7 +30,8 @@ export function siteHeader(ctx,{chrome='full'}={}){
  oneOf(chrome,['full','slim'],'header chrome');
  if(chrome==='slim'){
   return `<header class="site-header site-header--slim" data-site-header><div class="wrap site-header__row">${lockup()}`
-   +callButton(ctx,{label:navigationLabels.help,size:'compact',className:'site-header__help'})+`</div></header>`;
+   // a narrow phone has room for the logo and "Call" only; the first words return from 480 px
+   +callButton(ctx,{labelMarkup:`<span class="site-header__help-lead">${text(navigationLabels.helpLead)} </span>${text(navigationLabels.help.slice(navigationLabels.helpLead.length).trim())}`,size:'compact',className:'site-header__help'})+`</div></header>`;
  }
  return `<header class="site-header" data-site-header><div class="wrap site-header__row">${lockup()}`
   +`<nav class="site-header__nav" aria-label="${text(navigationLabels.main)}">${mainLinks(ctx)}</nav>`
