@@ -26,6 +26,8 @@ question:'<path d="M2 2h20v16H10l-6 6v-6H2Z"/>',
 heart:'<path d="M12 22 3 13C-5 5 5-4 12 4c7-8 17 1 9 9Z"/>',
 credential:'<path fill-rule="evenodd" d="M2 2h20v15H2Zm4 4v2h12V6Zm0 4v2h6v-2Z"/><circle cx="16" cy="15" r="4"/><path d="m13 18-1 6 4-2 4 2-1-6Z"/>',
 arrow:'<path d="M4 10h11l-4-4 3-3 9 9-9 9-3-3 4-4H4Z"/>',
+pause:'<path d="M5 3h5v18H5Zm9 0h5v18h-5Z"/>',
+play:'<path d="M6 2.5v19L21.5 12Z"/>',
 quote:'<path d="M2 13c0-6 3-9 8-10v4c-3 1-4 3-4 5h4v9H2Zm12 0c0-6 3-9 8-10v4c-3 1-4 3-4 5h4v9h-8Z"/>'
 };
 export const solidIcon=(name,className='solid-icon')=>`<svg class="${e(className)}" viewBox="0 0 24 24" aria-hidden="true">${solidIconPaths[name]||solidIconPaths.book}</svg>`;

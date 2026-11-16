@@ -3,6 +3,14 @@
 .home-review-count{display:inline-flex;align-items:center;gap:12px;color:var(--navy);font-size:17px;line-height:1.5}
 .home-review-count .solid-icon{width:25px;height:25px;color:var(--teal)}
 .home-review-toggle{font-size:16px;min-height:48px;flex-shrink:0}
+.home-review-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.home-review-pause{display:grid;place-items:center;flex:none;padding:0;cursor:pointer;transition:background 180ms ease,color 180ms ease}
+.home-review-pause[hidden]{display:none}
+.home-review-pause>span{display:grid;place-items:center}
+.home-review-pause .solid-icon{width:18px;height:18px}
+.home-review-pause[aria-pressed=true]{background:#e7f4ef}
+/* The fade keeps the strip's moving edges from slicing words in half. */
+.home-review-viewport{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)}
 .home-review-viewport{overflow:hidden;width:100%;padding:12px 0 28px;isolation:isolate}
 .home-review-track{display:flex;width:max-content;align-items:stretch;will-change:transform}
 .home-review-group{display:flex;align-items:stretch;flex-shrink:0;gap:24px;padding-right:24px}
@@ -36,8 +44,8 @@
 @media(hover:hover) and (pointer:fine){.home-review-viewport .home-review-card:hover .home-review-surface,.home-review-list:not(.home-review-list-collapsed) .home-review-card:hover .home-review-surface{border-color:#0a706b;transform:translateY(-4px);box-shadow:0 20px 32px -17px rgba(27,54,93,.32),0 0 0 3px rgba(10,112,107,.07)}}
 @media(min-width:1600px){.home-review-card{width:400px}}
 @media(max-width:1023px){.home-review-card{width:340px}.home-review-surface{padding:25px}.home-review-identity{gap:12px}.home-review-avatar{width:52px;height:52px;flex-basis:52px}.home-review-quote{flex-basis:20px}.home-review-quote .solid-icon{width:20px;height:20px}}
-@media(max-width:767px){.home-review-tools{gap:12px;margin-bottom:16px}.home-review-count{font-size:16px}.home-review-count .solid-icon{width:23px;height:23px}.home-review-card{width:min(320px,calc(100vw - 56px))}.home-review-surface{padding:23px 20px;border-radius:22px}.home-review-group{gap:18px;padding-right:18px}.home-review-identity{margin-bottom:22px;gap:10px;min-height:60px}.home-review-avatar{width:48px;height:48px;flex-basis:48px;border-radius:16px;font-size:17px}.home-review-identity strong{font-size:17px}.home-review-context{font-size:14px}.home-review-quote{flex-basis:16px}.home-review-quote .solid-icon{width:16px;height:16px}.home-review-card blockquote{font-size:17px;line-height:1.6}.home-review-details{padding-top:22px}.home-review-topic{font-size:14px;padding:8px 10px}.home-review-list{grid-template-columns:minmax(0,1fr);gap:20px}.home-review-toggle{min-height:48px}.home-review-viewport{padding-bottom:24px}}
-@media(prefers-reduced-motion:reduce){.home-review-viewport,.home-review-toggle{display:none}.home-review-list.home-review-list-collapsed{position:static!important;width:auto!important;height:auto!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important;margin:0!important}.home-review-surface{transition:none;transform:none!important}}
+@media(max-width:767px){.home-review-tools{gap:12px;margin-bottom:16px}.home-review-controls{gap:12px}.home-review-count{font-size:16px}.home-review-count .solid-icon{width:23px;height:23px}.home-review-card{width:min(320px,calc(100vw - 56px))}.home-review-surface{padding:23px 20px;border-radius:22px}.home-review-group{gap:18px;padding-right:18px}.home-review-identity{margin-bottom:22px;gap:10px;min-height:60px}.home-review-avatar{width:48px;height:48px;flex-basis:48px;border-radius:16px;font-size:17px}.home-review-identity strong{font-size:17px}.home-review-context{font-size:14px}.home-review-quote{flex-basis:16px}.home-review-quote .solid-icon{width:16px;height:16px}.home-review-card blockquote{font-size:17px;line-height:1.6}.home-review-details{padding-top:22px}.home-review-topic{font-size:14px;padding:8px 10px}.home-review-list{grid-template-columns:minmax(0,1fr);gap:20px}.home-review-toggle{min-height:48px}.home-review-viewport{padding-bottom:24px}}
+@media(prefers-reduced-motion:reduce){.home-review-viewport,.home-review-toggle,.home-review-pause{display:none}.home-review-list.home-review-list-collapsed{position:static!important;width:auto!important;height:auto!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important;margin:0!important}.home-review-surface{transition:none;transform:none!important}}
 @media(max-width:767px){.home-review-rating,.home-review-location{font-size:14px}}
 
 /* Profile/directory collections share the complete identity and metadata parts. */
