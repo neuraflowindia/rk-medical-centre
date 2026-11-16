@@ -4,13 +4,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as words from '../../src/clinic/page-content/about.mjs';
 import {about,walkSlide} from '../../src/site/pages/about/about.mjs';
-import {bindAbout,openWalkViewer,stepIndex,keyDirection} from '../../src/site/pages/about/about.behaviour.mjs';
+import {bindAbout,openWalkViewer,stepIndex} from '../../src/site/pages/about/about.behaviour.mjs';
 import {doctors,address,locality,directions} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue} from '../../src/clinic/certificate-catalogue.mjs';
 import {clinicPhotos,clinicObjects} from '../../src/clinic/client-media.mjs';
 import {observationCareSentence,STAND_IN_NOTE} from '../../src/clinic/standins.mjs';
-import {pagePaths,practisingSince} from '../../src/clinic/page-content/shared.mjs';
+import {pagePaths,practisingSince,clinicStandards} from '../../src/clinic/page-content/shared.mjs';
 import {credentials,homeCertificates} from '../../src/clinic/page-content/home.mjs';
 import {escapeHTML} from '../../src/clinic/model.mjs';
 import {checkPage,renderedPage,attributeValues,count,TEST_NOW} from './support/page-contract.mjs';
@@ -33,7 +33,8 @@ const ownSections=html=>html.slice(0,html.indexOf('<section class="closing"'));
 
 test('About words: the heading and the sentence under it are built from the clinic’s facts',()=>{
  const since=practisingSince();
- assert.equal(cover.heading,`A family practice in ${locality} since ${since}.`);
+ assert.equal(plain(cover.heading),`A family practice in ${locality} since ${since}.`);
+ assert.ok(!cover.heading.includes(locality),'the locality’s name is held together with no-break spaces');
  assert.ok(cover.heading.endsWith(cover.emphasis),'the italic phrase closes the heading');
  for(const id of doctorOrder)assert.ok(plain(cover.lead).includes(doctors[id].name),`the sentence names ${doctors[id].name}`);
  assert.ok(!cover.lead.includes(doctors.sanjay.name),'a doctor’s name is held together with no-break spaces');
@@ -56,12 +57,12 @@ test('About words: the story is short, marked as a stand-in, and its heading car
  assert.ok(!story.pulled.includes('“')&&!story.pulled.includes('"'),'the pulled line is the clinic’s own sentence, not a quotation');
 });
 
-test('About words: the three standards are Home’s ledger rows, each with one plain line',()=>{
+test('About words: the three standards are the shared list (the one Home’s ledger reads), each with one plain line',()=>{
  assert.deepEqual(standards.rows.map(row=>row.id),['nabh','iso','observation']);
- for(const row of standards.rows){
-  const home=credentials.rows.find(item=>item.category===row.kind);
-  assert.equal(row.name,home.title);
-  assert.ok(row.meaning.length>20&&row.meaning.endsWith('.'));
+ for(const [index,row] of standards.rows.entries()){
+  assert.equal(row.name,clinicStandards[index].name);assert.equal(row.kind,clinicStandards[index].kind);
+  assert.ok(credentials.rows.some(item=>item.title===row.name),`Home’s ledger shows "${row.name}" too`);
+  assert.ok(row.meaning.length>20&&row.meaning.length<=100&&row.meaning.endsWith('.'));
  }
  assert.equal(standards.rows[2].meaning,observationCareSentence);
  assert.deepEqual(standards.rows.map(row=>row.source),['derived','derived','stand-in']);
@@ -70,6 +71,7 @@ test('About words: the three standards are Home’s ledger rows, each with one p
 
 test('About words: the walk has three steps in order, each with a photograph that exists',()=>{
  assert.deepEqual(walk.steps.map(step=>step.id),['arrive','doors','waiting']);
+ assert.deepEqual(walk.steps.map(step=>step.photo),['walk-gate','walk-doors','waiting'],'the cover’s frontage is not shown again');
  for(const step of walk.steps){
   assert.ok(Object.hasOwn(clinicPhotos,step.photo),`${step.id} names a photograph`);
   assert.ok(step.title.length<=40&&step.line.endsWith('.'));
@@ -82,12 +84,6 @@ test('About words: the walk has three steps in order, each with a photograph tha
  assert.equal(words.viewPhotoLabel('The covered waiting area'),'View photograph: The covered waiting area');
  assert.equal(words.walkPosition(2,3),'2 of 3');
  assert.equal(words.walkViewerTitle(2,'Through the glass doors'),'2 · Through the glass doors');
-});
-
-test('About words: a requested photograph is used once it exists, and its stand-in until then',()=>{
- assert.equal(words.firstPhoto(['walk-gate','frontage'],{frontage:{}}),'frontage');
- assert.equal(words.firstPhoto(['walk-gate','frontage'],{'walk-gate':{},frontage:{}}),'walk-gate');
- assert.throws(()=>words.firstPhoto(['walk-gate'],{}),/None of these photographs exists/);
 });
 
 test('About words: the doctors section names both doctors and teases two certificates Home does not show',()=>{
@@ -128,7 +124,7 @@ test('About keeps the page contract in both booking states',()=>{
 test('About prints its five sections in order, then the shared closing, with one main heading',()=>{
  const html=renderedPage(PATH,'on');
  assert.deepEqual([...html.matchAll(/<section class="[^"]*"[^>]* id="([a-z-]+)"/g)].map(match=>match[1]),['cover','story','standards','walk','doctors','closing']);
- assert.match(html,/<h1 class="section-head__title" id="about-title">A family practice in Indira Nagar <em>since&nbsp;1992\.<\/em><\/h1>/);
+ assert.match(html,/<h1 class="section-head__title" id="about-title">A family practice in Indira&nbsp;Nagar <em>since&nbsp;1992\.<\/em><\/h1>/);
  for(const section of ['cover','story','standards','walk','doctors'])assert.match(html,new RegExp(`<section class="page-about page-about__${section}" id="${section}" aria-labelledby="[a-z-]+"`));
  // Each section is labelled by a heading that exists.
  for(const id of attributeValues(ownSections(html),'aria-labelledby'))assert.match(html,new RegExp(`<h[12][^>]* id="${id}"`));
@@ -213,8 +209,8 @@ test('a walk photograph in the viewer: the picture, its step’s words, and the 
   assert.ok(slide.includes(`data-viewer-step="${index}"`)&&slide.includes(`src="${clinicPhotos[step.photo].src}"`));
   assert.ok(readable(slide).includes(`${index+1} · ${step.title}`)&&readable(slide).includes(plain(step.line)));
   assert.ok(readable(slide).includes(`${index+1} of ${walk.steps.length}`));
-  assert.match(slide,/<button[^>]*aria-label="Previous photograph"[^>]*data-walk-previous>/);
-  assert.match(slide,/<button[^>]*aria-label="Next photograph"[^>]*data-walk-next>/);
+  assert.match(slide,/<button[^>]*aria-label="Previous photograph"[^>]*data-viewer-previous>/);
+  assert.match(slide,/<button[^>]*aria-label="Next photograph"[^>]*data-viewer-next>/);
   assert.match(slide,/aria-live="polite"/);
  }
  assert.throws(()=>walkSlide(3),/The walk has no step 3/);assert.throws(()=>walkSlide(-1),/no step/);
@@ -238,66 +234,55 @@ function target(extra={}){
   fire(type,event={}){for(const entry of [...(listeners.get(type)||[])]){entry.handler(event);if(entry.options?.once)this.removeEventListener(type,entry.handler);}},
   ...extra};
 }
-/** The viewer service as the page sees it: drawing a slide makes two fresh arrows. */
-function fakeViewer({withNode=true}={}){
- const node=target();
+/** The shared viewer as the page sees it: drawing a slide makes two fresh arrows. */
+function fakeViewer(){
+ const page={activeElement:null};
+ const node=target({ownerDocument:page});
  let arrows={};
- const content={html:'',focused:null,
-  set innerHTML(value){this.html=value;arrows={'[data-walk-previous]':target({disabled:false,name:'previous',focus(){content.focused='previous';}}),'[data-walk-next]':target({disabled:false,name:'next',focus(){content.focused='next';}})};},
+ const button=name=>target({disabled:false,name,focus(){page.activeElement=this;}});
+ const content={html:'',
+  set innerHTML(value){this.html=value;arrows={'[data-viewer-previous]':button('previous'),'[data-viewer-next]':button('next')};},
   get innerHTML(){return this.html;},
-  querySelector:selector=>arrows[selector]||null};
- const viewer={opened:null,node:()=>withNode?node:null,content:()=>content,
-  open(options){this.opened=options;content.innerHTML=options.html;}};
- return {viewer,node,content,arrow:name=>content.querySelector(`[data-walk-${name}]`),step:()=>Number(/data-viewer-step="(\d)"/.exec(content.html)[1])};
+  querySelector:selector=>selector==='button:not(:disabled)'?Object.values(arrows).find(arrow=>!arrow.disabled)||null:arrows[selector]||null};
+ const viewer={opened:null,node:()=>node,content:()=>content,open(options){this.opened=options;content.innerHTML=options.html;}};
+ return {viewer,node,page,arrow:name=>content.querySelector(`[data-viewer-${name}]`),step:()=>Number(/data-viewer-step="(\d)"/.exec(content.html)[1])};
 }
 
-test('the walk’s small decisions: which step a control names, and which way a key moves',()=>{
+test('the walk’s one decision: which step a control names',()=>{
  assert.equal(stepIndex('2'),2);assert.equal(stepIndex('0'),0);assert.equal(stepIndex(1),1);
  for(const bad of ['3','-1','x','',null,undefined])assert.equal(stepIndex(bad),0,`${bad} falls back to the first step`);
  assert.equal(stepIndex('4',6),4);
- assert.equal(keyDirection('ArrowRight'),1);assert.equal(keyDirection('ArrowLeft'),-1);
- for(const key of ['Enter','Escape',' ','ArrowUp'])assert.equal(keyDirection(key),0);
 });
 
-test('a walk photograph opens in the viewer on its own step, and the arrows stop at either end',()=>{
+test('a walk photograph opens in the shared viewer on its own step, and the arrows stop at either end',()=>{
  const fake=fakeViewer(),trigger={name:'button'},scope=new AbortController();
- openWalkViewer({viewer:fake.viewer},{index:1,trigger,signal:scope.signal});
+ openWalkViewer({viewer:fake.viewer},{index:'1',trigger,signal:scope.signal});
  assert.equal(fake.viewer.opened.title,walk.label);assert.equal(fake.viewer.opened.trigger,trigger);
  assert.equal(fake.step(),1);
  assert.equal(fake.arrow('previous').disabled,false);assert.equal(fake.arrow('next').disabled,false);
- // Next: the last step; its arrow is now unavailable, so the focus goes to Previous.
- fake.arrow('next').fire('click');
- assert.equal(fake.step(),2);assert.equal(fake.arrow('next').disabled,true);assert.equal(fake.content.focused,'previous');
- // Previous keeps the focus while it can still be pressed.
- fake.arrow('previous').fire('click');
- assert.equal(fake.step(),1);assert.equal(fake.content.focused,'previous');
- fake.arrow('previous').fire('click');
- assert.equal(fake.step(),0);assert.equal(fake.arrow('previous').disabled,true);assert.equal(fake.content.focused,'next');
- // The keyboard: ← at the first step does nothing; → moves on; other keys are left alone.
- let prevented=0;const key=name=>({key:name,preventDefault(){prevented++;}});
- fake.content.focused=null;
+ // Next, pressed with the focus on it: the last step; its arrow is now flat, so the focus moves to Previous.
+ fake.arrow('next').focus();fake.arrow('next').fire('click');
+ assert.equal(fake.step(),2);assert.equal(fake.arrow('next').disabled,true);assert.equal(fake.page.activeElement,fake.arrow('previous'));
+ // ← and → move too; ← at the first step and → at the last do nothing.
+ const key=name=>({key:name,preventDefault(){}});
+ fake.node.fire('keydown',key('ArrowRight'));assert.equal(fake.step(),2);
+ fake.node.fire('keydown',key('ArrowLeft'));fake.node.fire('keydown',key('ArrowLeft'));assert.equal(fake.step(),0);
+ assert.equal(fake.arrow('previous').disabled,true);
  fake.node.fire('keydown',key('ArrowLeft'));assert.equal(fake.step(),0);
- fake.node.fire('keydown',key('ArrowRight'));assert.equal(fake.step(),1);
- fake.node.fire('keydown',key('Enter'));assert.equal(fake.step(),1);
- assert.equal(prevented,2);assert.equal(fake.content.focused,null,'a key press does not move the focus');
- // Closing the viewer stops the keys.
- fake.node.fire('close');
- fake.node.fire('keydown',key('ArrowRight'));assert.equal(fake.step(),1);
+ // Every slide is this page's own markup for that step.
+ assert.equal(fake.viewer.content().html,walkSlide(0));
+ // The viewer is left open while the page changes: the keys stop with the page.
+ scope.abort();
+ fake.node.fire('keydown',key('ArrowRight'));assert.equal(fake.step(),0);
 });
 
-test('the viewer walk is safe without a viewer, without its dialog, and after the page has gone',()=>{
+test('the viewer walk is safe without a viewer and with a nonsense step',()=>{
  assert.doesNotThrow(()=>openWalkViewer(undefined));assert.doesNotThrow(()=>openWalkViewer({}));
- const bare=fakeViewer({withNode:false});
- openWalkViewer({viewer:bare.viewer},{index:'nonsense'});
- assert.equal(bare.step(),0);
- // The page is left while the viewer is open: an old arrow may still be pressed, and nothing breaks.
- const fake=fakeViewer(),scope=new AbortController();
- openWalkViewer({viewer:fake.viewer},{index:0,signal:scope.signal});
- const next=fake.arrow('next');
- fake.viewer.content=()=>null;
- assert.doesNotThrow(()=>next.fire('click'));
- scope.abort();
- assert.equal((fake.node.listeners.get('keydown')||[]).length,0,'the key handler stops with the page');
+ const fake=fakeViewer();
+ openWalkViewer({viewer:fake.viewer},{index:'nonsense'});
+ assert.equal(fake.step(),0);
+ openWalkViewer({viewer:fake.viewer});
+ assert.equal(fake.step(),0);
 });
 
 test('binding About: each view button, and its photograph, opens the viewer on that step',()=>{

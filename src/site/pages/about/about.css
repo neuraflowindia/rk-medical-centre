@@ -59,7 +59,7 @@
   /* ---------- 4 · walk: a numbered path on a shelf ---------- */
   .page-about__walk { background: var(--ground-light); padding: calc(var(--section-pad) - 10px) 0 calc(var(--section-pad) - 18px); }
   .page-about__shelf { margin-top: calc(var(--head-gap) - 6px); }
-  .page-about__walk .still-shelf__item { width: 268px; }
+  .page-about__walk .still-shelf__item { width: 260px; }
   .page-about__step { display: grid; align-content: start; }
   .page-about__step-photo { position: relative; }
   html[data-js] .page-about__step-photo .photo-figure__frame { cursor: zoom-in; }
@@ -74,7 +74,8 @@
   /* a walk photograph in the viewer dialog */
   .page-about__viewer { display: grid; justify-items: center; gap: var(--space-4); }
   .page-about__viewer-frame { padding: 6px; border-radius: var(--radius-media); background: var(--surface-top); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
-  .page-about__viewer-frame img { width: auto; max-width: 100%; max-height: min(58dvh, 620px); border-radius: var(--radius-media-inner); }
+  /* always the walk's own 4 : 5 shape, whatever shape the file has */
+  .page-about__viewer-frame img { width: auto; height: min(58dvh, 620px); max-width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-media-inner); }
   .page-about__viewer-words { display: grid; gap: 2px; justify-items: center; max-width: 44ch; text-align: center; }
   .page-about__viewer-words strong { color: var(--ink); font: var(--type-h3); }
   .page-about__viewer-words span { color: var(--ink-body); font: var(--type-notes); }
@@ -143,15 +144,16 @@
     .page-about__standards-object { display: block; width: 148px; height: auto; margin: 0 0 6px 10px; transform: rotate(-7deg); filter: var(--elev-object-on-deep, var(--elev-object)); }
     .page-about__standard { padding: 28px 0 30px; }
 
-    /* all three steps fit: no row to move, and each step stands a little lower than the one before */
+    /* all three steps fit (the shelf then hides its own arrows), and each step stands a little lower than the one before */
     .page-about__walk { padding-bottom: var(--section-pad); }
     .page-about__walk .still-shelf__row { justify-content: space-between; overflow: visible; }
     .page-about__walk .still-shelf__item { width: min(344px, (100% - 96px) / 3); }
     .page-about__walk .still-shelf__item:nth-child(2) { margin-top: 36px; }
     .page-about__walk .still-shelf__item:nth-child(3) { margin-top: 72px; }
-    /* WAITING: request about-03 — the shelf will hide its own arrows where its row cannot move */
-    .page-about__walk .still-shelf__arrows { display: none; }
 
+  }
+
+  @media (min-width: 1280px) {
     .page-about__doctors-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); gap: var(--space-9); align-items: start; }
   }
 }

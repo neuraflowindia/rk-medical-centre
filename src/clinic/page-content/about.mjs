@@ -9,21 +9,13 @@
 import {doctors,locality,directions} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
-import {clinicPhotos} from '../client-media.mjs';
 import {observationCareSentence} from '../standins.mjs';
-import {pagePaths,actionLabels,essentials,practisingSince} from './shared.mjs';
-import {credentials,homeCertificates} from './home.mjs';
+import {pagePaths,actionLabels,essentials,practisingSince,clinicStandards} from './shared.mjs';
+import {homeCertificates} from './home.mjs';
 
 const since=practisingSince();
 // The page says "since 1992" for the clinic as a whole; that needs one shared starting year.
 if(since===null)throw new Error('The doctors no longer share a starting year: rewrite the About words that say "since".');
-
-/** The first of these photograph records that exists (a requested crop, else what stands in for it). */
-export function firstPhoto(ids,photos=clinicPhotos){
- const found=ids.find(id=>Object.hasOwn(photos,id));
- if(!found)throw new Error('None of these photographs exists: '+ids.join(', '));
- return found;
-}
 
 /**
  * The sections in page order. `ground` is the kind of background, so every boundary is visible:
@@ -44,8 +36,9 @@ const ROAD='Ring Road',ROAD_FULL='Tedhi Pulia Ring Road';
 /** Cover: a feature opener. The heading, one sentence that states a fact, and the frontage photograph. */
 export const cover=Object.freeze({
  runningHead:'About the clinic',
- heading:`A family practice in ${locality} since ${since}.`,
- // The one phrase set in italics; it stays on one line.
+ // The locality's name stays on one line (no-break spaces inside it).
+ heading:`A family practice in ${locality.replaceAll(' ','\u00A0')} since ${since}.`,
+ // The one phrase set in italics; it stays on one line too.
  emphasis:`since ${since}.`,
  // A doctor's name never breaks across two lines (no-break spaces inside it).
  lead:`The clinic of ${doctorOrder.map(id=>doctors[id].name.replaceAll(' ','\u00A0')).join(' and ')}, on ${ROAD}.`,
@@ -87,13 +80,12 @@ export function storyWordCount(words=story){
  return [words.opening,words.body,words.pulled,words.handover].join(' ').trim().split(/\s+/u).length;
 }
 
-// WAITING: request about-02 — the three standards move to shared.mjs as `clinicStandards`;
-// until then they are read from Home's ledger, so the two pages cannot drift apart.
-function standard(id,category,meaning,source){
- const row=credentials.rows.find(item=>item.category===category);
- if(!row)throw new Error('Home’s ledger no longer has a row for: '+category);
- return Object.freeze({id,kind:row.category,name:row.title,meaning,source});
-}
+/** The plain line under each standard, by the standard's id in shared.mjs, and where the line comes from. */
+const meanings=Object.freeze({
+ nabh:Object.freeze({meaning:'A national board has assessed how patients are cared for and kept safe here.',source:'derived'}),
+ iso:Object.freeze({meaning:'How the clinic is run is written down, and checked by outside auditors.',source:'derived'}),
+ observation:Object.freeze({meaning:observationCareSentence,source:'stand-in'})
+});
 /**
  * Standards: a quiet ledger. Each row is the standard's name, its kind, and one plain line on
  * what it means for a patient. `source` says where the line comes from and is never shown:
@@ -106,11 +98,10 @@ export const standards=Object.freeze({
  emphasis:'hold us to.',
  // A paper-cut accent beside the heading on wide screens: a written record.
  object:'report-clipboard',
- rows:Object.freeze([
-  standard('nabh','Accreditation','A national board has assessed how patients are cared for and kept safe here.','derived'),
-  standard('iso','Quality standard','How the clinic is run is written down, and checked by outside auditors.','derived'),
-  standard('observation','Day and night',observationCareSentence,'stand-in')
- ])
+ rows:Object.freeze(clinicStandards.map(item=>{
+  if(!Object.hasOwn(meanings,item.id))throw new Error('No plain line is written for the standard: '+item.name);
+  return Object.freeze({...item,...meanings[item.id]});
+ }))
 });
 
 /**
@@ -129,9 +120,8 @@ export const walk=Object.freeze({
  nextPhoto:'Next photograph',
  ratio:'4:5',
  steps:Object.freeze([
-  // WAITING: request about-01 — until the two crops exist, step 1 shows the cover's frontage and step 2 the old entrance picture.
-  Object.freeze({id:'arrive',title:`Arrive at the green wall on ${ROAD}`,line:'The gate is under the blue board with both doctors’ names.',photo:firstPhoto(['walk-gate','frontage'])}),
-  Object.freeze({id:'doors',title:'Through the glass doors',line:'Glass doors marked with red crosses, under the white canopy.',photo:firstPhoto(['walk-doors','entrance'])}),
+  Object.freeze({id:'arrive',title:`Arrive at the green wall on ${ROAD}`,line:'The gate is under the blue board with both doctors’ names.',photo:'walk-gate'}),
+  Object.freeze({id:'doors',title:'Through the glass doors',line:'Glass doors marked with red crosses, under the white canopy.',photo:'walk-doors'}),
   Object.freeze({id:'waiting',title:'The covered waiting area',line:'Chairs under a high roof, beside the pharmacy counter.',photo:'waiting'})
  ])
 });

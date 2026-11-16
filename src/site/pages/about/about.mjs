@@ -99,8 +99,8 @@ function doctorsPart(ctx){
 }
 
 /**
- * One step of the walk as the viewer shows it: the photograph large, the step's words, and the
- * way to its neighbours. Pure, so the behaviour can draw it and a test can read it.
+ * One step of the walk as the shared viewer shows it: the photograph large, the step's words, and
+ * the way to its neighbours. Pure, so the viewer can draw it and a test can read it.
  */
 export function walkSlide(index){
  const step=walk.steps[index];
@@ -109,9 +109,10 @@ export function walkSlide(index){
  return `<figure class="page-about__viewer" data-viewer-step="${index}">`
   +`<div class="page-about__viewer-frame">${image(clinicPhotos[step.photo],{sizes:VIEWER_SIZES,eager:true})}</div>`
   +`<figcaption class="page-about__viewer-words"><strong>${text(walkViewerTitle(number,step.title))}</strong><span>${text(step.line)}</span></figcaption></figure>`
-  +`<div class="page-about__viewer-controls">${roundButton({icon:'left',label:walk.previousPhoto,attributes:{'data-walk-previous':true}})}`
+  // The two arrows carry the shared viewer's own hooks: it gives them their state and their job.
+  +`<div class="page-about__viewer-controls">${roundButton({icon:'left',label:walk.previousPhoto,attributes:{'data-viewer-previous':true}})}`
   +`<p class="page-about__viewer-count" aria-live="polite">${text(walkPosition(number,walk.steps.length))}</p>`
-  +`${roundButton({icon:'right',label:walk.nextPhoto,attributes:{'data-walk-next':true}})}</div>`;
+  +`${roundButton({icon:'right',label:walk.nextPhoto,attributes:{'data-viewer-next':true}})}</div>`;
 }
 
 export function about(ctx){
