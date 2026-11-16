@@ -16,7 +16,7 @@ import {pagePaths,feeLabel} from './shared.mjs';
 
 /**
  * The page's own lines for each row.
- *   deck   the one line under the row's name: what a patient would come for
+ *   deck   the one line under the row's name: what a patient would come for (it adds to the name, never repeats it)
  *   what   "What it is"
  *   when   "When to come"
  *   title  only where the row's name is not the catalogue topic's title
@@ -34,12 +34,12 @@ const rowWords=Object.freeze({
   when:'When your readings concern you, or something has changed since your last consultation.'
  },
  thyroid:{
-  deck:'A thyroid report, or follow-up care.',
+  deck:'An existing report, or follow-up care.',
   what:'A consultation about a thyroid concern, an existing report or your follow-up care.',
   when:'When something has been troubling you, or you have questions about treatment you already take.'
  },
  'fever-infections':{
-  deck:'Fever and common infections.',
+  deck:'Dengue, malaria and typhoid concerns too.',
   what:'A consultation for fever or an infection concern, including questions about dengue, malaria, tuberculosis or typhoid.',
   when:'When a fever or an infection is worrying you. Tell the doctor when it began and what care you have had.'
  },
@@ -50,7 +50,7 @@ const rowWords=Object.freeze({
  },
  'womens-health':{
   chipTitle:true,
-  deck:'Period problems, PCOS and other concerns.',
+  deck:'And other women’s health concerns.',
   what:'A consultation about period problems, PCOS or another women’s health concern. PCOS is a condition that can affect periods and hormone levels.',
   when:'When your periods have changed, or something has been troubling you.'
  },
@@ -62,7 +62,7 @@ const rowWords=Object.freeze({
  // A row of its own inside the pregnancy topic; its name is the clinic's own care line (model.mjs).
  'after-childbirth':{
   title:'Care after childbirth',
-  deck:'Your care and questions after delivery.',
+  deck:'Time for your questions after delivery.',
   what:'A consultation about your care after childbirth, with time for all your questions.',
   when:'After your delivery, when you have questions about your care.'
  },

@@ -116,15 +116,19 @@
   }
 
   /* ---------- 3 · the doctors: two cards across the lower edge of the sage sheet ---------- */
-  .page-treatments__doctors { display: grid; grid-template-columns: minmax(var(--gutter), 1fr) minmax(0, var(--content-width)) minmax(var(--gutter), 1fr); grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto; }
+  /* The section is a grid of four rows; the sage ground fills the first two and the ivory ground
+     the last two. On phones the boundary runs between the two stacked cards; from tablets up the
+     cards stand side by side across rows two and three, so it runs through their middle. */
+  .page-treatments__doctors { display: grid; grid-template-columns: minmax(var(--gutter), 1fr) minmax(0, var(--content-width)) minmax(var(--gutter), 1fr); grid-template-rows: repeat(4, auto); }
   .page-treatments__doctors::before, .page-treatments__doctors::after { content: ""; grid-column: 1 / -1; z-index: 0; }
   .page-treatments__doctors::before { grid-row: 1 / 3; background: var(--ground-tint); }
   .page-treatments__doctors::after { grid-row: 3 / 5; background: var(--ground-light); }
-  .page-treatments__doctors-head, .page-treatments__doctors-cards { grid-column: 2; z-index: 1; }
-  .page-treatments__doctors-head { grid-row: 1; padding-bottom: var(--head-gap); }
-  .page-treatments__doctors-cards { grid-row: 2 / 4; display: grid; grid-auto-rows: 1fr; gap: var(--space-4); }
+  .page-treatments__doctors-head { grid-column: 2; grid-row: 1; z-index: 1; padding-bottom: var(--head-gap); }
+  .page-treatments__doctors-cards { display: contents; }
   /* near: the cards are laid over the boundary, so they cast an ambient shadow */
-  .page-treatments__doctor-slot { border-radius: var(--radius-card); box-shadow: var(--elev-ambient); }
+  .page-treatments__doctor-slot { grid-column: 2; z-index: 1; border-radius: var(--radius-card); box-shadow: var(--elev-ambient); }
+  .page-treatments__doctor-slot:first-child { grid-row: 2; margin-bottom: var(--space-2); }
+  .page-treatments__doctor-slot:last-child { grid-row: 3; margin-top: var(--space-2); }
   .page-treatments__doctor-slot--rose { box-shadow: var(--elev-ambient-rose); }
   .page-treatments__doctor-slot .doctor-mini-card { height: 100%; }
 
@@ -167,7 +171,9 @@
     .page-treatments__strip-actions { grid-column: auto; flex-wrap: nowrap; }
     .page-treatments__strip-actions .button--main, .page-treatments__strip-actions .button--second, html[data-booking-state="off"] .page-treatments__strip-actions .button--lead { flex: 0 0 auto; }
     .page-treatments__strip-actions .button--main { padding-inline: 22px; }
-    .page-treatments__doctors-cards { grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+    .page-treatments__doctors { grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr) auto; }
+    .page-treatments__doctors-cards { grid-column: 2; grid-row: 2 / 4; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+    .page-treatments__doctor-slot:first-child, .page-treatments__doctor-slot:last-child { grid-column: auto; grid-row: auto; margin: 0; }
   }
   @keyframes page-treatments-shaft {
     from { transform: translateX(-11%); }
