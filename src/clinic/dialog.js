@@ -1,5 +1,8 @@
-export function bindDialog(dialog){
- const abort=new AbortController(),signal=abort.signal,preference=matchMedia('(prefers-reduced-motion: reduce)');
+// `motion` is the site's motion service; while it says motion is not allowed (the footer's
+// "Pause motion", or the device setting), dialogs open and close at once.
+export function bindDialog(dialog,{motion=null}={}){
+ const abort=new AbortController(),signal=abort.signal,query=matchMedia('(prefers-reduced-motion: reduce)');
+ const preference={get matches(){return motion?!motion.allowed():query.matches;},addEventListener:(type,listener,options)=>query.addEventListener(type,listener,options)};
  let trigger=null,closing=false,animation=null,disposed=false;
  const stop=()=>{animation?.cancel();animation=null;};
  const finishClose=()=>{stop();if(dialog.open)dialog.close();};

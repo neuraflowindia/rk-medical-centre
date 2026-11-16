@@ -6,9 +6,7 @@ import {createDateTimeFields} from '../../appointment-system/browser/booking/dat
 import {createBookingDetailsFields} from '../../appointment-system/browser/booking/booking-details-fields.mjs';
 import {createReceiptFields} from '../../appointment-system/browser/booking/receipt-fields.mjs';
 import {createVerificationFields} from '../../appointment-system/browser/booking/verification-fields.mjs';
-import '../../appointment-system/browser/booking/booking-details-fields.css';
-import '../../appointment-system/browser/booking/date-time-fields.css';
-import '../../appointment-system/browser/booking/receipt-fields.css';
+import './vendor.css';
 import {bookingBrowser} from './browser.mjs';
 import {receiptContacts as contacts} from './clinic-contacts.mjs';
 

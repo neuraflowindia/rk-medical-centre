@@ -1,0 +1,50 @@
+/* The header: solid and quiet. Roots: .site-header · .lockup */
+@layer components {
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--ground-light); box-shadow: 0 1px 0 var(--line); transition: transform var(--dur-header) var(--ease-move), box-shadow var(--dur-hover); }
+  .site-header.is-scrolled { box-shadow: var(--elev-header); }
+  .site-header.is-away { transform: translateY(-102%); }
+  .site-header__row { display: flex; align-items: center; gap: var(--space-3); min-height: var(--header-height); }
+
+  .lockup { display: inline-flex; align-items: center; gap: 10px; min-height: var(--tap); margin-right: auto; color: var(--ink); }
+  .lockup img { width: 31px; height: 36px; object-fit: contain; }
+  .lockup__text { display: grid; gap: 1px; }
+  .lockup__name { font: var(--type-lockup); letter-spacing: -.005em; color: var(--ink); white-space: nowrap; }
+  .lockup__place { font: var(--type-lockup-place); color: var(--ink-muted); white-space: nowrap; }
+  .lockup:focus-visible { border-radius: var(--radius-link); }
+  .lockup--deep { color: var(--ink-on-deep); margin-right: 0; }
+  .lockup--deep .lockup__name { color: var(--ink-on-deep); }
+  .lockup--deep .lockup__place { color: var(--ink-on-deep-muted); }
+  .lockup__tile { display: inline-grid; place-items: center; flex: none; width: 48px; height: 52px; border-radius: var(--radius-control); background: var(--ground-light); }
+
+  .site-header__nav, .site-header__sign, .site-header__book { display: none; }
+  .site-header__menu { position: relative; display: inline-flex; align-items: center; gap: 7px; min-height: var(--tap); padding: 0 12px 0 10px; margin-right: -4px; color: var(--ink); font: var(--type-control-small); isolation: isolate; }
+  .site-header__menu::before { content: ""; position: absolute; z-index: -1; inset: 5px 0; border-radius: var(--radius-small); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-menu); transition: box-shadow var(--dur-hover), background-color var(--dur-hover); }
+  .site-header__menu .icon { width: 22px; height: 22px; }
+  .site-header__menu:active::before { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
+  .site-header__menu:focus-visible { border-radius: var(--radius-control); }
+  .site-header--slim .site-header__help { margin-left: auto; }
+
+  @media (min-width: 768px) {
+    .site-header__book { display: inline-flex; }
+    .site-header__row { gap: var(--space-4); }
+  }
+  @media (min-width: 1024px) {
+    .site-header__menu { display: none; }
+    .site-header__row { gap: var(--space-5); }
+    .lockup { gap: var(--space-3); margin-right: 0; }
+    .lockup img { width: 36px; height: 42px; }
+    .site-header__nav { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+    .site-header__link { position: relative; display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 13px; border-radius: var(--radius-link); color: var(--ink); font: var(--type-nav); transition: color var(--dur-hover); }
+    .site-header__link::after { content: ""; position: absolute; left: 13px; right: 13px; bottom: 11px; height: 1.5px; background: var(--action); transform: scaleX(0); transform-origin: left center; transition: transform var(--dur-underline) var(--ease-move); }
+    .site-header__link:hover, .site-header__link[aria-current="page"] { color: var(--action); }
+    .site-header__link:hover::after, .site-header__link:focus-visible::after, .site-header__link[aria-current="page"]::after { transform: scaleX(1); }
+    .site-header__link:active { color: var(--action-pressed); }
+    .site-header__sign { display: inline-flex; margin-left: var(--space-2); padding-left: var(--space-5); min-height: 28px; box-shadow: -1px 0 0 var(--line); white-space: nowrap; }
+    .site-header__sign .open-sign__sep, .site-header__sign .open-sign__detail { display: none; }
+  }
+  @media (min-width: 1280px) {
+    .site-header__nav { gap: 6px; }
+    .site-header__sign .open-sign__sep, .site-header__sign .open-sign__detail { display: inline; }
+    .site-header__row { gap: var(--space-6); }
+  }
+}

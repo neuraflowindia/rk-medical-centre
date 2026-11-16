@@ -1,0 +1,24 @@
+/* Self-hosted faces (SIL Open Font License; the licence texts sit beside the files).
+   Each file is one variable font cut down to the characters the site uses, and each holds the
+   rupee sign. Only the display roman and the text face are preloaded (see vite.config.js). */
+@font-face {
+  font-family: "Newsreader"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("../fonts/newsreader-roman-400-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Newsreader"; font-style: italic; font-weight: 400 500; font-display: swap;
+  src: url("../fonts/newsreader-italic-400-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Figtree"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("../fonts/figtree-roman-400-600.woff2") format("woff2");
+}
+/* Fallbacks matched in size to the real faces, so headings do not jump when the faces arrive. */
+@font-face {
+  font-family: "Newsreader Fallback"; src: local("Georgia");
+  size-adjust: 96%; ascent-override: 92%; descent-override: 26%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Figtree Fallback"; src: local("Arial");
+  size-adjust: 99%; ascent-override: 96%; descent-override: 25%; line-gap-override: 0%;
+}

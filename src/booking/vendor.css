@@ -1,0 +1,6 @@
+/* The booking package's own three stylesheets, placed in the `vendor` layer so that the site's
+   later layers can restyle them without force. Five declarations in them are marked as forced
+   by the package and cannot be overridden; the booking look is designed around those. */
+@import "../../appointment-system/browser/booking/booking-details-fields.css" layer(vendor);
+@import "../../appointment-system/browser/booking/date-time-fields.css" layer(vendor);
+@import "../../appointment-system/browser/booking/receipt-fields.css" layer(vendor);

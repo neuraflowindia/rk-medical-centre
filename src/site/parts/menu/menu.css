@@ -1,0 +1,9 @@
+/* The phone menu: large rows in the display face, then the two actions. */
+@layer components {
+  .menu__list { margin-top: var(--space-2); border-top: 1px solid var(--line); }
+  .menu__link { display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 0 4px; border-bottom: 1px solid var(--line); color: var(--ink); font: var(--type-row-title); transition: color var(--dur-hover), padding var(--dur-hover) var(--ease-move); }
+  .menu__link .icon { color: var(--action); transition: transform var(--dur-hover) var(--ease-move); }
+  .menu__link:active { color: var(--action); padding-left: 10px; }
+  .menu__link[aria-current="page"] { color: var(--action); }
+  .menu__actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 22px; }
+}

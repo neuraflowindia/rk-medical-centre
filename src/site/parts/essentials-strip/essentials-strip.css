@@ -1,0 +1,8 @@
+/* essentials-strip: styles of the shared part. (Skeleton: a plain strip; the finished strip follows.) */
+@layer components {
+  .essentials-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-7); padding: var(--space-3); border-radius: var(--radius-row); background: var(--surface); box-shadow: var(--elev-ambient); }
+  .essentials-strip__cell, .essentials-strip__link { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+  .essentials-strip__text { display: grid; min-width: 0; }
+  .essentials-strip .open-sign__words { display: grid; }
+  .essentials-strip .open-sign__sep { display: none; }
+}

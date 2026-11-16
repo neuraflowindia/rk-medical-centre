@@ -1,0 +1,7 @@
+/* doctor-card: styles of the shared part. (Skeleton: a plain card; the finished card follows.) */
+@layer components {
+  .doctor-card { display: grid; gap: var(--space-4); padding: var(--card-pad); border-radius: var(--radius-card); background: var(--wash-sage); box-shadow: var(--elev-ambient); }
+  .doctor-card--rose { background: var(--wash-rose); box-shadow: var(--elev-ambient-rose); }
+  .doctor-card__chip-row { display: flex; flex-wrap: wrap; gap: 8px 6px; margin-top: var(--space-3); }
+  .doctor-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+}

@@ -1,0 +1,7 @@
+/* home page: styles only for what sits inside .page-home (Skeleton: enough to hold the stub content; the finished page follows.) */
+@layer pages {
+  .page-home { padding-block: var(--section-pad); }
+  .page-home__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+  .page-home__doctor-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); margin-top: var(--head-gap); }
+  .page-home__doctors { background: var(--ground-tint); }
+}

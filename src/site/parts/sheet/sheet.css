@@ -1,0 +1,35 @@
+/* Sheets: the look every dialog shares. The dialogs sit in index.html after the app.
+   .sheet--top slides down from the top (menu); .sheet--bottom rises from the bottom on phones. */
+@layer components {
+  .sheet {
+    position: fixed; margin: 0; width: 100%; color: var(--ink-body); background: var(--surface); box-shadow: var(--elev-high); overflow: hidden;
+    opacity: 0; transition: opacity var(--dur-sheet) var(--ease-move), transform var(--dur-sheet-move) var(--ease-enter), overlay var(--dur-sheet-move) allow-discrete, display var(--dur-sheet-move) allow-discrete;
+  }
+  .sheet[open] { opacity: 1; transform: none; }
+  .sheet::backdrop { background: var(--scrim); opacity: 0; transition: opacity var(--dur-sheet), overlay var(--dur-sheet) allow-discrete, display var(--dur-sheet) allow-discrete; }
+  .sheet[open]::backdrop { opacity: 1; }
+  @starting-style {
+    .sheet[open] { opacity: 0; }
+    .sheet[open]::backdrop { opacity: 0; }
+  }
+  .sheet__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+  .sheet__title { font: var(--type-feature); color: var(--ink); }
+  .sheet__title:focus-visible { outline: none; }
+  .sheet__title--lockup { display: grid; gap: 1px; font: var(--type-lockup); letter-spacing: -.005em; }
+  .sheet__title--lockup span { font: var(--type-lockup-place); color: var(--ink-muted); letter-spacing: 0; }
+  .sheet__grip { display: block; width: 40px; height: 4px; margin: 0 auto 6px; border-radius: var(--radius-pill); background: var(--grip); }
+  .sheet__note { color: var(--ink-body); }
+
+  .sheet--top { inset: 0 0 auto 0; padding: 4px var(--gutter) var(--space-6); border-radius: 0 0 var(--radius-card) var(--radius-card); transform: translateY(-28px); }
+  @starting-style { .sheet--top[open] { transform: translateY(-28px); } }
+  .sheet--top .sheet__head { min-height: 52px; }
+
+  .sheet--bottom { inset: auto 0 0 0; padding: 10px var(--gutter) calc(22px + env(safe-area-inset-bottom, 0px)); border-radius: var(--radius-card) var(--radius-card) 0 0; transform: translateY(40px); }
+  @starting-style { .sheet--bottom[open] { transform: translateY(40px); } }
+  .sheet--bottom .sheet__head { min-height: 56px; margin-bottom: var(--space-2); }
+  @media (min-width: 768px) {
+    .sheet--bottom { inset: 0; margin: auto; width: min(568px, 100% - 48px); height: fit-content; padding: 22px 26px 26px; border-radius: var(--radius-card); transform: translateY(18px) scale(.985); }
+    @starting-style { .sheet--bottom[open] { transform: translateY(18px) scale(.985); } }
+    .sheet--bottom .sheet__grip { display: none; }
+  }
+}

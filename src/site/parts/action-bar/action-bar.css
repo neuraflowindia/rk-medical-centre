@@ -1,0 +1,52 @@
+/* The phone action bar and the raised rows that dial a doctor. Roots: .action-bar · .call-rows · .call-row */
+@layer components {
+  .action-bar {
+    position: fixed; z-index: 60; left: var(--space-2); right: var(--space-2); bottom: calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+    display: grid; grid-template-columns: .9fr 1.06fr 1.14fr; align-items: center; gap: 2px; height: var(--bar-height); padding: 0 var(--space-2); border-radius: var(--radius-bar);
+    background: var(--surface); box-shadow: var(--elev-bar); transition: transform var(--dur-bar) var(--ease-enter), opacity var(--dur-swap), visibility 0s;
+  }
+  /* With scripts the bar shows only when the page's own buttons are out of view; without, it is always there. */
+  html[data-js] .action-bar:not(.is-shown) { transform: translateY(calc(100% + 24px)); opacity: 0; visibility: hidden; transition: transform var(--dur-swap) var(--ease-move), opacity var(--dur-hover), visibility 0s var(--dur-swap); }
+  .action-bar__item { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: var(--tap); border-radius: var(--radius-small); color: var(--action); font: var(--type-control-small); transition: background-color var(--dur-hover), transform var(--dur-press); }
+  .action-bar__item:active { background: var(--chosen); transform: translateY(var(--press)); }
+  .action-bar__item:last-child { padding-right: 6px; }
+  .action-bar__book { display: inline-flex; align-items: center; justify-content: center; height: var(--tap); border-radius: var(--radius-small); color: var(--on-action); font: var(--type-control); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); transition: transform var(--dur-press), box-shadow var(--dur-hover); }
+  .action-bar__book:active { transform: translateY(var(--press)); background: var(--action-pressed); box-shadow: var(--elev-main-pressed); }
+  .action-bar__item:focus-visible, .action-bar__book:focus-visible { border-radius: var(--radius-small); }
+  /* While booking is off the bar has two actions, and Call takes the filled look. */
+  html[data-booking-state="off"] .action-bar { grid-template-columns: 1.2fr 1fr; }
+  html[data-booking-state="off"] .action-bar__item--call { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
+  @media (max-width: 359px) {
+    .action-bar { grid-template-columns: .9fr 1fr 1.25fr; }
+    .action-bar__item { gap: 6px; }
+  }
+  @media (min-width: 1024px) {
+    .action-bar { display: none; }
+  }
+
+  .call-rows { display: grid; gap: var(--space-3); }
+  .call-row {
+    display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; row-gap: 2px; min-height: 76px; padding: 12px 16px 12px 12px; border-radius: var(--radius-row); color: var(--ink);
+    background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
+  }
+  .call-row__avatar, .call-row__icon { grid-row: 1 / span 2; flex: none; width: 52px; height: 52px; border-radius: var(--radius-control); }
+  .call-row__avatar { object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
+  .call-row__icon { display: inline-grid; place-items: center; color: var(--action); background: var(--chosen); box-shadow: var(--ring-action-faint); }
+  .call-row__icon .icon { width: 26px; height: 26px; }
+  .call-row__who { display: grid; gap: 1px; min-width: 0; font: var(--type-row); }
+  .call-row__name { color: var(--ink); font-weight: 600; }
+  .call-row__need { color: var(--ink-body); }
+  .call-row__digits { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--action); font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .01em; white-space: nowrap; }
+  .call-row:active { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
+  .call-row:focus-visible { border-radius: var(--radius-row); }
+  .call-row.is-pointed { box-shadow: var(--ring), var(--halo-wide), var(--elev-raised); }
+  @media (hover: hover) and (pointer: fine) {
+    .call-row:hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+    .call-row:active { transform: translateY(var(--press)); }
+  }
+  @media (min-width: 480px) {
+    .call-row { grid-template-columns: auto 1fr auto; }
+    .call-row:not(:has(.call-row__avatar, .call-row__icon)) { grid-template-columns: 1fr auto; }
+    .call-row__avatar, .call-row__icon { grid-row: auto; }
+  }
+}

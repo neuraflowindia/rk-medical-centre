@@ -110,9 +110,10 @@ test('the live sign copes with other timetables',()=>{
 test('the essentials strip gives the fee and the place; its first cell is the live sign',()=>{
  assert.equal(shared.feeLabel(),'₹800');
  assert.equal(shared.feeLabel({fee:null,fees:'Dr. A: ₹800; Dr. B: ₹900'}),'Dr. A: ₹800; Dr. B: ₹900','each fee is named if they ever differ');
- assert.deepEqual(shared.essentials.fee,{icon:'report',label:'Fee',value:'₹800'});
- assert.deepEqual(shared.essentials.place,{icon:'pin',label:'Tedhi Pulia, Ring Road',action:'Directions',href:directions});
- assert.deepEqual(Object.keys(shared.essentials),['open','fee','place']);
+ assert.deepEqual(shared.essentials.fee,{icon:'rupee',label:'Fee',labelWide:'Consultation fee',value:'₹800'});
+ assert.deepEqual(shared.essentials.place,{icon:'pin',label:'Tedhi Pulia, Ring Road',labelShort:'Tedhi Pulia',action:'Directions',href:directions,opens:'(opens Google Maps)'});
+ assert.ok(shared.essentials.place.label.startsWith(shared.essentials.place.labelShort));
+ assert.deepEqual(Object.keys(shared.essentials),['label','open','fee','place']);
 });
 
 test('the week\'s hours are the published appointment times, as rows and as one line',()=>{

@@ -45,6 +45,8 @@ export const navigationLabels=Object.freeze({
  menu:'Pages',
  openMenu:'Open menu',
  closeMenu:'Close menu',
+ menuButton:'Menu',
+ help:'Need help? Call',
  skip:'Skip to content'
 });
 
@@ -131,9 +133,10 @@ export function feeLabel(overview=clinicOverview()){
 
 /** The three answers under the first screen. Cell 1 is live (`liveSign`). */
 export const essentials=Object.freeze({
+ label:'Visit essentials',
  open:Object.freeze({icon:'clock'}),
- fee:Object.freeze({icon:'report',label:'Fee',value:feeLabel()}),
- place:Object.freeze({icon:'pin',label:'Tedhi Pulia, Ring Road',action:'Directions',href:directions})
+ fee:Object.freeze({icon:'rupee',label:'Fee',labelWide:'Consultation fee',value:feeLabel()}),
+ place:Object.freeze({icon:'pin',label:'Tedhi Pulia, Ring Road',labelShort:'Tedhi Pulia',action:'Directions',href:directions,opens:'(opens Google Maps)'})
 });
 
 /** The week's appointment times as rows. The Sunday text may end with a short note after the hours. */
@@ -165,7 +168,9 @@ export function callRows(){
 export const callSheet=Object.freeze({
  title:'Call the clinic',
  close:'Close',
- whatsapp:Object.freeze({label:actionLabels.whatsapp,number:whatsappNumber,href:whatsappLink()})
+ whatsapp:Object.freeze({label:actionLabels.whatsapp,number:whatsappNumber,href:whatsappLink()}),
+ whatsappNeed:'Ask about an appointment',
+ opensWhatsapp:'(opens WhatsApp)'
 });
 /** The phone action bar, left to right. */
 export const actionBar=Object.freeze({call:'Call',book:'Book',directions:'Directions',label:'Quick actions'});
@@ -179,7 +184,10 @@ export const closing=Object.freeze({
   today:'See a doctor today.',
   next:Object.freeze({on:'Book your next visit.',off:'Arrange your next visit.'})
  }),
- book:bookingEntry.page.on.label
+ // The one phrase of each heading that is set in italics.
+ emphasis:Object.freeze({today:'today.',next:'next visit.'}),
+ book:bookingEntry.page.on.label,
+ callsLabel:'Call a doctor'
 });
 /** The closing heading for a live-sign state and the booking state. */
 export function closingHeading(signState,bookingEnabled=true){
@@ -208,6 +216,7 @@ export const addressCard=Object.freeze({
 export const reviewShelf=Object.freeze({
  tabs:Object.freeze({all:'All',sanjay:doctorShortName('sanjay'),parul:doctorShortName('parul')}),
  tabsLabel:'Reviews by doctor',
+ shelfLabel:'Patient reviews',
  previous:'Previous review',
  next:'Next review',
  readMore:actionLabels.readMore,
@@ -225,6 +234,13 @@ export const detailsNotice=Object.freeze({
   'Messages and booking records are kept in the clinic’s protected system. An email service sends verification and appointment messages. If you choose online payment, the payment provider handles that payment.',
   'For questions about your records or to ask for a correction, contact the clinic using the phone numbers on the Contact page.'
  ])
+});
+
+/** The panel opened by "Change privacy choices". Visit measurement is not in use on this site. */
+export const privacyChoices=Object.freeze({
+ title:'Your privacy choices',
+ paragraphs:Object.freeze(['Visit measurement is not in use on this website. Only your own choices here (privacy and motion) are saved, on this device.']),
+ accept:'Continue without it'
 });
 
 /** Everything the footer prints. */

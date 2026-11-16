@@ -1,0 +1,10 @@
+/* The call sheet (phone) and call panel (laptop): one dialog, two forms. */
+@layer components {
+  .call-panel .call-row__need { font: var(--type-meta); color: var(--ink-muted); }
+  .call-panel .call-row__name { font: var(--type-row-strong); }
+  .call-panel .call-row--whatsapp { grid-template-columns: auto 1fr auto; }
+  .call-panel .call-row--whatsapp .call-row__icon { grid-row: auto; }
+  @media (min-width: 768px) {
+    .call-panel .call-row { min-height: 84px; padding: 14px 20px 14px 14px; }
+  }
+}

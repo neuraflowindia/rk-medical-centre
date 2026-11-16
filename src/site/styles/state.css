@@ -1,0 +1,25 @@
+/* The last layer: states that must win over every part and page without force. */
+@layer state {
+  [hidden] { display: none; }
+
+  /* Parts that only work with scripts stay out of the way until scripts have started. */
+  html:not([data-js]) [data-needs-script] { display: none; }
+  html[data-js] [data-without-script] { display: none; }
+
+  /* A dialog is open: the page behind does not scroll. */
+  html.dialog-open { overflow: hidden; }
+
+  /* Motion paused (the footer control, or the device setting): nothing moves by itself. */
+  html[data-motion="paused"] *, html[data-motion="paused"] *::before, html[data-motion="paused"] *::after,
+  html:not([data-motion]) *, html:not([data-motion]) *::before, html:not([data-motion]) *::after {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html:not([data-motion="on"]) *, html:not([data-motion="on"]) *::before, html:not([data-motion="on"]) *::after {
+      animation-play-state: paused; scroll-behavior: auto;
+    }
+  }
+
+  /* A picture that failed to load leaves its frame, never a broken mark. */
+  .media-failed { visibility: hidden; }
+}

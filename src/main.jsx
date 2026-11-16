@@ -1,22 +1,4 @@
-import './clinic/site.css';
-import './clinic/additions.css';
-import './clinic/refinement-layout.css';
-import './clinic/choreography.css';
-import './clinic/interaction-polish.css';
-import './clinic/home-refinement.css';
-import './clinic/home-doctors.css';
-import './clinic/home-reviews.css';
-import './clinic/home-visit-motion.css';
-import './clinic/footer-details.css';
-import './clinic/home-booking-sections.css';
-import './clinic/care-pages.css';
-import './clinic/doctor-pages.css';
-import './clinic/contact-page.css';
-import './clinic/booking-page.css';
-import './clinic/clinic-glance.css';
-import './clinic/clinic-photos.css';
-import './clinic/doctor-photos.css';
-import './clinic/doctor-certificates.css';
-import './clinic/photo-viewer.css';
-import './clinic/open-status.css';
-import './clinic/site.js';
+// The only entry. Styles first (the layer order is declared at the top of that file), then the
+// runtime, which draws and binds the page. The booking screens are loaded later, on their own.
+import './site/styles/index.css';
+import './site/runtime/start.mjs';

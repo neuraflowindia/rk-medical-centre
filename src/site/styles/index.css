@@ -1,0 +1,41 @@
+/* The one stylesheet of the public pages. The layer order comes first and is declared once:
+   later layers win, so a page may place a shared part without a specificity fight, and
+   `state` (hidden, booking state, paused motion) always has the last word. */
+@layer reset, tokens, vendor, base, components, pages, motion, state;
+
+@import "./tokens.css";
+@import "./fonts.css";
+@import "./base.css";
+
+/* shared parts (layer: components) */
+@import "../parts/button/button.css";
+@import "../parts/sheet/sheet.css";
+@import "../parts/section-head/section-head.css";
+@import "../parts/open-sign/open-sign.css";
+@import "../parts/site-header/site-header.css";
+@import "../parts/menu/menu.css";
+@import "../parts/site-footer/site-footer.css";
+@import "../parts/essentials-strip/essentials-strip.css";
+@import "../parts/doctor-card/doctor-card.css";
+@import "../parts/doctor-mini-card/doctor-mini-card.css";
+@import "../parts/photo-figure/photo-figure.css";
+@import "../parts/questions/questions.css";
+@import "../parts/review-shelf/review-shelf.css";
+@import "../parts/certificate-frame/certificate-frame.css";
+@import "../parts/still-shelf/still-shelf.css";
+@import "../parts/closing/closing.css";
+@import "../parts/action-bar/action-bar.css";
+@import "../parts/call-panel/call-panel.css";
+
+/* pages (layer: pages) */
+@import "../pages/home/home.css";
+@import "../pages/treatments/treatments.css";
+@import "../pages/about/about.css";
+@import "../pages/doctors/doctors.css";
+@import "../pages/profile/profile.css";
+@import "../pages/contact/contact.css";
+@import "../pages/booking/booking.css";
+@import "../pages/booking-details/booking-details.css";
+
+@import "../motion/motion.css";
+@import "./state.css";

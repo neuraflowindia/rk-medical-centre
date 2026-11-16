@@ -1,0 +1,7 @@
+/* certificate-frame: styles of the shared part. Roots: .certificate-frame · .certificate-wall · .certificate-viewer (Skeleton: a plain row; the finished frames follow.) */
+@layer components {
+  .certificate-wall { display: flex; gap: var(--space-5); overflow-x: auto; padding-block: var(--space-4); }
+  .certificate-frame { flex: none; width: min(240px, 62vw); }
+  .certificate-frame__mat { padding: 10px; background: var(--wash-mustard); border-radius: var(--radius-frame); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .certificate-frame__label { display: grid; margin-top: var(--space-2); font: var(--type-meta); }
+}

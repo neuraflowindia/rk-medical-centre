@@ -1,0 +1,21 @@
+/* The footer: deep ground, complete and compact. (Skeleton: layout only; the finished look follows.) */
+@layer components {
+  .site-footer { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: var(--space-9) 0 calc(var(--space-7) + env(safe-area-inset-bottom, 0px)); font: var(--type-row); }
+  .site-footer__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-7); }
+  .site-footer__brand { display: grid; gap: var(--space-3); justify-items: start; }
+  .site-footer__hours { display: grid; gap: 2px; font-variant-numeric: tabular-nums lining-nums; }
+  .site-footer__doctors { display: grid; gap: var(--space-5); }
+  .site-footer__doctor { display: grid; gap: 2px; justify-items: start; }
+  .site-footer__name { color: var(--ink-on-deep); font-weight: 600; }
+  .site-footer__phone { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); color: var(--link-on-deep); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+  .site-footer__registration { color: var(--ink-on-deep-muted); font: var(--type-meta); }
+  .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 var(--space-5); }
+  .site-footer__link { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--ink-on-deep); text-align: left; }
+  .site-footer__base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); margin-top: var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--line-on-deep); color: var(--ink-on-deep-muted); font: var(--type-meta); }
+  .site-footer__controls { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+  .site-footer__control { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); color: var(--ink-on-deep-soft); }
+  .site-footer :focus-visible { outline-color: var(--focus-on-deep); }
+  @media (min-width: 768px) {
+    .site-footer__grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); }
+  }
+}
