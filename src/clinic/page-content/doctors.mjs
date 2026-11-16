@@ -3,16 +3,17 @@
 //   A profile:         cover · essentials · what the doctor sees patients for · about · certificates · reviews · closing
 //
 // Facts come from model.mjs, care-catalogue.mjs, certificate-catalogue.mjs and open-status.mjs;
-// stand-ins (degrees, registration) come from standins.mjs only; words shared with Home come from
-// home.mjs and shared.mjs. No markup lives in this file: emphasis and links are separate fields.
+// degrees are read through degreesOf() and registrations through registrationLine() (their one
+// home is standins.mjs and model.mjs); words shared with Home come from home.mjs and shared.mjs.
+// No markup lives in this file: emphasis and links are separate fields.
 import {doctors,doctorFacts} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificatesFor} from '../certificate-catalogue.mjs';
-import * as media from '../client-media.mjs';
+import {clinicPhotos,archPortraits,doctorAvatars} from '../client-media.mjs';
 import {clinicClock,sessionsFor,formatTime,NEUTRAL} from '../open-status.mjs';
-import {doctorDegrees,registrationLine} from '../standins.mjs';
-import {hero,doctorChips,doctorsSection} from './home.mjs';
-import {pagePaths,actionLabels,bookWithLabel,callDoctorSpoken,doctorShortName,localPhone} from './shared.mjs';
+import {registrationLine} from '../standins.mjs';
+import {hero,doctorChips,doctorsSection,degreesBeside} from './home.mjs';
+import {pagePaths,actionLabels,bookWithLabel,callDoctorSpoken,degreesOf,doctorShortName,localPhone} from './shared.mjs';
 
 function known(id){
  if(!Object.hasOwn(doctors,id))throw new RangeError('Unknown doctor: '+id);
@@ -29,27 +30,30 @@ const pronouns=Object.freeze({
 export const doctorTone=Object.freeze({sanjay:'sage',parul:'rose'});
 /** "Physician · Diabetes" / "Gynaecologist": the short role under a portrait, as on Home. */
 export function shortRole(id){return hero.portraits.find(item=>item.id===known(id)).role;}
+const homeCard=id=>doctorsSection.cards.find(card=>card.id===known(id));
 /** "KGMU gold medalist" for Dr. Parul Gupta; null for a doctor without an honour tag. */
-export function honourTag(id){return doctorsSection.cards.find(card=>card.id===known(id)).tag||null;}
+export function honourTag(id){return homeCard(id).tag||null;}
+/** "Physician & Diabetology · MBBS, DGO": the formal specialty and the degrees, exactly as on the Home card. */
+export function formalLine(id){return homeCard(id).formalLine;}
+/** The degrees alone, for a place where the formal specialty already stands beside them. */
+export function degreesLine(id){return degreesBeside(doctors[known(id)].formal,degreesOf(id));}
 
 // ---- photographs ----
 // WAITING: request doctors-01 — the wider 4 : 5 "at work" crops and the 3 : 2 room crops. Until
-// they are in public/, the older at-desk portraits stand in and the room picture is left out.
+// they are in public/, Home's arch portraits stand in and the room picture is left out.
 const hasPhoto=(id,photos)=>Object.hasOwn(photos,id);
 /** The 4 : 5 "at work" portrait of a doctor (Meet the doctors, profile cover). Never shown wider than 300 px. */
-export function workPortrait(id,photos=media.clinicPhotos){
+export function workPortrait(id,photos=clinicPhotos){
  const wanted=`at-work-${known(id)}`;
- return hasPhoto(wanted,photos)?wanted:media.doctorPortraits[id];
+ return hasPhoto(wanted,photos)?wanted:archPortraits[id];
 }
 /** The 3 : 2 picture of a doctor's consulting room, or null while it does not exist yet. */
-export function roomPicture(id,photos=media.clinicPhotos){
+export function roomPicture(id,photos=clinicPhotos){
  const wanted=`room-${known(id)}`;
  return hasPhoto(wanted,photos)?wanted:null;
 }
-/** A doctor's small square face, or null while the avatars do not exist yet (they arrive with the shared parts). */
-export function avatarOf(id,avatars=media.doctorAvatars){
- return avatars&&Object.hasOwn(avatars,known(id))?avatars[id]:null;
-}
+/** A doctor's small square face (decorative: the name is always beside it). */
+export function avatarOf(id){return doctorAvatars[known(id)];}
 /** What each portrait shows, as its credit: a moment at work, and where. */
 export const portraitCredit=Object.freeze(Object.fromEntries(doctorOrder.map(id=>[id,`In ${pronouns[id].possessive} consulting room`])));
 
@@ -63,11 +67,12 @@ export function careTopics(id){
 // Meet the doctors
 // =====================================================================================
 
-/** Two certificates from each doctor, alternating: the third and fourth of each, so Home's four are not repeated. */
+/**
+ * Two certificates from each doctor, each doctor's pair together: the third and fourth of each
+ * in the approved order, so the four that Home shows are not repeated here.
+ */
 export function meetCertificates(from=2,perDoctor=2){
- const picked=doctorOrder.map(id=>certificatesFor(id).slice(from,from+perDoctor)),list=[];
- for(let index=0;index<perDoctor;index++)for(const group of picked)if(group[index])list.push(group[index]);
- return list;
+ return doctorOrder.flatMap(id=>certificatesFor(id).slice(from,from+perDoctor));
 }
 
 function leaf(id){
@@ -79,7 +84,7 @@ function leaf(id){
   role:doctor.role,
   heading:`See ${doctorShortName(id)} for`,
   concerns:Object.freeze(careTopics(id).map(topic=>topic.label)),
-  formalLine:`${doctor.formal} · ${doctorDegrees[id]}`,
+  formalLine:formalLine(id),
   registration:registrationLine(id),
   tag:honourTag(id),
   profile:Object.freeze({label:actionLabels.fullProfile,href:doctor.path,spoken:`${actionLabels.fullProfile} of ${doctor.name}`})
@@ -165,6 +170,8 @@ const stories=Object.freeze({
   caption:`${doctors.parul.name} in her consulting room, with the scan machine beside her desk.`
  })
 });
+// One paper-cut object beside each doctor's list on wide screens: an accent, never an illustration of a person.
+const careObjects=Object.freeze({sanjay:'stethoscope-general',parul:'ultrasound-probe'});
 const certificateHeadings=Object.freeze({
  sanjay:Object.freeze({heading:'Training and professional memberships.',emphasis:'professional memberships.'}),
  parul:Object.freeze({heading:'Fellowships, training and awards.',emphasis:'and awards.'})
@@ -173,7 +180,7 @@ const certificateHeadings=Object.freeze({
 /** Everything one doctor's profile prints: `id` is "sanjay" or "parul". */
 export function profilePage(id){
  known(id);
- const doctor=doctors[id],they=pronouns[id],short=doctorShortName(id),story=stories[id];
+ const doctor=doctors[id],they=pronouns[id],story=stories[id];
  return Object.freeze({
   id,
   tone:doctorTone[id],
@@ -181,7 +188,7 @@ export function profilePage(id){
   runningHead:doctor.formal,
   heading:doctor.name,
   role:doctor.role,
-  degrees:doctorDegrees[id],
+  degrees:degreesLine(id),
   registration:registrationLine(id),
   tag:honourTag(id),
   credit:`${portraitCredit[id]}, Indira Nagar`,
@@ -195,6 +202,7 @@ export function profilePage(id){
    heading:`What ${they.subject} sees patients for.`,
    emphasis:'sees patients for.',
    listLabel:`What ${doctor.name} sees patients for`,
+   object:careObjects[id],
    topics:Object.freeze(careTopics(id))
   }),
   // 4 · about the doctor
@@ -227,8 +235,7 @@ export function profilePage(id){
    heading:`In ${they.possessive} patients’ words.`,
    emphasis:'patients’ words.',
    shown:3
-  }),
-  short
+  })
  });
 }
 

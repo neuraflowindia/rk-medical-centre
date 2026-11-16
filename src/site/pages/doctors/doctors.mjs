@@ -34,7 +34,7 @@ function opening(){
 function leaf(item,ctx,index){
  const face=avatarOf(item.id);
  return `<article${attrs({class:`page-doctors__leaf page-doctors__leaf--${item.tone}`,'data-doctor':item.id,'aria-labelledby':`see-${item.id}`,'data-enter':'card',style:`--i:${index}`})}>`
-  +`<header class="page-doctors__leaf-head">${face?image(face,{className:'page-doctors__face'}):''}`
+  +`<header class="page-doctors__leaf-head">${image(face,{className:'page-doctors__face'})}`
   +`<p class="page-doctors__leaf-role">${text(item.role)}</p><h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3></header>`
   +`<ul class="page-doctors__concerns">${item.concerns.map(concern=>`<li>${icon('check')}<span>${text(concern)}</span></li>`).join('')}</ul>`
   +`<div class="page-doctors__facts"><p class="page-doctors__formal">${text(item.formalLine)}</p><p class="page-doctors__registration">${text(item.registration)}</p>`
@@ -57,9 +57,9 @@ function training(){
  const section=words.training;
  return `<section class="page-doctors page-doctors__training" id="${section.id}" aria-labelledby="${section.id}-title"><div class="page-doctors__training-grid">`
   +`<div class="wrap page-doctors__training-head">`
-  +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,intro:section.intro,id:`${section.id}-title`})
-  +`<ul class="page-doctors__wall-links">${section.links.map(link=>`<li>${textLink({label:link.label,href:link.href})}</li>`).join('')}</ul></div>`
+  +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,intro:section.intro,id:`${section.id}-title`})+`</div>`
   +`<div class="page-doctors__wall">${certificateWall(meetCertificates(),{label:section.wallLabel,view:true})}</div>`
+  +`<ul class="wrap page-doctors__wall-links">${section.links.map(link=>`<li>${textLink({label:link.label,href:link.href})}</li>`).join('')}</ul>`
   +`</div></section>`;
 }
 
