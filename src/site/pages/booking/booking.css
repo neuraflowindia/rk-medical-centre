@@ -1,3 +1,40 @@
-/* booking page: styles only for what sits inside .page-booking */
+/* The page around the booking screens (both addresses carry .page-booking): a short sage head,
+   the place the steps are mounted, and the one panel shown while they cannot be used.
+   The steps themselves are styled in src/booking/clinic-booking.css (the lazy booking bundle). */
 @layer pages {
+  .page-booking { min-height: calc(100svh - var(--header-height)); padding-bottom: var(--space-8); }
+  .page-booking__head { padding: var(--space-4) 0; background: var(--ground-tint); }
+  .page-booking__title { font: var(--type-h2); letter-spacing: var(--tracking-h2); }
+  .page-booking__root { padding-top: var(--space-5); min-width: 0; }
+
+  /* ----- the panel: opening · checking · unavailable · could not open ----- */
+  .page-booking__panel {
+    position: relative; display: grid; justify-items: start; gap: var(--space-3); max-width: 560px; margin-inline: auto;
+    padding: var(--space-6) var(--card-pad) var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card);
+  }
+  .page-booking__object { position: absolute; right: -6px; top: -34px; width: 76px; height: auto; transform: rotate(8deg); filter: var(--elev-object-small); pointer-events: none; }
+  .page-booking__mark { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-small); color: var(--action); background: var(--chosen); box-shadow: var(--ring-action-faint); }
+  .page-booking__mark .icon { width: 24px; height: 24px; }
+  .page-booking__panel[data-state="error"] .page-booking__mark { color: var(--error); background: var(--error-wash); box-shadow: none; }
+  .page-booking__status { max-width: 14em; padding-right: var(--space-8); font: var(--type-h3); letter-spacing: var(--tracking-display); }
+  .page-booking__help { color: var(--ink-body); }
+  .page-booking__kept { color: var(--ink-body); font: var(--type-notes); }
+  .page-booking__calls { width: 100%; margin-top: var(--space-2); }
+  .page-booking__retry { margin-top: var(--space-2); }
+  /* opening: the panel's shape with still, flat lines, so nothing jumps when the steps arrive */
+  .page-booking__panel--opening { gap: var(--space-4); padding-top: var(--card-pad); }
+  .page-booking__opening { color: var(--ink-body); font: var(--type-label); }
+  .page-booking__ghost { display: block; width: 100%; height: var(--control-height-large); border-radius: var(--radius-row); background: var(--flat-fill); }
+  .page-booking__ghost:last-child { width: 60%; }
+
+  @media (min-width: 768px) {
+    .page-booking__head { padding: var(--space-7) 0 calc(var(--space-7) + 40px); }
+    /* the steps' paper panel overlaps the sage head: a surface across a boundary */
+    .page-booking__root { margin-top: -40px; padding-top: 0; }
+    .page-booking__panel { padding-top: var(--space-7); }
+    .page-booking__object { right: -22px; top: -44px; width: 96px; }
+  }
+  @media (min-width: 1024px) {
+    .page-booking { padding-bottom: var(--space-9); }
+  }
 }

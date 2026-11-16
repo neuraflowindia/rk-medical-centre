@@ -1,141 +1,452 @@
-import React, {useEffect, useId, useRef, useSyncExternalStore} from 'react';
+// The booking screens: the engine's three stages shown as three steps, then the appointment card.
+// Every booking decision stays in the sealed package's coordinator (useBooking); this file only
+// draws its state. Words and step rules live in booking-steps.mjs so they can be tested.
+import React, {useEffect, useId, useRef, useState, useSyncExternalStore} from 'react';
 import {createRoot} from 'react-dom/client';
 import {createUseBooking} from '../../appointment-system/browser/booking/index.mjs';
 import {productState} from '../clinic/product-state.mjs';
-import {dateRange, timeLabel, money} from '../../appointment-system/browser/display-formatting.mjs';
+import {dateRange} from '../../appointment-system/browser/display-formatting.mjs';
 import {ReceiptFields, BookingDetailsFields, DateField, VerificationFields} from './shared-fields.jsx';
 import './clinic-booking.css';
 import {bookingBrowser} from './browser.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/index.mjs';
-import {clinicContacts} from './clinic-contacts.mjs';
+import {bookingUnavailable} from '../site/pages/booking/booking.mjs';
+import {archPortrait} from '../site/parts/photo-figure/photo-figure.mjs';
+import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, usablePolicy, doctorChoices, sittingHours, dayTiles, dayBeyondTiles, dayLong,
+  slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, mustChooseAgain, phoneCountry, detailProblems, confirmLabel, confirmHint,
+  visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject} from './booking-steps.mjs';
+
 const useBooking = createUseBooking(React, bookingBrowser);
-const serviceFor = doctor => ['sanjay','parul'].includes(doctor)?'dr-'+doctor+'-gupta':'';
-function ClinicContact({service,bookingHelp=false}){
-  const selected=clinicContacts.find(item=>item.service===service);
-  return <p>{bookingHelp?'Call the clinic: ':'For cancellations or changes, contact the clinic: '}{(selected?[selected]:clinicContacts).map((item,index)=><React.Fragment key={item.service}>{index>0?' · ':''}<a href={'tel:'+item.phone}>{item.label}: {item.display}</a></React.Fragment>)}</p>;
+const classes = (...names) => names.filter(Boolean).join(' ');
+
+function Icon({name}) {
+  return <svg className="icon" aria-hidden="true" focusable="false"><use href={'#i-' + name}/></svg>;
 }
 
-function Booking({draft={}}){
-  const initialService=useRef(serviceFor(draft.doctor));
-  const flow=useBooking(initialService.current),{state:s,dispatch}=flow,id=useId();
-  const product=useSyncExternalStore(productState.subscribe,productState.getSnapshot,productState.getServerSnapshot);
-  useEffect(()=>{
-    for(const [name,value] of Object.entries({full_name:draft.name||'',phone:draft.phone||'',email:draft.email||'',notes:draft.message||'',
-      country:draft.phone?.trim().startsWith('+')?'other':'91'}))dispatch({type:'details',name,value});
-  },[]);
-  const canEdit=!s.busy&&!s.credential&&s.phase!=='blocked'&&flow.available;
-  const edit=(name,value)=>{
-    if(!canEdit)return;
-    if(name==='service'&&s.policy?.policy.services.some(item=>item.id===value&&item.enabled)){
-      const doctor=['sanjay','parul'].find(item=>serviceFor(item)===value);if(doctor)draft.doctor=doctor;
-    }
-    dispatch({type:'edit',name,value});
-  };
-  const detail=(name,value)=>{
-    if(!canEdit)return;
-    const key={full_name:'name',phone:'phone',email:'email',notes:'message'}[name];if(key)draft[key]=value;
-    dispatch({type:'details',name,value});
-  };
-  const p=s.policy?.policy,service=p?.services.find(item=>item.id===s.service);
-  const disabled=s.busy||!flow.available||!!s.credential;
-  if(!flow.viewAvailable)return <div className="clinic-booking-unavailable" role="status">
-    <h2>{product.checking?'Checking appointment booking…':'Online booking is currently unavailable'}</h2>
-    <p>You can call the clinic to arrange your visit.</p>
-    <ClinicContact service={s.service||serviceFor(draft.doctor)} bookingHelp/>
-    <button className="text-link" onClick={()=>productState.refresh({force:true})} disabled={product.checking}>Check again</button>
+/** Icon and words; `calm` is for news that is not a fault. */
+function Notice({calm = false, icon, role = 'alert', children}) {
+  return <div className={classes('booking-notice', calm && 'booking-notice--calm')} role={role}>
+    <Icon name={icon || (calm ? 'info' : 'alert')}/>{children}
   </div>;
-  const range=s.policy?dateRange(s.policy):null;
-  const validPolicy=p?.version===2 && p.meeting==='in_person' && p.display_duration===false;
-  const methodAvailable=validPolicy&&paymentAvailable(s.policy,s.payment_method);
-  const ready=flow.available&&validPolicy&&s.policyFresh&&s.slotsFresh&&s.slot&&s.quote&&methodAvailable&&s.ack&&!s.busy;
-  const selectedDay=validPolicy&&s.day?new Intl.DateTimeFormat('en-IN',{timeZone:p.timezone,dateStyle:'medium'}).format(new Date(s.day+'T12:00:00Z')):'';
-  const selectedPayment=s.payment_method==='at_clinic'?'Pay at the clinic':s.payment_method==='online'?'Pay online':'';
-  const fields=[['full_name','Full name','text','name',true,100],['phone','Phone number','tel','tel-national',p?.required_contacts.includes('phone')??true,32],
-    ['email','Email address','email','email',p?.required_contacts.includes('email')??false,254]];
-  return <div className="clinic-booking">
-    {s.error&&<p className="booking-error" role="alert">{s.error}</p>}
-    {s.receipt?<><ReceiptFields flow={flow}/><div className="booking-actions">
-      <button className="button secondary" onClick={flow.check} disabled={s.busy||!flow.available}>Refresh details</button>
-      {s.receipt.next_actions.includes('resume_payment')&&<button className="button" disabled={s.busy||!flow.available} onClick={flow.resume}>Continue payment</button>}
-      {s.receipt.next_actions.includes('check_payment')&&!s.receipt.next_actions.includes('resume_payment')&&<button className="button secondary" disabled={s.busy||!flow.available} onClick={flow.resume}>Check payment status</button>}
-      {s.receipt.next_actions.includes('choose_new_time')&&<button className="text-link" disabled={s.busy||!flow.available} onClick={flow.restart}>Book another appointment</button>}
-    </div><ClinicContact service={clinicContacts.find(item=>item.service===s.receipt.resource_id||item.label===s.receipt.resource_name)?.service}/><p>Booking another appointment does not change this one.</p></>:
-    s.credential?<div role="status"><h2>Checking your booking</h2><p>We are checking the same request, so it cannot be booked twice.</p>
-      <button className="button" disabled={s.busy||!flow.available} onClick={flow.check}>Check my booking</button>
-      {flow.canRetryOriginal&&<button className="button secondary" disabled={s.busy||!flow.available} onClick={flow.retryOriginal}>Retry the same request</button>}</div>:
-    <form className="booking-form" aria-label="Book an appointment" onSubmit={event=>{event.preventDefault();if(ready)void flow.start();}}>
-      <section className="booking-stage booking-stage-time" aria-labelledby={id+'time-heading'}>
-      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">1</span><div><h2 id={id+'time-heading'}>Your doctor and starting time</h2><p>Choose your doctor, a date and an available starting time.</p></div></div>
-      {s.loadingPolicy&&<p role="status">Checking the doctors’ schedules…</p>}
-      {!s.loadingPolicy&&!validPolicy&&<p role="alert">We could not load the clinic’s appointment options. Please try again.</p>}
-      {!s.policyFresh&&<button type="button" className="text-link" disabled={!flow.available||s.loadingPolicy} onClick={flow.loadPolicy}>Reload appointment options</button>}
-      <fieldset disabled={disabled||!validPolicy||!s.policyFresh} className="doctor-choices"><legend>Choose your doctor</legend>
-        {(validPolicy?p.services.filter(item=>item.enabled):[]).map(item=><label key={item.id} className={s.service===item.id?'selected':''}>
-          <input type="radio" name={id+'doctor'} value={item.id} checked={s.service===item.id} onChange={()=>edit('service',item.id)}/>
-          <span><strong>{item.name}</strong><small>{money(item.pricing.amount_paise)} · At the clinic</small></span></label>)}
-      </fieldset>
-      <DateField label="Appointment date" value={s.day} required min={range?.first_date} max={range?.last_date}
-        available={flow.available} disabled={disabled||!validPolicy||!s.policyFresh} onChange={value=>edit('day',value)} theme="rk-date"/>
-      <fieldset disabled={disabled||!s.slotsFresh} className="slot-choices"><legend>Available starting times</legend>
-        {s.slotsStatus==='loading'&&<p role="status">Checking available times…</p>}
-        {s.slotsStatus==='ready'&&s.slots.length===0&&<p>No appointments are available on this date. Please choose another date.</p>}
-        {s.slots.map(slot=><label key={slot.starts_at} className={s.slot?.starts_at===slot.starts_at?'selected':''}>
-          <input type="radio" name={id+'time'} checked={s.slot?.starts_at===slot.starts_at} onChange={()=>edit('slot',slot)}/>
-          <span>{timeLabel(slot.starts_at,p.timezone)}</span></label>)}
-      </fieldset>
-      {s.slotsStatus==='error'&&<button type="button" className="text-link" disabled={disabled||s.loadingPolicy} onClick={flow.loadPolicy}>Check available times again</button>}
-      </section>
-      <section className="booking-stage booking-stage-details" aria-labelledby={id+'details-heading'}>
-      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">2</span><div><h2 id={id+'details-heading'}>Your details</h2><p>Add the contact details the clinic needs for your visit.</p></div></div>
-      <div className="field-pair">{fields.map(([name,label,type,auto,required,maxLength])=><label key={name} htmlFor={id+name}>
-        {label} <span>({required?'required':'optional'})</span>
-        <input id={id+name} type={type} autoComplete={auto} maxLength={maxLength} required={required}
-          value={s.details[name]} disabled={disabled} onChange={event=>{detail(name,event.target.value);
-            if(name==='phone')detail('country',event.target.value.trim().startsWith('+')?'other':'91');}}/>
-      </label>)}</div>
-      <p className="field-hint">For an Indian number, enter 10 digits. For another country, include + and the country code. Your email is only needed if you would like an email copy.</p>
-      <label htmlFor={id+'notes'}>Anything you would like the doctor to know? <span>(optional)</span>
-        <textarea id={id+'notes'} maxLength={2000} rows={3} value={s.details.notes} disabled={disabled} onChange={event=>detail('notes',event.target.value)}/></label>
-      <VerificationFields flow={flow}/>
-      </section>
-      <section className="booking-stage booking-stage-payment" aria-labelledby={id+'payment-heading'}>
-      <div className="form-heading booking-stage-heading"><span className="mini-number" aria-hidden="true">3</span><div><h2 id={id+'payment-heading'}>Check your visit and payment</h2><p>Review your choices and select an available payment option.</p></div></div>
-      <div className="appointment-summary" role="group" aria-labelledby={id+'summary-heading'}>
-        <h3 id={id+'summary-heading'}>Your appointment choices</h3>
-        <dl className="booking-selection">
-          <div><dt>Doctor</dt><dd>{validPolicy&&service?service.name:'Choose your doctor'}</dd></div>
-          <div><dt>Date</dt><dd>{selectedDay||'Choose a date'}</dd></div>
-          <div><dt>Starting time</dt><dd>{validPolicy&&s.slot&&s.slotsFresh&&s.policyFresh?timeLabel(s.slot.starts_at,p.timezone):s.loadingPolicy||s.slotsStatus==='loading'?'Checking available times…':'Choose a starting time'}</dd></div>
-          <div><dt>Consultation fee</dt><dd>{validPolicy&&s.quote&&s.policyFresh&&s.slotsFresh?money(s.quote.amount_paise):s.loadingPolicy||s.slotsStatus==='loading'?'Checking the fee…':'Shown with appointment options'}</dd></div>
-          <div><dt>Payment</dt><dd>{selectedPayment?selectedPayment+(!s.policyFresh?' — checking availability':methodAvailable?'':' — currently unavailable'):'Choose a payment option'}</dd></div>
-        </dl>
-        {validPolicy&&<p className="booking-selection-location">{p.location.name} — {p.location.address}</p>}
-        <p className="field-hint">These are your current choices. Your appointment has not been confirmed yet.</p>
+}
+
+/** "To change or cancel, call Dr. Sanjay Gupta: 94150 49410" (one doctor if known, otherwise both). */
+function ClinicContact({service, bookingHelp = false}) {
+  return <p className="booking-contact">{bookingHelp ? words.contact.help : words.contact.change}{' '}
+    {contactRows(service).map((row, index) => <React.Fragment key={row.id}>{index > 0 ? ' · ' : ''}
+      <a href={row.href} aria-label={row.spoken}>{kt(row.name)}: {kt(row.digits)}</a></React.Fragment>)}</p>;
+}
+
+/**
+ * An action that needs the engine's admission (the last press, a re-check) is kept for the moment
+ * the five-second booking-state check is running, then handed over; the engine itself still
+ * refuses anything it may not admit. `waiting` is true while one is being kept.
+ */
+function useHeldAction(available, viewAvailable) {
+  const kept = useRef(null), [waiting, setWaiting] = useState(false);
+  useEffect(() => {
+    if (!viewAvailable) { kept.current = null; setWaiting(false); return; }
+    if (available && kept.current) { const run = kept.current; kept.current = null; setWaiting(false); run(); }
+  }, [available, viewAvailable]);
+  const act = run => {
+    if (available) { run(); return; }
+    kept.current = run; setWaiting(true);
+  };
+  return [act, waiting];
+}
+
+function Progress({step}) {
+  const current = STEPS.find(item => item.id === step);
+  return <>
+    <ol className="booking-progress" aria-label={words.progressLabel}>
+      {STEPS.map(item => {
+        const state = item.id === step ? 'current' : item.id < step ? 'done' : 'ahead';
+        return <li key={item.id} className={'booking-progress__step is-' + state} aria-current={state === 'current' ? 'step' : undefined}>
+          <span className="booking-progress__mark">{state === 'done' ? <Icon name="check"/> : item.id}</span>
+          <span className="booking-progress__label">{item.label}</span>
+        </li>;
+      })}
+    </ol>
+    <p className="booking-progress__count" aria-hidden="true">{words.stepCount(step, STEPS.length, current.label)}</p>
+  </>;
+}
+
+/** "Your visit": who, when, how much, where. The same card serves the side column and step 3. */
+function VisitSummary({summary, id, onChange, withObject = false}) {
+  const value = (text, waiting = false) => text
+    ? <dd>{kt(text)}</dd>
+    : <dd className="is-empty">{waiting ? words.summary.checking : words.summary.empty}</dd>;
+  return <section className="visit-summary" aria-labelledby={id}>
+    {withObject && <img className="visit-summary__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" loading="lazy" decoding="async"/>}
+    <div className="visit-summary__head"><h3 className="visit-summary__title" id={id}>{words.summary.title}</h3>
+      <p className="tag tag--plain">{words.summary.pending}</p></div>
+    <div className="visit-summary__doctor">
+      {summary.doctor?.avatar
+        ? <img className="visit-summary__face" src={summary.doctor.avatar.src} width={summary.doctor.avatar.width} height={summary.doctor.avatar.height} alt="" decoding="async"/>
+        : <span className="visit-summary__face visit-summary__face--empty" aria-hidden="true"><Icon name="person"/></span>}
+      <div>{summary.doctor
+        ? <><p className="visit-summary__name">{kt(summary.doctor.name)}</p><p className="visit-summary__role">{summary.doctor.role}</p></>
+        : <p className="visit-summary__role">{words.missing.doctor}</p>}</div>
+    </div>
+    <div className="visit-summary__tear" aria-hidden="true"/>
+    <dl className="visit-summary__facts">
+      <div><dt>{words.summary.day}</dt>{value(summary.day)}</div>
+      <div><dt>{words.summary.time}</dt>{value(summary.time, summary.waiting)}</div>
+      <div><dt>{words.summary.fee}</dt>{summary.fee
+        ? <dd>{summary.fee}{summary.payment && <span className="visit-summary__pay"> · {summary.payment}</span>}</dd>
+        : <dd className="is-empty">{words.summary.empty}</dd>}</div>
+      {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}<small>{summary.place.address}</small></dd></div>}
+    </dl>
+    {onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
+  </section>;
+}
+
+/** One labelled box of step 2, with its help and, after "Continue", what is wrong with it. */
+function Field({id, label, optional = false, hint, error, children}) {
+  return <div className="booking-field">
+    <label className="booking-field__label" htmlFor={id}>{label}{optional && <span className="booking-field__optional"> ({words.details.optional})</span>}</label>
+    {children}
+    {error
+      ? <p className="booking-field__error" id={id + '-error'}><Icon name="alert"/><span>{error}</span></p>
+      : hint && <p className="booking-field__hint" id={id + '-hint'}>{hint}</p>}
+  </div>;
+}
+
+/** The appointment card: the engine's receipt, as something to keep. */
+function AppointmentCard({receipt, titleRef, id}) {
+  const card = appointmentCard(receipt);
+  return <article className={classes('appointment-card', 'appointment-card--' + card.state)} aria-labelledby={id}>
+    <img className="appointment-card__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" decoding="async"/>
+    <div className="appointment-card__head">
+      {card.tag && <p className="tag appointment-card__tag">{card.state === 'confirmed' && <Icon name="check"/>}{card.tag}</p>}
+      <h2 className="appointment-card__title" id={id} ref={titleRef} tabIndex={-1}>{card.title}</h2>
+    </div>
+    <div className="appointment-card__who">
+      {card.doctor.portrait && <div className="appointment-card__portrait" dangerouslySetInnerHTML={{__html: archPortrait(card.doctor.portrait, {sizes: '96px', alt: '', eager: true})}}/>}
+      <div>
+        <p className="appointment-card__name">{kt(card.doctor.name)}</p>
+        {card.doctor.role && <p className="appointment-card__role">{card.doctor.role}</p>}
+        <p className="appointment-card__when"><time dateTime={card.instant} className="appointment-card__day">{card.day}</time>
+          <span className="appointment-card__time">{kt(card.time)}</span></p>
       </div>
-      <fieldset className="payment-choices" disabled={disabled||!validPolicy||!s.policyFresh}><legend>Payment option</legend>
-        {(validPolicy?p.payment_methods:[]).map(method=><label key={method} className={`${s.payment_method===method?'selected':''} ${paymentAvailable(s.policy,method)?'':'payment-unavailable'}`}>
-          <input type="radio" name={id+'payment'} disabled={!paymentAvailable(s.policy,method)} checked={s.payment_method===method} onChange={()=>edit('payment_method',method)}/>
-          <span><strong>{method==='at_clinic'?'Pay at the clinic':'Pay online'}</strong><small>{!paymentAvailable(s.policy,method)?'Temporarily unavailable':method==='at_clinic'?'Reserve your visit now. Pay when you arrive.':'Continue to secure payment after checking your details.'}</small></span>
-        </label>)}</fieldset>
-      {s.payment_method&&!methodAvailable&&<p role="status" className="field-hint">This payment option is unavailable. Please choose another available option.</p>}
-      <section className="booking-cancellation" aria-labelledby={id+'cancellation'}>
-        <h3 id={id+'cancellation'}>If you need to change or cancel</h3>
-        <ClinicContact service={s.service}/>
-        {s.payment_method==='at_clinic'&&<p>You have chosen to pay at the clinic, so no online payment will be taken for this booking.</p>}
-      </section>
-      <label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled||!s.slot||!methodAvailable}
-        onChange={event=>dispatch({type:'ack',value:event.target.checked})}/><span>I have checked my doctor, date, starting time and contact details.</span></label>
-      <button type="submit" className="button" disabled={!ready}>{s.busy?'Saving your request…':s.payment_method==='at_clinic'?'Confirm appointment — pay at the clinic':s.payment_method==='online'?'Continue to payment':'Choose a payment option'} ↗</button>
-      </section>
-    </form>}
-    <a className="text-link booking-find" data-booking-only href="/booking-details">Already booked? View your appointment ↗</a>
+    </div>
+    <div className="appointment-card__tear" aria-hidden="true"/>
+    <div className="appointment-card__foot">
+      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}</span></p>}
+      {card.pay && <p className="appointment-card__line"><Icon name="banknote"/><strong>{card.pay}</strong></p>}
+      {card.bring && <p className="appointment-card__line"><Icon name="file"/><span>{card.bring}</span></p>}
+      {card.place && <a className="button button--second appointment-card__directions" href={card.place.maps} target="_blank" rel="noopener noreferrer">
+        <span className="button__label">{words.receipt.directions}</span><Icon name="out"/><span className="visually-hidden"> {words.receipt.opensMaps}</span></a>}
+    </div>
+  </article>;
+}
+
+function Booking({draft = {}}) {
+  const initialService = useRef(serviceFor(draft.doctor));
+  const flow = useBooking(initialService.current), {state: s, dispatch} = flow, id = useId();
+  const product = useSyncExternalStore(productState.subscribe, productState.getSnapshot, productState.getServerSnapshot);
+  const [step, setStep] = useState(1);
+  // The engine starts with its first doctor; the page waits for the visitor's own choice unless they came for one.
+  const [chosen, setChosen] = useState(!!initialService.current);
+  const [changing, setChanging] = useState(false);
+  const [later, setLater] = useState(false);
+  const [held, setHeld] = useState(null);
+  const [problems, setProblems] = useState({});
+  const [record, setRecord] = useState(false);
+  const [gone, setGone] = useState(false);
+  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({});
+  const [act, waiting] = useHeldAction(flow.available, flow.viewAvailable);
+
+  useEffect(() => {
+    for (const [name, value] of Object.entries({full_name: draft.name || '', phone: draft.phone || '', email: draft.email || '', notes: draft.message || '',
+      country: phoneCountry(draft.phone)})) dispatch({type: 'details', name, value});
+  }, []);
+
+  const p = s.policy?.policy, usable = usablePolicy(s.policy);
+  // Draft controls follow `viewAvailable`: the form stays usable through the engine's five-second
+  // booking-state checks. Only actions that book, pay or re-read need its admission (`available`).
+  const canEdit = !s.busy && !s.credential && s.phase !== 'blocked' && flow.viewAvailable;
+  const disabled = s.busy || !flow.viewAvailable || !!s.credential;
+  const screen = screenFor({viewAvailable: flow.viewAvailable, state: s});
+
+  // A change of doctor or day made during a state check waits until the engine can read that day's times.
+  useEffect(() => {
+    if (!held || !flow.available || !s.policy) return;
+    for (const [name, value] of releaseEdits(held)) dispatch({type: 'edit', name, value});
+    setHeld(null);
+  }, [held, flow.available, s.policy]);
+  useEffect(() => { if (!flow.viewAvailable) setHeld(null); }, [flow.viewAvailable]);
+
+  const edit = (name, value) => {
+    if (!canEdit) return;
+    if (name === 'service') {
+      if (!p?.services.some(item => item.id === value && item.enabled)) return;
+      const doctor = doctorFor(value); if (doctor) draft.doctor = doctor;
+    }
+    setGone(false);
+    if (waitsForAdmission(name) && (!flow.available || held)) { setHeld(current => holdEdit(current, name, value)); return; }
+    dispatch({type: 'edit', name, value});
+  };
+  const detail = (name, value) => {
+    if (!canEdit) return;
+    const key = {full_name: 'name', phone: 'phone', email: 'email', notes: 'message'}[name]; if (key) draft[key] = value;
+    dispatch({type: 'details', name, value});
+    if (problems[name]) setProblems(({[name]: _, ...rest}) => rest);
+  };
+
+  const shown = {service: held?.service ?? s.service, day: held?.day ?? s.day};
+  const hours = sittingHours(s.policy, shown.service);
+  const range = s.policy ? dateRange(s.policy) : null;
+  const choices = doctorChoices(s.policy);
+  const tiles = usable && range ? dayTiles({first: range.first_date, last: range.last_date, hours}) : [];
+  const laterOpen = later || dayBeyondTiles(tiles, shown.day);
+  const groups = usable ? slotGroups(s.slots, {timezone: p.timezone, hours, day: shown.day}) : [];
+  const methodAvailable = usable && paymentAvailable(s.policy, s.payment_method);
+  const summary = visitSummary({state: s, usable, chosen, shown: held || {}, methodAvailable});
+  const missing = stepOneMissing({chosen, held, state: s, usable});
+  // What the last press needs. Admission is not part of it: a press during a state check is kept (useHeldAction).
+  const ready = usable && s.policyFresh && s.slotsFresh && !!s.slot && !!s.quote && methodAvailable && s.ack && !s.busy && !held;
+  const readyNow = useRef(ready); readyNow.current = ready;
+
+  // The chosen time has gone (someone else took it, or the day's times changed): back to step 1 to choose again.
+  useEffect(() => {
+    if (screen === 'form' && !held && mustChooseAgain({step, state: s, usable})) { setGone(!s.error); setStep(1); }
+  }, [screen, step, s.slot, s.slotsStatus, s.policyFresh, usable, held]);
+  useEffect(() => { if (s.slot) setGone(false); }, [s.slot]);
+
+  // A new step (or the card after the last press) starts at its heading.
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    title.current?.focus({preventScroll: true});
+    root.current?.scrollIntoView({block: 'start'});
+  }, [step, screen === 'receipt', screen === 'checking']);
+
+  const go = next => { setProblems({}); setStep(next); };
+  const chooseDoctor = service => { setChosen(true); setChanging(false); edit('service', service); };
+  const openLater = () => {
+    if (laterOpen) { if (!dayBeyondTiles(tiles, shown.day)) setLater(false); return; }
+    setLater(true);
+    // Show the package's date box and open its calendar in the same press.
+    requestAnimationFrame(() => laterBox.current?.querySelector('.abs-date-group button')?.click());
+  };
+  const advance = () => {
+    if (step === 1) { if (!missing) go(2); return; }
+    if (step === 2) {
+      const found = detailProblems(s.details, {requiredContacts: p?.required_contacts});
+      setProblems(found);
+      const wrong = DETAIL_FIELDS.find(name => found[name]);
+      if (wrong) { fieldNodes.current[wrong]?.focus(); return; }
+      go(3); return;
+    }
+    if (ready) act(() => { if (readyNow.current) void flow.start(); });
+  };
+
+  if (screen === 'unavailable') {
+    // Booking stopped while someone was here: the same panel as the page's own, with the clinic's numbers.
+    return <div className="clinic-booking clinic-booking--paused" onClick={event => { if (event.target.closest('[data-booking-retry]')) void productState.refresh({force: true}); }}
+      dangerouslySetInnerHTML={{__html: bookingUnavailable({state: product.checking ? 'checking' : 'unavailable', doctor: doctorFor(shown.service) || draft.doctor || '', kept: true})}}/>;
+  }
+
+  const error = s.error && <Notice><p>{s.error}</p></Notice>;
+  const findLink = <p className="clinic-booking__find"><a className="text-link" data-booking-only href={words.find.path}><span>{words.find.label}</span><Icon name="arrow"/></a></p>;
+
+  if (screen === 'receipt') {
+    const r = s.receipt, service = serviceFor(doctorFor(r.resource_id));
+    const busy = s.busy || waiting;
+    return <div className="clinic-booking clinic-booking--receipt" ref={root}>
+      <div className="booking-receipt">
+        {error}
+        <AppointmentCard receipt={r} titleRef={title} id={id + 'card'}/>
+        <div className={classes('booking-record', record && 'is-open')} id={id + 'record'}>
+          <button type="button" className="text-link booking-record__toggle" aria-expanded={record} aria-controls={id + 'record'} onClick={() => setRecord(open => !open)}>
+            <span>{record ? words.receipt.record.hide : words.receipt.record.show}</span><Icon name="down"/></button>
+          <ReceiptFields flow={flow} showTitle={false}/>
+        </div>
+        <div className="booking-receipt__more">
+          <button type="button" className="button button--second" disabled={busy} onClick={() => act(flow.check)}><span className="button__label">{words.receipt.refresh}</span></button>
+          {r.next_actions.includes('resume_payment') && <button type="button" className="button button--main" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.resume}</span></button>}
+          {r.next_actions.includes('check_payment') && !r.next_actions.includes('resume_payment') && <button type="button" className="button button--second" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.checkPayment}</span></button>}
+          {r.next_actions.includes('choose_new_time') && <button type="button" className="text-link" disabled={busy} onClick={() => act(flow.restart)}><span>{words.receipt.another}</span><Icon name="arrow"/></button>}
+        </div>
+        <div className="booking-receipt__notes">
+          <ClinicContact service={service}/>
+          {r.next_actions.includes('choose_new_time') && <p className="booking-contact">{words.receipt.anotherNote}</p>}
+        </div>
+      </div>
+      {findLink}
+    </div>;
+  }
+
+  if (screen === 'checking' || screen === 'blocked') {
+    return <div className="clinic-booking clinic-booking--waiting" ref={root}>
+      {screen === 'checking'
+        ? <div className="booking-panel" role="status">
+          {error}
+          <h2 className="clinic-booking__title" ref={title} tabIndex={-1}>{words.checking.title}</h2>
+          <p>{words.checking.text}</p>
+          <div className="booking-panel__actions">
+            <button type="button" className="button button--main" disabled={s.busy || waiting} onClick={() => act(flow.check)}><span className="button__label">{words.checking.check}</span></button>
+            {flow.canRetryOriginal && <button type="button" className="button button--second" disabled={s.busy || waiting} onClick={() => act(flow.retryOriginal)}><span className="button__label">{words.checking.retry}</span></button>}
+          </div>
+          <ClinicContact service={s.service} bookingHelp/>
+        </div>
+        // The saved booking in this browser cannot be read: the engine's sentence and the numbers; no form that cannot work.
+        : <div className="booking-panel">{error}<ClinicContact bookingHelp/></div>}
+      {findLink}
+    </div>;
+  }
+
+  const stepInfo = STEPS.find(item => item.id === step);
+  const lines = barLines(summary, missing);
+  const sending = s.busy || waiting;
+  const optionsStale = !usable || !s.policyFresh;
+  const timesWaiting = !!held || s.slotsStatus === 'loading';
+  const noTimes = !timesWaiting && s.slotsStatus === 'ready' && s.slots.length === 0;
+  const fields = [
+    ['full_name', words.details.name, 'text', 'name', true, 100, words.details.someoneElse],
+    ['phone', words.details.phone, 'tel', 'tel-national', p?.required_contacts.includes('phone') ?? true, 32, words.details.phoneHint],
+    ['email', words.details.email, 'email', 'email', p?.required_contacts.includes('email') ?? false, 254, words.details.emailHint]
+  ];
+
+  return <div className="clinic-booking clinic-booking--steps" ref={root} data-step={step}>
+    <div className="clinic-booking__main">
+      <Progress step={step}/>
+      {error}
+      {gone && !s.error && <Notice icon="clock"><p>{words.time.gone}</p></Notice>}
+      <form className="booking-form" aria-label={words.formLabel} noValidate onSubmit={event => { event.preventDefault(); advance(); }}>
+        <section className={'clinic-booking__step clinic-booking__step--' + step} aria-labelledby={id + 'step'}>
+          <h2 className="clinic-booking__title" id={id + 'step'} ref={title} tabIndex={-1}>{stepInfo.title}</h2>
+
+          {step === 1 && <>
+            {s.loadingPolicy && !usable && <p className="booking-wait" role="status">{words.options.checking}</p>}
+            {!s.loadingPolicy && !usable && <Notice><p>{words.options.failed}</p><ClinicContact bookingHelp/></Notice>}
+            {!s.policyFresh && !s.loadingPolicy && <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button>}
+            {usable && <fieldset className={classes('doctor-choices', chosen && !changing && 'is-folded')} disabled={disabled || optionsStale}>
+              <legend>{words.doctor.legend}</legend>
+              <div className="doctor-choices__list">
+                {choices.map(item => {
+                  const selected = chosen && shown.service === item.service;
+                  return <label key={item.service} className={classes('doctor-choice', 'doctor-choice--' + item.tone, selected && 'selected')} data-booking-doctor={item.id || item.service}>
+                    <input type="radio" className="visually-hidden" name={id + 'doctor'} value={item.service} checked={selected} onChange={() => chooseDoctor(item.service)}
+                      onClick={() => { if (selected) setChanging(false); }}/>
+                    <span className="doctor-choice__card">
+                      {item.avatar ? <img className="doctor-choice__face" src={item.avatar.src} width={item.avatar.width} height={item.avatar.height} alt="" decoding="async"/> : <span/>}
+                      <span className="doctor-choice__who"><span className="doctor-choice__name">{kt(item.name)}</span>{item.role && <span className="doctor-choice__role">{item.role}</span>}</span>
+                      <span className="doctor-choice__tick" aria-hidden="true"><Icon name="check"/></span>
+                    </span>
+                  </label>;
+                })}
+                <button type="button" className="text-link doctor-choices__change" onClick={() => setChanging(true)}><span>{words.change}</span></button>
+              </div>
+              {!chosen && <p className="doctor-choices__more"><span>{words.doctor.unsure}</span>
+                <a className="text-link" href={words.doctor.meetPath}><span>{words.doctor.meet}</span><Icon name="arrow"/></a></p>}
+            </fieldset>}
+            {usable && !chosen && <p className="booking-prompt">{words.doctor.prompt}</p>}
+
+            {usable && chosen && <fieldset className="booking-days" disabled={disabled || optionsStale}>
+              <legend>{words.day.legend}</legend>
+              <div className="booking-days__row">
+                {tiles.map(tile => <button type="button" key={tile.iso} className="day-tile" data-booking-day={tile.iso} aria-pressed={shown.day === tile.iso} disabled={!tile.available}
+                  aria-label={tile.spoken + (tile.available ? '' : ', ' + words.day.notOffered)} onClick={() => edit('day', tile.iso)}>
+                  <span className="day-tile__label">{tile.label}</span><span className="day-tile__number">{tile.number}</span><span className="day-tile__month">{tile.month}</span>
+                </button>)}
+                <button type="button" className="day-tile day-tile--later" data-booking-other-date aria-expanded={laterOpen} aria-controls={id + 'later'} onClick={openLater}>
+                  <Icon name="calendar"/><span>{words.day.later}</span></button>
+              </div>
+              <div className="booking-days__later" id={id + 'later'} ref={laterBox} hidden={!laterOpen}>
+                <DateField label={words.day.dateField} value={shown.day} required min={range?.first_date} max={range?.last_date}
+                  available={flow.viewAvailable} disabled={disabled || optionsStale} onChange={value => edit('day', value)} theme="rk-date"/>
+              </div>
+            </fieldset>}
+
+            {usable && chosen && <fieldset className="slot-choices" disabled={disabled || !s.slotsFresh || !!held}>
+              <legend>{words.time.legend}</legend>
+              {timesWaiting && <div className="slot-group"><p className="booking-wait" role="status">{words.time.checking}</p>
+                <div className="slot-group__pills" aria-hidden="true"><span className="time-pill__ghost"/><span className="time-pill__ghost"/><span className="time-pill__ghost"/></div></div>}
+              {noTimes && <Notice calm role="status"><p>{words.time.noneLeft(dayLong(shown.day))}</p><ClinicContact service={shown.service} bookingHelp/></Notice>}
+              {!timesWaiting && !noTimes && s.slotsStatus !== 'error' && <div className="slot-choices__groups">
+                {groups.map(group => <div className="slot-group" key={group.id} role="group" aria-labelledby={id + group.id}>
+                  <p className="slot-group__label" id={id + group.id}>{group.label}</p>
+                  {group.slots.length
+                    ? <div className="slot-group__pills">{group.slots.map(slot => {
+                      const selected = s.slot?.starts_at === slot.starts_at;
+                      return <label key={slot.starts_at} className={classes('time-pill', selected && 'selected')} data-booking-time={slot.starts_at}>
+                        <input type="radio" className="visually-hidden" name={id + 'time'} checked={selected} onChange={() => edit('slot', slot)}/>
+                        <span className="time-pill__face">{kt(slot.label)}</span></label>;
+                    })}</div>
+                    : <p className="slot-group__none">{group.none}</p>}
+                </div>)}
+              </div>}
+            </fieldset>}
+            {usable && chosen && s.slotsStatus === 'error' && !held && <button type="button" className="button button--second" disabled={disabled || s.loadingPolicy || waiting}
+              onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.time.retry}</span></button>}
+          </>}
+
+          {step === 2 && <div className="booking-fields">
+            {Object.keys(problems).length > 0 && <Notice><p>{words.errors.summary}</p></Notice>}
+            {fields.map(([name, label, type, auto, required, maxLength, hint]) => <Field key={name} id={id + name} label={label} optional={!required} hint={hint} error={problems[name]}>
+              <input className="booking-input" id={id + name} ref={node => { fieldNodes.current[name] = node; }} type={type} autoComplete={auto} maxLength={maxLength} required={required}
+                inputMode={name === 'phone' ? 'tel' : undefined} aria-invalid={problems[name] ? 'true' : undefined} aria-describedby={id + name + (problems[name] ? '-error' : '-hint')}
+                value={s.details[name]} disabled={disabled} onChange={event => { detail(name, event.target.value);
+                  if (name === 'phone') detail('country', phoneCountry(event.target.value)); }}/>
+            </Field>)}
+            <VerificationFields flow={flow} className="booking-verify" inputClassName="booking-input" buttonClassName="button button--second"/>
+            <Field id={id + 'notes'} label={words.details.notes} optional>
+              <textarea className="booking-input booking-input--area" id={id + 'notes'} maxLength={2000} rows={3} value={s.details.notes} disabled={disabled}
+                onChange={event => detail('notes', event.target.value)}/>
+            </Field>
+          </div>}
+
+          {step === 3 && <>
+            <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => go(1)}/>
+            <fieldset className="payment-choices" disabled={disabled || optionsStale}>
+              <legend>{words.payment.legend}</legend>
+              <div className="payment-choices__list">
+                {(usable ? p.payment_methods : []).map(method => {
+                  const available = paymentAvailable(s.policy, method), selected = s.payment_method === method;
+                  return <label key={method} className={classes('payment-choice', selected && 'selected', !available && 'payment-unavailable')} data-booking-payment={method}>
+                    <input type="radio" className="visually-hidden" name={id + 'payment'} disabled={!available} checked={selected} onChange={() => edit('payment_method', method)}/>
+                    <span className="payment-choice__card"><span className="payment-choice__dot" aria-hidden="true"><Icon name="check"/></span>
+                      <span className="payment-choice__words"><span className="payment-choice__name">{words.payment[method]}</span>
+                        <span className="payment-choice__note">{paymentNote(method, {available, fee: summary.fee})}</span></span></span>
+                  </label>;
+                })}
+              </div>
+            </fieldset>
+            {s.payment_method && !methodAvailable && <p role="status" className="booking-pay-note">{words.payment.chosenUnavailable}</p>}
+            <div className="booking-receipt__notes">
+              <ClinicContact service={s.service}/>
+              {s.payment_method === 'at_clinic' && methodAvailable && <p className="booking-pay-note">{words.payment.noOnlineCharge}</p>}
+            </div>
+            <label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled || !s.slot || !methodAvailable}
+              onChange={event => dispatch({type: 'ack', value: event.target.checked})}/>
+              <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>
+          </>}
+        </section>
+
+        <div className={classes('booking-bar', step === 3 && 'booking-bar--last')}>
+          {step === 1 && <p className="booking-bar__summary"><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
+          {step === 2 && <button type="button" className="booking-bar__summary" onClick={() => go(1)} aria-label={`${words.summary.change}: ${lines.top}, ${lines.bottom}`}>
+            <span className="booking-bar__top">{kt(lines.top)}</span><span className="booking-bar__bottom">{kt(lines.bottom)}</span><Icon name="edit"/></button>}
+          {step > 1 && <button type="button" className={classes('text-link booking-bar__back', step === 2 && 'booking-bar__back--laptop')} disabled={sending} onClick={() => go(step - 1)}><span>{words.back}</span></button>}
+          <button type="submit" className="button button--main button--large booking-bar__main" data-booking-continue disabled={step === 1 ? !!missing : step === 2 ? disabled : !ready || waiting}>
+            <span className="button__label">{step === 3 ? confirmLabel({busy: sending, method: methodAvailable ? s.payment_method : ''}) : words.next}</span>
+            {step < 3 && <Icon name="arrow"/>}
+          </button>
+        </div>
+        {step === 3 && <p className="booking-confirm-hint" role="status">{confirmHint({method: s.payment_method, methodAvailable, ack: s.ack})}</p>}
+      </form>
+    </div>
+    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => go(1) : null} withObject/></aside>
+    {findLink}
   </div>;
 }
-function mount(node,element,signal){
-  if(!node||signal?.aborted)return ()=>{};
-  const root=createRoot(node);root.render(element);let live=true;
-  const stop=()=>{if(live){live=false;root.unmount();}};
-  signal?.addEventListener('abort',stop,{once:true});return stop;
+
+function mount(node, element, signal) {
+  if (!node || signal?.aborted) return () => {};
+  const root = createRoot(node); root.render(element); let live = true;
+  const stop = () => { if (live) { live = false; root.unmount(); } };
+  signal?.addEventListener('abort', stop, {once: true}); return stop;
 }
-export const mountBooking=(node,{draft,signal}={})=>mount(node,<Booking draft={draft}/>,signal);
-export const mountBookingDetails=(node,{signal}={})=>mount(node,<><BookingDetailsFields/><ClinicContact/></>,signal);
+export const mountBooking = (node, {draft, signal} = {}) => mount(node, <Booking draft={draft}/>, signal);
+export const mountBookingDetails = (node, {signal} = {}) => mount(node, <div className="clinic-booking clinic-booking--find"><BookingDetailsFields/><ClinicContact bookingHelp/></div>, signal);
