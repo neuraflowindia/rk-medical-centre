@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "build:hosting": "node scripts/require-hosting-profile.mjs && vite build && node scripts/build-hosting.mjs",
     "prepare:hosting": "node appointment-system/tools/install/source.mjs",
-    "test": "node --test scripts/tests/*.test.mjs"
+    "test": "node --test scripts/tests/*.test.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-exclude=\"scripts/tests/**\" --test-coverage-exclude=\"appointment-system/**\" scripts/tests/*.test.mjs",
+    "preview:built": "node scripts/dev-preview.mjs",
+    "smoke": "node scripts/smoke/pages.mjs"
   },
   "keywords": [],
   "author": "",
