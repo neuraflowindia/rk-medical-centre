@@ -152,7 +152,7 @@ test('the footer is complete in both states and names each doctor with number an
   for(const id of ['sanjay','parul']){assert.ok(footer.includes(`href="tel:${doctors[id].tel}"`));assert.ok(footer.includes(doctors[id].phone.replace(/(\d{5}) (\d{5})/,'$1&nbsp;$2')));}
   assert.equal(count(footer,/UP Medical Council Reg\.&nbsp;No\.&nbsp;\d{5}/g),2);
   assert.equal(count(footer,/class="site-footer__link"/g),6);
-  assert.match(footer,/<li data-booking-only><a class="site-footer__link" href="\/booking">Book an appointment<\/a><\/li>/,'the whole list item goes with booking, so the list keeps no empty place');
+  assert.match(footer,/<li class="site-footer__item--book" data-booking-only><a class="site-footer__link" href="\/booking">Book an appointment<\/a><\/li>/,'the whole list item goes with booking, so the list keeps no empty place');
   assert.match(footer,/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-collection-notice>/);
   assert.doesNotMatch(footer,/data-privacy\b/,'no privacy choice is offered while nothing is measured');
   assert.match(siteFooter(ctx,{privacy:true}),/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-privacy>Change privacy choices<\/button><\/li>/);
@@ -293,7 +293,10 @@ test('certificates: one frame for all ten, a wall that may settle, a viewer that
  assert.match(certificateFrame(certificateCatalogue[0]),/<div class="certificate-frame__mat">/);
  assert.throws(()=>certificateFrame(first,{size:'giant'}),/Unknown certificate size/);assert.throws(()=>certificateFrame(first,{tone:'pink'}),/Unknown certificate tone/);
  const wall=certificateWall(homeCertificates(),{label:'Certificates',settle:true});
- assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item">/g),4);
+ assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item"/g),4);
+ // a settling wall's documents also carry the ordinary entrance, staggered: what a browser without scroll-linked animation shows
+ assert.match(wall,/<li class="certificate-wall__item" data-enter="card">.*<li class="certificate-wall__item" data-enter="card" data-enter-after="0\.12">.*data-enter-after="0\.36">/);
+ assert.doesNotMatch(certificateWall(homeCertificates()),/data-enter/);
  assert.match(wall,/style="--tilt:-2\.2deg;--lag:0;--ar:1\.517".*style="--tilt:1\.6deg;--lag:0\.12;--ar:0\.708".*--lag:0\.24.*--lag:0\.36/);
  assert.doesNotMatch(certificateWall(homeCertificates()),/data-settle|--tilt:-|data-view-certificate/);
  assert.equal(count(certificateWall(homeCertificates(),{view:true,set:'all'}),/data-view-set="all"/g),4);

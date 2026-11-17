@@ -60,7 +60,7 @@ function credentialsPart(ctx){
   +`<dl class="page-home__ledger">${rows}</dl></div>`
   +`<div class="page-home__certificates"><div class="wrap page-home__certificates-wrap">${certificateWall(homeCertificates(),{label:credentials.certificatesLabel,settle:true,view:true,set:'all'})}`
   // It opens the viewer, so it is drawn as the quiet button that opens a dialog (as "Read all reviews" is), not as a link to a page.
-  +`<p class="page-home__certificates-more">${button({label:credentials.allCertificates.label,href:credentials.allCertificates.href,variant:'second',attributes:{'data-open-certificates':''}})}</p></div></div></section>`;
+  +`<p class="page-home__certificates-more">${button({label:credentials.allCertificates.label,href:credentials.allCertificates.href,variant:'second',size:'compact',attributes:{'data-open-certificates':''}})}</p></div></div></section>`;
 }
 
 function reviewsPart(ctx){
