@@ -62,7 +62,9 @@ export function certificateFrame(item,{size='regular',view=false,set='',tone='',
  */
 export function certificateWall(items,{label:name='Certificates',settle=false,size='regular',view=false,set='',tone=''}={}){
  return `<ul${attrs({class:'certificate-wall','aria-label':name,'data-certificate-wall':true,'data-settle':settle})}>`
-  +items.map((item,index)=>`<li class="certificate-wall__item">${certificateFrame(item,{size,view,set,tone,tilt:settle?TILTS[index%TILTS.length]:0,lag:settle?Math.round(index*12)/100:0})}</li>`).join('')+`</ul>`;
+  // A settling wall's documents also carry the ordinary entrance, one a little after the other: it is
+  // what a browser without scroll-linked animation shows (the stylesheet stills it where the settle runs).
+  +items.map((item,index)=>`<li${attrs({class:'certificate-wall__item','data-enter':settle?'card':null,'data-enter-after':settle&&index?String(Math.round(index*12)/100):null})}>${certificateFrame(item,{size,view,set,tone,tilt:settle?TILTS[index%TILTS.length]:0,lag:settle?Math.round(index*12)/100:0})}</li>`).join('')+`</ul>`;
 }
 
 /**

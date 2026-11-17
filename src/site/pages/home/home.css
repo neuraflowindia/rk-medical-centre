@@ -84,8 +84,7 @@
   .page-home__certificates .certificate-frame { align-content: start; width: max(calc(var(--certificate-height) * var(--ar, 1.4) + 2 * var(--certificate-mat)), 40vw); }
   .page-home__certificates .certificate-frame__label { width: auto; min-width: 0; margin-top: var(--space-3); padding-right: 6px; }
   .page-home__certificates .certificate-frame__label strong, .page-home__certificates .certificate-frame__label span { text-wrap: balance; }
-  .page-home__certificates-more { padding-inline: var(--gutter); margin-top: var(--space-2); }
-  .page-home__certificates-more .button { padding-inline: 18px; }
+  .page-home__certificates-more { padding-inline: var(--gutter); }
 
   /* ---------- 4 · reviews: a still shelf led by one pull-quote ---------- */
   .page-home__reviews { background: var(--ground-light); padding: var(--space-7) 0 calc(var(--section-pad) - 6px); }

@@ -25,6 +25,8 @@
   /* The links: two columns on phones; the long notice items take a row each, so nothing wraps. */
   .site-footer__nav ul { display: grid; grid-template-columns: minmax(0, auto) minmax(0, auto); justify-content: start; column-gap: var(--space-6); }
   .site-footer__item--wide { grid-column: 1 / -1; }
+  /* on phones the closing's filled Book button stands directly above the footer and the menu carries it too: the list keeps to the pages */
+  .site-footer__item--book { display: none; }
   .site-footer__link { gap: 7px; font-weight: 500; white-space: nowrap; }
   .site-footer :focus-visible { outline-color: var(--focus-on-deep); }
   .site-footer__link:active, .site-footer__phone:active { color: var(--ink-on-deep); }
@@ -51,6 +53,7 @@
     .site-footer__doctors { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding-top: 4px; border-top: 0; }
     .site-footer__nav { grid-column: 1 / -1; padding-top: var(--space-3); }
     .site-footer__nav ul { grid-template-columns: repeat(4, auto); column-gap: 44px; }
+    .site-footer__item--book { display: list-item; }
     .site-footer__item--wide { grid-column: span 2; }
     .site-footer__base { margin-top: 28px; padding-top: 18px; }
   }

@@ -28,7 +28,7 @@ export function siteFooter(ctx,{privacy=privacyChoices.offered}={}){
   +`<p class="site-footer__hours"><span class="visually-hidden">${text(footer.hoursLabel)}: </span>${hours}</p></div>`
   +`<ul class="site-footer__doctors" id="footer-calls" aria-label="${text(footer.phonesLabel)}">${people}</ul>`
   +`<nav class="site-footer__nav" aria-label="${text(footer.pagesLabel)}"><ul>${pages}`
-  +`<li data-booking-only><a class="site-footer__link" href="${bookingPaths.book}">${text(entryWords.header.on.label)}</a></li>`
+  +`<li class="site-footer__item--book" data-booking-only><a class="site-footer__link" href="${bookingPaths.book}">${text(entryWords.header.on.label)}</a></li>`
   +`<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-collection-notice>${text(footer.detailsNotice)}</button></li>`
   +(privacy?`<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-privacy>${text(footer.privacyChoices)}</button></li>`:'')
   +`</ul></nav></div>`
