@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {tidyPath,resolveAddress,isBookingAddress,linkAction,createScrollMemory,addressAliases} from '../../src/site/runtime/router.mjs';
-import {knownPaths} from '../../src/site/runtime/registry.mjs';
+import {knownPaths,pages} from '../../src/site/runtime/registry.mjs';
+import {behaviourLater,formCouldNotOpen,paintFormOpening} from '../../src/site/runtime/later.mjs';
+import {messageForm} from '../../src/clinic/page-content/contact.mjs';
+import {renderedPage} from './support/page-contract.mjs';
 import {createView,watchPictures,releaseControls} from '../../src/site/runtime/render.mjs';
 import {entryState,syncEntries,syncBookingState,bindBookingState,ENTRY_SELECTOR} from '../../src/site/runtime/booking-state.mjs';
 import {createIsland,unavailableState} from '../../src/site/runtime/booking-island.mjs';
@@ -47,15 +50,24 @@ test('a click on a link: left to the browser, a place on this page, a booking sc
 });
 
 test('the main booking controls change words and address but never disappear; other booking links do',()=>{
- assert.deepEqual(entryState('header',true,'/booking'),{href:'/booking',spoken:'Book an appointment',hint:'Book an appointment online',label:'Book an appointment',icon:'calendar',current:true});
- assert.deepEqual(entryState('page',false),{href:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment',label:'Arrange a visit',icon:'phone',current:false});
+ assert.deepEqual(entryState('header',true,'/booking'),{href:'/booking',spoken:'Book an appointment',hint:'Book an appointment online',label:'Book an appointment',icon:'calendar',call:false,current:true});
+ assert.deepEqual(entryState('page',false),{href:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment',label:'Arrange a visit',icon:'phone',call:false,current:false});
+ assert.deepEqual(entryState('header',false,'/contact'),{href:'/contact',spoken:'Call the clinic',hint:'Call the clinic to arrange an appointment',label:'Call the clinic',icon:'phone',call:true,current:false});
+ assert.equal(entryState('header',true,'/contact').call,false);assert.equal(entryState('page',false,'/contact').call,false);
  const page=createPage({body:`<a id="head" href="/booking" data-booking-entry="header" data-booking-only hidden><span data-home-entry-icon="calendar"></span><span data-home-entry-icon="phone" hidden></span><span data-booking-on="Book an appointment" data-booking-off="Book an appointment">Book an appointment</span></a>
   <a id="hero" href="/booking" data-booking-entry="page"><span data-booking-on="Book an appointment" data-booking-off="Arrange a visit">Book an appointment</span></a>
   <a id="book" href="/booking?doctor=parul">Book with Dr. Parul</a><a id="other" href="/contact">Contact</a><div id="only" data-booking-only>only on</div><p id="offonly" data-booking-off-only hidden inert>only off</p>`});
  const $=id=>page.document.getElementById(id);
  assert.equal(syncBookingState(page.document,{enabled:false,route:'/'}),2);
  assert.equal($('head').getAttribute('href'),'/contact');assert.equal($('head').hidden,false);assert.equal($('head').hasAttribute('data-booking-only'),false);
- assert.equal($('head').getAttribute('aria-label'),'Book an appointment by calling the clinic');assert.equal($('head').querySelector('[data-home-entry-icon="phone"]').hidden,false);
+ assert.equal($('head').getAttribute('aria-label'),'Arrange a visit by calling the clinic');assert.equal($('head').querySelector('[data-home-entry-icon="phone"]').hidden,false);
+ assert.equal($('head').hasAttribute('data-open-call'),false,'on any page but Contact it leads to Contact');
+ // on Contact itself, while booking is off, the header's control opens the call panel; the page's own control does not change
+ syncBookingState(page.document,{enabled:false,route:'/contact'});
+ assert.equal($('head').getAttribute('data-open-call'),'');assert.equal($('head').getAttribute('aria-haspopup'),'dialog');assert.equal($('head').getAttribute('aria-label'),'Call the clinic');assert.equal($('head').getAttribute('href'),'/contact');
+ assert.equal($('hero').hasAttribute('data-open-call'),false);
+ syncBookingState(page.document,{enabled:false,route:'/'});
+ assert.equal($('head').hasAttribute('data-open-call'),false);assert.equal($('head').hasAttribute('aria-haspopup'),false);
  assert.equal($('hero').textContent,'Arrange a visit');assert.equal($('hero').getAttribute('title'),'Call the clinic to arrange an appointment');
  assert.equal($('book').hasAttribute('href'),false);assert.equal($('book').getAttribute('data-booking-href'),'/booking?doctor=parul');assert.ok($('book').hidden&&$('book').inert);
  assert.equal($('other').getAttribute('href'),'/contact');assert.ok($('only').hidden&&$('only').inert);assert.ok(!$('offonly').hidden&&!$('offonly').inert);
@@ -145,4 +157,50 @@ test('pictures that fail leave their frame; locked controls are released except 
  releaseControls(page.document.body);
  assert.equal(page.document.getElementById('freed').disabled,false);assert.equal(page.document.getElementById('kept').disabled,true);
  assert.equal(typeof bindClock,'function');assert.ok(Object.isFrozen(partBehaviours)&&partBehaviours.length>=10);
+});
+
+test('Contact\'s behaviour is fetched when Contact is shown; a page left meanwhile is not bound',async()=>{
+ const calls=[],module={bindThing:(root,context)=>calls.push([root,context])};
+ const bind=behaviourLater(()=>Promise.resolve(module),found=>found.bindThing,()=>calls.push('failed'));
+ const context={signal:new AbortController().signal};
+ await bind('root',context);assert.deepEqual(calls,[['root',context]]);
+ // the visitor has already moved on when the file arrives: nothing is bound, nothing is said
+ const gone=new AbortController(),later=bind('root',{signal:gone.signal});gone.abort();await later;assert.equal(calls.length,1);
+ // it could not be fetched (or the behaviour itself threw): the page is told, never the console
+ const failures=[];
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ await behaviourLater(()=>{throw new Error('no such file');},found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ await behaviourLater(()=>Promise.resolve({bindThing(){throw new Error('broken');}}),found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ assert.equal(failures.length,3);assert.deepEqual(failures[0],['root',context]);
+ const left=new AbortController();left.abort();
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing,()=>failures.push('late'))('root',{signal:left.signal});assert.equal(failures.length,3);
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing)('root');
+ // the registry lists Contact's behaviour this way, and every other page's directly
+ assert.equal(pages['/contact'].bind.name,'bindLater');assert.equal(pages['/'].bind.name,'bindHome');
+ // the real file is fetched and its bind is run (here on a page without the form, which it leaves alone)
+ const asked=[];
+ await pages['/contact'].bind({querySelector:selector=>{asked.push(selector);return null;}},context);
+ assert.deepEqual(asked,['[data-contact-form]','[data-privacy-notice]'],'Contact\'s own behaviour looked for its form and its notice');
+});
+
+test('when the message form\'s engine cannot be fetched the form says so, keeps Call and WhatsApp in reach and offers to try again',()=>{
+ const page=createPage({body:`<main>${renderedPage('/contact','on')}</main>`}),main=page.document.querySelector('main');
+ const $=selector=>main.querySelector(selector),shell=$('[data-message-form]');
+ assert.equal(shell.getAttribute('data-state'),'opening');assert.equal($('[data-contact-status]').textContent,messageForm.status.opening);assert.ok($('[data-contact-retry]').hidden);
+ let reloads=0;const scope=new AbortController();
+ formCouldNotOpen(main,{signal:scope.signal},()=>{reloads++;});
+ assert.equal(shell.getAttribute('data-state'),'failed');assert.equal($('[data-contact-status]').textContent,'We could not open the message form.');
+ assert.ok($('[data-contact-fields]').hidden&&$('[data-contact-compose]').hidden&&$('[data-message-steps]').hidden,'no field that cannot be sent is shown, nor the steps of sending');
+ assert.ok(!$('[data-contact-panel="failed"]').hidden&&!$('[data-contact-instead]').hidden&&!$('[data-contact-retry]').hidden);
+ assert.match($('[data-contact-instead]').innerHTML,/tel:\+919415049410/,'Call stays in reach');
+ // Try again puts the form back to "opening" and loads the page afresh
+ $('[data-contact-retry]').click();
+ assert.equal(reloads,1);assert.equal(shell.getAttribute('data-state'),'opening');assert.equal($('[data-contact-status]').textContent,messageForm.status.opening);
+ assert.ok(!$('[data-contact-fields]').hidden&&$('[data-contact-panel="failed"]').hidden&&$('[data-contact-retry]').hidden);
+ $('[data-contact-retry]').click();assert.equal(reloads,1,'once');
+ // a page without the form is left alone; the painter says so
+ assert.equal(paintFormOpening(createPage({body:'<main></main>'}).document.querySelector('main'),true),null);assert.equal(paintFormOpening(null,true),null);
+ formCouldNotOpen(createPage({body:'<main></main>'}).document.querySelector('main'));
+ // the retry button printed disabled (as built documents print submit controls) is made usable
+ const again=$('[data-contact-retry]');again.disabled=true;paintFormOpening(main,true);assert.equal(again.disabled,false);
 });

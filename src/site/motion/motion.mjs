@@ -1,18 +1,32 @@
 // Motion for the whole site, in one small module.
 //
-//  Entrances   `data-enter` on a part (words, "card", "photo" or "rule"). A part follows the scroll:
-//              it starts to settle when its top crosses 85% of the screen and is at rest when it
-//              reaches 45%, so nothing is finished before it comes to the middle. It runs once and
-//              never goes back; words move and never fade. Anything already on screen when a page
-//              opens is simply in place. `data-enter-after="0.12"` starts a part a little later
-//              than a neighbour beside it.
+//  Entrances   `data-enter` on a part (words, "card", "photo", "rule" or "count"). A part follows
+//              the scroll: it starts to settle when its top crosses 85% of the screen and is at
+//              rest when it reaches 45%, so nothing is finished before it comes to the middle. It
+//              runs once and never goes back; words move and never fade. Anything already on screen
+//              when a page opens is simply in place. `data-enter-after="0.12"` starts a part a
+//              little later than a neighbour beside it.
+//                (plain)  words rise 16 px
+//                card     a card or an object rises 28 px
+//                photo    a photograph's frame rises, grows the last few per cent and unrolls downward
+//                rule     a hairline draws from the left
+//                count    a whole number counts up once, in about a second, as it arrives
+//                         (the element holds the number alone: <span data-enter="count">30</span>)
 //  Ambient     `data-ambient` on a slowly moving layer. A loop runs only while it is on screen,
 //              the tab is visible and motion is allowed; at most two run at once, one on phones.
+//                (plain)  a light: the page's own keyframes, played while `data-running` is set
+//                float    a paper-cut object drifts ±6 px and ±1.5° (motion.css draws it); give two
+//                         objects in one view different beats with style="--float-phase:-2s"
+//                minor    a small pulse (the open dot)
+//              When more want to run than a view allows, a light outranks a float, a float a pulse.
 //  Preference  "Pause motion" in the footer. The choice is kept on the device under `rk-motion`.
 //              The device's reduced-motion setting counts as paused until the visitor chooses to play.
 //
-// The script only ever writes one number per part (`--p`, 0 to 1); motion.css turns it into
-// movement, and only under html[data-motion="on"]. A page without scripts is simply still.
+// The script only ever writes one number per part (`--p`, 0 to 1), or a counting number's digits;
+// motion.css turns `--p` into movement, and only under html[data-motion="on"]. A page without
+// scripts is simply still.
+
+import {safeStorage} from '../lib/storage.mjs';
 
 export const MOTION_KEY='rk-motion';
 /** A part starts when its top crosses this share of the screen height … */
@@ -25,15 +39,37 @@ export const FOLLOW_MS=170;
 export const LOOP_LIMIT=Object.freeze({phone:1,wide:2});
 /** Phones are narrower than this. */
 export const WIDE_FROM=768;
+/** Which loop keeps its place when a view holds more than may run: a light, then a floating object, then a small pulse. */
+export const LOOP_WEIGHT=Object.freeze({light:2,float:1.5,minor:1});
+/** The weight of a loop from its `data-ambient` value ("" or anything unknown is a light). */
+export function loopWeight(kind){return kind==='minor'?LOOP_WEIGHT.minor:kind==='float'?LOOP_WEIGHT.float:LOOP_WEIGHT.light;}
+/** A number that counts up as it arrives takes this long, in ms … */
+export const COUNT_MS=1100;
+/** … and starts once this share of its own height has come into view from the foot of the screen. */
+export const COUNT_SHOWN=.6;
+/**
+ * The number shown `elapsed` ms into a count up to `to` (pure): whole numbers, quick at first and
+ * slower towards the end, never past `to`.
+ */
+export function countValue(to,elapsed,duration=COUNT_MS){
+ if(!(duration>0)||elapsed>=duration)return to;
+ const t=Math.max(0,elapsed)/duration;
+ return Math.min(to,Math.round(to*(1-Math.pow(1-t,3))));
+}
+/** The whole number an element holds, or null when it holds anything else (then it does not count). */
+export function countTarget(element){
+ const words=String(element?.textContent??'').trim();
+ return /^\d{1,6}$/.test(words)?Number(words):null;
+}
 
 /** The stored choice: 'paused', 'on', or null when the visitor has not chosen (or storage is closed). */
 export function readPreference(storage){
  try{const value=storage?.getItem(MOTION_KEY);return value==='paused'||value==='on'?value:null;}catch{return null;}
 }
-/** Keep the choice on this device. Returns false when it could not be kept. */
+/** Keep the choice on this device. Returns false when the browser could not keep it. */
 export function writePreference(storage,value){
  if(value!=='paused'&&value!=='on')throw new RangeError('Motion is "on" or "paused"');
- try{storage.setItem(MOTION_KEY,value);return true;}catch{return false;}
+ try{return storage.setItem(MOTION_KEY,value)!==false;}catch{return false;}
 }
 /** The motion state from the stored choice and the device setting: a choice always wins. */
 export function motionState(stored,reduced){
@@ -90,8 +126,10 @@ export function pageTop(element){
 /**
  * Start motion for the page. Everything from the browser can be replaced in tests.
  * Returns the service the parts use: state(), allowed(), set(), toggle(), subscribe(), observe().
+ * The stored choice is read through `safeStorage`, so a browser that refuses storage cannot stop
+ * the site: the choice then holds while the page stays open.
  */
-export function createMotion({documentObject=document,windowObject=window,storage=windowObject.localStorage,
+export function createMotion({documentObject=document,windowObject=window,storage=safeStorage(()=>windowObject.localStorage),
  Observer=windowObject.IntersectionObserver,reducedQuery=windowObject.matchMedia?.('(prefers-reduced-motion: reduce)'),
  frame=callback=>windowObject.requestAnimationFrame(callback)}={}){
  const root=documentObject.documentElement,listeners=new Set();
@@ -113,16 +151,30 @@ export function createMotion({documentObject=document,windowObject=window,storag
  }
 
  // ---- entrances that follow the scroll ----
- const rest=part=>{part.done=true;part.element.style.removeProperty('--p');};
+ const show=(part,value)=>{const digits=String(value);if(part.element.textContent!==digits)part.element.textContent=digits;};
+ const rest=part=>{part.done=true;part.element.style.removeProperty('--p');if(part.to!==null)show(part,part.to);};
  function measure(){
   const viewport=windowObject.innerHeight,maxScroll=Math.max(0,root.scrollHeight-viewport);
-  for(const part of parts)if(!part.done)Object.assign(part,partRange({top:pageTop(part.element),viewport,maxScroll}));
+  for(const part of parts){
+   if(part.done)continue;
+   const top=pageTop(part.element);
+   // a counting number starts when most of it has come into view, so it is not seen waiting at nought
+   if(part.to!==null)part.start=Math.min(top-viewport+(part.element.offsetHeight||0)*COUNT_SHOWN,maxScroll-1);
+   else Object.assign(part,partRange({top,viewport,maxScroll}));
+  }
  }
  function tick(time){
   const dt=Math.min(64,time-(lastTime||time-16));lastTime=time;
   const share=followShare(dt),y=windowObject.scrollY;let active=false;
   for(const part of parts){
    if(part.done)continue;
+   if(part.to!==null){
+    // a count runs on the clock once it has begun, so it always reaches its number
+    if(part.began===null){if(y<part.start)continue;part.began=time;}
+    if(time-part.began>=COUNT_MS){rest(part);continue;}
+    show(part,countValue(part.to,time-part.began));active=true;
+    continue;
+   }
    part.best=Math.max(part.best,partProgress({y,start:part.start,span:part.span,after:part.after}));
    part.current+=(part.best-part.current)*share;
    if(part.best>=1&&part.current>.997){rest(part);continue;}
@@ -142,7 +194,9 @@ export function createMotion({documentObject=document,windowObject=window,storag
   const y=windowObject.scrollY;
   for(const part of parts){
    if(part.done)continue;
-   if(alreadyOnScreen(y,part.start))rest(part);else if(part.best===0)part.element.style.setProperty('--p','0');
+   if(alreadyOnScreen(y,part.start))rest(part);
+   else if(part.to!==null){if(part.began===null)show(part,0);}
+   else if(part.best===0)part.element.style.setProperty('--p','0');
   }
   requestTick();
  }
@@ -165,14 +219,16 @@ export function createMotion({documentObject=document,windowObject=window,storag
   ambientObserver?.disconnect();ambientObserver=null;
   for(const key of ambient.keys())key.removeAttribute('data-running');
   ambient.clear();
-  for(const part of parts)part.element.style?.removeProperty('--p');
+  for(const part of parts){part.element.style?.removeProperty('--p');if(part.to!==null&&!part.done)show(part,part.to);}
   parts=[];scope=null;
  }
 
  /** Watch one drawn page: what is already on screen stays put, the rest settles as it is scrolled to. */
  function observe(page,{signal}={}){
   stopObserving();scope=page;
-  parts=[...page.querySelectorAll('[data-enter]')].map(element=>({element,after:Number(element.getAttribute('data-enter-after'))||0,current:0,best:0,done:false,start:0,span:1}));
+  parts=[...page.querySelectorAll('[data-enter]')].map(element=>({element,after:Number(element.getAttribute('data-enter-after'))||0,current:0,best:0,done:false,start:0,span:1,
+   // `to` is the number a counting part counts up to (null for every other part); `began` is when its count started
+   to:element.getAttribute('data-enter')==='count'?countTarget(element):null,began:null}));
   const loops=[...page.querySelectorAll('[data-ambient]')];
   if(Observer&&loops.length){
    ambientObserver=new Observer(entries=>{
@@ -180,7 +236,7 @@ export function createMotion({documentObject=document,windowObject=window,storag
     runLoops();
    },{threshold:[0,.25,.5,.75,1]});
    for(const element of loops){
-    ambient.set(element,{ratio:0,weight:element.getAttribute('data-ambient')==='minor'?1:2});
+    ambient.set(element,{ratio:0,weight:loopWeight(element.getAttribute('data-ambient'))});
     ambientObserver.observe(element);
    }
   }

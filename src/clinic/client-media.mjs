@@ -38,7 +38,7 @@ Object.assign(clinicPhotos,{
  'close-sanjay':crop('close-sanjay','In his consulting room',doctors.sanjay.name,'dr-sanjay-gupta-close-up',180,225,[180,360]),
  'close-parul':crop('close-parul','In her consulting room',doctors.parul.name,'dr-parul-gupta-close-up',180,225,[180,360]),
  frontage:crop('frontage','Clinic frontage','The clinic seen from Ring Road: a green wall, a blue board with both doctors’ names and the R. K. Medical Centre sign','frontage-from-ring-road',640,360,[640,1280]),
- waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,800])
+ waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,520,800])
 });
 Object.assign(clinicPhotos,{
  // The wider "at work" portraits (Meet the doctors, profile covers). Never shown wider than 300 px.
@@ -47,8 +47,9 @@ Object.assign(clinicPhotos,{
  // Each doctor's room, 3 : 2 (profiles).
  'room-sanjay':crop('room-sanjay',`${doctors.sanjay.name}’s consulting room`,`${doctors.sanjay.name} speaking from behind his desk, with framed certificates and a whiteboard on the wall`,'dr-sanjay-gupta-consulting-room',444,296,[444,888]),
  'room-parul':crop('room-parul',`${doctors.parul.name}’s consulting room`,`${doctors.parul.name} at her desk beside the ultrasound machine, with awards on the window shelf behind her`,'dr-parul-gupta-consulting-room',420,280,[420,840]),
- // The walk through the clinic (About): arriving at the gate, then the glass doors. The waiting area is `waiting`.
- 'walk-gate':crop('walk-gate','The gate on Ring Road','The clinic’s gate on Ring Road, under a blue board with both doctors’ names, beside the green wall','gate-under-blue-board',340,425,[340,680]),
+ // The walk through the clinic (About): the name board on the green wall, then the glass doors. The waiting area is `waiting`.
+ // The board is a detail of the street with no car and nobody in it; its larger file is the crop at its own size (never enlarged).
+ 'walk-wall':crop('walk-wall','The green wall on Ring Road','The clinic’s name board, in English and Hindi, on the green wall under a tree','name-board-on-green-wall',300,375,[300,428]),
  'walk-doors':crop('walk-doors','The glass doors','Glass doors marked with red crosses under a white canopy, with black grille shutters folded back on either side','glass-doors-with-red-crosses',360,450,[360,720])
 });
 /** The three-quarter arch portraits of the two doctors. */
@@ -61,6 +62,14 @@ export const closePortraits={sanjay:'close-sanjay',parul:'close-parul'};
 export const workPortraits={sanjay:'at-work-sanjay',parul:'at-work-parul'};
 /** The 3 : 2 room picture of each doctor (profiles, "About the doctor"). */
 export const roomCrops={sanjay:'room-sanjay',parul:'room-parul'};
+Object.assign(clinicPhotos,{
+ // The clinic's paper-cut picture for women's health, 3 : 2 (Dr. Parul Gupta's profile, "About the doctor").
+ 'art-womens-health':{id:'art-womens-health',caption:'Women’s health',alt:'A paper-cut illustration of a woman in profile, in layers of blue, green and cream paper',
+  width:420,height:280,src:'/clinic-assets/womens-health-paper-illustration-800.webp',
+  sources:[480,800,1200].map(width=>({width,src:`/clinic-assets/womens-health-paper-illustration-${width}.webp`}))}
+});
+/** A paper-cut picture that stands in a profile's "About the doctor" frame where the clinic holds no second photograph. */
+export const aboutArt={parul:'art-womens-health'};
 /** Small square faces for rows that name a doctor (call rows, strips, booking). Decorative: alt is empty. */
 export const doctorAvatars={
  sanjay:{src:'/client-photos/dr-sanjay-gupta-avatar-168.webp',width:168,height:168,alt:''},

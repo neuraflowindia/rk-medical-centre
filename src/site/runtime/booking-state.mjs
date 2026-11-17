@@ -8,11 +8,14 @@ import {bookingEntryFor,bookingPaths} from '../../clinic/page-content/shared.mjs
 /** The main booking controls: the header's, and a page's first-screen one. Value: "header" or "page". */
 export const ENTRY_SELECTOR='[data-booking-entry]';
 
-/** What one main booking control must carry in a booking state (pure). */
+/**
+ * What one main booking control must carry in a booking state (pure). `call` is true where the
+ * control opens the call panel instead of leading anywhere (the header's, on Contact, while OFF).
+ */
 export function entryState(place,enabled,route=''){
- const words=bookingEntryFor(place,enabled);
+ const words=bookingEntryFor(place,enabled,route);
  return Object.freeze({href:words.path,spoken:words.spoken,hint:words.hint,label:words.label,
-  icon:enabled?'calendar':'phone',current:place==='header'&&enabled&&route===bookingPaths.book});
+  icon:enabled?'calendar':'phone',call:!!words.call,current:place==='header'&&enabled&&route===bookingPaths.book});
 }
 
 const setAttribute=(node,name,value)=>{
@@ -28,6 +31,7 @@ export function syncEntries(root,enabled,route=''){
   const wanted=entryState(node.getAttribute('data-booking-entry')==='header'?'header':'page',enabled,route);
   setAttribute(node,'href',wanted.href);setAttribute(node,'aria-label',wanted.spoken);setAttribute(node,'title',wanted.hint);
   setAttribute(node,'aria-current',wanted.current?'page':null);
+  setAttribute(node,'data-open-call',wanted.call?'':null);setAttribute(node,'aria-haspopup',wanted.call?'dialog':null);
   setAttribute(node,'data-booking-only',null);setFlag(node,'hidden',false);setFlag(node,'inert',false);
   const label=node.querySelector('[data-booking-on]');
   if(label){const text=enabled?label.getAttribute('data-booking-on'):label.getAttribute('data-booking-off');if(label.textContent!==text)label.textContent=text;}

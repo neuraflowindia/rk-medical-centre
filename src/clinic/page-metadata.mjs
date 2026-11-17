@@ -1,40 +1,52 @@
 import {publicGraph} from './page-schema.mjs';
-/** Reviewed public page copy; booking utilities are deliberately excluded. */
+import {city,clinicOverview,doctorFacts,doctors,locality} from './model.mjs';
+
+/**
+ * Reviewed public page copy; booking utilities are deliberately excluded.
+ *
+ * Titles are unchanged from the earlier site (search continuity). Each description is one
+ * sentence of at most 155 characters that says only what its page shows, and stays true whether
+ * online booking is on or off (so none of them promises booking). Facts that can change (the
+ * doctors' names, the year, the fee) are read from model.mjs, never retyped.
+ */
 export const siteOrigin='https://www.rkmedicalcentre.com';
+const clinic='R. K. Medical Centre',overview=clinicOverview();
+const {sanjay,parul}=doctors,since=overview.since??doctorFacts.sanjay.since,place=`${locality}, ${city}`;
 export const pageMetadata=Object.freeze({
   "/": {
     "title": "Physician & Women's Health in Lucknow | R. K. Medical Centre",
-    "description": "Speak with Dr. Sanjay Gupta or Dr. Parul Gupta about diabetes, everyday illnesses, women's health or pregnancy at the clinic in Lucknow."
+    "description": `A physician and a gynaecologist caring for ${city} families since ${since}: ${sanjay.name} and ${parul.name} at ${clinic}, ${locality}.`
   },
   "/treatment": {
     "title": "Treatments in Lucknow | R. K. Medical Centre",
-    "description": "See what the clinic's physician and women's-health services cover, which doctor to choose and what to bring for your visit."
+    "description": `What ${sanjay.name} and ${parul.name} can help with in ${city}: diabetes, blood pressure, thyroid, fever, periods, pregnancy and ultrasound scans.`
   },
   "/about-clinic": {
     "title": "About the Clinic | R. K. Medical Centre, Lucknow",
-    "description": "Find out about R. K. Medical Centre, the doctors, clinic hours, observation care and what to know before coming for a visit."
+    "description": `${clinic} is a family practice in ${place}, since ${since}: NABH accredited, ISO 9001:2015 certified, 24-hour observation care.`
   },
   "/meet-doctor": {
     "title": "Meet the Doctors | R. K. Medical Centre, Lucknow",
-    "description": "Read about Dr. Sanjay Gupta and Dr. Parul Gupta, their areas of care and how to choose the doctor for your clinic appointment."
+    "description": `Meet ${sanjay.name}, physician, and ${parul.name}, gynaecologist, at ${clinic}, ${city}: who treats what, and how to arrange a visit.`
   },
   "/dr-sanjay-gupta": {
     "title": "Dr. Sanjay Gupta, Physician in Lucknow | R. K. Medical Centre",
-    "description": "Read about Dr. Sanjay Gupta's care for diabetes, blood pressure, thyroid concerns and everyday illnesses, and prepare for an in-person visit."
+    "description": `${sanjay.name}, physician and diabetologist in ${place}, in practice since ${since}: what he treats, his next clinic session, how to reach him.`
   },
   "/dr-parul-gupta": {
     "title": "Dr. Parul Gupta, Women's Health in Lucknow | R. K. Medical Centre",
-    "description": "Read about Dr. Parul Gupta's care for women's health, pregnancy and ultrasound questions, and prepare for your visit to the clinic."
+    "description": `${parul.name}, a senior woman gynaecologist and KGMU gold medalist in ${place}: periods, PCOS and pregnancy care, and how to reach her.`
   },
   "/contact": {
     "title": "Contact & Directions | R. K. Medical Centre, Lucknow",
-    "description": "Find the clinic's phone numbers, address, visiting hours and Google Maps directions. Contact the clinic about an appointment or a question."
+    "description": `Call ${sanjay.name} or ${parul.name}, send a message, see clinic hours and find ${clinic} on Ring Road, ${place}.`
   }
 });
+/** The booking screens: never listed by search engines; shown only while online booking is on. */
 export const utilityMetadata=Object.freeze({
- '/booking':{title:'Book your visit | R. K. Medical Centre',description:'Choose your doctor and an available starting time.'},
- '/booking-details':{title:'Find your booking | R. K. Medical Centre',description:'View your appointment details.'},
- '/booking-help':{title:'Find your booking | R. K. Medical Centre',description:'View your appointment details.'}
+ '/booking':{title:'Book your visit | R. K. Medical Centre',description:`Choose your doctor, a day and a starting time at ${clinic}, ${place}. ${overview.fee===null?'Pay':`Pay ₹${overview.fee}`} at the clinic.`},
+ '/booking-details':{title:'Find your booking | R. K. Medical Centre',description:`See your appointment at ${clinic} with the name and phone number you booked with.`},
+ '/booking-help':{title:'Find your booking | R. K. Medical Centre',description:`See your appointment at ${clinic} with the name and phone number you booked with.`}
 });
 export function metadataFor(path){return pageMetadata[path]||utilityMetadata[path]||{title:'Appointment details | R. K. Medical Centre',description:'View your clinic appointment details.'};}
 export function applyPageMetadata(path,documentObject=document){

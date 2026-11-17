@@ -28,9 +28,12 @@ export function createSheets({documentObject=document}={}){
   open({title,html,trigger=null,kind='notice'}){
    if(!nodes.reader)return;
    setText('reader-title',title);
-   const content=find('reader-content');content.innerHTML=html;content.scrollTop=0;
+   const content=find('reader-content');content.innerHTML=html;
    nodes.reader.setAttribute('data-kind',kind);
    remember('reader',trigger);controllers.reader.open({focusHeading:true,trigger});
+   // A closed dialog cannot be scrolled, and the browser keeps where it was last left: the reader
+   // is brought to its top once it is open (a caller may then point it at one item).
+   content.scrollTop=0;
   },
   close:reason=>controllers.reader?.close(reason),
   content:()=>find('reader-content'),

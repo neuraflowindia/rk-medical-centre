@@ -20,13 +20,14 @@
   html[data-motion="on"] .page-home__shaft { animation: page-home-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-home__shaft--deep { animation-name: page-home-shaft-wide; animation-duration: var(--loop-light-slow); animation-delay: var(--loop-light-slow-start); }
   html[data-motion="on"] .page-home__arch[data-running] .page-home__shaft, html[data-motion="on"] .page-home__credentials-light[data-running] .page-home__shaft { animation-play-state: running; }
+  /* the light crosses three fifths of its arch each way: its movement is plain within two or three seconds */
   @keyframes page-home-shaft {
-    from { transform: translateX(-11%); }
-    to { transform: translateX(11%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   @keyframes page-home-shaft-wide {
-    from { transform: translateX(-14%); }
-    to { transform: translateX(14%); }
+    from { transform: translateX(-17%); }
+    to { transform: translateX(17%); }
   }
   /* subject: the two frames */
   .page-home__pair { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: var(--space-3); }
@@ -60,6 +61,8 @@
   .page-home__credentials-running::after { background: var(--line-on-deep); }
   .page-home__figure-title { display: flex; align-items: center; gap: var(--space-4); color: var(--ink-on-deep); }
   .page-home__numeral { display: inline-flex; align-items: flex-start; color: var(--ink-on-deep); font: var(--type-numeral); letter-spacing: -.035em; font-variant-numeric: lining-nums; margin-left: -.03em; }
+  /* the digits keep the final number's width while they count up, so nothing beside them shifts */
+  .page-home__numeral-digits { display: inline-block; min-width: calc(var(--digits, 2) * 1ch); text-align: right; font-variant-numeric: tabular-nums lining-nums; }
   .page-home__numeral-plus { color: var(--gold-on-deep); font: var(--type-numeral-plus); margin: .1em 0 0 .06em; letter-spacing: 0; }
   .page-home__figure-words { max-width: 8.2em; font: var(--type-figure-words); }
   .page-home__figure-words em { color: var(--ink-on-deep); }
@@ -119,12 +122,14 @@
 
   @media (min-width: 480px) {
     .page-home__hero-grid { gap: 28px; }
+    /* between phone and tablet the two buttons keep a hand's width; they are not stretched across the screen */
+    .page-home__hero-actions { max-width: 420px; }
   }
 
   @media (min-width: 768px) {
     .page-home__hero { padding-top: 40px; }
     .page-home__lead { margin-top: 18px; }
-    .page-home__hero-actions { margin-top: 26px; gap: var(--space-3); }
+    .page-home__hero-actions { margin-top: 26px; gap: var(--space-3); max-width: none; }
     .page-home__hero-actions .button--main { flex: 0 0 auto; }
     .page-home__arch { left: 0; right: 0; bottom: 52px; }
     .page-home__pair { padding: var(--space-4) 18px 0; gap: 10px; }
@@ -148,18 +153,22 @@
     .page-home__certificates .certificate-wall__item:nth-child(2) { min-width: 150px; }
     .page-home__certificates .certificate-frame { width: auto; }
     .page-home__certificates .certificate-frame__label { width: 0; min-width: 100%; margin-top: 14px; padding-right: 0; }
-    .page-home__certificates-more { padding-inline: 0; }
+    .page-home__certificates-more { padding-inline: 0; margin-top: var(--space-3); }
 
     .page-home__reviews { padding: 56px 0 var(--section-pad); }
 
     .page-home__visiting-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-6); }
     .page-home__frontage { display: block; grid-column: 1 / 10; grid-row: 2; }
     .page-home__frontage .photo-figure__caption { padding: var(--space-4) 0 0 var(--space-2); max-width: 30ch; }
-    .page-home__waiting { display: block; grid-column: 9 / 13; grid-row: 2; align-self: end; margin: 0 0 -96px; }
+    .page-home__waiting { display: block; grid-column: 9 / 13; grid-row: 2; align-self: end; margin: 0; }
     .page-home__waiting .photo-figure__frame { margin: 0; }
     .page-home__waiting .photo-figure__caption { padding: 14px 0 0 var(--space-2); }
-    .page-home__address { grid-column: 1 / 8; grid-row: 3; margin-top: 40px; padding: 30px 32px 32px; }
-    .page-home__directions { width: auto; }
+    /* tablets: the card runs the whole row under the two photographs: the address and the timetable
+       on its left, directions and the two notes on its right, so no part of the row stands empty */
+    .page-home__address { grid-column: 1 / -1; grid-row: 3; margin-top: 44px; padding: 30px 32px 32px; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: var(--space-8); align-items: start; }
+    .page-home__address h3, .page-home__address address, .page-home__hours { grid-column: 1; }
+    .page-home__directions { grid-column: 2; grid-row: 1 / span 2; align-self: end; justify-self: start; width: auto; margin-top: 0; }
+    .page-home__notes { grid-column: 2; grid-row: 3; margin-top: var(--space-5); }
     .page-home__address-line { display: block; }
     .page-home__visiting .photo-figure__key { display: block; margin: 0 0 2px; }
     .page-home__address .hours-table__today { display: block; width: fit-content; margin: 3px 0 0; }
@@ -201,7 +210,9 @@
     .page-home__frontage .photo-figure__caption { margin-left: 126px; padding-top: 18px; max-width: 27ch; font-size: var(--size-label); }
     .page-home__waiting { grid-column: 10 / 13; grid-row: 1 / 4; align-self: start; margin: 248px 0 0; }
     .page-home__waiting .photo-figure__caption { font-size: var(--size-label); padding-top: 18px; }
-    .page-home__address { grid-column: 1 / 6; grid-row: 2 / 4; align-self: start; margin: 40px 0 0; width: min(468px, 41vw); padding: 34px 36px 36px; }
+    .page-home__address { display: block; grid-column: 1 / 6; grid-row: 2 / 4; align-self: start; margin: 40px 0 0; width: min(468px, 41vw); padding: 34px 36px 36px; }
+    .page-home__directions { margin-top: var(--space-4); }
+    .page-home__notes { margin-top: var(--space-4); }
     .page-home__address-pin { width: 88px; top: -50px; right: 26px; }
 
     .page-home__questions { padding-top: var(--section-pad); }

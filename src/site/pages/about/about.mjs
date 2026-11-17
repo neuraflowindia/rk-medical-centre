@@ -86,14 +86,11 @@ function walkSection(){
 }
 
 /**
- * One certificate of the teaser. With scripts it is a control that opens the viewer; without, a
- * plain framed picture, so nothing on the page is a button that does nothing.
- * WAITING: request about-09 — the shared frame will not be a dead button without scripts; then
- * one frame is printed, not two.
+ * One certificate of the teaser: a framed document that opens every certificate in the viewer,
+ * standing at itself. Without scripts the frame leads to the certificate's own picture.
  */
 function teaserDocument(item){
- return `<div data-needs-script>${certificateFrame(item,{view:true,sizes:DOCUMENT_SIZES})}</div>`
-  +`<div data-without-script>${certificateFrame(item,{sizes:DOCUMENT_SIZES})}</div>`;
+ return certificateFrame(item,{view:true,set:'all',sizes:DOCUMENT_SIZES});
 }
 
 function doctorsPart(ctx){

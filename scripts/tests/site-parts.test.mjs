@@ -22,7 +22,7 @@ import {doctorMiniCard} from '../../src/site/parts/doctor-mini-card/doctor-mini-
 import {photoFigure,archPortrait,PHOTO_RATIOS} from '../../src/site/parts/photo-figure/photo-figure.mjs';
 import {questions} from '../../src/site/parts/questions/questions.mjs';
 import {reviewShelf,reviewCard,reviewReader,readerList,reviewTotal} from '../../src/site/parts/review-shelf/review-shelf.mjs';
-import {certificateFrame,certificateWall,certificateViewer,certificatePicture} from '../../src/site/parts/certificate-frame/certificate-frame.mjs';
+import {certificateFrame,certificateWall,certificateViewer,certificatePicture,certificateFile,certificateShape} from '../../src/site/parts/certificate-frame/certificate-frame.mjs';
 import {stillShelf} from '../../src/site/parts/still-shelf/still-shelf.mjs';
 import {sheetNote} from '../../src/site/parts/sheet/sheet.mjs';
 import {callRows} from '../../src/clinic/page-content/shared.mjs';
@@ -47,10 +47,18 @@ test('booking buttons: an ordinary one is a real booking link; the main controls
  assert.match(bookButton(off),/href="\/booking"[^>]*>.*Book an appointment/);
  const header=place=>bookingEntry(place==='off'?off:on,{place:'header',size:'compact',hook:'data-header-appointment'});
  assert.match(header('on'),/href="\/booking" aria-label="Book an appointment" title="Book an appointment online" data-booking-entry="header" data-header-appointment>/);
- assert.match(header('off'),/href="\/contact" aria-label="Book an appointment by calling the clinic"/);
+ assert.match(header('off'),/href="\/contact" aria-label="Arrange a visit by calling the clinic" title="Call the clinic to arrange an appointment" data-booking-entry="header" data-header-appointment>/);
+ assert.match(header('off'),/data-booking-on="Book an appointment" data-booking-off="Arrange a visit">Arrange a visit</,'while booking is off the header never says "Book"');
+ assert.doesNotMatch(header('off'),/data-open-call|#i-phone/,'it leads to a page: no phone sign, no call panel');
  const page=bookingEntry(off,{hook:'data-home-appointment-entry'});
  assert.match(page,/data-booking-entry="page" data-home-appointment-entry>/);
- assert.match(page,/data-home-entry-icon="calendar" hidden>.*data-home-entry-icon="phone">/);
+ assert.match(page,/data-home-entry-icon="calendar" hidden>.*<span class="button__state-icon button__state-icon--after" data-home-entry-icon="phone"><svg[^>]*><use href="#i-arrow"\/>/,'the OFF mark is the in-site arrow, after the words');
+ // on Contact, while booking is off, the header's control is a Call: phone sign, call panel, its own words
+ const onContact=mode=>bookingEntry({...(mode==='off'?off:on),path:'/contact'},{place:'header',hook:'data-header-appointment'});
+ assert.match(onContact('off'),/href="\/contact" aria-label="Call the clinic" title="Call the clinic to arrange an appointment" data-booking-entry="header" data-header-appointment aria-haspopup="dialog" data-open-call="">/);
+ assert.match(onContact('off'),/<span class="button__state-icon" data-home-entry-icon="phone"><svg[^>]*><use href="#i-phone"\/>.*data-booking-off="Call the clinic">Call the clinic</);
+ assert.doesNotMatch(onContact('on'),/data-open-call|aria-haspopup/);assert.match(onContact('on'),/href="\/booking"[^>]*>.*data-booking-on="Book an appointment" data-booking-off="Call the clinic">Book an appointment</);
+ assert.doesNotMatch(bookingEntry({...off,path:'/contact'},{place:'page'}),/data-open-call/);
  assert.match(page,/<span class="button__label" data-booking-on="Book an appointment" data-booking-off="Arrange a visit">Arrange a visit<\/span>/);
  assert.match(bookingEntry(on),/data-home-entry-icon="calendar">.*data-home-entry-icon="phone" hidden>/);
  assert.doesNotMatch(bookingEntry(on),/data-booking-only|data-booking-entry-hook/);
@@ -132,6 +140,8 @@ test('the phone menu lists the pages and ends with the two actions',()=>{
  assert.equal(count(menu,/class="menu__link"/g),5);assert.match(menu,/href="\/contact" aria-current="page"><span>Contact/);
  assert.match(menu,/data-booking-entry="header"/);assert.match(menu,/data-open-call=""/);
  assert.doesNotMatch(menuLinks(off),/\shref="\/booking/,'while booking is off the menu holds no booking address');
+ assert.match(menuLinks(off),/class="button button--main button--entry menu__book"[^>]*>.*Arrange a visit<.*class="button button--second menu__call"/);
+ assert.equal(count(menuLinks({...off,path:'/contact'}),/data-open-call=""/g),2,'on Contact, booking off: the main action is a call too (the stylesheet then shows one)');
 });
 
 test('the footer is complete in both states and names each doctor with number and registration',()=>{
@@ -141,8 +151,12 @@ test('the footer is complete in both states and names each doctor with number an
   assert.match(footer,/id="footer-calls"/);
   for(const id of ['sanjay','parul']){assert.ok(footer.includes(`href="tel:${doctors[id].tel}"`));assert.ok(footer.includes(doctors[id].phone.replace(/(\d{5}) (\d{5})/,'$1&nbsp;$2')));}
   assert.equal(count(footer,/UP Medical Council Reg\.&nbsp;No\.&nbsp;\d{5}/g),2);
-  assert.equal(count(footer,/class="site-footer__link"/g),7);
-  assert.match(footer,/data-collection-notice/);assert.match(footer,/data-privacy/);assert.match(footer,/aria-pressed="false" data-motion-toggle data-needs-script>.*Pause motion/);
+  assert.equal(count(footer,/class="site-footer__link"/g),6);
+  assert.match(footer,/<li class="site-footer__item--book" data-booking-only><a class="site-footer__link" href="\/booking">Book an appointment<\/a><\/li>/,'the whole list item goes with booking, so the list keeps no empty place');
+  assert.match(footer,/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-collection-notice>/);
+  assert.doesNotMatch(footer,/data-privacy\b/,'no privacy choice is offered while nothing is measured');
+  assert.match(siteFooter(ctx,{privacy:true}),/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-privacy>Change privacy choices<\/button><\/li>/);
+  assert.match(footer,/aria-pressed="false" data-motion-toggle data-needs-script>.*Pause motion/);
   assert.match(footer,/© 2026 R\.&nbsp;K\. Medical Centre/);
  }
  assert.match(siteFooter({...on,path:'/contact'}),/href="\/contact" aria-current="page"/);
@@ -170,6 +184,14 @@ test('the closing: one decision, true at any hour and in either booking state',(
  const one=closing(on,{doctor:'parul'});
  assert.match(one,/data-closing-doctor="parul"/);assert.equal(count(one,/class="call-row"/g),1);assert.match(one,/href="\/booking\?doctor=parul"[^>]*>.*Book with Dr\.&nbsp;Parul/);
  assert.throws(()=>closing(on,{doctor:'nobody'}),/Unknown doctor/);
+ // a call row reads need first, then the name, as the call sheet and Contact do
+ assert.match(both,/<span class="call-row__who"><span class="call-row__need">General health and diabetes<\/span><strong class="call-row__name">Dr\.&nbsp;Sanjay Gupta<\/strong><\/span>/);
+ // the faces can be left out where the section above already shows them; names and numbers stay
+ assert.equal(count(both,/class="call-row__avatar"/g),2);
+ const plain=closing(on,{avatars:false});
+ assert.equal(count(plain,/class="call-row__avatar"/g),0);assert.equal(count(plain,/class="call-row"/g),2);assert.match(plain,/94150&nbsp;49410/);assert.match(plain,/98386&nbsp;55095/);
+ // the handset floats (laptops)
+ assert.match(both,/<img class="closing__object"[^>]*data-ambient="float">/);
 });
 
 test('the phone bar, the call rows and the call sheet',()=>{
@@ -258,16 +280,30 @@ test('certificates: one frame for all ten, a wall that may settle, a viewer that
  assert.equal(certificatePicture({id:'other',description:'d',variants:[{src:'/certificates/a-480.webp',width:480,height:360},{src:'/certificates/a-720.webp',width:720,height:540}]}).sources.length,2);
  const [first]=homeCertificates(),frame=certificateFrame(first,{view:true,tone:'on-deep',size:'large'});noShared(frame);
  assert.match(frame,/^<figure class="certificate-frame certificate-frame--large certificate-frame--on-deep" data-certificate="sanjay-gupta-certificate-08" style="--tilt:0deg;--lag:0;--ar:1\.517">/);assert.match(frame,/<span>Harvard Medical School, 2016<\/span>/,'the second line reads with a comma');
- assert.match(frame,/<button class="certificate-frame__mat certificate-frame__mat--view" type="button" aria-haspopup="dialog" aria-label="View: Clinical diabetology course" data-view-certificate="sanjay-gupta-certificate-08">/);
+ // a viewing frame is a link to the certificate's own picture: never a dead button without scripts
+ assert.match(frame,/<a class="certificate-frame__mat certificate-frame__mat--view" href="\/certificates\/sanjay-gupta-certificate-08-plain-704\.webp" aria-label="View: Clinical diabetology course" data-view-certificate="sanjay-gupta-certificate-08">/);
+ assert.doesNotMatch(frame,/data-view-set|<button/);
+ assert.match(certificateFrame(first,{view:true,set:'all'}),/data-view-certificate="sanjay-gupta-certificate-08" data-view-set="all">/);
+ assert.doesNotMatch(certificateFrame(first,{set:'all'}),/data-view-set/,'only a viewing frame carries a set');
+ assert.throws(()=>certificateFrame(first,{view:true,set:'some'}),/Unknown certificate set/);
+ assert.equal(certificateFile(first),'/certificates/sanjay-gupta-certificate-08-plain-704.webp');
+ assert.equal(certificateFile({id:'other',description:'d',variants:[{src:'/certificates/a-480.webp',width:480,height:360},{src:'/certificates/a-720.webp',width:720,height:540}]}),'/certificates/a-720.webp','the widest file');
+ assert.equal(certificateShape(first),.659);assert.equal(certificateShape(certificateCatalogue[0]),1.413);
  assert.match(frame,/<figcaption class="certificate-frame__label"><strong>Clinical diabetology course<\/strong><span>[^<]+<\/span><span>Dr\.&nbsp;Sanjay Gupta<\/span><\/figcaption>/);
  assert.match(certificateFrame(certificateCatalogue[0]),/<div class="certificate-frame__mat">/);
  assert.throws(()=>certificateFrame(first,{size:'giant'}),/Unknown certificate size/);assert.throws(()=>certificateFrame(first,{tone:'pink'}),/Unknown certificate tone/);
  const wall=certificateWall(homeCertificates(),{label:'Certificates',settle:true});
- assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item">/g),4);
+ assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item"/g),4);
+ // a settling wall's documents also carry the ordinary entrance, staggered: what a browser without scroll-linked animation shows
+ assert.match(wall,/<li class="certificate-wall__item" data-enter="card">.*<li class="certificate-wall__item" data-enter="card" data-enter-after="0\.12">.*data-enter-after="0\.36">/);
+ assert.doesNotMatch(certificateWall(homeCertificates()),/data-enter/);
  assert.match(wall,/style="--tilt:-2\.2deg;--lag:0;--ar:1\.517".*style="--tilt:1\.6deg;--lag:0\.12;--ar:0\.708".*--lag:0\.24.*--lag:0\.36/);
- assert.doesNotMatch(certificateWall(homeCertificates()),/data-settle|--tilt:-/);
+ assert.doesNotMatch(certificateWall(homeCertificates()),/data-settle|--tilt:-|data-view-certificate/);
+ assert.equal(count(certificateWall(homeCertificates(),{view:true,set:'all'}),/data-view-set="all"/g),4);
  const viewer=certificateViewer(certificateCatalogue,2);
- assert.match(viewer,/^<figure class="certificate-viewer__figure" data-viewer-certificate="sanjay-gupta-certificate-08">/);assert.match(viewer,/3 of 10/);assert.match(viewer,/data-viewer-previous.*data-viewer-next/);
+ // the stage is as tall as the set's tallest document needs, so the dialog keeps one height
+ assert.match(viewer,/^<figure class="certificate-viewer__figure" data-viewer-certificate="sanjay-gupta-certificate-08" style="--tallest:1\.413"><div class="certificate-viewer__stage"><div class="certificate-viewer__mat"><img /);assert.match(viewer,/3 of 10/);assert.match(viewer,/data-viewer-previous.*data-viewer-next/);
+ assert.match(certificateViewer(certificateCatalogue.filter(item=>item.doctor==='parul'),0),/style="--tallest:0\.75"/,'a set of wide documents needs a lower stage');
  assert.doesNotMatch(certificateViewer([certificateCatalogue[0]],0),/data-viewer-next/);assert.throws(()=>certificateViewer(certificateCatalogue,99),/No such certificate/);
 });
 
@@ -284,6 +320,7 @@ test('options a page may ask for: roomy call rows and timetable, a button that s
  assert.match(callRow(row,{roomy:true}),/^<a class="call-row call-row--roomy" /);assert.match(callRow(row),/^<a class="call-row" /);
  assert.match(whatsappRow(on,{roomy:true}),/^<a class="call-row call-row--whatsapp call-row--roomy" /);assert.match(whatsappRow(on),/^<a class="call-row call-row--whatsapp" /);
  assert.match(hoursTable(on,{roomy:true,className:'k'}),/^<table class="hours-table hours-table--roomy k" /);assert.match(hoursTable(on),/^<table class="hours-table" /);
+ assert.match(hoursTable(on,{roomy:true,band:true}),/^<table class="hours-table hours-table--roomy hours-table--band" /,'today\'s row may lie on a soft band');assert.doesNotMatch(hoursTable(on,{roomy:true}),/hours-table--band/);
  const map=button({label:'Open in Google Maps',href:'https://maps.app.goo.gl/x',variant:'second',external:true,iconAfter:'out',labelHidden:'narrow'});
  assert.match(map,/class="button button--second button--icon-narrow"/);assert.match(map,/<span class="button__label">Open in Google Maps<\/span>/,'the words stay for assistive technology');
  assert.throws(()=>button({label:'x',labelHidden:'narrow'}),/needs an icon/);assert.throws(()=>button({label:'x',icon:'pin',labelHidden:'wide'}),/hidden label/);

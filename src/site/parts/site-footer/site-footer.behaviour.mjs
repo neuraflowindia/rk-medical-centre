@@ -1,9 +1,9 @@
 // Footer behaviour: "Pause motion", "How your details are used" and "Change privacy choices".
-import {detailsNotice,footer,privacyChoices} from '../../../clinic/page-content/shared.mjs';
+import {callRows,detailsNotice,footer,privacyChoices} from '../../../clinic/page-content/shared.mjs';
 import * as contactWords from '../../../clinic/page-content/contact.mjs';
 import {toggleFace} from '../../motion/motion.mjs';
 import {iconId} from '../../icons/icons.mjs';
-import {paragraphs} from '../../lib/html.mjs';
+import {paragraphs,text} from '../../lib/html.mjs';
 import {button,textLink} from '../button/button.mjs';
 
 /** Show the motion control in a state: its words, its icon and whether it is pressed. */
@@ -23,9 +23,21 @@ export function noticeWords(words=contactWords.privacyNotice){
  if(words&&Array.isArray(words.summary)&&words.summary.length)return {title:words.title||detailsNotice.title,paragraphs:words.summary,more:words.more||null};
  return {title:detailsNotice.title,paragraphs:detailsNotice.paragraphs,more:null};
 }
+/**
+ * The clinic's phone numbers inside printed paragraphs become links that dial ("call 94150 49410"
+ * is otherwise a number to copy by hand). `rows` are the call rows of the shared words.
+ */
+export function linkPhones(html,rows=callRows()){
+ let output=html;
+ for(const row of rows){
+  const shown=text(row.digits);
+  output=output.replaceAll(shown,`<a class="sheet__tel" href="${text(row.href)}" aria-label="${text(row.spoken)}">${shown}</a>`);
+ }
+ return output;
+}
 /** The notice opened by "How your details are used", as markup for the reader. */
 export function detailsNoticeMarkup(words=noticeWords()){
- return paragraphs(words.paragraphs)+(words.more?`<p class="sheet__actions">${textLink({label:words.more.label,href:words.more.href})}</p>`:'');
+ return linkPhones(paragraphs(words.paragraphs))+(words.more?`<p class="sheet__actions">${textLink({label:words.more.label,href:words.more.href})}</p>`:'');
 }
 /** The privacy choices, as markup for the reader. */
 export function privacyChoicesMarkup(){

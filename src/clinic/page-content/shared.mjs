@@ -42,7 +42,7 @@ export const menuNavigation=Object.freeze([
 export const navigationLabels=Object.freeze({
  home:`${clinicName} home`,
  main:'Main navigation',
- menu:'Pages',
+ menu:'Menu',
  openMenu:'Open menu',
  closeMenu:'Close menu',
  menuButton:'Menu',
@@ -96,21 +96,32 @@ export function bookWithPath(id,topic=''){
 /**
  * The main "Book an appointment" control in its two states. While online booking is off the
  * same control stays visible and leads to Contact; every other booking link is hidden by the build.
- * `header` is the control in the site header; `page` is the first-screen control on a page.
+ * `header` is the control in the site header (and the phone menu); `page` is the first-screen
+ * control on a page. While OFF both carry one name, "Arrange a visit": it leads to a page, so it
+ * never carries a phone sign (only a Call does).
+ * `call` is what the header's control becomes on the Contact page itself while booking is off:
+ * there "Arrange a visit" would lead to the page the visitor is already on, so the control opens
+ * the call panel and says so.
  */
+const arrange=Object.freeze({label:'Arrange a visit',path:pagePaths.contact,spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment'});
 export const bookingEntry=Object.freeze({
  header:Object.freeze({
   on:Object.freeze({label:'Book an appointment',short:'Book',path:bookingPaths.book,spoken:'Book an appointment',hint:'Book an appointment online'}),
-  off:Object.freeze({label:'Book an appointment',short:'Book',path:pagePaths.contact,spoken:'Book an appointment by calling the clinic',hint:'Call the clinic to arrange an appointment'})
+  off:arrange
  }),
  page:Object.freeze({
   on:Object.freeze({label:'Book an appointment',path:bookingPaths.book,spoken:'Book an appointment',hint:'Book an appointment online'}),
-  off:Object.freeze({label:'Arrange a visit',path:pagePaths.contact,spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment'})
- })
+  off:arrange
+ }),
+ call:Object.freeze({label:'Call the clinic',path:pagePaths.contact,spoken:'Call the clinic',hint:arrange.hint,call:true})
 });
-/** The words and address of a booking entry: `place` is "header" or "page"; `enabled` is the booking state. */
-export function bookingEntryFor(place,enabled){
- if(!Object.hasOwn(bookingEntry,place))throw new RangeError('Unknown booking entry: '+place);
+/**
+ * The words and address of a booking entry: `place` is "header" or "page"; `enabled` is the
+ * booking state; `route` is the page it is printed on (only Contact changes anything, see `call`).
+ */
+export function bookingEntryFor(place,enabled,route=''){
+ if(place!=='header'&&place!=='page')throw new RangeError('Unknown booking entry: '+place);
+ if(!enabled&&place==='header'&&route===pagePaths.contact)return bookingEntry.call;
  return bookingEntry[place][enabled?'on':'off'];
 }
 
@@ -286,8 +297,8 @@ export function reviewsTitle(filter,count){
 }
 /** Spoken after "Read more" so each such link names its review. */
 export const readMoreOf=name=>`of the review by ${name}`;
-/** "3 of 8": where the shelf stands. */
-export const shelfPosition=(index,total)=>`${index} of ${total}`;
+/** "3 of 8": where the shelf stands. Where several cards show at once: "3–5 of 8". */
+export const shelfPosition=(index,total,last=index)=>last>index?`${index}–${last} of ${total}`:`${index} of ${total}`;
 export const ratingSpoken=rating=>`Rated ${Number.isInteger(Number(rating))?Number(rating):Number(rating).toFixed(1)} out of 5`;
 
 /** The notice opened by "How your details are used". */
@@ -300,11 +311,17 @@ export const detailsNotice=Object.freeze({
  ])
 });
 
-/** The panel opened by "Change privacy choices". Visit measurement is not in use on this site. */
+/**
+ * The panel opened by "Change privacy choices". Visit measurement is not in use on this site, so
+ * there is no choice to make: the footer does not offer the panel (`offered: false`), and the
+ * privacy notice says that nothing is measured. The words stay for the day measurement is switched
+ * on; with `offered: true` the footer prints the link again.
+ */
 export const privacyChoices=Object.freeze({
+ offered:false,
  title:'Your privacy choices',
  paragraphs:Object.freeze(['Visit measurement is not in use on this website. Only your own choices here (privacy and motion) are saved, on this device.']),
- accept:'Continue without it'
+ accept:'Close'
 });
 
 /** Everything the footer prints. */

@@ -1,33 +1,37 @@
 /* The essentials strip: three answers on one line, on a paper surface that overlaps a section boundary. */
 @layer components {
-  /* the columns follow what each cell must hold on a 360-wide phone, with 12 px to spare on the right of each */
-  .essentials-strip { display: grid; grid-template-columns: 1.3fr .645fr 1.1fr; border-radius: var(--radius-row); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-edge), var(--elev-ambient); }
+  /* Every cell keeps 12 px between its words and its edges (the strip's own edge, and each divider).
+     The columns follow what each cell must hold in its widest state on a 360-wide phone
+     ("Closed · opens" over "Wed 10:00 am" · "Fee" · "Directions"): 135, 70 and 114 px of the 320.
+     The value line is 15 px on that phone and 16 px from 380 (tokens: --size-strip-value). */
+  .essentials-strip { display: grid; grid-template-columns: 1.345fr .7fr 1.135fr; border-radius: var(--radius-row); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-edge), var(--elev-ambient); }
   .essentials-strip__cell { position: relative; display: flex; min-width: 0; }
   .essentials-strip__cell + .essentials-strip__cell::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 1px; background: var(--line); }
   .essentials-strip__cell:not(.essentials-strip__cell--place), .essentials-strip__link {
-    display: grid; grid-template-columns: auto 1fr; align-content: center; align-items: center; column-gap: 5px; row-gap: 3px; padding: 11px 6px 12px 9px; min-height: 68px; width: 100%;
+    display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: center; align-items: center; column-gap: 5px; row-gap: 3px; padding: 11px var(--space-3) 12px; min-height: 68px; width: 100%;
   }
   .essentials-strip__icon { display: grid; place-items: center; width: 17px; height: 21px; color: var(--action); }
   .essentials-strip__icon .icon { width: 17px; height: 17px; }
   .essentials-strip__text { display: contents; min-width: 0; }
-  .essentials-strip__label { color: var(--ink-body); font: var(--type-strip-label); white-space: nowrap; }
-  .essentials-strip__value { grid-column: 1 / -1; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  /* a line that ever met its cell's edge would end in "…", never run under the next cell */
+  .essentials-strip__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--ink-body); font: var(--type-strip-label); white-space: nowrap; }
+  .essentials-strip__value { grid-column: 1 / -1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
   .essentials-strip__go { display: none; }
 
   /* the live cell: an open sign laid out as a strip cell */
   .essentials-strip .open-sign { display: contents; }
-  .essentials-strip .open-sign__dot { width: 11px; height: 11px; margin: 5px 3px; }
+  .essentials-strip .open-sign__dot { width: 11px; height: 11px; margin: 5px 1px; }
   .essentials-strip .open-sign__words { display: contents; }
   .essentials-strip .open-sign__sep { display: none; }
   /* a narrow cell shows the compact words ("Closed · opens" over "Mon 10:00 am"); the full ones return at 1024 */
   .essentials-strip .open-sign__full { display: none; }
   .essentials-strip .open-sign__compact { display: inline; }
-  .essentials-strip .open-sign__label { color: var(--ink); font: var(--type-strip-label); font-weight: 600; white-space: nowrap; }
-  .essentials-strip .open-sign__detail { grid-column: 1 / -1; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+  .essentials-strip .open-sign__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--ink); font: var(--type-strip-label); font-weight: 600; white-space: nowrap; }
+  .essentials-strip .open-sign__detail { grid-column: 1 / -1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--ink); font: var(--type-strip-value); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
 
   .essentials-strip__link { border-radius: var(--radius-strip-end); transition: background-color var(--dur-hover); }
-  .essentials-strip__link .essentials-strip__value { display: inline-flex; align-items: center; gap: 3px; color: var(--action); }
-  .essentials-strip__out { width: 17px; height: 17px; transition: transform var(--dur-hover) var(--ease-move); }
+  .essentials-strip__link .essentials-strip__value { display: inline-flex; align-items: center; gap: 2px; color: var(--action); }
+  .essentials-strip__out { width: 16px; height: 16px; transition: transform var(--dur-hover) var(--ease-move); }
   .essentials-strip__link:active { background: var(--chosen); }
   .essentials-strip__link:focus-visible { outline-offset: -3px; border-radius: var(--radius-strip-end); }
   @media (hover: hover) and (pointer: fine) {
@@ -48,6 +52,7 @@
     .essentials-strip__icon .icon { width: 22px; height: 22px; }
     .essentials-strip__text, .essentials-strip .open-sign__words { display: grid; gap: 2px; min-width: 0; overflow: hidden; }
     .essentials-strip .open-sign__dot { margin: 6.5px; }
+    .essentials-strip__label, .essentials-strip__value, .essentials-strip .open-sign__label, .essentials-strip .open-sign__detail { overflow: visible; }
     .essentials-strip__value, .essentials-strip .open-sign__detail { grid-column: auto; font: var(--type-strip-value-wide); letter-spacing: -.005em; }
     .essentials-strip__cell + .essentials-strip__cell::before { top: 18px; bottom: 18px; }
     .essentials-strip__label, .essentials-strip .open-sign__label { font-size: var(--size-label); }

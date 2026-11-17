@@ -42,13 +42,21 @@ export function bookButton(ctx,{doctor='',topic='',label='',size='regular',varia
  * The main booking control of the header (`place: 'header'`) or of a page's first screen
  * (`place: 'page'`). It never disappears: ON it opens booking, OFF it leads to Contact with the
  * OFF words (contract 2.4). `hook` adds the contract's own attribute name.
+ *
+ * Two small marks are swapped with the state; their hooks keep the contract's names ("calendar"
+ * and "phone"). The OFF mark is drawn as the in-site arrow after the words: "Arrange a visit"
+ * leads to a page, and only a Call carries a phone. On the Contact page the header's control has
+ * nowhere new to lead while OFF, so there it reads "Call the clinic", carries the phone and opens
+ * the call panel like every other Call.
  */
 export function bookingEntry(ctx,{place='page',size='regular',variant='main',className='',hook=''}={}){
  oneOf(place,['header','page'],'booking entry');
- const on=bookingEntryFor(place,true),off=bookingEntryFor(place,false),now=bookingOn(ctx)?on:off;
- const icons=`<span class="button__state-icon" data-home-entry-icon="calendar"${bookingOn(ctx)?'':' hidden'}>${icon('calendar')}</span><span class="button__state-icon" data-home-entry-icon="phone"${bookingOn(ctx)?' hidden':''}>${icon('phone')}</span>`;
+ const enabled=bookingOn(ctx),on=bookingEntryFor(place,true,ctx.path),off=bookingEntryFor(place,false,ctx.path),now=enabled?on:off,calls=!!off.call;
+ const icons=`<span class="button__state-icon" data-home-entry-icon="calendar"${enabled?'':' hidden'}>${icon('calendar')}</span>`
+  +`<span class="${classes('button__state-icon',!calls&&'button__state-icon--after')}" data-home-entry-icon="phone"${enabled?' hidden':''}>${icon(calls?'phone':'arrow')}</span>`;
  return `<a${attrs({class:classes('button',`button--${variant}`,size!=='regular'&&`button--${size}`,'button--entry',className),href:now.path,
-  'aria-label':now.spoken,title:now.hint,'data-booking-entry':place,...(hook?{[hook]:true}:{})})}>${icons}${stateText(ctx,{on:on.label,off:off.label,className:'button__label'})}</a>`;
+  'aria-label':now.spoken,title:now.hint,'data-booking-entry':place,...(hook?{[hook]:true}:{}),
+  ...(!enabled&&calls?{'aria-haspopup':'dialog','data-open-call':''}:{})})}>${icons}${stateText(ctx,{on:on.label,off:off.label,className:'button__label'})}</a>`;
 }
 
 /**

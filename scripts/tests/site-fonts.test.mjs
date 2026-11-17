@@ -34,7 +34,7 @@ for(const name of files){
  });
 }
 
-test('fonts.css names each file once with its real weights; only two faces are preloaded',()=>{
+test('fonts.css names each file once with its real weights; the three faces of a first screen are preloaded',()=>{
  for(const name of files){
   const [,from,to]=/-(\d{3})-(\d{3})\.woff2$/.exec(name);
   const rule=css.split('@font-face').find(block=>block.includes(name));
@@ -45,6 +45,7 @@ test('fonts.css names each file once with its real weights; only two faces are p
  }
  assert.match(css,/"Newsreader Fallback"[^}]*size-adjust/);assert.match(css,/"Figtree Fallback"[^}]*size-adjust/);
  const preloaded=/const preloadedFonts=\[([^\]]*)\]/.exec(config)[1].split(',').map(item=>item.trim().replace(/'/g,''));
- assert.deepEqual(preloaded,['newsreader-roman-400-600.woff2','figtree-roman-400-600.woff2']);
+ // every page's main heading carries one italic phrase, so the italic face is wanted as early as the upright one
+ assert.deepEqual(preloaded,['newsreader-roman-400-600.woff2','newsreader-italic-400-500.woff2','figtree-roman-400-600.woff2']);
  assert.doesNotMatch(readFileSync(new URL('../../index.html',import.meta.url),'utf8'),/fonts\.googleapis|fonts\.gstatic/);
 });
