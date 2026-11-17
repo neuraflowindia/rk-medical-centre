@@ -231,7 +231,7 @@ export const privacyNotice=Object.freeze({
  summary:Object.freeze([
   'When you send a message, we take your name, your email address, your message and, if you give one, your phone number. We email a six-digit code to check the address is yours.',
   'When you book, we take the patient’s name, a phone number, the doctor, day and time you choose and, if you give them, an email address and a note for the doctor.',
-  'As with any website, the servers that run this one also receive your device’s internet address when you open a page or send a form. The forms use it only to limit misuse.',
+  'Like any website, ours also receives your device’s internet address. The forms use it only to limit misuse.',
   'We use these details only to answer you and to arrange and carry out your visit. We do not sell them or use them for advertising.',
   'They are seen by the clinic’s doctors and staff, and handled for the clinic by the service companies that run this website, keep its records and send its emails. Booking records are also kept in the clinic’s own records.',
   `You can ask to see, correct or delete your details, or take back your permission, at any time: call ${numbers}, or write to the clinic.`

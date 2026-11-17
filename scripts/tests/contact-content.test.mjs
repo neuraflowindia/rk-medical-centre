@@ -127,7 +127,7 @@ test('the privacy notice holds what a notice must hold',()=>{
  // what the servers receive without being typed, in the notice and in its short form
  assert.match(all,/receive your device’s internet address and basic technical details, such as the kind of browser, when you open a page or send a form/);
  assert.match(all,/uses the address only to limit misuse, and keeps it only in a scrambled form/);
- assert.match(summary,/receive your device’s internet address when you open a page or send a form/);
+ assert.match(summary,/also receives your device’s internet address\. The forms use it only to limit misuse\./);
  // calls and chats do not pass through the website
  assert.match(all,/does not pass through this website/);
  assert.match(all,/under 18/);assert.match(all,/parent or guardian/);
