@@ -18,7 +18,7 @@ import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
  stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
  paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
- saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark} from '../../src/booking/booking-steps.mjs';
+ saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE} from '../../src/booking/booking-steps.mjs';
 
 const settings=readSettings();
 const NOW=Date.parse('2026-11-16T05:30:00Z'); // Monday 16 November 2026, 11:00 am in India
@@ -289,6 +289,14 @@ test('the summary follows the engine: who, when, how much, where',async()=>{
  const timed=visitSummary({state:state(),usable});
  assert.equal(timed.time,'6:00 pm');assert.equal(timed.waiting,false);assert.equal(timed.fee,'₹800');
  assert.deepEqual(barLines(timed),{top:'Dr. Sanjay',bottom:'Mon 16 Nov · 6:00 pm'});
+ // whose visit it is: the last step shows what the tick box asks the visitor to check
+ controller.details('full_name','  Kamla Devi Srivastava ');controller.details('phone',' 98765 43210');
+ assert.deepEqual(visitSummary({state:state(),usable}).patient,{name:'Kamla Devi Srivastava',phone:'98765 43210',email:''});
+ controller.details('email','kamla@example.com ');assert.equal(visitSummary({state:state(),usable}).patient.email,'kamla@example.com');
+ assert.deepEqual(visitSummary({state:{...state(),details:undefined},usable}).patient,{name:'',phone:'',email:''});
+ assert.match(words.confirm.ack,/my details/);assert.equal(words.summary.details,'Your details');
+ // the visit in one line, for the moment it is being saved
+ assert.equal(visitLine(timed),'Dr. Sanjay Gupta · Monday 16 November · 6:00 pm');assert.equal(visitLine(started),'');assert.equal(visitLine(blank),'');
  // payment words appear only for a method the engine can offer
  controller.edit('payment_method','at_clinic');
  assert.equal(paymentAvailable(state().policy,'at_clinic'),true);assert.equal(paymentAvailable(state().policy,'online'),false);
@@ -491,4 +499,17 @@ test('Back and Forward move between the steps; a step that cannot be shown is ne
  assert.deepEqual(arrival({mark:{step:1,depth:0},from:{step:3,depth:2},steps:false}),{go:-1});
  assert.deepEqual(arrival({mark:{step:3,depth:2},from:{step:2,depth:1},steps:false}),{},'Forward onto it changes nothing');
  assert.equal(words.time.again,'Please choose your starting time again.');
+});
+
+test('after the last press: a quiet waiting state while the request travels; the ways to ask again only when no answer came',()=>{
+ assert.equal(waitingView({wait:'save'}),'saving');assert.equal(waitingView({wait:'open'}),'opening');assert.equal(waitingView({wait:'check'}),'checking');
+ assert.equal(waitingView({wait:''}),'stalled');assert.equal(waitingView(),'stalled');
+ // the engine has said something: its sentence and the two buttons are shown, whatever was being waited for
+ assert.equal(waitingView({wait:'save',error:'We could not complete that check.'}),'stalled');
+ for(const view of ['saving','opening','checking','stalled']){assert.ok(words.waiting[view].title.length>10);assert.ok(words.waiting[view].text.length>10);}
+ for(const view of ['saving','opening','checking'])assert.match(words.waiting[view].title,/…$/,'a waiting title says it is still going');
+ assert.match(words.waiting.saving.text,/Nothing more is needed from you/);
+ assert.doesNotMatch(words.waiting.stalled.title,/…/);assert.match(words.waiting.stalled.text,/cannot be booked twice/);
+ assert.equal(words.waiting.check,'Check my booking');assert.equal(words.waiting.retry,'Retry the same request');
+ assert.ok(WAIT_GRACE>=2000&&WAIT_GRACE<=6000);
 });

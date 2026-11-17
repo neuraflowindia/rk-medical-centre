@@ -15,7 +15,8 @@ import {archPortrait} from '../site/parts/photo-figure/photo-figure.mjs';
 import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, usablePolicy, doctorChoices, sittingHours, dayTiles, dayBeyondTiles, dayLong,
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
-  readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES} from './booking-steps.mjs';
+  readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
+  waitingView, visitLine, WAIT_GRACE} from './booking-steps.mjs';
 
 const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
@@ -88,8 +89,11 @@ function Progress({step}) {
   </>;
 }
 
-/** "Your visit": who, when, how much, where. The same card serves the side column and step 3. */
-function VisitSummary({summary, id, onChange, aside = false}) {
+/**
+ * "Your visit": who, when, how much, where; on the last step also whose visit it is, as typed on
+ * step 2 (`onDetails` leads back there). The same card serves the side column and step 3.
+ */
+function VisitSummary({summary, id, onChange, onDetails = null, aside = false}) {
   // A fact not chosen yet is a dash for the eye and words for a screen reader.
   const empty = <dd className="is-empty"><span aria-hidden="true">—</span><span className="visually-hidden">{words.summary.empty}</span></dd>;
   const value = (text, waiting = false) => text ? <dd>{kt(text)}</dd> : waiting ? <dd className="is-empty">{words.summary.checking}</dd> : empty;
@@ -97,7 +101,7 @@ function VisitSummary({summary, id, onChange, aside = false}) {
     {aside && <img className="visit-summary__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" loading="lazy" decoding="async"/>}
     <div className="visit-summary__head"><h3 className="visit-summary__title" id={id}>{words.summary.title}</h3>
       {aside ? <p className="tag tag--plain">{words.summary.pending}</p>
-        : onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.change}</span></button>}</div>
+        : onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange} aria-label={words.summary.change}><Icon name="edit"/><span>{words.change}</span></button>}</div>
     <div className="visit-summary__doctor">
       {summary.doctor?.avatar
         ? <img className="visit-summary__face" src={summary.doctor.avatar.src} width={summary.doctor.avatar.width} height={summary.doctor.avatar.height} alt="" decoding="async"/>
@@ -117,6 +121,17 @@ function VisitSummary({summary, id, onChange, aside = false}) {
         <small className="visit-summary__address">{kt(summary.place.address)}</small><small className="visit-summary__area">{summary.place.short}</small></dd></div>}
     </dl>
     {aside && onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
+    {onDetails && <>
+      <div className="visit-summary__tear" aria-hidden="true"/>
+      <div className="visit-summary__head"><h3 className="visit-summary__title" id={id + 'who'}>{words.summary.details}</h3>
+        {!aside && <button type="button" className="text-link visit-summary__change" onClick={onDetails} aria-label={words.summary.changeDetails}><Icon name="edit"/><span>{words.change}</span></button>}</div>
+      <dl className="visit-summary__facts" aria-labelledby={id + 'who'}>
+        <div><dt>{words.summary.patient}</dt><dd>{summary.patient.name}</dd></div>
+        {summary.patient.phone && <div><dt>{words.summary.phone}</dt><dd>{kt(summary.patient.phone)}</dd></div>}
+        {summary.patient.email && <div><dt>{words.summary.email}</dt><dd>{summary.patient.email}</dd></div>}
+      </dl>
+      {aside && <button type="button" className="text-link visit-summary__change" onClick={onDetails}><Icon name="edit"/><span>{words.summary.changeDetails}</span></button>}
+    </>}
   </section>;
 }
 
@@ -192,6 +207,17 @@ function Booking({draft = {}}) {
   const [asked, setAsked] = useState('');
   const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({});
   const [act, waiting] = useHeldAction(flow.available, flow.viewAvailable);
+  // What the page is waiting for after the last press: 'save', 'open' (a saved booking read again), 'check', or ''.
+  const [wait, setWait] = useState(() => s.credential ? 'open' : '');
+  const engaged = useRef(false);
+  useEffect(() => {
+    if (!wait) { engaged.current = false; return undefined; }
+    if (s.busy) { engaged.current = true; return undefined; }
+    if (engaged.current && !waiting) { engaged.current = false; setWait(''); return undefined; }
+    // the engine did not take the request up (it refuses during a "try again later" pause): never wait for ever
+    const timer = setTimeout(() => setWait(''), WAIT_GRACE);
+    return () => clearTimeout(timer);
+  }, [wait, s.busy, waiting]);
 
   useEffect(() => {
     for (const [name, value] of Object.entries({full_name: draft.name || '', phone: draft.phone || '', email: draft.email || '', notes: draft.message || '',
@@ -326,12 +352,13 @@ function Booking({draft = {}}) {
     wasReceipt.current = screen === 'receipt';
   }, [screen]);
 
-  // A new step (or the card after the last press) starts at its heading.
+  // A new step, the waiting screen and each of its states, and the card after the last press start at their heading.
+  const waitView = screen === 'checking' ? waitingView({wait, error: s.error}) : '';
   useEffect(() => {
     if (first.current) { first.current = false; return; }
     title.current?.focus({preventScroll: true});
     root.current?.scrollIntoView({block: 'start'});
-  }, [step, screen === 'receipt', screen === 'checking']);
+  }, [step, screen === 'receipt', waitView]);
 
   const chooseDoctor = service => { setChosen(true); setChanging(false); edit('service', service); };
   const openLater = () => {
@@ -366,8 +393,11 @@ function Booking({draft = {}}) {
     }
     if (s.busy || waiting) return;
     if (missingLast) { pointTo(ask); return; }
-    act(() => { if (readyNow.current) void flow.start(); });
+    setWait('save');
+    act(() => { if (readyNow.current) void flow.start(); else setWait(''); });
   };
+  // "Check my booking" and "Retry the same request": the quiet waiting state while the engine asks.
+  const askAgain = run => { setWait('check'); act(run); };
 
   if (screen === 'unavailable') {
     // Booking stopped while someone was here: the same panel as the page's own, with the clinic's numbers.
@@ -408,17 +438,22 @@ function Booking({draft = {}}) {
   }
 
   if (screen === 'checking' || screen === 'blocked') {
+    const view = waitView || 'stalled', saved = view === 'saving' ? visitLine(summary) : '';
     return <div className="clinic-booking clinic-booking--waiting" ref={root}>
       {screen === 'checking'
-        ? <div className="booking-panel" role="status">
-          <h2 className="clinic-booking__title" ref={title} tabIndex={-1}>{words.checking.title}</h2>
-          <p>{words.checking.text}</p>
-          {error}
-          <div className="booking-panel__actions">
-            <button type="button" className="button button--main" disabled={s.busy || waiting} onClick={() => act(flow.check)}><span className="button__label">{words.checking.check}</span></button>
-            {flow.canRetryOriginal && <button type="button" className="button button--second" disabled={s.busy || waiting} onClick={() => act(flow.retryOriginal)}><span className="button__label">{words.checking.retry}</span></button>}
-          </div>
-          <ClinicContact service={s.service} bookingHelp/>
+        ? <div className={classes('booking-panel', view !== 'stalled' && 'booking-panel--busy')} role="status" aria-busy={view !== 'stalled' ? 'true' : undefined} data-booking-wait={view}>
+          {view !== 'stalled' && <span className="booking-pulse" aria-hidden="true"><i/><i/><i/></span>}
+          <h2 className="clinic-booking__title" ref={title} tabIndex={-1}>{words.waiting[view].title}</h2>
+          {/* the engine's own sentence when it has one; otherwise what is happening */}
+          <p className="booking-panel__text">{view === 'stalled' && s.error ? s.error : words.waiting[view].text}</p>
+          {saved && <p className="booking-panel__visit"><Icon name="calendar"/><span>{kt(saved)}</span></p>}
+          {view === 'stalled' && <>
+            <div className="booking-panel__actions">
+              <button type="button" className="button button--main" onClick={() => askAgain(flow.check)}><span className="button__label">{words.waiting.check}</span></button>
+              {flow.canRetryOriginal && <button type="button" className="button button--second" onClick={() => askAgain(flow.retryOriginal)}><span className="button__label">{words.waiting.retry}</span></button>}
+            </div>
+            <ClinicContact service={s.service} bookingHelp/>
+          </>}
         </div>
         // The saved booking in this browser cannot be read: the engine's sentence and the numbers; no form that cannot work.
         : <div className="booking-panel">{error}<ClinicContact bookingHelp/></div>}
@@ -539,7 +574,7 @@ function Booking({draft = {}}) {
           </div>}
 
           {step === 3 && <>
-            <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => backTo(1)}/>
+            <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => backTo(1)} onDetails={() => backTo(2)}/>
             <fieldset className={classes('payment-choices', asked === 'payment' && 'is-asked')} disabled={disabled || optionsStale} ref={node => { parts.current.payment = node; }}>
               <legend>{words.payment.legend}</legend>
               {asked === 'payment' && <Ask>{words.ask.payment}</Ask>}
@@ -580,7 +615,7 @@ function Booking({draft = {}}) {
         </div>
       </form>
     </div>
-    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => backTo(1) : null} aside/></aside>
+    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => backTo(1) : null} onDetails={step === 3 ? () => backTo(2) : null} aside/></aside>
   </div>;
 }
 

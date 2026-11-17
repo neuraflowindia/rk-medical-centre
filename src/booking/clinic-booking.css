@@ -228,7 +228,8 @@
   .booking-ack input:disabled:checked + .booking-ack__box { color: var(--on-action); background: var(--action); box-shadow: var(--elev-pressed); }
   .booking-ack input:disabled:checked ~ .booking-ack__words { color: var(--ink); }
   .booking-confirm-hint { min-height: 1.45em; padding-left: 36px; color: var(--ink-body); font: var(--type-notes); }
-  .booking-last.is-asked .booking-ack__box { box-shadow: inset 0 0 0 2px var(--action), var(--halo-wide); animation: booking-nudge var(--dur-arrive) var(--ease-move) 1; }
+  .booking-last.is-asked .booking-ack__box { box-shadow: inset 0 0 0 2px var(--action), var(--halo-wide); }
+  html[data-motion="on"] .booking-last.is-asked .booking-ack__box { animation: booking-nudge var(--dur-arrive) var(--ease-move) 1; }
   .booking-last.is-asked .booking-confirm-hint { color: var(--ink); font-weight: 600; }
   @keyframes booking-nudge { 0%, 100% { transform: none; } 30% { transform: translateX(-3px); } 65% { transform: translateX(3px); } }
 
@@ -256,8 +257,23 @@
   /* ===================== after the last press ===================== */
   .booking-panel { display: grid; justify-items: start; gap: var(--space-3); max-width: 560px; margin-inline: auto; padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
   .booking-panel .clinic-booking__title { font: var(--type-h3); }
+  .booking-panel__text { color: var(--ink-body); }
   .booking-panel__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
   .booking-panel .booking-notice { margin-top: 0; }
+  /* waiting for the clinic's answer: a calm, working state. What is happening, the visit being saved, nothing to press */
+  .booking-panel--busy { justify-items: center; gap: var(--space-3); padding-block: var(--space-8); text-align: center; background: linear-gradient(180deg, var(--surface), var(--wash-sage)); }
+  .booking-panel--busy .booking-panel__text { max-width: 26em; }
+  .booking-panel__visit { display: inline-flex; align-items: flex-start; gap: var(--space-2); margin-top: var(--space-2); padding: var(--space-3) var(--space-4); border-radius: var(--radius-row); color: var(--ink); text-align: left; background: var(--surface); box-shadow: var(--ring-action-faint); font: var(--type-label); }
+  .booking-panel__visit .icon { flex: none; width: 20px; height: 20px; color: var(--action); }
+  /* the activity mark: three dots that breathe in turn; still while motion is paused */
+  .booking-pulse { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); width: 72px; height: 44px; margin-bottom: var(--space-1); border-radius: var(--radius-pill); background: var(--chosen); box-shadow: var(--ring-action-faint); }
+  .booking-pulse i { width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--action); }
+  .booking-pulse i:nth-child(2) { opacity: .62; }
+  .booking-pulse i:nth-child(3) { opacity: .32; }
+  html[data-motion="on"] .booking-pulse i { opacity: 1; animation: booking-breathe calc(var(--loop-dot) / 2) var(--ease-drift) infinite both; }
+  html[data-motion="on"] .booking-pulse i:nth-child(2) { animation-delay: calc(var(--stagger) * 2); }
+  html[data-motion="on"] .booking-pulse i:nth-child(3) { animation-delay: calc(var(--stagger) * 4); }
+  @keyframes booking-breathe { 0%, 70%, 100% { opacity: .28; transform: none; } 35% { opacity: 1; transform: translateY(-3px); } }
 
   .booking-receipt { display: grid; gap: var(--space-4); max-width: 600px; margin-inline: auto; }
   /* ----- the appointment card: the one beautiful object of the flow. One ticket: the card, a tear line, its stub ----- */

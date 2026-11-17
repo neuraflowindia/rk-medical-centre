@@ -85,6 +85,9 @@ export const words=Object.freeze({
   empty:'Not chosen yet',
   checking:'Checking…',
   change:'Change doctor or time',
+  // the last step also shows whose visit it is: what the tick box asks the visitor to check
+  details:'Your details',patient:'Patient',phone:'Phone',email:'Email',
+  changeDetails:'Change your details',
   atClinic:'pay at the clinic',
   online:'pay online'
  }),
@@ -121,9 +124,13 @@ export const words=Object.freeze({
   change:'To change or cancel, call',
   help:'Call the clinic:'
  }),
- checking:Object.freeze({
-  title:'Checking your booking',
-  text:'We are checking the same request, so it cannot be booked twice.',
+ // After the last press. While the request travels there is nothing to press: the screen says what
+ // is happening and that nothing more is needed. The two ways to ask again appear only when no answer came.
+ waiting:Object.freeze({
+  saving:Object.freeze({title:'Saving your appointment…',text:'Nothing more is needed from you. Please keep this page open for a few seconds.'}),
+  opening:Object.freeze({title:'Opening your appointment…',text:'One moment, please.'}),
+  checking:Object.freeze({title:'Checking your booking…',text:'The same request is being checked, so it cannot be booked twice.'}),
+  stalled:Object.freeze({title:'Your booking is not confirmed yet',text:'The clinic’s answer has not reached this page. Check again: the same request is used, so it cannot be booked twice.'}),
   check:'Check my booking',
   retry:'Retry the same request'
  }),
@@ -276,6 +283,20 @@ export function screenFor({viewAvailable,state}){
  if(state.phase==='blocked')return 'blocked';
  return 'form';
 }
+/**
+ * What the screen after the last press shows.
+ *   wait   what the page is waiting for: 'save' (the last press), 'open' (a saved booking is being
+ *          read again), 'check' (the visitor asked for another check), or '' (nothing was asked)
+ *   error  the engine's sentence, when it has one
+ * 'saving', 'opening' and 'checking' are quiet waiting states with nothing to press; 'stalled'
+ * offers the two ways to ask again and the clinic's number.
+ */
+export function waitingView({wait='',error=''}={}){
+ if(error||!wait)return 'stalled';
+ return wait==='save'?'saving':wait==='open'?'opening':'checking';
+}
+/** How long the page waits for the engine to take a request up before it shows the ways to ask again. */
+export const WAIT_GRACE=4000;
 /** What step 1 still needs before "Continue": "" when it may go on, else "doctor", "time" or "checking". */
 export function stepOneMissing({chosen,held=null,state,usable}){
  if(!usable||!chosen||!state.service)return 'doctor';
@@ -512,8 +533,14 @@ export function visitSummary({state,usable,chosen=true,shown={},methodAvailable=
   fee:Number.isSafeInteger(amount)?money(amount):'',
   payment:methodAvailable&&state.payment_method==='at_clinic'?words.summary.atClinic:methodAvailable&&state.payment_method==='online'?words.summary.online:'',
   // `short` is the clinic's own two-word place, shown on phones (the full address is on the appointment card)
-  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address,short:clinicPlace}):null
+  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address,short:clinicPlace}):null,
+  // whose visit it is, as typed on step 2 (shown on the last step)
+  patient:Object.freeze({name:String(state.details?.full_name??'').trim(),phone:String(state.details?.phone??'').trim(),email:String(state.details?.email??'').trim()})
  });
+}
+/** "Dr. Parul Gupta · Thursday 19 November · 11:20 am": the visit in one line, for the moment it is being saved. */
+export function visitLine(summary){
+ return summary.doctor&&summary.day&&summary.time?[summary.doctor.name,summary.day,summary.time].join(' · '):'';
 }
 /** The two short lines of the phone bar: who, then the day and time (or what is still missing). */
 export function barLines(summary,missing=''){
