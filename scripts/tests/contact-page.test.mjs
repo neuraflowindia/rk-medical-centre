@@ -76,6 +76,8 @@ test('hours: the one full timetable, seven rows, Sunday evening closed',()=>{
  for(const [index,row] of weekRows().entries())assert.ok(rows[index][0].includes(`>${row.label}<`));
  assert.ok(rows[6][0].includes(`<td class="hours-table__none">${timetable.closed}</td>`));
  assert.equal(count(page,/data-today hidden/g),7,'today is marked by the browser, never by the build');
+ // The timetable is the subject of its section: taller rows, and today's row on the part's own soft band.
+ assert.match(page,/<table class="hours-table hours-table--roomy hours-table--band page-contact__week" data-hours-table>/);
  assert.ok(has(page,hours.note.title));assert.ok(has(page,hours.note.text));
  assert.match(page,/<h2[^>]*id="hours-title"[^>]*>Open every day\. Sundays, <em>mornings&nbsp;only\.<\/em><\/h2>/);
 });

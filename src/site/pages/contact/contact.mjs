@@ -104,11 +104,11 @@ function hoursPart(ctx){
   +`<div class="page-contact__hours-copy">`
   +sectionHead({runningHead:hours.runningHead,heading:head.heading,emphasis:head.emphasis,id:'hours-title'})
   +`<div class="page-contact__observation" data-enter>${icon('shield')}<div><h3>${text(note.title)}</h3><p>${text(note.text)}</p></div></div></div>`
-  // The timetable is flat (it is information); the calendar on its pale arch is the one accent, and
-  // from tablets up the slow light crosses that arch (the section's one mover).
+  // The timetable is flat (it is information), with today's row on the part's own soft band; the calendar
+  // on its pale arch is the one accent, and from tablets up the slow light crosses that arch (the section's one mover).
   +`<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></span>`
   +image(clinicObjects['desk-calendar'],{className:'page-contact__calendar'})
-  +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,roomy:true,className:'page-contact__week'})}</div>`
+  +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,roomy:true,band:true,className:'page-contact__week'})}</div>`
   +`</div></section>`;
 }
 

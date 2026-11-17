@@ -103,14 +103,6 @@
   .page-contact__observation .icon { width: 24px; height: 24px; margin-top: 1px; color: var(--action); }
   .page-contact__observation h3 { font: var(--type-role); letter-spacing: 0; }
   .page-contact__observation p { margin-top: var(--space-1); max-width: 46ch; color: var(--ink-body); font: var(--type-notes); }
-  /* WAITING: request contact-05 (the shared timetable's own option for today's band, and its spacing under 360 px).
-     Today's row lies on a soft sage band that runs 12 px past the row's ends; the "Today" tag stays, so the row is
-     never marked by colour alone. The band is the cells' own ground plus a rounded cap at each end. */
-  .page-contact__week tr.is-today > * { background: linear-gradient(var(--ground-tint-light), var(--ground-tint-light)) 0 50% / 100% calc(100% - 6px) no-repeat; }
-  .page-contact__week tr.is-today > :first-child, .page-contact__week tr.is-today > :last-child { position: relative; }
-  .page-contact__week tr.is-today > :first-child::before, .page-contact__week tr.is-today > :last-child::after { content: ""; position: absolute; top: 3px; bottom: 3px; width: 13px; background: var(--ground-tint-light); }
-  .page-contact__week tr.is-today > :first-child::before { right: calc(100% - 1px); border-radius: var(--radius-link) 0 0 var(--radius-link); }
-  .page-contact__week tr.is-today > :last-child::after { left: calc(100% - 1px); border-radius: 0 var(--radius-link) var(--radius-link) 0; }
 
   /* ---------- 4 · the message form: a letter ---------- */
   .page-contact__message { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
@@ -234,10 +226,6 @@
     .page-contact__map-label--road { left: 21%; }
     .page-contact__map-label--west .icon, .page-contact__map-label--east .icon { display: none; }
     .page-contact__map-label--pin { transform: translateX(calc(-100% + 34px)); }
-    /* WAITING: request contact-05. The day column keeps to 110 px (the "Today" tag sits under the day here),
-       so the two time columns stand 14 px or more apart. */
-    .page-contact__week tbody th { width: 110px; }
-    .page-contact__week td:not(:last-child) { padding-right: 14px; }
     .message-form__step-label { overflow-wrap: anywhere; }
   }
 
@@ -270,10 +258,11 @@
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
     .page-contact__map-label--north { display: inline-flex; left: var(--space-4); top: var(--space-4); }
-    /* from here the road is wide enough to carry the two names at its ends, like road signs; each stands on a
-       patch of the road's own white, so the centre line stops behind the words instead of striking through them */
-    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; padding: 0 6px 0 2px; background: var(--surface-top); text-shadow: none; }
-    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; padding: 0 2px 0 6px; background: var(--surface-top); text-shadow: none; }
+    /* From here the road is wide enough to carry the two names at its ends, like road signs. Each lies along the
+       road's centre line on a patch of the road's own white that runs out to the map's edge, so the centre line
+       stops before the words instead of striking through them or running beneath them. */
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 39.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; padding: 0 var(--space-2) 0 2px; background: var(--surface-top); box-shadow: -40px 0 0 var(--surface-top); text-shadow: none; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.9%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; padding: 0 2px 0 var(--space-2); background: var(--surface-top); box-shadow: 40px 0 0 var(--surface-top); text-shadow: none; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
     .page-contact__pin-art { width: 62px; }
@@ -328,8 +317,6 @@
     .page-contact__find { padding-top: var(--section-pad); box-shadow: none; }
     .page-contact__table { column-gap: var(--space-7); }
     .page-contact__map-window { height: 440px; }
-    .page-contact__map-label--west { top: 38.9%; }
-    .page-contact__map-label--east { top: 51.3%; }
     .page-contact__map-label--road { top: 42.9%; }
     .page-contact__pin-art { width: 72px; }
     .page-contact__pin-shadow { left: -24px; top: -8px; width: 48px; height: 16px; }
