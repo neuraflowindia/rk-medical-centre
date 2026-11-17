@@ -17,21 +17,22 @@
   .clinic-booking__title:focus-visible { outline: none; }
   .clinic-booking fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
   /* a group's name is a small running head with a hairline, as on the rest of the site */
-  .clinic-booking legend { float: left; display: flex; align-items: center; gap: var(--space-3); width: 100%; margin-bottom: var(--space-3); padding: 0; color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .clinic-booking legend { float: left; display: flex; align-items: center; gap: var(--space-3); width: 100%; margin-bottom: 10px; padding: 0; color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
   .clinic-booking legend::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   .clinic-booking legend + * { clear: both; }
-  .clinic-booking__step { display: grid; gap: var(--space-5); margin: var(--space-3) 0 var(--space-5); }
+  .clinic-booking__step { display: grid; gap: var(--space-4); margin: var(--space-3) 0 var(--space-4); }
   .clinic-booking__step > * { min-width: 0; }
   .clinic-booking__step--3 { gap: var(--space-4); }
   /* on phones the bar is the last thing of the steps; the other screens keep air above the footer */
   .clinic-booking--receipt, .clinic-booking--waiting, .clinic-booking--paused, .clinic-booking--find { padding-bottom: var(--space-7); }
 
   /* ----- progress: three flat markers (thin bars on phones) ----- */
-  .booking-progress { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .booking-progress-row { display: flex; align-items: center; gap: var(--space-3); }
+  .booking-progress { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
   .booking-progress__step { display: block; height: 4px; border-radius: var(--radius-pill); background: var(--control-border); }
   .booking-progress__step.is-current, .booking-progress__step.is-done { background: var(--action); }
   .booking-progress__mark, .booking-progress__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .booking-progress__count { margin-top: var(--space-2); color: var(--ink-body); font: var(--type-small); }
+  .booking-progress__count { flex: none; color: var(--ink-body); font: var(--type-small); white-space: nowrap; }
 
   /* ----- a notice: an icon and words, never colour alone ----- */
   .booking-notice { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: var(--space-2) var(--space-3); margin-top: var(--space-4); padding: 14px var(--space-4); border-radius: var(--radius-row); color: var(--ink); background: var(--error-wash); font: var(--type-label); }
@@ -99,13 +100,13 @@
   }
   .booking-days__row::-webkit-scrollbar { display: none; }
   .day-tile {
-    flex: none; display: grid; align-content: center; justify-items: center; gap: 0; width: 68px; min-height: 80px; padding: 6px 2px; scroll-snap-align: start;
+    flex: none; display: grid; align-content: center; justify-items: center; gap: 0; width: 68px; min-height: 76px; padding: 6px 2px; scroll-snap-align: start;
     border-radius: var(--radius-row); color: var(--ink); background: linear-gradient(180deg, var(--surface-top), var(--surface-low)); box-shadow: var(--ring-quiet), var(--elev-raised);
     transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
   }
-  .day-tile__label { color: var(--ink-body); font: var(--type-small); line-height: 1.2; }
+  .day-tile__label { color: var(--ink-body); font: var(--type-small); line-height: 1.15; }
   .day-tile__number { color: var(--ink); font: var(--type-h3); font-variant-numeric: lining-nums; }
-  .day-tile__month { color: var(--ink-muted); font: var(--type-small); line-height: 1.2; }
+  .day-tile__month { color: var(--ink-muted); font: var(--type-small); line-height: 1.15; }
   .day-tile:active { transform: translateY(var(--press)); transition-duration: var(--dur-press); }
   .day-tile[aria-pressed="true"] { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
   .day-tile[aria-pressed="true"] .day-tile__month { color: var(--ink-body); }
@@ -124,10 +125,10 @@
   .booking-days:disabled .day-tile { cursor: default; }
 
   /* ----- starting times: pills in the clinic's two sessions ----- */
-  .slot-choices__groups { display: grid; gap: var(--space-4); }
-  .slot-group { display: grid; gap: var(--space-2); }
+  .slot-choices__groups { display: grid; gap: var(--space-3); }
+  .slot-group { display: grid; gap: 6px; }
   .slot-group__label { color: var(--ink); font: var(--type-label); }
-  .slot-group__pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--space-2); }
+  .slot-group__pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px var(--space-2); }
   .slot-group__none { color: var(--ink-body); font: var(--type-notes); }
   .time-pill { display: block; cursor: pointer; }
   .time-pill__face {
@@ -524,7 +525,11 @@
     .clinic-booking__main { padding: var(--space-7) var(--space-7) 0; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
     .clinic-booking__step, .clinic-booking__step--3 { gap: var(--space-6); margin: var(--space-5) 0 0; }
     /* progress: numbered markers with their names and a hairline between them */
+    .booking-progress-row { display: block; }
     .booking-progress { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+    .clinic-booking legend { margin-bottom: var(--space-3); }
+    .slot-choices__groups { gap: var(--space-4); }
+    .slot-group { gap: var(--space-2); }
     .booking-progress__step { display: flex; align-items: center; gap: 10px; height: auto; border-radius: 0; background: none; color: var(--ink-muted); font: var(--type-label); font-weight: 500; white-space: nowrap; }
     .booking-progress__step.is-current, .booking-progress__step.is-done { background: none; }
     .booking-progress__step:not(:last-child)::after { content: ""; width: var(--space-6); height: 1px; margin-left: 2px; background: var(--line-strong); }

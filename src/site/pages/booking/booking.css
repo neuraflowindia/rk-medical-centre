@@ -14,7 +14,7 @@
   .page-booking[data-booking-screen="receipt"] .page-booking__title-now { display: none; }
   .page-booking[data-booking-screen="receipt"] .page-booking__title-done { display: inline; }
   .page-booking[data-booking-screen="receipt"] .page-booking__link { visibility: hidden; }
-  .page-booking__root { flex: 1; display: flex; flex-direction: column; padding-top: var(--space-4); min-width: 0; }
+  .page-booking__root { flex: 1; display: flex; flex-direction: column; padding-top: var(--space-3); min-width: 0; }
 
   /* ----- the panel: opening · checking · unavailable · could not open ----- */
   .page-booking__panel {

@@ -92,8 +92,7 @@ function useHeldAction(available, viewAvailable) {
 }
 
 function Progress({step}) {
-  const current = STEPS.find(item => item.id === step);
-  return <>
+  return <div className="booking-progress-row">
     <ol className="booking-progress" aria-label={words.progressLabel}>
       {STEPS.map(item => {
         const state = item.id === step ? 'current' : item.id < step ? 'done' : 'ahead';
@@ -103,8 +102,9 @@ function Progress({step}) {
         </li>;
       })}
     </ol>
-    <p className="booking-progress__count" aria-hidden="true">{words.stepCount(step, STEPS.length, current.label)}</p>
-  </>;
+    {/* phones: the count beside the three bars (the step's own heading follows and names it) */}
+    <p className="booking-progress__count" aria-hidden="true">{words.stepCount(step, STEPS.length)}</p>
+  </div>;
 }
 
 /**
@@ -615,7 +615,7 @@ function Booking({draft = {}}) {
                       onClick={() => { if (selected) setChanging(false); }}/>
                     <span className="doctor-choice__card">
                       {item.avatar ? <img className="doctor-choice__face" src={item.avatar.src} width={item.avatar.width} height={item.avatar.height} alt="" decoding="async"/> : <span/>}
-                      <span className="doctor-choice__who"><span className="doctor-choice__name">{kt(item.name)}</span>{item.role && <span className="doctor-choice__role">{item.role}</span>}</span>
+                      <span className="doctor-choice__who"><span className="doctor-choice__name">{kt(item.name)}</span>{item.need && <span className="doctor-choice__role">{item.need}</span>}</span>
                       <span className="doctor-choice__tick" aria-hidden="true"><Icon name="check"/></span>
                     </span>
                   </label>;

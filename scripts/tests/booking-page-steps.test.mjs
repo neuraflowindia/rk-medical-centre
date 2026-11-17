@@ -59,7 +59,7 @@ test('the words are complete, warm and typed with proper marks; the three steps 
  assert.deepEqual(STEPS.map(step=>step.id),[1,2,3]);
  // the stage headings the engine's own form has always carried
  assert.deepEqual(STEPS.map(step=>step.title),['Your doctor and starting time','Your details','Check your visit and payment']);
- assert.equal(words.stepCount(2,3,STEPS[1].label),'Step 2 of 3 · Your details');
+ assert.equal(words.stepCount(2,3),'Step 2 of 3');
  // the "someone else" line is the stand-in answer, without its leading "Yes."
  assert.ok(bookForSomeoneElseAnswer.startsWith('Yes. '));
  assert.equal(words.details.someoneElse,'Booking for a parent or someone else? '+bookForSomeoneElseAnswer.slice(5));
@@ -92,7 +92,10 @@ test('doctors: the engine\'s services become the two doctor cards, each in its o
   ['sanjay','Dr. Sanjay Gupta',doctors.sanjay.role,'sage','Dr. Sanjay'],['parul','Dr. Parul Gupta',doctors.parul.role,'rose','Dr. Parul']]);
  for(const card of cards)assert.ok(existsSync(fileURLToPath(new URL('../../public'+card.avatar.src,import.meta.url))),card.avatar.src);
  // a service the site has no doctor for is still offered, plainly
- assert.deepEqual(doctorChoice({id:'physiotherapy',name:'Physiotherapy'}),{service:'physiotherapy',id:'',name:'Physiotherapy',role:'',tone:'plain',avatar:null,short:'Physiotherapy'});
+ assert.deepEqual(doctorChoice({id:'physiotherapy',name:'Physiotherapy'}),{service:'physiotherapy',id:'',name:'Physiotherapy',role:'',need:'',tone:'plain',avatar:null,short:'Physiotherapy'});
+ // the cards print each doctor's field in the site's short form, so it stays on one line on every phone
+ assert.deepEqual(cards.map(card=>card.need),['General health and diabetes','Women’s health and pregnancy']);
+ for(const card of cards)assert.ok(card.role.startsWith(card.need)&&card.need.length<=28);
  // a service the clinic has switched off is not offered
  const off=structuredClone(state().policy);off.policy.services[1].enabled=false;
  assert.deepEqual(doctorChoices(off).map(card=>card.id),['sanjay']);

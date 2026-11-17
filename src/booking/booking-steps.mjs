@@ -6,7 +6,7 @@ import {doctors} from '../clinic/model.mjs';
 import {doctorOrder} from '../clinic/care-catalogue.mjs';
 import {doctorAvatars,closePortraits,clinicObjects} from '../clinic/client-media.mjs';
 import {bookForSomeoneElseAnswer} from '../clinic/standins.mjs';
-import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
+import {addressCard,actionLabels,doctorNeed,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
 import {dateRange,localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
 
@@ -25,7 +25,8 @@ export function keepTogether(value){
 export const words=Object.freeze({
  formLabel:'Book an appointment',
  progressLabel:'Booking steps',
- stepCount:(step,total,label)=>`Step ${step} of ${total} · ${label}`,
+ // phones show three thin bars and this count on one line; the step's heading names the step
+ stepCount:(step,total)=>`Step ${step} of ${total}`,
  // said to a screen reader after the name of a finished step (the eye sees a tick)
  stepDone:'done',
  back:'Back',
@@ -188,10 +189,14 @@ export function doctorFor(service){return doctorOrder.find(id=>serviceFor(id)===
 /** Each doctor's wash: the site's colour code for the two doctors. The name is always printed beside it. */
 const TONES=Object.freeze({sanjay:'sage',parul:'rose'});
 
-/** What a doctor card prints for one of the engine's services. */
+/**
+ * What a doctor card prints for one of the engine's services. `need` is the doctor's field in the
+ * site's short form ("General health and diabetes"): it stays on one line in a card on every
+ * phone; `role` is the full form, for the summary.
+ */
 export function doctorChoice(service){
  const id=doctorFor(service.id);
- return Object.freeze({service:service.id,id,name:service.name,role:id?doctors[id].role:'',tone:TONES[id]||'plain',
+ return Object.freeze({service:service.id,id,name:service.name,role:id?doctors[id].role:'',need:id?doctorNeed(id):'',tone:TONES[id]||'plain',
   avatar:id?doctorAvatars[id]:null,short:id?doctorShortName(id):service.name});
 }
 
