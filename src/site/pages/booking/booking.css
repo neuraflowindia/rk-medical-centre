@@ -26,6 +26,8 @@
   .page-booking__mark .icon { width: 24px; height: 24px; }
   .page-booking__panel[data-state="error"] .page-booking__mark { color: var(--error); background: var(--error-wash); box-shadow: none; }
   .page-booking__status { max-width: 14em; padding-right: var(--space-8); font: var(--type-h3); letter-spacing: var(--tracking-display); }
+  /* it takes the cursor when booking stops in the middle of the steps, as a step's heading does */
+  .page-booking__status:focus-visible { outline: none; }
   .page-booking__help { color: var(--ink-body); }
   .page-booking__kept { color: var(--ink-body); font: var(--type-notes); }
   .page-booking__calls { width: 100%; margin-top: var(--space-2); }

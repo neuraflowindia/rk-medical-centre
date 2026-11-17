@@ -12,11 +12,12 @@ import {bookingBrowser} from './browser.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/index.mjs';
 import {bookingUnavailable} from '../site/pages/booking/booking.mjs';
 import {archPortrait} from '../site/parts/photo-figure/photo-figure.mjs';
+import {safeStorage} from '../site/lib/storage.mjs';
 import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, usablePolicy, doctorChoices, sittingHours, dayTiles, dayBeyondTiles, dayLong,
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
   readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
-  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor, FIRST_TIMES} from './booking-steps.mjs';
+  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor, FIRST_TIMES, blockedWords} from './booking-steps.mjs';
 
 const classes = (...names) => names.filter(Boolean).join(' ');
 
@@ -30,15 +31,18 @@ const classes = (...names) => names.filter(Boolean).join(' ');
 //   leftAt      when the screens were last taken down: a redraw follows within a moment; anything
 //               later is a return from another page, and `here` no longer says where the visitor came from
 //   ui          the little the screens add of their own: was the doctor the visitor's choice, why step 1 is shown again
-const live = {controller: null, here: null, leftAt: 0, ui: null};
+//   blocked     what the engine said if it would not start in this browser (its next reading wipes the sentence)
+const live = {controller: null, here: null, leftAt: 0, ui: null, blocked: ''};
 const REDRAW_MS = 500;
 const useBooking = createUseBooking(React, {product: bookingBrowser.product, controller: () => live.controller});
 
 // The tab's own storage: where the engine keeps its booking reference, and where an unfinished
-// booking is kept so that Back, Forward and a refresh bring it back (booking-steps.mjs says
-// exactly what is kept and for how long). While the page stays open the record is also removed
-// by the clock, not only when it is next read.
-const tabStorage = () => window.sessionStorage;
+// booking is kept so that a refresh brings it back (booking-steps.mjs says exactly what is kept
+// and for how long). While the page stays open the record is also removed by the clock, not only
+// when it is next read. A browser that refuses site storage breaks nothing here: the site's own
+// guard holds the record in memory instead, so it is simply gone after a refresh.
+const tabStore = safeStorage(() => window.sessionStorage);
+const tabStorage = () => tabStore;
 let draftClock = 0;
 function keepDraft(record) {
   saveDraft(tabStorage, record);
@@ -204,7 +208,11 @@ function Booking({draft = {}}) {
       if (kept.chosen && doctorFor(kept.service)) draft.doctor = doctorFor(kept.service);
     } else if (!start.live) draft.doctor = askedDoctor(window.location.search, draft.doctor);
     const service = start.live ? held.state.service : kept?.chosen && kept.service ? kept.service : serviceFor(draft.doctor);
-    if (!start.live) { live.controller = bookingBrowser.controller(service); live.ui = null; }
+    if (!start.live) {
+      live.controller = bookingBrowser.controller(service); live.ui = null;
+      const began = live.controller.getSnapshot();
+      live.blocked = began.phase === 'blocked' ? began.error : '';
+    }
     live.here = {step: start.step, depth: start.depth};
     boot.current = {...start, service, chosen: start.live ? held.chosen : kept ? kept.chosen : !!service, gone: start.live && live.ui?.gone || ''};
   }
@@ -398,11 +406,15 @@ function Booking({draft = {}}) {
   }, [screen]);
   // A new step, the waiting screen and each of its states, and the card after the last press start at their heading.
   const waitView = screen === 'checking' ? waitingView({wait, error: s.error}) : '';
+  // So does the panel shown when booking stops in the middle of the steps: it is short, and the page
+  // may be scrolled well past it.
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    title.current?.focus({preventScroll: true});
+    const heading = screen === 'unavailable' ? root.current?.querySelector('.page-booking__status') : title.current;
+    if (heading && !heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+    heading?.focus({preventScroll: true});
     root.current?.scrollIntoView({block: 'start'});
-  }, [step, screen === 'receipt', waitView]);
+  }, [step, screen === 'receipt', waitView, screen === 'unavailable']);
 
   const settle = useRef(false);
   const chooseDoctor = service => { settle.current = !chosen; setChosen(true); setChanging(false); edit('service', service); };
@@ -530,6 +542,7 @@ function Booking({draft = {}}) {
 
   if (screen === 'checking' || screen === 'blocked') {
     const view = waitView || 'stalled', saved = view === 'saving' ? visitLine(summary) : '';
+    const blocked = blockedWords({storageRefused: !tabStore.persistent(), sentence: live.blocked});
     return <div className="clinic-booking clinic-booking--waiting" ref={root}>
       {screen === 'checking'
         ? <div className={classes('booking-panel', view !== 'stalled' && 'booking-panel--busy')} role="status" aria-busy={view !== 'stalled' ? 'true' : undefined} data-booking-wait={view}>
@@ -546,8 +559,14 @@ function Booking({draft = {}}) {
             <ClinicContact service={s.service} bookingHelp/>
           </>}
         </div>
-        // The saved booking in this browser cannot be read: the engine's sentence and the numbers; no form that cannot work.
-        : <div className="booking-panel">{error}<ClinicContact bookingHelp/></div>}
+        // The engine will not take a booking in this browser (it cannot read what it keeps in the tab):
+        // why, in plain words, and the numbers; no form that cannot work.
+        : <div className="booking-panel" data-booking-blocked>
+          <h2 className="clinic-booking__title" ref={title} tabIndex={-1}>{blocked.title}</h2>
+          <p className="booking-panel__text">{blocked.text}</p>
+          {error}
+          <ClinicContact bookingHelp/>
+        </div>}
     </div>;
   }
 

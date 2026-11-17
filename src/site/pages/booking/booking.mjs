@@ -45,7 +45,8 @@ export function bookingUnavailable({state='unavailable',doctor='',kept=false}={}
  }
  const rows=callRows().filter(row=>!Object.hasOwn(doctors,doctor)||row.id===doctor);
  return `<div class="page-booking__panel" data-booking-unavailable data-state="${state}">`
-  +image(clinicObjects['telephone-handset'],{className:'page-booking__object'})
+  // the one thing on these screens that moves by itself: the handset floats (the motion module's hook), on a panel with no box to fill
+  +image(clinicObjects['telephone-handset'],{className:'page-booking__object',attributes:{'data-ambient':'float'}})
   +`<span class="page-booking__mark" aria-hidden="true">${icon(PANEL_ICONS[state])}</span>`
   +`<h2 class="page-booking__status" role="status">${text(bookingUnavailableWords[state])}</h2><p class="page-booking__help">${text(bookingUnavailableWords.help)}</p>`
   +(kept?`<p class="page-booking__kept">${text(bookingUnavailableWords.kept)}</p>`:'')

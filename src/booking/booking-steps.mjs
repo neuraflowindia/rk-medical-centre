@@ -144,6 +144,15 @@ export const words=Object.freeze({
   check:'Check my booking',
   retry:'Retry the same request'
  }),
+ // The engine will not take a booking in this browser: it could not read what it keeps in the tab
+ // (the booking reference). It says so once, then its sentence is gone with its next reading, so the
+ // page keeps the reason on screen. Most often the browser is set to keep no site data at all.
+ blocked:Object.freeze({
+  storageTitle:'Online booking cannot be used in this browser',
+  storage:'This browser is set to keep no site data, so a booking made here could not be kept safe. Please call the clinic to arrange your visit. If you can, allow cookies and site data for this site and open this page again.',
+  otherTitle:'Your saved booking could not be opened',
+  other:'Please call the clinic before booking again.'
+ }),
  receipt:Object.freeze({
   // The same five states the engine's own receipt names.
   titles:Object.freeze({confirmed:'Your appointment is confirmed',held:'Your time is reserved',expired:'This reservation has ended',
@@ -324,6 +333,15 @@ export function screenFor({viewAvailable,state}){
 export function waitingView({wait='',error=''}={}){
  if(error||!wait)return 'stalled';
  return wait==='save'?'saving':wait==='open'?'opening':'checking';
+}
+/**
+ * What the screen says when the engine will not take a booking in this browser.
+ *   storageRefused  the browser keeps no site data (the page's own storage guard found out)
+ *   sentence        what the engine said when it started, if anything
+ */
+export function blockedWords({storageRefused=false,sentence=''}={}){
+ return storageRefused?Object.freeze({title:words.blocked.storageTitle,text:words.blocked.storage})
+  :Object.freeze({title:words.blocked.otherTitle,text:sentence||words.blocked.other});
 }
 /** How long the page waits for the engine to take a request up before it shows the ways to ask again. */
 export const WAIT_GRACE=4000;

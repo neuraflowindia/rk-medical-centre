@@ -10,7 +10,7 @@ import {bookingPage,bookingDetailsPage,bookingUnavailableWords} from '../../src/
 import {bookingPaths,callRows} from '../../src/clinic/page-content/shared.mjs';
 import {utilityMetadata} from '../../src/clinic/page-metadata.mjs';
 import {booking,bookingHead,bookingUnavailable,bookingDoctors,PANEL_STATES} from '../../src/site/pages/booking/booking.mjs';
-import {bindBooking} from '../../src/site/pages/booking/booking.behaviour.mjs';
+import {bindBooking,followPanelObject} from '../../src/site/pages/booking/booking.behaviour.mjs';
 import {bookingDetails} from '../../src/site/pages/booking-details/booking-details.mjs';
 import {bindBookingDetails} from '../../src/site/pages/booking-details/booking-details.behaviour.mjs';
 import {pages} from '../../src/site/runtime/registry.mjs';
@@ -76,6 +76,9 @@ test('the panel shown while the booking screens cannot be used: four states, the
   assert.equal(panel.includes(bookingUnavailableWords.kept),false,'said only when booking stops in the middle of the steps');
   for(const src of attributeValues(panel,'src'))assert.ok(existsSync(root+'public'+src),src);
   assert.match(panel,/<img class="page-booking__object"[^>]* alt=""/,'the object is decoration');
+  assert.equal(count(panel,/data-ambient="float"/g),1,'the handset floats: the one thing here that moves by itself');
+  assert.match(panel,/<img class="page-booking__object"[^>]* data-ambient="float"/);
+  assert.doesNotMatch(panel,/<input|<textarea|<select/,'nothing floats beside a box a person is filling');
  }
  // each state has its own mark, so the difference is never colour alone
  const marks=['checking','unavailable','error'].map(state=>/<use href="#i-([a-z]+)"/.exec(bookingUnavailable({state}))[1]);
@@ -89,7 +92,7 @@ test('the panel shown while the booking screens cannot be used: four states, the
  // while the screens load: the words and the panel's shape, nothing to press
  const opening=bookingUnavailable({state:'opening'});
  assert.match(opening,/role="status">Opening appointment booking…<\/p>/);assert.equal(count(opening,/page-booking__ghost/g),3);
- assert.doesNotMatch(opening,/<button|<a |data-booking-unavailable/);
+ assert.doesNotMatch(opening,/<button|<a |data-booking-unavailable|data-ambient/);
  assert.equal(bookingUnavailable(),bookingUnavailable({state:'unavailable'}));
  assert.throws(()=>bookingUnavailable({state:'closed'}),/Unknown booking panel state: closed/);
 });
@@ -101,9 +104,45 @@ test('the words around the booking screens are complete and typed with proper ma
  assert.deepEqual(Object.keys(bookingUnavailableWords).sort(),['checking','error','help','kept','opening','retry','unavailable']);
 });
 
-test('the pages\' own behaviour files import cleanly and do nothing by themselves',()=>{
+test('the pages\' own behaviour: a panel drawn after the page hands its floating object to the motion module',()=>{
+ // outside a browser, or without a page, nothing happens
  assert.equal(bindBooking(null),undefined);assert.equal(bindBooking({},{signal:new AbortController().signal}),undefined);
- assert.equal(bindBookingDetails(null),undefined);assert.equal(bindBookingDetails({},{}),undefined);
+ assert.equal(bindBookingDetails(null),undefined);assert.equal(bindBookingDetails({},{}),undefined);assert.equal(bindBookingDetails({}),undefined);
+ assert.equal(typeof followPanelObject(),'function');assert.equal(followPanelObject({place:{},page:{},motion:{}})(),undefined);
+ assert.equal(followPanelObject({place:{},page:{},motion:{observe(){}},Observer:null})(),undefined);
+
+ // stand-ins: the place the panel is drawn in, the page, the motion service and the browser's own watcher
+ let object=null,changed=null,watching=0;
+ const place={querySelector:selector=>selector==='[data-ambient]'?object:null};
+ const app={id:'app'},main={querySelector:selector=>selector==='#clinic-booking-root'?place:null,closest:selector=>selector==='#app'?app:null};
+ const seen=[],motion={observe:(page,options)=>seen.push([page,options.signal])};
+ class Observer{constructor(run){changed=run;}observe(node,options){assert.equal(node,place);assert.deepEqual(options,{childList:true,subtree:true});watching++;}disconnect(){watching--;}}
+ const life=new AbortController();
+ const stop=followPanelObject({place,page:app,motion,signal:life.signal,Observer});
+ assert.equal(watching,1);assert.equal(seen.length,0,'no panel yet: the page is not handed over');
+ // the panel is drawn: the page goes to the motion module once, however often the place changes
+ object={name:'handset'};changed();changed();
+ assert.deepEqual(seen,[[app,life.signal]]);
+ // its state changes and it is drawn again: a new object, handed over again
+ object={name:'handset, drawn again'};changed();
+ assert.equal(seen.length,2);
+ // the booking screens take the place: nothing floats, nothing is handed over
+ object=null;changed();assert.equal(seen.length,2);
+ object={name:'handset, back'};changed();assert.equal(seen.length,3);
+ // the page goes: the watching stops
+ life.abort();assert.equal(watching,0);
+ stop();
+
+ // a panel already there when the page is bound is handed over at once; both addresses do the same
+ object={name:'there from the start'};
+ const withObserver=globalThis.MutationObserver;globalThis.MutationObserver=Observer;
+ try{
+  bindBooking(main,{signal:new AbortController().signal,services:{motion}});assert.deepEqual(seen.at(-1)[0],app);assert.equal(seen.length,4);
+  bindBookingDetails(main,{services:{motion}});assert.equal(seen.length,5);
+  // without the page's frame the page itself is watched
+  bindBooking({querySelector:main.querySelector},{services:{motion}});assert.equal(seen.length,6);assert.equal(typeof seen.at(-1)[0].querySelector,'function');
+  bindBooking(main,{});assert.equal(seen.length,6,'no motion service, nothing to hand over');
+ }finally{globalThis.MutationObserver=withObserver;}
 });
 
 const SHEETS=['src/booking/clinic-booking.css','src/booking/vendor.css','src/site/pages/booking/booking.css','src/site/pages/booking-details/booking-details.css'];
@@ -181,11 +220,12 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  assert.match(island,/window\.history\.pushState\(withMark\(window\.history\.state, mark\), ''\)/);
  // the site draws the page again on Back and Forward: the screens then take up the same coordinator (the package's own, through its own hook)
  assert.match(island,/const useBooking = createUseBooking\(React, \{product: bookingBrowser\.product, controller: \(\) => live\.controller\}\);/);
- assert.match(island,/if \(!start\.live\) \{ live\.controller = bookingBrowser\.controller\(service\); live\.ui = null; \}/,'a fresh arrival and a refresh start a new coordinator');
+ assert.match(island,/if \(!start\.live\) \{\n\s+live\.controller = bookingBrowser\.controller\(service\); live\.ui = null;/,'a fresh arrival and a refresh start a new coordinator');
  assert.match(island,/window\.addEventListener\('site:history', onHistory\)/,'where the site\'s router asks first, the steps move in place');
  assert.match(island,/if \(!mark\) return;/,'an entry outside the flow is left to the site\'s router');
  assert.doesNotMatch(island,/addEventListener\('popstate'/,'the router\'s own listener runs first: nothing is gained by a second one');
  assert.equal(island.match(/sessionStorage/g).length,1);assert.doesNotMatch(island,/localStorage|indexedDB|document\.cookie/);
+ assert.match(island,/const tabStore = safeStorage\(\(\) => window\.sessionStorage\);/,'through the site\'s guard: a browser that refuses storage breaks nothing');
  assert.match(island,/if \(s\.credential \|\| s\.receipt\) \{ dropDraft\(\); return; \}/,'removed the moment the booking is sent');
  // no dead press: the main button is switched off only while step 2 is being sent
  assert.match(island,/data-booking-continue\n\s+disabled=\{step === 2 && disabled\}/);

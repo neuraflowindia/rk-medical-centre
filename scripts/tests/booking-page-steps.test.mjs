@@ -19,7 +19,7 @@ import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,
  stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,tidyPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
  tileMove,tileStop,readFault,askedDoctor,
  paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
- saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE,liftAboveBar} from '../../src/booking/booking-steps.mjs';
+ saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE,liftAboveBar,blockedWords} from '../../src/booking/booking-steps.mjs';
 
 const settings=readSettings();
 const NOW=Date.parse('2026-11-16T05:30:00Z'); // Monday 16 November 2026, 11:00 am in India
@@ -603,4 +603,20 @@ test('a reading that fails on step 1 has one notice of the page\'s own; an addre
  assert.equal(askedDoctor('?doctor=parul&topic=diabetes','sanjay'),'parul');assert.equal(askedDoctor('?topic=diabetes','sanjay'),'sanjay');
  assert.equal(askedDoctor('?doctor=PARUL','sanjay'),'sanjay');assert.equal(askedDoctor('?doctor=dr-parul-gupta',''),'');assert.equal(askedDoctor('',''),'');
  assert.equal(askedDoctor(undefined,'parul'),'parul');assert.equal(askedDoctor('?doctor=sanjay'),'sanjay');
+});
+
+test('a browser the engine will not take a booking in: the page says why and keeps saying it',async()=>{
+ // the browser keeps no site data: the engine cannot read what it keeps in the tab and will not start
+ const refused=()=>{throw new Error('Access is denied for this document.');};
+ const product={getSnapshot:()=>({enabled:true,verified:true,checking:false,activation_epoch:1,foreground_revision:0}),subscribe:()=>()=>{}};
+ const controller=createBookingController({api:async()=>{throw new RequestError('temporarily_unavailable');},receipts:createReceiptStore({installation_id:'11111111-2222-4333-8444-555555555555',environment:'test'}),
+  storage:refused,product,payment:{load:async()=>{},open:()=>{}},clock:()=>NOW,interval:()=>1,clearInterval:()=>{},documentObject:{visibilityState:'visible'}});
+ const began=controller.getSnapshot();
+ assert.equal(began.phase,'blocked');assert.ok(began.error.length>20,'the engine says something once');
+ assert.equal(screenFor({viewAvailable:true,state:began}),'blocked');
+ assert.deepEqual(blockedWords({storageRefused:true,sentence:began.error}),{title:'Online booking cannot be used in this browser',text:words.blocked.storage});
+ assert.match(words.blocked.storage,/call the clinic/);assert.match(words.blocked.storage,/allow cookies and site data/);
+ // a saved booking that cannot be read, in a browser that does keep site data: the engine's own sentence stays on screen
+ assert.deepEqual(blockedWords({sentence:'Your saved booking could not be read.'}),{title:'Your saved booking could not be opened',text:'Your saved booking could not be read.'});
+ assert.deepEqual(blockedWords(),{title:'Your saved booking could not be opened',text:'Please call the clinic before booking again.'});
 });
