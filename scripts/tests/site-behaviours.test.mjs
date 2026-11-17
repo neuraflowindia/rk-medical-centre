@@ -339,9 +339,10 @@ test('a shelf says which cards stand in view, gives up its tab stop when it cann
   $('in-a').focus();assert.equal(row.scrollLeft,0);$('in-a').focus();assert.equal(row.scrollLeft,0,'already in view: the row stays');
   row.focus();assert.equal(row.scrollLeft,0,'the row itself taking the focus moves nothing');
   // every card fits: the arrows go, and the row is no longer a stop of its own
-  row.scrollWidth=700;page.window.dispatchEvent(new Event('resize',{bubbles:false}));page.frames(1);
+  const lookAgain=()=>{row.dispatchEvent(new Event('scroll',{bubbles:false}));page.frames(1);};
+  row.scrollWidth=700;lookAgain();
   assert.equal(row.hasAttribute('tabindex'),false);assert.ok(page.document.querySelector('[data-shelf-previous]').parentElement.hidden);
-  row.scrollWidth=1100;page.window.dispatchEvent(new Event('resize',{bubbles:false}));page.frames(1);assert.equal(row.getAttribute('tabindex'),'0','it is a stop again when it can move');
+  row.scrollWidth=1100;lookAgain();assert.equal(row.getAttribute('tabindex'),'0','it is a stop again when it can move');
   // anything that is not a card of the row is left alone; a missing row is no error
   const loose=createPage({body:'<ul id="row"><li><span><button id="deep">x</button></span></li></ul><button id="outside">y</button>'}),looseRow=loose.document.getElementById('row');
   keepFocusInView(looseRow,{});loose.document.getElementById('deep').focus();assert.equal(looseRow.scrollLeft,0);
