@@ -82,7 +82,7 @@ def calendar_connection_buttons():
         '">Connect '+html.escape(names[identifier])+"’s Calendar</button>" for identifier in mapped)
 
 
-def router(settings,*,database=None,publisher=None,worker_key=None,address=None):
+def router(settings,*,database=None,publisher=None,worker_key=None,address=None,wake=None):
     routes=APIRouter()
     database=database or (ControlDatabase(settings) if settings is not None else None)
     credentials=Credentials(database,settings) if settings is not None else None
@@ -213,6 +213,9 @@ def router(settings,*,database=None,publisher=None,worker_key=None,address=None)
             try:publisher()
             except ControlError:pass
             result=database.call("SELECT appointment_system.control_command_result(%s,%s)",(token,body.operation_id))
+        if wake is not None and result["progress"]!="effective":
+            try:wake.publish()
+            except Exception:pass
         return JSONResponse(result,status_code=200 if result["progress"]=="effective" else 202,headers=PRIVATE_HEADERS)
 
     @routes.post('/api/company/logout')
