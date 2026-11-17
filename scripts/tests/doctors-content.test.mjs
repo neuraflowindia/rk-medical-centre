@@ -1,17 +1,16 @@
 import test from 'node:test';import assert from 'node:assert/strict';
+import {existsSync} from 'node:fs';
 import * as words from '../../src/clinic/page-content/doctors.mjs';
 import {doctors,doctorFacts,locality} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue,certificatesFor} from '../../src/clinic/certificate-catalogue.mjs';
 import {clinicPhotos,clinicObjects,doctorAvatars,archPortraits} from '../../src/clinic/client-media.mjs';
-import {NEUTRAL} from '../../src/clinic/open-status.mjs';
 import {registrationLine,registrationNumbers,STAND_IN_NOTE} from '../../src/clinic/standins.mjs';
 import {hero,doctorChips,doctorsSection,homeCertificates} from '../../src/clinic/page-content/home.mjs';
+import {rowById,rowAddress,treatmentRows} from '../../src/clinic/page-content/treatments.mjs';
 import {pagePaths,degreesOf,doctorShortName,localPhone,actionLabels} from '../../src/clinic/page-content/shared.mjs';
 import {pageMetadata} from '../../src/clinic/page-metadata.mjs';
 
-const at=iso=>new Date(iso);
-const plain=text=>text.replace(/ /g,' ');
 const wordCount=text=>text.trim().split(/\s+/u).length;
 /** Every string inside a value, however deeply nested. */
 function strings(value,found=[]){
@@ -20,7 +19,7 @@ function strings(value,found=[]){
  else if(value&&typeof value==='object')for(const item of Object.values(value))strings(item,found);
  return found;
 }
-const everyWord=[...strings(words.doctorsPage),...doctorOrder.flatMap(id=>strings(words.profilePage(id))),...strings(words.proposedDescriptions),...strings(words.sessionWords)];
+const everyWord=[...strings(words.doctorsPage),...doctorOrder.flatMap(id=>strings(words.profilePage(id))),...strings(words.proposedDescriptions)];
 
 test('no markup, no stand-in marker and no missing value in any word of these pages',()=>{
  assert.ok(everyWord.length>80);
@@ -42,22 +41,43 @@ test('short roles, honour tags and degrees are read from their one home',()=>{
  }
  assert.equal(words.honourTag('sanjay'),null);assert.equal(words.honourTag('parul'),'KGMU gold medalist');
  assert.deepEqual(words.doctorTone,{sanjay:'sage',parul:'rose'});
- for(const read of [words.shortRole,words.honourTag,words.degreesLine,words.workPortrait,words.roomPicture,words.avatarOf,words.careTopics,words.profilePage])assert.throws(()=>read('nobody'),/Unknown doctor/);
+ for(const read of [words.shortRole,words.honourTag,words.degreesLine,words.workPortrait,words.aboutPicture,words.avatarOf,words.careTopics,words.careRows,words.profilePage])assert.throws(()=>read('nobody'),/Unknown doctor/);
 });
 
-test('photographs: the wider at-work portraits, the room pictures and the small faces all exist, and none is Home\'s tight crop',()=>{
+test('photographs: the wider at-work portraits and the small faces exist, and none is Home\'s tight crop',()=>{
  for(const id of doctorOrder){
-  const portrait=clinicPhotos[words.workPortrait(id)],room=clinicPhotos[words.roomPicture(id)];
-  assert.ok(portrait&&room,'both pictures have a record');
+  const portrait=clinicPhotos[words.workPortrait(id)];
+  assert.ok(portrait,'the portrait has a record');
   assert.notEqual(words.workPortrait(id),archPortraits[id],'the profile and Meet the doctors never repeat Home\'s crop');
   assert.equal(portrait.width/portrait.height,4/5);assert.ok(portrait.width<=300,'an at-work portrait is never wider than 300 px');
-  assert.equal(room.width/room.height,3/2);assert.ok(room.width<=444,'a room picture is never wider than 444 px');
-  assert.ok(portrait.alt.includes(doctors[id].name)&&room.alt.includes(doctors[id].name));
+  assert.ok(portrait.alt.includes(doctors[id].name));
   assert.equal(words.avatarOf(id),doctorAvatars[id]);
   assert.match(words.portraitCredit[id],/^In (his|her) consulting room$/);
  }
  assert.equal(words.portraitCredit.sanjay,'In his consulting room');assert.equal(words.portraitCredit.parul,'In her consulting room');
  assert.equal(words.portraitPlace,locality);
+});
+
+test('the picture beside "About the doctor": a second photograph where the clinic has one, the paper-cut picture where it has not',()=>{
+ // Dr. Sanjay Gupta: his consulting room, a different photograph from his cover.
+ const his=words.aboutPicture('sanjay'),room=clinicPhotos[his.photo];
+ assert.ok(room&&!his.art);assert.equal(his.photo,'room-sanjay');
+ assert.equal(room.width/room.height,3/2);assert.ok(room.width<=444,'a room picture is never wider than 444 px');
+ assert.ok(room.alt.includes(doctors.sanjay.name));
+ assert.notEqual(room.src,clinicPhotos[words.workPortrait('sanjay')].src);
+ // Dr. Parul Gupta: every photograph of her on file is one scene, and it is on her cover.
+ const hers=words.aboutPicture('parul'),art=hers.art;
+ assert.ok(art&&!hers.photo);
+ assert.equal(art.width/art.height,3/2);assert.equal(hers.width,art.width);assert.ok(art.width<=444);
+ assert.match(art.src,/^\/clinic-assets\/womens-health-paper-illustration-\d+\.webp$/);
+ assert.deepEqual(art.sources.map(source=>source.width),[480,800,1200]);
+ for(const source of art.sources){
+  assert.match(source.src,/^\/clinic-assets\/womens-health-paper-illustration-\d+\.webp$/);
+  assert.ok(existsSync(new URL(`../../public${source.src}`,import.meta.url)),`${source.src} exists`);
+ }
+ assert.ok(art.sources.some(source=>source.src===art.src));
+ assert.match(art.alt,/illustration/i);assert.ok(!art.alt.includes(doctors.parul.name),'the picture is not presented as a portrait of her');
+ for(const photo of Object.values(clinicPhotos))assert.notEqual(photo.src,art.src);
 });
 
 test('what each doctor sees patients for is the Home chips\' own list: same labels, same places on Treatments',()=>{
@@ -69,6 +89,23 @@ test('what each doctor sees patients for is the Home chips\' own list: same labe
   for(const topic of topics)assert.ok(topic.href.startsWith(pagePaths.treatments)&&topic.href.includes(topic.id));
  }
  assert.equal(words.careTopics('sanjay').length,5);assert.equal(words.careTopics('parul').length,4);
+});
+
+test('a profile\'s index rows are the Treatments rows they lead to: the same name, line, object and place',()=>{
+ for(const id of doctorOrder){
+  const rows=words.careRows(id),topics=words.careTopics(id);
+  assert.deepEqual(rows.map(row=>row.id),topics.map(topic=>topic.id));
+  for(const row of rows){
+   const there=rowById(row.id);
+   assert.ok(there&&there.doctor===id,`${row.id} is a row of this doctor on Treatments`);
+   assert.deepEqual({title:row.title,deck:row.deck,object:row.object},{title:there.title,deck:there.deck,object:there.object});
+   assert.equal(row.href,rowAddress(row.id));
+   assert.ok(Object.hasOwn(clinicObjects,row.object),`${row.object} is a known object`);
+   assert.ok(Object.isFrozen(row));
+  }
+  assert.equal(new Set(rows.map(row=>row.object)).size,rows.length,'no object twice in one index');
+ }
+ assert.deepEqual(doctorOrder.flatMap(id=>words.careRows(id).map(row=>row.id)),treatmentRows.map(row=>row.id),'together they are every row of Treatments, in its order');
 });
 
 test('Meet the doctors: the heading names both doctors, a line each',()=>{
@@ -119,23 +156,10 @@ test('Meet the doctors: one sentence on training and four certificates, two each
  for(const link of training.links){assert.equal(link.label,doctorShortName(link.id));assert.ok(link.spoken.includes(doctors[link.id].name));}
 });
 
-test('the next clinic session follows the appointment starting times in India time',()=>{
- const session=iso=>{const found=words.nextSession(at(iso));return {...found,detail:plain(found.detail)};};
- // Monday 16 November 2026
- assert.deepEqual(session('2026-11-16T05:30:00Z'),{state:'open',label:'In clinic now',detail:'until 1:30 pm'});                 // 11:00
- assert.deepEqual(session('2026-11-16T04:30:00Z'),{state:'open',label:'In clinic now',detail:'until 1:30 pm'});                 // 10:00 sharp
- assert.deepEqual(session('2026-11-16T03:00:00Z'),{state:'later',label:'Next clinic session',detail:'today, 10:00 am'});        // 8:30
- assert.deepEqual(session('2026-11-16T09:30:00Z'),{state:'later',label:'Next clinic session',detail:'today, 6:00 pm'});         // 15:00
- assert.deepEqual(session('2026-11-16T13:00:00Z'),{state:'open',label:'In clinic now',detail:'until 8:30 pm'});                 // 18:30
- assert.deepEqual(session('2026-11-16T15:30:00Z'),{state:'closed',label:'Next clinic session',detail:'tomorrow, 10:00 am'});    // 21:00
- // Sunday has no evening session: Sunday afternoon points to Monday morning.
- assert.deepEqual(session('2026-11-15T08:30:00Z'),{state:'closed',label:'Next clinic session',detail:'tomorrow, 10:00 am'});    // Sunday 14:00
- // A week without a Sunday session names the day.
- const weekdaysOnly={weekday:[[600,810]],sunday:[]};
- assert.equal(plain(words.nextSession(at('2026-11-14T15:30:00Z'),weekdaysOnly).detail),'Monday, 10:00 am');                     // Saturday 21:00
- assert.deepEqual(words.nextSession(at('2026-11-16T05:30:00Z'),{weekday:[],sunday:[]}),{state:'closed',label:'Next clinic session',detail:'call for timings'});
- assert.deepEqual(words.nextSessionNeutral,{state:'pending',label:'Clinic sessions',detail:NEUTRAL.detail});
- assert.equal(typeof words.nextSession().state,'string','without a date it reads the clock');
+test('the clinic\'s live state has no words of its own on these pages: the header and the strip say it',()=>{
+ for(const name of ['nextSession','nextSessionNeutral','sessionWords'])assert.ok(!Object.hasOwn(words,name),`${name} is gone`);
+ for(const item of everyWord)assert.doesNotMatch(item,/In clinic now|clinic session/i,`a session line in: ${item}`);
+ for(const id of doctorOrder)assert.ok(!Object.hasOwn(words.profilePage(id),'session'));
 });
 
 test('a profile: cover words come from data, and Call carries the digits',()=>{
@@ -147,7 +171,6 @@ test('a profile: cover words come from data, and Call carries the digits',()=>{
   assert.equal(page.credit,words.portraitCredit[id]);assert.equal(page.creditPlace,locality);
   assert.equal(page.book,`Book with ${doctorShortName(id)}`);
   assert.deepEqual({...page.call},{label:`Call ${localPhone(id)}`,href:`tel:${doctor.tel}`,spoken:`Call ${doctor.name} at ${doctor.phone}`});
-  assert.equal(page.session,words.nextSessionNeutral);
   assert.ok(Object.isFrozen(page)&&Object.isFrozen(page.care)&&Object.isFrozen(page.about)&&Object.isFrozen(page.certificates)&&Object.isFrozen(page.reviews));
  }
 });
@@ -155,16 +178,21 @@ test('a profile: cover words come from data, and Call carries the digits',()=>{
 test('a profile: the list, the story, the certificates and the reviews',()=>{
  for(const id of doctorOrder){
   const page=words.profilePage(id),doctor=doctors[id],she=id==='parul';
-  assert.deepEqual(page.care.topics,words.careTopics(id));
+  assert.deepEqual(page.care.topics,words.careRows(id));
   assert.ok(page.care.heading.endsWith(page.care.emphasis)&&page.care.heading.includes(she?'she':'he'));
-  assert.ok(page.care.listLabel.includes(doctor.name));assert.equal(typeof page.care.object,'string');
-  // About the doctor: 60 to 80 words, from facts the site holds.
+  assert.ok(page.care.listLabel.includes(doctor.name));assert.ok(!Object.hasOwn(page.care,'object'),'no lone object beside the index: each row has its own');
+  // About the doctor: 55 to 80 words, from facts the site holds.
   const story=`${page.about.lede} ${page.about.body}`,count=wordCount(story);
-  assert.ok(count>=60&&count<=80,`${id}: ${count} words`);
+  assert.ok(count>=55&&count<=80,`${id}: ${count} words`);
   assert.ok(page.about.lede.startsWith(doctor.name));
-  assert.ok(story.includes(words.university)&&story.includes(String(doctorFacts[id].since)));
-  assert.ok(page.about.heading.endsWith(page.about.emphasis)&&page.about.heading.includes(String(doctorFacts[id].since)));
-  assert.ok(page.about.caption.startsWith(doctor.name));
+  assert.ok(story.includes(words.university));
+  // The year practice began is said once in the section: in the heading.
+  const year=String(doctorFacts[id].since);
+  assert.ok(page.about.heading.endsWith(page.about.emphasis)&&page.about.heading.includes(year));
+  assert.equal((`${page.about.heading} ${story} ${page.about.caption}`.match(new RegExp(year,'g'))||[]).length,1,`${id}: "${year}" once`);
+  assert.deepEqual(page.about.picture,words.aboutPicture(id));
+  // A photograph's caption says who and where; the paper-cut picture's says what it shows.
+  assert.ok(page.about.caption.startsWith(she?doctor.role:doctor.name));
   assert.equal(page.about.bring.href,'/#visiting');
   // Certificates: that doctor's five, in catalogue order, without the owner line.
   assert.deepEqual(page.certificates.items.map(item=>item.id),certificatesFor(id).map(item=>item.id));
@@ -179,6 +207,8 @@ test('a profile: the list, the story, the certificates and the reviews',()=>{
  assert.equal((strings(words.profilePage('parul')).join(' ').match(phrase)||[]).length,1,'"a senior woman gynaecologist" is said once');
  assert.equal((strings(words.profilePage('sanjay')).join(' ').match(phrase)||[]).length,0);
  assert.equal((strings(words.doctorsPage).join(' ').match(phrase)||[]).length,0);
+ assert.equal(words.profilePage('parul').about.caption,'Women’s health and pregnancy care, pictured in cut paper.');
+ assert.equal(words.profilePage('sanjay').about.caption,'Dr. Sanjay Gupta in his consulting room at the clinic.');
 });
 
 test('proposed page descriptions: one sentence each, at most 155 characters, for exactly these three pages',()=>{
