@@ -24,10 +24,46 @@ export function shelfIndex({lefts,start,scrollLeft,max,slack=2}){
  return best;
 }
 
+/** The last card that stands wholly inside the row's visible width, counted from `from` (pure). */
+export function shelfLast({rights,end,from=0,slack=2}){
+ let last=from;
+ for(let index=from;index<rights.length;index++){if(rights[index]<=end+slack)last=index;else break;}
+ return last;
+}
+/**
+ * How far the row must move for a card to stand wholly in view (pure): negative moves it back,
+ * positive on, 0 when it is already inside (or wider than the row, when its start is what counts).
+ */
+export function revealShift({itemLeft,itemRight,start,end,slack=1}){
+ if(itemLeft<start-slack)return Math.round(itemLeft-start);
+ if(itemRight>end+slack)return Math.round(Math.min(itemRight-end,itemLeft-start));
+ return 0;
+}
+/**
+ * Keep whatever takes the keyboard's focus inside a row wholly in view: the browser only brings
+ * the focused control to the row's edge, which can leave its card half outside.
+ */
+export function keepFocusInView(row,{signal,smooth=()=>false}={}){
+ if(!row)return;
+ row.addEventListener('focusin',event=>{
+  const target=event.target;
+  if(!target||target===row)return;
+  let card=target;
+  while(card.parentElement&&card.parentElement!==row)card=card.parentElement;
+  if(card.parentElement!==row)return;
+  const style=globalThis.getComputedStyle?.(row),pad=parseFloat(style?.paddingLeft||'0')||0,padEnd=parseFloat(style?.paddingRight||'0')||pad;
+  const box=row.getBoundingClientRect(),item=card.getBoundingClientRect();
+  const shift=revealShift({itemLeft:item.left,itemRight:item.right,start:box.left+pad,end:box.right-padEnd});
+  if(shift)row.scrollTo({left:Math.max(0,row.scrollLeft+shift),behavior:smooth()?'smooth':'instant'});
+ },{signal});
+}
+
 /**
  * Wire one row and its two arrows. `item()` gives the card whose width is one step (default: the
- * row's first shown card); `onMove({index,total})` reports where the row stands; `smooth()` says
- * whether the move may glide. Returns `refresh`, to call after the row's cards change.
+ * row's first shown card); `onMove({index,last,total})` reports where the row stands (the first
+ * and the last card wholly in view); `smooth()` says whether the move may glide. Returns
+ * `refresh`, to call after the row's cards change.
+ * A row that cannot move gives up its place in the keyboard's order (its cards keep theirs).
  */
 export function bindShelf(row,{previous,next,signal,smooth=()=>true,item,onMove}={}){
  if(!row)return ()=>{};
@@ -44,9 +80,13 @@ export function bindShelf(row,{previous,next,signal,smooth=()=>true,item,onMove}
   // When every card fits there is nothing to move: two dead arrows are worse than none.
   const arrows=previous?.parentElement,still=shelfStill(max);
   if(arrows&&arrows===next?.parentElement&&arrows.hidden!==still)arrows.hidden=still;
+  if(still){if(row.hasAttribute('tabindex'))row.removeAttribute('tabindex');}
+  else if(row.getAttribute('tabindex')!=='0')row.setAttribute('tabindex','0');
   if(onMove){
-   const cards=shown(),start=row.getBoundingClientRect().left+(parseFloat(style()?.paddingLeft||'0')||0);
-   onMove({index:shelfIndex({lefts:cards.map(card=>card.getBoundingClientRect().left),start,scrollLeft:row.scrollLeft,max}),total:cards.length});
+   const cards=shown(),box=row.getBoundingClientRect(),pad=parseFloat(style()?.paddingLeft||'0')||0,start=box.left+pad;
+   const rects=cards.map(card=>card.getBoundingClientRect());
+   const index=shelfIndex({lefts:rects.map(rect=>rect.left),start,scrollLeft:row.scrollLeft,max});
+   onMove({index,last:index<0?-1:shelfLast({rights:rects.map(rect=>rect.right),end:box.right-(parseFloat(style()?.paddingRight||'0')||pad),from:index}),total:cards.length});
   }
  };
  const move=direction=>{
@@ -64,6 +104,7 @@ export function bindShelf(row,{previous,next,signal,smooth=()=>true,item,onMove}
   if(event.key==='ArrowRight'){event.preventDefault();move(1);}
   else if(event.key==='ArrowLeft'){event.preventDefault();move(-1);}
  },{signal});
+ keepFocusInView(row,{signal,smooth});
  refresh();
  return refresh;
 }

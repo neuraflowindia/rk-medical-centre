@@ -1,12 +1,22 @@
 // Boot. Runs once per page load: follow the booking state, bind the dialogs, start motion,
 // then show the page for the address and keep showing pages as the visitor moves, without a
 // new page request (each request on this host waits for a booking-state read).
+//
+// Two promises this file keeps:
+//  1. Browser storage can never stop the site. Preferences go through `safeStorage`, which never
+//     throws; where the browser refuses storage, a choice holds while the page stays open and is
+//     simply not remembered afterwards.
+//  2. A page is never left half alive. The shell marks the document as "scripts on" before the
+//     first paint; if start-up fails for any reason, `boot` undoes whatever had begun and takes
+//     that mark back, so the visitor gets exactly the page shown without scripts: every fallback
+//     in place, ordinary links, no dead control.
 import {bindVisibility} from '../../../appointment-system/browser/visibility.mjs';
 import {productState,admissionAllowed,displayAllowed} from '../../clinic/product-state.mjs';
 import {applyPageMetadata} from '../../clinic/page-metadata.mjs';
 import {createDraft,applyBookingQuery} from '../../clinic/visit-draft.mjs';
 import {savePreference} from '../../clinic/visitor-preferences.mjs';
 import {createMotion} from '../motion/motion.mjs';
+import {safeStorage} from '../lib/storage.mjs';
 import {knownPaths,pageFor} from './registry.mjs';
 import {resolveAddress,linkAction,createScrollMemory} from './router.mjs';
 import {createView} from './render.mjs';
@@ -15,9 +25,25 @@ import {createIsland} from './booking-island.mjs';
 import {createSheets} from '../parts/sheet/sheet.behaviour.mjs';
 import {partBehaviours} from './parts.mjs';
 
-export function start({windowObject=window,documentObject=document,state=productState}={}){
+/** Stop everything in `stops`, newest first; one that fails never keeps the others running. */
+function stopAll(stops){
+ for(const stop of stops.splice(0).reverse()){try{stop();}catch{/* keep stopping the rest */}}
+}
+
+/**
+ * Start the site. Everything from the browser can be replaced in tests. If anything fails on the
+ * way, whatever had already begun is stopped again and the error is thrown on (see `boot`).
+ */
+export function start(options={}){
+ const stops=[];
+ try{return begin(options,stops);}
+ catch(error){stopAll(stops);throw error;}
+}
+
+function begin({windowObject=window,documentObject=document,state=productState},stops){
  const {history,location}=windowObject,life=new AbortController(),forLife={signal:life.signal};
- const stopVisibility=bindVisibility({state,windowObject,documentObject,profile:'public'});
+ stops.push(()=>life.abort());
+ stops.push(bindVisibility({state,windowObject,documentObject,profile:'public'}));
 
  const first=resolveAddress(location.pathname,knownPaths);
  if(first.found&&first.rewrite)history.replaceState(history.state,'',first.path+location.search+location.hash);
@@ -25,24 +51,34 @@ export function start({windowObject=window,documentObject=document,state=product
  const announcer=documentObject.createElement('div');
  announcer.id='announce';announcer.className='visually-hidden';announcer.setAttribute('aria-live','polite');announcer.setAttribute('role','status');
  documentObject.body.append(announcer);
+ stops.push(()=>announcer.remove());
  const announce=words=>{announcer.textContent='';windowObject.requestAnimationFrame(()=>{announcer.textContent=String(words);});};
 
  const app=documentObject.querySelector('#app'),draft=createDraft(),scrolls=createScrollMemory();
- const motion=createMotion({documentObject,windowObject});
+ // The one store for what the visitor chooses on this device (motion, privacy). It never throws.
+ const storage=safeStorage(()=>windowObject.localStorage);
+ const motion=createMotion({documentObject,windowObject,storage});
+ stops.push(()=>motion.dispose());
  let route=first.path,intent=0;
  const booking=bindBookingState({state,displayAllowed,windowObject,documentObject,route:()=>route});
+ stops.push(()=>booking.dispose());
  const island=createIsland({state,admissionAllowed,displayAllowed,draft});
+ stops.push(()=>island.dispose());
  const sheets=createSheets({documentObject});
  // Visit measurement is not in use; the visitor's choice is still kept, as it always was.
- const privacy=Object.freeze({choose:value=>savePreference(windowObject.localStorage,value)});
+ const privacy=Object.freeze({choose:value=>savePreference(storage,value)});
 
  const services={reader:sheets.reader,menu:sheets.menu,viewer:sheets.viewer,call:sheets.call,
   navigate,productState:state,booking,motion,announce,draft,privacy};
  const view=createView({app,services,parts:partBehaviours,booking,applyMetadata:path=>applyPageMetadata(path,documentObject),
   prepare:ctx=>sheets.refresh(ctx),windowObject});
+ stops.push(()=>view.stop());
 
  history.scrollRestoration='manual';
  history.replaceState({...history.state,key:scrolls.next()},'');
+ // The history entry now on screen: its scroll position is kept whenever the visitor leaves it,
+ // by a link or by Back and Forward, so either way of returning lands where the page was left.
+ let entryKey=history.state?.key;
 
  function show({focus=false,restore=null,hash='',firstLoad=false}={}){
   const resolved=resolveAddress(location.pathname,knownPaths);
@@ -76,7 +112,7 @@ export function start({windowObject=window,documentObject=document,state=product
  function goToPlace(hash,{push=false}={}){
   const target=placeFor(hash);
   if(!target)return false;
-  if(push)history.pushState({key:scrolls.next()},'',location.pathname+location.search+hash);
+  if(push){scrolls.save(entryKey,windowObject.scrollY);history.pushState({key:scrolls.next()},'',location.pathname+location.search+hash);entryKey=history.state?.key;}
   target.scrollIntoView({behavior:motion.allowed()?'smooth':'instant',block:'start'});
   focusPlace(target);
   return true;
@@ -88,9 +124,10 @@ export function start({windowObject=window,documentObject=document,state=product
   const url=new URL(path,location.origin);
   const resolved=resolveAddress(url.pathname,knownPaths);
   if(!resolved.found)return false;
-  scrolls.save(history.state?.key,windowObject.scrollY);
+  scrolls.save(entryKey,windowObject.scrollY);
   const address=resolved.path+url.search+url.hash,entry={key:scrolls.next()};
   if(replace)history.replaceState(entry,'',address);else history.pushState(entry,'',address);
+  entryKey=entry.key;
   show({focus:true,hash:url.hash});
   return true;
  }
@@ -117,7 +154,12 @@ export function start({windowObject=window,documentObject=document,state=product
   else navigate(action.path+(action.hash||''));
  },forLife);
 
- windowObject.addEventListener('popstate',()=>{intent++;show({restore:scrolls.read(history.state?.key)});},forLife);
+ windowObject.addEventListener('popstate',()=>{
+  intent++;
+  // the page being left is still on screen: remember where it stood before the other is shown
+  scrolls.save(entryKey,windowObject.scrollY);entryKey=history.state?.key;
+  show({restore:scrolls.read(entryKey)});
+ },forLife);
  windowObject.addEventListener('pagehide',()=>{island.close();},forLife);
  // A page brought back from the browser's back/forward store is bound again where it stood.
  windowObject.addEventListener('pageshow',event=>{if(event.persisted)show({restore:windowObject.scrollY});},forLife);
@@ -125,7 +167,26 @@ export function start({windowObject=window,documentObject=document,state=product
  show({firstLoad:true,hash:location.hash});
  return Object.freeze({navigate,enterBooking,services,view,route:()=>route,
   /** Stop everything this start began (used when the app is taken down, and by tests). */
-  dispose(){life.abort();view.stop();island.dispose();booking.dispose();motion.dispose();stopVisibility();announcer.remove();}});
+  dispose(){stopAll(stops);}});
 }
 
-if(typeof window!=='undefined'&&typeof document!=='undefined'&&document.querySelector('#app'))start();
+/**
+ * Start the site in the browser and never leave the page half alive: when start-up fails, the
+ * document goes back to its scripts-off state (the marks the shell set before the first paint
+ * are removed) and the failure is reported, not thrown. Returns the running site, or null.
+ */
+export function boot({windowObject=window,documentObject=document,begin:run=start,...rest}={}){
+ const root=documentObject.documentElement;
+ try{
+  const site=run({windowObject,documentObject,...rest});
+  if(!root.hasAttribute('data-js'))root.setAttribute('data-js','');
+  return site;
+ }catch(error){
+  root.removeAttribute('data-js');root.removeAttribute('data-motion');
+  if(typeof windowObject.reportError==='function')windowObject.reportError(error);
+  else windowObject.console?.error?.(error);
+  return null;
+ }
+}
+
+if(typeof window!=='undefined'&&typeof document!=='undefined'&&document.querySelector('#app'))boot();

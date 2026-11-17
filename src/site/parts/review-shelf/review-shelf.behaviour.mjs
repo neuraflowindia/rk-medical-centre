@@ -84,7 +84,7 @@ export function openReviewReader(services,{filter='all',filters=reviewFilterKeys
  if(!content)return;
  const show=next=>{
   const reviews=readerOrder(next),panel=content.querySelector('[data-reader-panel]');
-  if(panel)panel.innerHTML=readerList(reviews);
+  if(panel)panel.innerHTML=readerList(reviews,{filter:next});
   services.reader.setTitle?.(reviewsTitle(next,reviews.length));
   content.scrollTop=0;
  };
@@ -103,7 +103,8 @@ export function bindReviewShelf(root,{signal,services}={}){
   const refresh=bindShelf(row,{previous:shelf.querySelector('[data-shelf-previous]'),next:shelf.querySelector('[data-shelf-next]'),signal,
    smooth:()=>services?.motion?.allowed()??false,
    item:()=>row.querySelector('.review-card:not(.review-card--lead):not([hidden])')||row.querySelector('.review-card:not([hidden])'),
-   onMove:({index,total})=>{if(count&&index>=0){const text=shelfPosition(index+1,total);if(count.textContent!==text)count.textContent=text;}}});
+   // where several cards stand in view at once, the count names them all ("3–5 of 8")
+   onMove:({index,last,total})=>{if(count&&index>=0){const text=shelfPosition(index+1,total,Math.max(index,last)+1);if(count.textContent!==text)count.textContent=text;}}});
   const settle=()=>{markClamped(row,{onRead:read,signal});refresh();};
   const show=filter=>{arrangeShelf(row,shelfPlan(filter,{own,limit}),{featured});row.scrollLeft=0;settle();};
   wireTabs(shelf.querySelector('[data-review-tabs]'),show,{signal});

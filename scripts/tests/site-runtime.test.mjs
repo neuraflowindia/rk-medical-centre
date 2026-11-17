@@ -47,15 +47,24 @@ test('a click on a link: left to the browser, a place on this page, a booking sc
 });
 
 test('the main booking controls change words and address but never disappear; other booking links do',()=>{
- assert.deepEqual(entryState('header',true,'/booking'),{href:'/booking',spoken:'Book an appointment',hint:'Book an appointment online',label:'Book an appointment',icon:'calendar',current:true});
- assert.deepEqual(entryState('page',false),{href:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment',label:'Arrange a visit',icon:'phone',current:false});
+ assert.deepEqual(entryState('header',true,'/booking'),{href:'/booking',spoken:'Book an appointment',hint:'Book an appointment online',label:'Book an appointment',icon:'calendar',call:false,current:true});
+ assert.deepEqual(entryState('page',false),{href:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment',label:'Arrange a visit',icon:'phone',call:false,current:false});
+ assert.deepEqual(entryState('header',false,'/contact'),{href:'/contact',spoken:'Call the clinic',hint:'Call the clinic to arrange an appointment',label:'Call the clinic',icon:'phone',call:true,current:false});
+ assert.equal(entryState('header',true,'/contact').call,false);assert.equal(entryState('page',false,'/contact').call,false);
  const page=createPage({body:`<a id="head" href="/booking" data-booking-entry="header" data-booking-only hidden><span data-home-entry-icon="calendar"></span><span data-home-entry-icon="phone" hidden></span><span data-booking-on="Book an appointment" data-booking-off="Book an appointment">Book an appointment</span></a>
   <a id="hero" href="/booking" data-booking-entry="page"><span data-booking-on="Book an appointment" data-booking-off="Arrange a visit">Book an appointment</span></a>
   <a id="book" href="/booking?doctor=parul">Book with Dr. Parul</a><a id="other" href="/contact">Contact</a><div id="only" data-booking-only>only on</div><p id="offonly" data-booking-off-only hidden inert>only off</p>`});
  const $=id=>page.document.getElementById(id);
  assert.equal(syncBookingState(page.document,{enabled:false,route:'/'}),2);
  assert.equal($('head').getAttribute('href'),'/contact');assert.equal($('head').hidden,false);assert.equal($('head').hasAttribute('data-booking-only'),false);
- assert.equal($('head').getAttribute('aria-label'),'Book an appointment by calling the clinic');assert.equal($('head').querySelector('[data-home-entry-icon="phone"]').hidden,false);
+ assert.equal($('head').getAttribute('aria-label'),'Arrange a visit by calling the clinic');assert.equal($('head').querySelector('[data-home-entry-icon="phone"]').hidden,false);
+ assert.equal($('head').hasAttribute('data-open-call'),false,'on any page but Contact it leads to Contact');
+ // on Contact itself, while booking is off, the header's control opens the call panel; the page's own control does not change
+ syncBookingState(page.document,{enabled:false,route:'/contact'});
+ assert.equal($('head').getAttribute('data-open-call'),'');assert.equal($('head').getAttribute('aria-haspopup'),'dialog');assert.equal($('head').getAttribute('aria-label'),'Call the clinic');assert.equal($('head').getAttribute('href'),'/contact');
+ assert.equal($('hero').hasAttribute('data-open-call'),false);
+ syncBookingState(page.document,{enabled:false,route:'/'});
+ assert.equal($('head').hasAttribute('data-open-call'),false);assert.equal($('head').hasAttribute('aria-haspopup'),false);
  assert.equal($('hero').textContent,'Arrange a visit');assert.equal($('hero').getAttribute('title'),'Call the clinic to arrange an appointment');
  assert.equal($('book').hasAttribute('href'),false);assert.equal($('book').getAttribute('data-booking-href'),'/booking?doctor=parul');assert.ok($('book').hidden&&$('book').inert);
  assert.equal($('other').getAttribute('href'),'/contact');assert.ok($('only').hidden&&$('only').inert);assert.ok(!$('offonly').hidden&&!$('offonly').inert);

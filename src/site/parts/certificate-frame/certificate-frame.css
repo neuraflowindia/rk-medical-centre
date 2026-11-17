@@ -10,16 +10,19 @@
   .certificate-frame__mat img { height: var(--certificate-height, 124px); width: auto; max-width: none; border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
   .certificate-frame--small { --certificate-height: 96px; }
   .certificate-frame--large { --certificate-height: 180px; }
-  .certificate-frame__mat--view { cursor: zoom-in; transition: transform var(--dur-hover) var(--ease-move); }
+  .certificate-frame__mat--view { cursor: zoom-in; transition: transform var(--dur-swap) var(--ease-move), box-shadow var(--dur-swap) var(--ease-move); }
   .certificate-frame__mat--view:active { transform: translateY(var(--press)); }
   .certificate-frame__mat--view:focus-visible { outline-offset: 4px; border-radius: var(--radius-frame); }
   @media (hover: hover) and (pointer: fine) {
-    .certificate-frame__mat--view:hover { transform: translateY(var(--lift)); }
+    /* a document is picked up: it comes forward and tips a little, each way by turns along a row */
+    .certificate-frame__mat--view:hover { transform: translateY(-4px) rotate(-.9deg); }
+    .certificate-wall__item:nth-child(even) .certificate-frame__mat--view:hover { transform: translateY(-4px) rotate(.9deg); }
   }
   /* the label takes its document's width and wraps inside it */
   .certificate-frame__label { display: grid; gap: 1px; margin-top: 14px; width: 0; min-width: 100%; }
   .certificate-frame__label strong { color: var(--ink); font: var(--type-caption-strong); line-height: 1.3; }
-  .certificate-frame__label span { color: var(--ink-muted); font: var(--type-meta); }
+  /* body ink: a frame may stand on the sage ground and its label lies in the frame's shadow, where the muted ink falls under 4.5 : 1 */
+  .certificate-frame__label span { color: var(--ink-body); font: var(--type-meta); }
   /* on the deep ground: 11.20 : 1 and 7.79 : 1 */
   .certificate-frame--on-deep .certificate-frame__label strong { color: var(--ink-on-deep); }
   .certificate-frame--on-deep .certificate-frame__label span { color: var(--ink-on-deep-soft); }
@@ -44,9 +47,13 @@
   .certificate-viewer { inset: 0; margin: auto; width: min(880px, 100% - 24px); height: fit-content; max-height: calc(100dvh - 24px); padding: var(--space-4) var(--space-5) var(--space-5); border-radius: var(--radius-card); transform: translateY(18px) scale(.985); overflow-y: auto; }
   @starting-style { .certificate-viewer[open] { transform: translateY(18px) scale(.985); } }
   .certificate-viewer .sheet__head { min-height: 52px; margin-bottom: var(--space-3); }
-  .certificate-viewer__figure { display: grid; justify-items: center; gap: var(--space-4); }
+  /* The stage is as tall as the set's tallest document needs at this width (--tallest: height over
+     width; 84 px = the dialog's margins, its padding and the mat), and never taller than the screen
+     allows: every document of a set stands centred on the same stage, so the dialog keeps one height. */
+  .certificate-viewer__figure { --stage: min(62svh, 580px, calc(var(--tallest, 1.42) * (100vw - 84px) + 20px)); display: grid; justify-items: center; gap: var(--space-4); }
+  .certificate-viewer__stage { display: grid; place-items: center; width: 100%; height: var(--stage); }
   .certificate-viewer__mat { padding: 10px; border-radius: var(--radius-frame); background: var(--wash-mustard); box-shadow: inset 0 0 0 1px var(--line-strong), var(--elev-ambient); }
-  .certificate-viewer__mat img { width: auto; max-width: 100%; max-height: min(62dvh, 640px); border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
+  .certificate-viewer__mat img { width: auto; max-width: 100%; max-height: calc(var(--stage) - 20px); border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
   .certificate-viewer__label { display: grid; gap: 1px; justify-items: center; text-align: center; }
   .certificate-viewer__label strong { color: var(--ink); font: var(--type-caption-strong); }
   .certificate-viewer__label span { color: var(--ink-muted); font: var(--type-meta); }

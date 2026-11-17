@@ -9,7 +9,6 @@
 import {doctors,locality,directions} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
-import {clinicPhotos} from '../client-media.mjs';
 import {observationCareSentence} from '../standins.mjs';
 import {pagePaths,actionLabels,essentials,practisingSince,clinicStandards} from './shared.mjs';
 import {homeCertificates} from './home.mjs';
@@ -109,13 +108,9 @@ export const standards=Object.freeze({
  * The first step's picture and the line that describes it. The cover already shows the whole
  * street, so this step shows a detail of it with no car and nobody in it: the clinic's name
  * board on the green wall.
- * WAITING: request about-07 — until that crop exists the step shows the gate, with the line that
- * describes the gate; both go when it lands.
  */
-export function arrival(photos=clinicPhotos){
- return Object.hasOwn(photos,'walk-wall')
-  ?{photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'}
-  :{photo:'walk-gate',line:'The gate is under the blue board with both doctors’ names.'};
+export function arrival(){
+ return {photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'};
 }
 
 /**

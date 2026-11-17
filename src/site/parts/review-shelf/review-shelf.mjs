@@ -61,18 +61,26 @@ function aboutLabel(review){
  const who=review.doctors.length?review.doctors.map(id=>doctors[id].name).join(' and '):words.aboutClinic;
  return `<p class="${classes('review-reader__about',one&&`review-reader__about--${one}`)}"><span class="visually-hidden">${text(words.about)} </span>${text(who)}</p>`;
 }
-/** The reader's contents for one tab: every review of that tab in full. `pointed` marks the one the visitor asked for. */
-export function readerList(reviews,{pointed=''}={}){
+/** Would the label only repeat the doctor the list is already headed by? (A review that names both doctors keeps its label.) */
+export function labelRepeats(review,filter){
+ return filter!=='all'&&review.doctors.length===1&&review.doctors[0]===filter;
+}
+/**
+ * The reader's contents for one tab: every review of that tab in full. `pointed` marks the one the
+ * visitor asked for. Under one doctor's heading (`filter`), a review about that doctor alone carries
+ * no label: the heading has already said whose it is.
+ */
+export function readerList(reviews,{pointed='',filter='all'}={}){
  return `<ol class="review-reader__list" data-reader-list>`+reviews.map(review=>
   `<li${attrs({class:classes('review-reader__item',review.id===pointed&&'is-pointed'),id:`review-${review.id}`})}>`
-  +`<div class="review-reader__top">${reviewStars(review)}${aboutLabel(review)}</div>`
+  +`<div class="review-reader__top">${reviewStars(review)}${labelRepeats(review,filter)?'':aboutLabel(review)}</div>`
   +`<blockquote class="review-reader__quote"><p>${text(review.text)}</p></blockquote>`+reviewBy(review)+`</li>`).join('')+`</ol>`;
 }
 /** The reader: its own tabs, then the list. `filters` are the tabs to offer (one filter: no tabs). */
 export function reviewReader(reviews,{filter='all',filters=reviewFilterKeys,pointed=''}={}){
  const tabList=filters.length>1?`<div class="tabs review-reader__tabs" role="tablist" aria-label="${text(words.tabsLabel)}" data-reader-tabs>`
   +filters.map(key=>tab({label:words.tabs[key],count:reviewCounts[key],id:`reader-tab-${key}`,controls:'reader-panel',selected:key===filter,attributes:{'data-filter':key}})).join('')+`</div>`:'';
- return `<div class="review-reader">${tabList}<div${attrs({class:'review-reader__panel',id:'reader-panel',role:tabList?'tabpanel':null,'aria-labelledby':tabList?`reader-tab-${filter}`:null,tabindex:'0','data-reader-panel':true})}>${readerList(reviews,{pointed})}</div></div>`;
+ return `<div class="review-reader">${tabList}<div${attrs({class:'review-reader__panel',id:'reader-panel',role:tabList?'tabpanel':null,'aria-labelledby':tabList?`reader-tab-${filter}`:null,tabindex:'0','data-reader-panel':true})}>${readerList(reviews,{pointed,filter})}</div></div>`;
 }
 
 /** How many reviews a filter holds, for labels. */

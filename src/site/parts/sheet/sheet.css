@@ -27,6 +27,9 @@
   .sheet--top .sheet__head { min-height: 52px; }
 
   .sheet__actions { margin-top: var(--space-5); }
+  /* a phone number inside a sheet's words dials; its touch area is 48 px tall without moving the lines */
+  .sheet__tel { display: inline-block; padding-block: 13px; margin-block: -13px; color: var(--action); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .sheet__tel:active { color: var(--action-pressed); }
 
   /* the reader: a tall sheet for long reading (reviews, notices) */
   .sheet--reader { inset: auto 0 0 0; height: min(94dvh, 100% - 28px); padding: 14px 0 0; border-radius: var(--radius-card) var(--radius-card) 0 0; transform: translateY(48px); }

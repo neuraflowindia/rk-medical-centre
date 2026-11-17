@@ -20,7 +20,9 @@
     .action-bar { grid-template-columns: .9fr 1fr 1.25fr; }
     .action-bar__item { gap: 6px; }
   }
-  @media (min-width: 1024px) {
+  /* From 768 px the header carries the main booking button and the menu, and stays in view:
+     a second filled Book under it would break "one filled button in a view". */
+  @media (min-width: 768px) {
     .action-bar { display: none; }
   }
 
@@ -38,6 +40,7 @@
   .call-row__name { color: var(--ink); font-weight: 600; }
   .call-row__need { color: var(--ink-body); }
   .call-row__digits { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--action); font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .01em; white-space: nowrap; }
+  .call-row__digits .icon, .call-row__avatar { transition: transform var(--dur-hover) var(--ease-move); }
   /* the WhatsApp row has no digits to drop under the name: icon, words, arrow on one line at every width */
   .call-row--whatsapp { grid-template-columns: auto 1fr auto; }
   .call-row--whatsapp .call-row__icon { grid-row: auto; }
@@ -45,7 +48,10 @@
   .call-row:focus-visible { border-radius: var(--radius-row); }
   .call-row.is-pointed { box-shadow: var(--ring), var(--halo-wide), var(--elev-raised); }
   @media (hover: hover) and (pointer: fine) {
-    .call-row:hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+    /* a row does not lift: its ring firms up, the phone tips as if lifted from its cradle, and the face comes a little closer */
+    .call-row:hover { box-shadow: var(--ring), var(--elev-raised-hover); }
+    .call-row:hover .call-row__digits .icon { transform: rotate(-16deg) scale(1.12); }
+    .call-row:hover .call-row__avatar { transform: scale(1.05); }
     .call-row:active { transform: translateY(var(--press)); }
   }
   @media (min-width: 480px) {

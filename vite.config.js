@@ -10,9 +10,11 @@ const __dirname = path.dirname(__filename);
 const profile = JSON.parse(readFileSync(path.join(__dirname, 'appointment-settings/project.json'), 'utf8'));
 const publicBookingProfile = Object.fromEntries(['version', 'installation_id', 'environment', 'label'].map(key => [key, profile[key]]));
 
-// Only the two faces needed for the first paint are preloaded: the heading face and the text face.
-// The link carries the built file's hashed name, so it is added here, after the bundle is known.
-const preloadedFonts=['newsreader-roman-400-600.woff2','figtree-roman-400-600.woff2'];
+// Only the faces needed for the first paint are preloaded: the heading face, its italic (every
+// page's main heading carries one italic phrase, the largest words on a phone's first screen) and
+// the text face. The link carries the built file's hashed name, so it is added here, after the
+// bundle is known.
+const preloadedFonts=['newsreader-roman-400-600.woff2','newsreader-italic-400-500.woff2','figtree-roman-400-600.woff2'];
 export function preloadFontsPlugin(files=preloadedFonts){
   return {name:'preload-first-paint-fonts',apply:'build',transformIndexHtml:{order:'post',handler(html,context){
     const emitted=Object.values(context.bundle||{}).filter(item=>item.type==='asset');

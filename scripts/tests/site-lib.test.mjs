@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {e,text,classes,attrs,bookingOn,stateText,emphasise,srcset,image,paragraphs,oneOf} from '../../src/site/lib/html.mjs';
 import {icon,stars,sprite,iconNames,iconPaths,iconId} from '../../src/site/icons/icons.mjs';
+import {safeStorage} from '../../src/site/lib/storage.mjs';
 
 test('text is escaped, and short pairs never break across lines',()=>{
  assert.equal(e('<a href="x">Tom & Jerry\'s</a>'),'&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&#39;s&lt;/a&gt;');
@@ -59,4 +60,29 @@ test('icons are references into one sprite that holds every icon once',()=>{
  for(const path of Object.values(iconPaths))assert.doesNotMatch(path,/fill=|stroke=|style=/,'icons take their line from the stylesheet');
  const five=stars([1,1,1,.5,0]);
  assert.equal((five.match(/<svg/g)||[]).length,5);assert.equal((five.match(/icon--half/g)||[]).length,1);assert.equal((five.match(/icon--empty/g)||[]).length,1);
+});
+
+test('browser storage can never stop the site: a refused read or write is kept in memory instead',()=>{
+ // a browser that keeps things
+ const map=new Map(),real={getItem:key=>map.has(key)?map.get(key):null,setItem:(key,value)=>{map.set(key,String(value));},removeItem:key=>{map.delete(key);}};
+ const kept=safeStorage(()=>real);
+ assert.equal(kept.getItem('choice'),null);assert.equal(kept.setItem('choice','paused'),true);assert.equal(map.get('choice'),'paused');assert.equal(kept.getItem('choice'),'paused');
+ map.set('choice','on');assert.equal(kept.getItem('choice'),'on','another tab\'s write is read, not a stale copy');
+ assert.equal(kept.setItem('n',7),true);assert.equal(kept.getItem('n'),'7');kept.removeItem('n');assert.equal(map.has('n'),false);assert.equal(kept.persistent(),true);
+ // a browser where merely reading the property throws (storage blocked)
+ const blocked=safeStorage(()=>{throw new Error('Access is denied for this document.');});
+ assert.equal(blocked.persistent(),false);assert.equal(blocked.getItem('choice'),null);
+ assert.equal(blocked.setItem('choice','paused'),false,'not kept by the browser');assert.equal(blocked.getItem('choice'),'paused','but it holds while the page stays open');
+ blocked.removeItem('choice');assert.equal(blocked.getItem('choice'),null);
+ // a browser that hands storage over and then refuses every use of it
+ const refusing=safeStorage(()=>({getItem(){throw new Error('no');},setItem(){throw new Error('full');},removeItem(){throw new Error('no');}}));
+ assert.equal(refusing.persistent(),true);assert.equal(refusing.getItem('a'),null);assert.equal(refusing.persistent(),false);
+ assert.equal(refusing.setItem('a','1'),false);assert.equal(refusing.getItem('a'),'1');refusing.removeItem('a');assert.equal(refusing.getItem('a'),null);
+ // only writing is refused (a full or private store): the value is held, and a later accepted write goes back to the browser
+ let full=true;const partial=safeStorage(()=>({getItem:key=>map.has(key)?map.get(key):null,setItem(key,value){if(full)throw new Error('full');map.set(key,String(value));},removeItem:key=>{map.delete(key);}}));
+ assert.equal(partial.setItem('choice','paused'),false);assert.equal(partial.getItem('choice'),'paused');assert.equal(map.get('choice'),'on');
+ full=false;assert.equal(partial.setItem('choice','paused'),true);assert.equal(map.get('choice'),'paused');assert.equal(partial.getItem('choice'),'paused');
+ // nothing to open at all
+ for(const nothing of [undefined,null,()=>null,()=>undefined,'storage']){const none=safeStorage(nothing);assert.equal(none.getItem('a'),null);assert.equal(none.setItem('a','b'),false);assert.equal(none.getItem('a'),'b');none.removeItem('a');assert.equal(none.persistent(),false);}
+ assert.equal(safeStorage(()=>({getItem:()=>undefined,setItem(){},removeItem(){}})).getItem('a'),null);
 });
