@@ -18,8 +18,8 @@
   html[data-motion="on"] .page-contact__shaft { animation: page-contact-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-contact__light[data-running] .page-contact__shaft { animation-play-state: running; }
   @keyframes page-contact-shaft {
-    from { transform: translateX(-12%); }
-    to { transform: translateX(12%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   /* subject: the paper card with its three raised rows */
   .page-contact__directory { position: relative; z-index: 1; padding: var(--space-3) var(--space-3) 10px; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
@@ -220,7 +220,7 @@
   /* ---------- small phones ---------- */
   @media (max-width: 359px) {
     .page-contact__handset { width: 64px; top: -58px; right: -6px; }
-    .page-contact__sign { max-width: calc(100% - 68px); }
+    .page-contact__sign { max-width: calc(100% - 78px); }
     /* the narrowest map: the road's name moves clear of the pin; the two place names drop their arrows
        (each already stands at its own end of the road) so the pin's label fits beside "Munshi Pulia" */
     .page-contact__map-label--road { left: 21%; }
@@ -330,7 +330,8 @@
        day column (the ledger's own left edge), whose head is empty, so the calendar's shadow falls on no words. */
     .page-contact__ledger { grid-column: 7 / 13; grid-row: 1; margin-top: 126px; }
     .page-contact__hours-arch { left: calc(50% + var(--space-7) / 2); right: auto; top: 0; width: 176px; height: 127px; }
-    .page-contact__calendar { left: calc(50% + var(--space-7) / 2 + 24px); right: auto; top: 16px; width: 128px; transform: rotate(-4deg); filter: var(--elev-object); }
+    /* it floats a few pixels, so it is held 8 px clear of the rule and never sinks through it */
+    .page-contact__calendar { left: calc(50% + var(--space-7) / 2 + 24px); right: auto; top: 8px; width: 128px; transform: rotate(-4deg); filter: var(--elev-object); }
     .page-contact__observation { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); max-width: 440px; }
 
     .page-contact__message-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }

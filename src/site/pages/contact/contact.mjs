@@ -26,9 +26,9 @@ function openingPart(ctx){
   +sectionHead({runningHead:words.runningHead,heading:words.heading,emphasis:words.emphasis,level:1,id:'contact-title'})
   +openSign(ctx,{form:'closing',className:'page-contact__sign'})
   +`</div>`
-  // far: the arch and its slow light · subject: the paper card · near: the handset
+  // far: the arch and its slow light · subject: the paper card · near: the handset, which floats (the shared hook)
   +`<div class="page-contact__stage"><div class="page-contact__arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></div>`
-  +`<div class="page-contact__directory">${image(clinicObjects['telephone-handset'],{className:'page-contact__handset',eager:true,attributes:{fetchpriority:null}})}`
+  +`<div class="page-contact__directory">${image(clinicObjects['telephone-handset'],{className:'page-contact__handset',eager:true,attributes:{fetchpriority:null,'data-ambient':'float'}})}`
   +`<ul class="call-rows page-contact__rows" aria-label="${text(words.directoryLabel)}">${rows}<li>${whatsappRow(ctx,{roomy:true})}</li></ul>`
   +`<p class="page-contact__changes">${icon('info')}<span>${text(words.changes)}</span></p></div></div>`
   // Booking ON: the main button and the way back to a booking. OFF: both leave, and one line says to call.
@@ -105,9 +105,9 @@ function hoursPart(ctx){
   +sectionHead({runningHead:hours.runningHead,heading:head.heading,emphasis:head.emphasis,id:'hours-title'})
   +`<div class="page-contact__observation" data-enter>${icon('shield')}<div><h3>${text(note.title)}</h3><p>${text(note.text)}</p></div></div></div>`
   // The timetable is flat (it is information), with today's row on the part's own soft band; the calendar
-  // on its pale arch is the one accent, and from tablets up the slow light crosses that arch (the section's one mover).
+  // on its pale arch is the one accent: it floats (the shared hook), and from tablets up the slow light crosses the arch.
   +`<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></span>`
-  +image(clinicObjects['desk-calendar'],{className:'page-contact__calendar'})
+  +image(clinicObjects['desk-calendar'],{className:'page-contact__calendar',attributes:{'data-ambient':'float'}})
   +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,roomy:true,band:true,className:'page-contact__week'})}</div>`
   +`</div></section>`;
 }

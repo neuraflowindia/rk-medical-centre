@@ -153,9 +153,13 @@ test('entrances: nothing in the first screen moves in; the pin lands after its m
  assert.doesNotMatch(first,/data-enter/);
  assert.match(page,/<span class="page-contact__pin" data-enter="drop" data-enter-after="0\.35" aria-hidden="true">/);
  // Two slow lights, never in one view: the first screen's arch, and the small arch behind the timetable's calendar.
- assert.equal(count(page,/data-ambient(?!="minor")/g),2);
- assert.equal(count(first,/data-ambient(?!="minor")/g),1);
+ assert.equal(count(page,/data-ambient(?!="(?:minor|float)")/g),2);
+ assert.equal(count(first,/data-ambient(?!="(?:minor|float)")/g),1);
  assert.match(page,/<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient>/);
+ // Two paper-cut objects float, one in each of those views: the handset and the desk calendar.
+ assert.equal(count(page,/data-ambient="float"/g),2);assert.equal(count(first,/data-ambient="float"/g),1);
+ assert.match(page,/<img class="page-contact__handset"[^>]*data-ambient="float"/);
+ assert.match(page,/<img class="page-contact__calendar"[^>]*data-ambient="float"/);
 });
 
 // ---------- the page's own behaviour ----------
