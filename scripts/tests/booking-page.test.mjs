@@ -179,8 +179,12 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  // Back, Forward and refresh: the steps are history entries the flow marks itself, and what is kept
  // lives in the tab's own storage only (never in storage that outlasts the tab)
  assert.match(island,/window\.history\.pushState\(withMark\(window\.history\.state, mark\), ''\)/);
- assert.match(island,/window\.addEventListener\('popstate', onPop, true\)/,'before the site\'s router, so the page is not drawn again');
+ // the site draws the page again on Back and Forward: the screens then take up the same coordinator (the package's own, through its own hook)
+ assert.match(island,/const useBooking = createUseBooking\(React, \{product: bookingBrowser\.product, controller: \(\) => live\.controller\}\);/);
+ assert.match(island,/if \(!start\.live\) \{ live\.controller = bookingBrowser\.controller\(service\); live\.ui = null; \}/,'a fresh arrival and a refresh start a new coordinator');
+ assert.match(island,/window\.addEventListener\('site:history', onHistory\)/,'where the site\'s router asks first, the steps move in place');
  assert.match(island,/if \(!mark\) return;/,'an entry outside the flow is left to the site\'s router');
+ assert.doesNotMatch(island,/addEventListener\('popstate'/,'the router\'s own listener runs first: nothing is gained by a second one');
  assert.equal(island.match(/sessionStorage/g).length,1);assert.doesNotMatch(island,/localStorage|indexedDB|document\.cookie/);
  assert.match(island,/if \(s\.credential \|\| s\.receipt\) \{ dropDraft\(\); return; \}/,'removed the moment the booking is sent');
  // no dead press: the main button is switched off only while step 2 is being sent

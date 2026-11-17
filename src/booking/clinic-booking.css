@@ -94,7 +94,7 @@
 
   /* ----- days: tiles the visitor can move through; the last one opens the calendar ----- */
   .booking-days__row {
-    display: flex; gap: var(--space-2); margin: -4px calc(-1 * var(--gutter)) -8px; padding: 4px var(--gutter) 16px; overflow-x: auto; overscroll-behavior-x: contain;
+    clear: both; display: flex; gap: var(--space-2); margin: -4px calc(-1 * var(--gutter)) -8px; padding: 4px var(--gutter) 16px; overflow-x: auto; overscroll-behavior-x: contain;
     scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); scrollbar-width: none;
   }
   .booking-days__row::-webkit-scrollbar { display: none; }

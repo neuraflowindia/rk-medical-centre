@@ -16,10 +16,23 @@ import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, 
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
   readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
-  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor} from './booking-steps.mjs';
+  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor, FIRST_TIMES} from './booking-steps.mjs';
 
-const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
+
+// What the booking steps still hold while the page stays open. The site draws the whole page again
+// when the browser goes Back or Forward, which starts these screens afresh; they then take up the
+// same engine coordinator again (it is made to be stopped and started), so nothing chosen, typed
+// or said by the engine is lost and nothing is read from storage. In memory only; a fresh arrival
+// on the booking page replaces it.
+//   controller  the engine's coordinator of the booking in hand
+//   here        the flow's mark on the history entry last shown
+//   leftAt      when the screens were last taken down: a redraw follows within a moment; anything
+//               later is a return from another page, and `here` no longer says where the visitor came from
+//   ui          the little the screens add of their own: was the doctor the visitor's choice, why step 1 is shown again
+const live = {controller: null, here: null, leftAt: 0, ui: null};
+const REDRAW_MS = 500;
+const useBooking = createUseBooking(React, {product: bookingBrowser.product, controller: () => live.controller});
 
 // The tab's own storage: where the engine keeps its booking reference, and where an unfinished
 // booking is kept so that Back, Forward and a refresh bring it back (booking-steps.mjs says
@@ -129,7 +142,8 @@ function VisitSummary({summary, id, onChange, onDetails = null, aside = false}) 
       <dl className="visit-summary__facts" aria-labelledby={id + 'who'}>
         <div><dt>{words.summary.patient}</dt><dd>{summary.patient.name}</dd></div>
         {summary.patient.phone && <div><dt>{words.summary.phone}</dt><dd>{kt(summary.patient.phone)}</dd></div>}
-        {summary.patient.email && <div><dt>{words.summary.email}</dt><dd>{summary.patient.email}</dd></div>}
+        {/* a long address breaks after its @, not in the middle of a word */}
+        {summary.patient.email && <div><dt>{words.summary.email}</dt><dd>{summary.patient.email.split('@').map((part, index) => index ? <React.Fragment key={index}>@<wbr/>{part}</React.Fragment> : part)}</dd></div>}
       </dl>
       {aside && <button type="button" className="text-link visit-summary__change" onClick={onDetails}><Icon name="edit"/><span>{words.summary.changeDetails}</span></button>}
     </>}
@@ -175,38 +189,49 @@ function AppointmentCard({receipt, titleRef, id}) {
 }
 
 function Booking({draft = {}}) {
-  // Back, Forward and a refresh return to a history entry this flow marked: its step and the kept
-  // choices come back. A fresh arrival starts at step 1 and reads nothing that was kept.
+  // Back, Forward and a refresh return to a history entry this flow marked: its step and the
+  // choices come back (from what the page still holds, or after a refresh from the record kept in
+  // the tab). A fresh arrival starts at step 1 with a new coordinator and reads nothing that was kept.
   const boot = useRef(null);
   if (!boot.current) {
     const mark = readMark(window.history.state);
-    boot.current = flowStart({mark, saved: mark ? loadDraft(tabStorage, Date.now()) : null});
-    const kept = boot.current.saved;
+    const redrawn = !!live.here && performance.now() - live.leftAt < REDRAW_MS;
+    const held = mark && live.controller ? {state: live.controller.getSnapshot(), here: redrawn ? live.here : mark, chosen: !!live.ui?.chosen} : null;
+    const start = flowStart({mark, live: held, saved: mark && !held ? loadDraft(tabStorage, Date.now()) : null});
+    const kept = start.saved;
     if (kept) {
       Object.assign(draft, {name: kept.details.full_name, phone: kept.details.phone, email: kept.details.email, message: kept.details.notes});
       if (kept.chosen && doctorFor(kept.service)) draft.doctor = doctorFor(kept.service);
-    } else draft.doctor = askedDoctor(window.location.search, draft.doctor);
+    } else if (!start.live) draft.doctor = askedDoctor(window.location.search, draft.doctor);
+    const service = start.live ? held.state.service : kept?.chosen && kept.service ? kept.service : serviceFor(draft.doctor);
+    if (!start.live) { live.controller = bookingBrowser.controller(service); live.ui = null; }
+    live.here = {step: start.step, depth: start.depth};
+    boot.current = {...start, service, chosen: start.live ? held.chosen : kept ? kept.chosen : !!service, gone: start.live && live.ui?.gone || ''};
   }
-  const initialService = useRef(boot.current.saved?.chosen && boot.current.saved.service ? boot.current.saved.service : serviceFor(draft.doctor));
+  const initialService = useRef(boot.current.service);
   const flow = useBooking(initialService.current), {state: s, dispatch} = flow, id = useId();
   const product = useSyncExternalStore(productState.subscribe, productState.getSnapshot, productState.getServerSnapshot);
   const [step, setStep] = useState(boot.current.step);
-  // The kept choices still being handed back to the engine after a refresh or a return (null = none).
+  // The kept choices still being handed back to the engine after a refresh (null = none).
   const [restoring, setRestoring] = useState(boot.current.saved);
   // What this history entry says: its step, and how many entries of the flow lie before it.
-  const here = useRef({step: boot.current.step, depth: boot.current.depth});
+  const here = useRef(live.here);
   // The engine starts with its first doctor; the page waits for the visitor's own choice unless they came for one.
-  const [chosen, setChosen] = useState(boot.current.saved ? boot.current.saved.chosen : !!initialService.current);
+  const [chosen, setChosen] = useState(boot.current.chosen);
   const [changing, setChanging] = useState(false);
   const [later, setLater] = useState(false);
   const [held, setHeld] = useState(null);
-  const [problems, setProblems] = useState({});
+  const [problems, setProblems] = useState(() => boot.current.short === 'details' ? detailProblems(live.controller.getSnapshot().details, {requiredContacts: live.controller.getSnapshot().policy?.policy.required_contacts}) : {});
   const [record, setRecord] = useState(false);
-  // Why the visitor is back on step 1 without a starting time: 'taken' (it is no longer offered), 'again' (booking was paused), or ''.
-  const [gone, setGone] = useState('');
+  // Why the visitor is back on step 1 without a starting time: 'taken' (it is no longer offered), 'again'
+  // (booking was paused), the engine's own sentence about it, or ''. It outlives the engine's next reading.
+  const [gone, setGone] = useState(boot.current.gone);
+  live.ui = {chosen, gone};
+  // (said to the page's memory at once as well: a move through the browser's history may follow before the next drawing)
+  const sayGone = why => { live.ui = {chosen, gone: why}; setGone(why); };
   // The part of the step the visitor was shown after pressing the main button too early ("" = none).
-  const [asked, setAsked] = useState('');
-  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({}), dayRow = useRef(null);
+  const [asked, setAsked] = useState(() => ['doctor', 'time', 'day'].includes(boot.current.short) ? boot.current.short : '');
+  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({}), dayRow = useRef(null), bar = useRef(null);
   // Phones show the days as one row moved sideways: has it been moved to its end?
   const [daysEnd, setDaysEnd] = useState(false);
   const [act, waiting] = useHeldAction(flow.available && !s.busy, flow.viewAvailable);
@@ -279,11 +304,11 @@ function Booking({draft = {}}) {
   useEffect(() => { if (asked && asked !== ask) setAsked(''); }, [asked, ask]);
 
   // ----- the steps as history entries -----
-  const relabel = mark => { here.current = mark; window.history.replaceState(withMark(window.history.state, mark), ''); };
+  const relabel = mark => { here.current = live.here = mark; window.history.replaceState(withMark(window.history.state, mark), ''); };
   const forward = next => {
     setProblems({}); setStep(next);
     const mark = advanceMark(here.current, next);
-    window.history.pushState(withMark(window.history.state, mark), ''); here.current = mark;
+    window.history.pushState(withMark(window.history.state, mark), ''); here.current = live.here = mark;
   };
   // An earlier step: through the browser's own history, so its Back and Forward stay true to the steps.
   const backTo = target => {
@@ -291,13 +316,21 @@ function Booking({draft = {}}) {
     const move = retreat({from: here.current, target});
     if (move.go) window.history.go(move.go); else relabel(move.mark);
   };
-  useEffect(() => { relabel(here.current); }, []);
+  // This entry is the flow's: marked with its step (or left at once, when its step cannot be shown).
+  // Reached by Back or Forward, the step starts at its heading, as it does when "Continue" leads to it.
+  useEffect(() => {
+    if (boot.current.go) { window.history.go(boot.current.go); return; }
+    relabel(boot.current.relabel || here.current);
+    if (boot.current.live) title.current?.focus({preventScroll: true});
+  }, []);
   const requiredContacts = p?.required_contacts;
   const allowed = restoring ? STEPS.length : furthestStep({missing, problems: detailProblems(s.details, {requiredContacts})});
-  // The browser's Back or Forward arrived on an entry of this flow: the steps move; the page is not drawn again.
+  // Back or Forward onto an entry of this flow, handled in place. The site's router asks first
+  // (a `site:history` event that can be cancelled) when it offers that; where it does not, it draws
+  // the page again and these screens start on the entry as above: the same result, less smoothly.
   const onArrival = useRef(null);
   onArrival.current = mark => {
-    const from = here.current; here.current = mark;
+    const from = here.current; here.current = live.here = mark;
     const move = arrival({mark, from, steps: screen === 'form', allowed});
     if (move.mark) relabel(move.mark);
     if (move.step) {
@@ -311,15 +344,14 @@ function Booking({draft = {}}) {
     if (move.go) window.history.go(move.go);
   };
   useEffect(() => {
-    // Listening in the capture phase puts this before the site's own router, which would draw the whole page again.
-    const onPop = event => {
+    const onHistory = event => {
       const mark = readMark(window.history.state);
       if (!mark) return; // an entry outside the flow: the site's router shows that page
-      event.stopImmediatePropagation();
+      event.preventDefault();
       onArrival.current(mark);
     };
-    window.addEventListener('popstate', onPop, true);
-    return () => window.removeEventListener('popstate', onPop, true);
+    window.addEventListener('site:history', onHistory);
+    return () => window.removeEventListener('site:history', onHistory);
   }, []);
 
   // ----- what is kept for Back, Forward and refresh -----
@@ -332,7 +364,8 @@ function Booking({draft = {}}) {
     if (!next.done) return;
     setRestoring(null);
     // the starting time could not be brought back: step 1, with the reason when it is no longer offered
-    if (!next.kept && step > 1) { setGone(next.gone ? 'taken' : ''); backTo(1); }
+    if (!next.kept && next.gone) sayGone('taken');
+    if (!next.kept && step > 1) backTo(1);
   }, [restoring, s, usable, flow.available, flow.viewAvailable, held]);
   useEffect(() => {
     if (s.credential || s.receipt) { dropDraft(); return; } // sent: nothing is kept any more
@@ -345,9 +378,9 @@ function Booking({draft = {}}) {
   if (screen === 'unavailable') paused.current = true;
   useEffect(() => {
     if (screen !== 'form' || held || restoring || !mustChooseAgain({step, state: s, usable})) return;
-    setGone(s.error ? '' : paused.current ? 'again' : 'taken'); paused.current = false; backTo(1);
+    sayGone(s.error || (paused.current ? 'again' : 'taken')); paused.current = false; backTo(1);
   }, [screen, step, s.slot, s.slotsStatus, s.policyFresh, usable, held, restoring]);
-  useEffect(() => { if (s.slot) { setGone(''); paused.current = false; } }, [s.slot]);
+  useEffect(() => { if (s.slot) { sayGone(''); paused.current = false; } }, [s.slot]);
   // A new booking after a finished one starts at step 1.
   const wasReceipt = useRef(false);
   useEffect(() => {
@@ -355,6 +388,7 @@ function Booking({draft = {}}) {
     wasReceipt.current = screen === 'receipt';
   }, [screen]);
 
+  useEffect(() => () => { live.leftAt = performance.now(); }, []);
   // The page around the steps is told which screen is shown: its head changes once a booking is made.
   useEffect(() => {
     const page = root.current?.closest('.page-booking');
@@ -372,13 +406,16 @@ function Booking({draft = {}}) {
 
   const settle = useRef(false);
   const chooseDoctor = service => { settle.current = !chosen; setChosen(true); setChanging(false); edit('service', service); };
-  // The visitor has just chosen a doctor: where the times would start low on the screen, the days come to its top.
+  // The visitor has just chosen a doctor: where the first row of times would not be in sight above
+  // the bar (short laptop screens), the days come to the top of the screen, so days and times are seen together.
   useEffect(() => {
     if (!settle.current || !chosen) return;
     settle.current = false;
     requestAnimationFrame(() => {
       const day = parts.current.day, time = parts.current.time;
-      if (day && time && time.getBoundingClientRect().top > window.innerHeight * 0.55) day.scrollIntoView({block: 'start'});
+      if (!day || !time) return;
+      const foot = bar.current ? Math.min(bar.current.getBoundingClientRect().top, window.innerHeight) : window.innerHeight;
+      if (foot - time.getBoundingClientRect().top < FIRST_TIMES) day.scrollIntoView({block: 'start'});
     });
   }, [chosen]);
   // The chosen day is in sight in the row of days (after a refresh it may lie beyond the first few).
@@ -409,7 +446,6 @@ function Booking({draft = {}}) {
     });
   };
   // A control that takes the cursor while it sits under the bar is brought above it (Tab, arrow keys, a phone's keyboard).
-  const bar = useRef(null);
   const keepClear = event => {
     const node = event.target, held = bar.current;
     if (!held || held.contains(node) || getComputedStyle(held).position !== 'sticky') return;
@@ -427,7 +463,8 @@ function Booking({draft = {}}) {
     requestAnimationFrame(() => {
       const node = parts.current[what]; if (!node) return;
       node.scrollIntoView({block: what === 'tick' ? 'nearest' : 'center'});
-      node.querySelector('input:not(:disabled), button:not(:disabled)')?.focus({preventScroll: true});
+      // the first thing in it that can be chosen (not the group's own "Change" or "More days")
+      node.querySelector('input:not(:disabled), button:not(:disabled):not(.text-link)[tabindex="0"], button:not(:disabled):not(.text-link):not([tabindex])')?.focus({preventScroll: true});
     });
   };
   const advance = () => {
@@ -458,7 +495,7 @@ function Booking({draft = {}}) {
 
   // A reading that failed on step 1 has one notice of the page's own (with the number to call); the engine's sentence is for everything else.
   const fault = screen === 'form' ? readFault({step, usable, chosen, held, state: s}) : '';
-  const error = s.error && !fault && <Notice><p>{s.error}</p></Notice>;
+  const error = s.error && !fault && s.error !== gone && <Notice><p>{s.error}</p></Notice>;
 
   if (screen === 'receipt') {
     const r = s.receipt, service = serviceFor(doctorFor(r.resource_id));
@@ -518,7 +555,8 @@ function Booking({draft = {}}) {
   const lines = barLines(summary, missing);
   const sending = s.busy || waiting;
   const optionsStale = !usable || !s.policyFresh;
-  const timesWaiting = !!held || s.slotsStatus === 'loading';
+  // (when the engine re-reads the same day it keeps that day's times: they stay on screen meanwhile)
+  const timesWaiting = !!held || s.slotsStatus === 'loading' && s.slots.length === 0;
   const noTimes = !timesWaiting && s.slotsStatus === 'ready' && s.slots.length === 0;
   const methods = usable ? paymentOrder(p.payment_methods, method => paymentAvailable(s.policy, method)) : [];
   // The tick box waits for the payment option (choosing one clears the tick in the engine); pressed before that, it points there.
@@ -536,7 +574,7 @@ function Booking({draft = {}}) {
     <div className="clinic-booking__main">
       <Progress step={step}/>
       {error}
-      {gone && !s.error && <Notice icon="clock" calm={gone === 'again'}><p>{gone === 'again' ? words.time.again : words.time.gone}</p></Notice>}
+      {gone && <Notice icon="clock" calm={gone === 'again'}><p>{gone === 'again' ? words.time.again : gone === 'taken' ? words.time.gone : gone}</p></Notice>}
       <form className="booking-form" aria-label={words.formLabel} noValidate onSubmit={event => { event.preventDefault(); advance(); }} onFocus={keepClear}>
         <section className={'clinic-booking__step clinic-booking__step--' + step} aria-labelledby={id + 'step'}>
           <h2 className="clinic-booking__title" id={id + 'step'} ref={title} tabIndex={-1}>{stepInfo.title}</h2>

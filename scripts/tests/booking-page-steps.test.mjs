@@ -79,7 +79,7 @@ test('short pairs stay on one line',()=>{
  assert.equal(keepTogether('Wed 18 Nov · 10:20 am'),'Wed 18 Nov · 10:20 am');
  assert.equal(keepTogether('94150 49410'),'94150 49410');
  assert.equal(keepTogether(800),'800');
- assert.equal(keepTogether(settings.location.address).slice(-11),'UP\u00a0-\u00a0226016','the state and the PIN code stay together');
+ assert.equal(keepTogether(settings.location.address).slice(-12),'UP\u00a0-\u2060\u00a0226016','the state and the PIN code stay together (no break after the hyphen either)');
 });
 
 test('doctors: the engine\'s services become the two doctor cards, each in its own wash',async()=>{
@@ -429,12 +429,41 @@ test('the flow marks its own history entries; only a marked entry reads what was
  assert.deepEqual(withMark({key:4,[HISTORY_MARK]:{step:3,depth:2}},{step:1,depth:2}),{key:4,[HISTORY_MARK]:{step:1,depth:2}});
  assert.doesNotMatch(JSON.stringify(withMark({key:4},{step:2,depth:1})),/Kamla|98765|example/,'nothing personal in the history entry');
  // a fresh arrival (a link, a typed address): step 1, nothing read
- assert.deepEqual(flowStart(),{step:1,depth:0,saved:null});
- assert.deepEqual(flowStart({mark:null,saved:record}),{step:1,depth:0,saved:null});
- // Back, Forward or a refresh onto a marked entry: its step, with what was kept
- assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:record}),{step:3,depth:2,saved:record});
+ const clean={step:1,depth:0,saved:null,live:false,go:0,relabel:null,short:''};
+ assert.deepEqual(flowStart(),clean);
+ assert.deepEqual(flowStart({mark:null,saved:record}),clean);
+ // a refresh on a marked entry: its step, with what was kept in the tab
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:record}),{...clean,step:3,depth:2,saved:record});
  // a marked entry whose record has gone (too old, or the booking was sent): step 1; the entries before it are still there
- assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:null}),{step:1,depth:2,saved:null});
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:null}),{...clean,depth:2});
+});
+
+test('Back and Forward while the page stays open: the steps start again on the entry with the engine exactly as it stood',async()=>{
+ const {controller,state}=await engine({initialService:'dr-parul-gupta'});
+ const live=(here,extra={})=>({state:state(),here,chosen:true,...extra});
+ const begun={saved:null,live:true,go:0,relabel:null,short:''};
+ // step 1 not finished: only step 1 can be shown
+ assert.deepEqual(flowStart({mark:{step:1,depth:0},live:live({step:1,depth:0})}),{...begun,step:1,depth:0});
+ // Forward onto step 2 with no starting time: the browser moves back, and the page says what is missing
+ assert.deepEqual(flowStart({mark:{step:2,depth:1},live:live({step:1,depth:0})}),{...begun,step:1,depth:1,go:-1,short:'time'});
+ assert.equal(flowStart({mark:{step:2,depth:1},live:live({step:1,depth:0},{chosen:false})}).short,'doctor');
+ assert.deepEqual(flowStart({mark:{step:3,depth:0},live:live({step:1,depth:0})}),{...begun,step:1,depth:0,relabel:{step:1,depth:0},short:'time'});
+ // a time chosen, details not typed: step 2 is the furthest
+ controller.edit('slot',state().slots[2]);
+ assert.deepEqual(flowStart({mark:{step:2,depth:1},live:live({step:3,depth:2})}),{...begun,step:2,depth:1});
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},live:live({step:2,depth:1})}),{...begun,step:2,depth:2,go:-1,short:'details'});
+ // everything there: Back from step 3 shows step 2, Back again step 1, Forward returns; a saved record is not read
+ controller.details('full_name','Kamla Devi Srivastava');controller.details('phone','98765 43210');
+ assert.deepEqual(flowStart({mark:{step:2,depth:1},live:live({step:3,depth:2}),saved:{anything:true}}),{...begun,step:2,depth:1});
+ assert.deepEqual(flowStart({mark:{step:1,depth:0},live:live({step:2,depth:1})}),{...begun,step:1,depth:0});
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},live:live({step:2,depth:1})}),{...begun,step:3,depth:2});
+ // the booking has been sent: there are no steps to go back into. Back leaves the booking page; Forward changes nothing
+ controller.edit('payment_method','at_clinic');controller.acknowledge(true);
+ await controller.checkout();await tick();
+ assert.equal(state().receipt.appointment_state,'confirmed');
+ assert.deepEqual(flowStart({mark:{step:2,depth:1},live:live({step:3,depth:2})}),{...begun,step:2,depth:1,go:-2});
+ assert.deepEqual(flowStart({mark:{step:1,depth:0},live:live({step:3,depth:2})}),{...begun,step:1,depth:0,go:-1});
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},live:live({step:3,depth:2})}),{...begun,step:3,depth:2});
 });
 
 test('the kept choices are handed back to the engine one edit at a time, and only as far as it still offers them',async()=>{

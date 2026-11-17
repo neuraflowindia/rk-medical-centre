@@ -10,14 +10,15 @@ import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths} from '../
 import {dateRange,localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
 
-const NBSP=' ';
+const NBSP=' ',JOIN='\u2060';
 /** Keep short pairs on one line, as the site's templates do: "Dr. Sanjay", "10:20 am", "94150 49410", "UP - 226016". */
 export function keepTogether(value){
  return String(value)
   .replace(/\b(Dr|R|No|Reg)\. (?=\S)/gu,`$1.${NBSP}`)
   .replace(/(\d) (am|pm)\b/gu,`$1${NBSP}$2`)
   .replace(/\b(\d{5}) (\d{5})\b/gu,`$1${NBSP}$2`)
-  .replace(/\b([A-Z]{2}) - (\d{6})\b/gu,`$1${NBSP}-${NBSP}$2`);
+  // (a line may break after a hyphen even before a no-break space: the word joiner closes that gap)
+  .replace(/\b([A-Z]{2}) - (\d{6})\b/gu,`$1${NBSP}-${JOIN}${NBSP}$2`);
 }
 
 /** Every sentence the booking steps print themselves (the engine supplies its own error sentences). */
@@ -250,6 +251,8 @@ export function tileMove(tiles,current,key){
 export function tileStop(tiles,chosen){
  return tiles.find(tile=>tile.available&&tile.iso===chosen)?.iso||tiles.find(tile=>tile.available)?.iso||'';
 }
+/** The height, in px, of the group's name, the session's name and one row of starting times: what must be in sight for "the first times are seen". */
+export const FIRST_TIMES=130;
 /** Is the chosen day one of the tiles? If not, the date box stays open so the choice can be seen. */
 export function dayBeyondTiles(tiles,iso){return isDay(iso)&&!tiles.some(tile=>tile.iso===iso);}
 
@@ -434,13 +437,16 @@ export function liftAboveBar({box,bar,air=16}={}){
 // refresh bring it back:
 //   - in the history entry: the step's number and how many entries of the flow lie before it.
 //     Nothing personal;
-//   - in the tab's own storage (sessionStorage, where the engine keeps its booking reference): one
-//     record with the doctor, day, starting time, payment option and the four boxes of step 2: the
-//     same details the page already holds while it is open, and nothing more. The tick is never
-//     kept. The record is removed the moment the booking is sent, is not read once it is
-//     DRAFT_MINUTES old, and goes with the tab.
-// A fresh arrival (a link, a typed address) never reads the record: only an entry the flow itself
-// marked does.
+//   - while the page stays open: the engine's own coordinator, exactly as it stood (the site draws
+//     the page again on Back and Forward; the booking screens then take the same coordinator up
+//     again instead of starting a new one). In memory only;
+//   - for a refresh, in the tab's own storage (sessionStorage, where the engine keeps its booking
+//     reference): one record with the doctor, day, starting time, payment option and the four
+//     boxes of step 2: the same details the page already holds while it is open, and nothing more.
+//     The tick is never kept. The record is removed the moment the booking is sent, is not read
+//     once it is DRAFT_MINUTES old, and goes with the tab.
+// A fresh arrival (a link, a typed address) starts clean: only an entry the flow itself marked
+// brings anything back.
 
 /** The name under which the flow marks its own history entries. */
 export const HISTORY_MARK='rkBooking';
@@ -501,12 +507,28 @@ export function clearDraft(storage){
  try{storage().removeItem(DRAFT_KEY);return true;}catch{return false;}
 }
 /**
- * How the steps begin on this history entry: at the entry's own step with the kept record when the
- * flow marked the entry earlier (Back, Forward, refresh), otherwise at step 1 with nothing read.
+ * How the steps begin on this history entry.
+ *   mark   the flow's mark on the entry, or null for a fresh arrival (a link, a typed address)
+ *   live   what the page still holds from a moment ago, when Back or Forward led here without a
+ *          new page: {state (the engine's), here (the entry left), chosen}; otherwise null
+ *   saved  the record kept in the tab, for a refresh; otherwise null
+ * Returns the step to show; `saved` when the kept choices must be handed back to the engine;
+ * `go` when the browser must move again (this entry's step cannot be shown, or a finished booking
+ * is being left); `relabel` when the entry must carry another step; `short` names what stopped the
+ * entry's own step from being shown ("doctor", "time", "day" or "details"), so the page can say why.
  */
-export function flowStart({mark=null,saved=null}={}){
+export function flowStart({mark=null,live=null,saved=null}={}){
+ if(mark&&live){
+  const usable=usablePolicy(live.state.policy),steps=screenFor({viewAvailable:true,state:live.state})==='form';
+  const missing=stepOneMissing({chosen:live.chosen,state:live.state,usable});
+  const problems=detailProblems(live.state.details,{requiredContacts:live.state.policy?.policy.required_contacts});
+  const move=arrival({mark,from:live.here,steps,allowed:furthestStep({missing,problems})});
+  const step=move.step||mark.step;
+  const short=!steps||step===mark.step?'':step===1?askFor({step:1,missing,timesShown:live.state.slotsStatus==='ready'&&live.state.slots.length>0})||'time':'details';
+  return Object.freeze({step,depth:mark.depth,saved:null,live:true,go:move.go||0,relabel:move.mark||null,short});
+ }
  const returning=!!(mark&&saved);
- return Object.freeze({step:returning?mark.step:1,depth:mark?mark.depth:0,saved:returning?saved:null});
+ return Object.freeze({step:returning?mark.step:1,depth:mark?mark.depth:0,saved:returning?saved:null,live:false,go:0,relabel:null,short:''});
 }
 /**
  * Bringing the kept choices back, one engine edit at a time (the engine reads a day's times after
