@@ -152,7 +152,7 @@ test('the footer is complete in both states and names each doctor with number an
   for(const id of ['sanjay','parul']){assert.ok(footer.includes(`href="tel:${doctors[id].tel}"`));assert.ok(footer.includes(doctors[id].phone.replace(/(\d{5}) (\d{5})/,'$1&nbsp;$2')));}
   assert.equal(count(footer,/UP Medical Council Reg\.&nbsp;No\.&nbsp;\d{5}/g),2);
   assert.equal(count(footer,/class="site-footer__link"/g),6);
-  assert.match(footer,/<li data-booking-only><a class="site-footer__link" href="\/booking">Book an appointment<\/a><\/li>/,'the whole list item goes with booking, so the list keeps no empty place');
+  assert.match(footer,/<li class="site-footer__item--book" data-booking-only><a class="site-footer__link" href="\/booking">Book an appointment<\/a><\/li>/,'the whole list item goes with booking, so the list keeps no empty place');
   assert.match(footer,/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-collection-notice>/);
   assert.doesNotMatch(footer,/data-privacy\b/,'no privacy choice is offered while nothing is measured');
   assert.match(siteFooter(ctx,{privacy:true}),/<li class="site-footer__item--wide" data-needs-script><button class="site-footer__link" type="button" aria-haspopup="dialog" data-privacy>Change privacy choices<\/button><\/li>/);
