@@ -1,3 +1,320 @@
-/* contact page: styles only for what sits inside .page-contact */
+/* Contact: reach us, find us. Four sections, each its own composition, on alternating grounds.
+   Roots: .page-contact (the page) · .message-form (the message form and its screens) */
 @layer pages {
+
+  /* ---------- 1 · first screen: the directory card ---------- */
+  .page-contact__opening { position: relative; z-index: 1; background: var(--ground-light); padding: var(--space-6) 0 30px; overflow-x: clip; }
+  .page-contact__opening-grid { display: grid; gap: var(--space-4); }
+  .page-contact__sign { margin-top: var(--space-3); min-height: 28px; max-width: calc(100% - 96px); }
+  .page-contact__stage { position: relative; margin-top: var(--space-4); }
+  /* far: a flat sage arch standing behind the card */
+  .page-contact__arch { position: absolute; z-index: 0; right: 14px; top: -46px; width: 54%; height: 150px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
+  .page-contact__light { display: none; position: absolute; inset: 0; }
+  .page-contact__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+  html[data-motion="on"] .page-contact__shaft { animation: page-contact-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
+  html[data-motion="on"] .page-contact__light[data-running] .page-contact__shaft { animation-play-state: running; }
+  @keyframes page-contact-shaft {
+    from { transform: translateX(-12%); }
+    to { transform: translateX(12%); }
+  }
+  /* subject: the paper card with its three raised rows */
+  .page-contact__directory { position: relative; z-index: 1; padding: var(--space-3) var(--space-3) 10px; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
+  .page-contact__rows { position: relative; }
+  .page-contact__changes { display: flex; align-items: center; gap: var(--space-2); margin: 10px var(--space-1) 2px; color: var(--ink-muted); font: var(--type-meta); }
+  .page-contact__changes .icon { width: 18px; height: 18px; }
+  /* near: the handset, perched on the card's corner */
+  .page-contact__handset { position: absolute; z-index: 2; right: -4px; top: -76px; width: 82px; height: auto; transform: rotate(-12deg); filter: var(--elev-object-small); pointer-events: none; }
+  .page-contact__actions { display: grid; justify-items: start; gap: var(--space-1); }
+  .page-contact__book { width: 100%; }
+  .page-contact__booking-off { display: grid; grid-template-columns: 20px 1fr; gap: 10px; color: var(--ink-body); font: var(--type-body); }
+  .page-contact__booking-off .icon { margin-top: 3px; color: var(--action); }
+
+  /* ---------- 2 · find us: a drawn map with a picture pinned to it ---------- */
+  .page-contact__find { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
+  .page-contact__table { display: grid; margin-top: var(--space-5); }
+  /* far: the map, in the photograph's own frame */
+  .page-contact__map { padding: 5px; border-radius: var(--radius-media); background: var(--surface); box-shadow: var(--elev-photo); }
+  .page-contact__map-window { position: relative; overflow: hidden; aspect-ratio: 16 / 9.4; border-radius: var(--radius-media-inner); background: var(--ground-tint-light); }
+  /* The drawing's own plane: it always spans the window's width and keeps the drawing's shape,
+     so a label placed in per cent stays on its road at every size. */
+  .page-contact__map-plane { position: absolute; left: 0; right: 0; top: 50%; aspect-ratio: 680 / 430; transform: translateY(-50%); }
+  .page-contact__map-art { display: block; width: 100%; height: 100%; overflow: visible; }
+  .page-contact__map-park { fill: var(--mist-sage); }
+  .page-contact__map-lane { fill: none; stroke: var(--surface); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+  .page-contact__map-edge { fill: none; stroke: var(--line-strong); stroke-width: 47.5; stroke-linecap: butt; stroke-linejoin: round; }
+  .page-contact__map-road { fill: none; stroke: var(--surface-top); stroke-width: 44; stroke-linecap: butt; stroke-linejoin: round; }
+  .page-contact__map-edge--side { stroke-width: 19.5; }
+  .page-contact__map-road--side { stroke-width: 16; }
+  .page-contact__map-median { fill: none; stroke: var(--line-strong); stroke-width: 1.6; stroke-dasharray: 12 9; }
+  .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; }
+  .page-contact__map-label .icon { width: 16px; height: 16px; }
+  .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .page-contact__map-label--west { left: var(--space-3); top: 29%; transform: translateY(-50%); }
+  .page-contact__map-label--east { right: var(--space-3); top: 41%; transform: translateY(-50%); }
+  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: 9px; padding: 4px var(--space-3) 5px; transform: translateX(-50%); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); }
+  .page-contact__map-label--north { left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); }
+  .page-contact__map-label--north .icon { color: var(--action); }
+  /* near: the pin on the clinic's spot. Its tip is the point; it comes down as the map is scrolled to. */
+  .page-contact__pin { position: absolute; z-index: 3; left: 50.3%; top: 52.8%; width: 0; height: 0; --rise: 0px; pointer-events: none; }
+  .page-contact__pin-hop { position: absolute; left: 0; top: 0; display: block; transition: transform var(--dur-hover) var(--ease-move); }
+  .page-contact__pin-art { display: block; width: 46px; max-width: none; height: auto; transform-origin: 45% 100%; filter: var(--elev-object-small);
+    transform: translate(-45%, calc(-100% - (1 - var(--q, 1)) * 54px)) rotate(calc((1 - var(--q, 1)) * -12deg)); }
+  .page-contact__pin-shadow { position: absolute; left: -15px; top: -5px; width: 30px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, var(--line-strong), var(--clear));
+    opacity: calc((var(--q, 1) - .55) * 2.3); transform: scale(calc(.4 + var(--q, 1) * .6)); }
+  .page-contact__map-hit { position: absolute; z-index: 1; inset: 0; border-radius: var(--radius-media-inner); }
+  /* on phones the map's control is its corner mark alone (the button's own narrow form); "Get directions" is just below */
+  .page-contact__map-open { position: absolute; z-index: 4; right: var(--space-3); top: var(--space-3); }
+  @media (hover: hover) and (pointer: fine) {
+    .page-contact__map-window:has(.page-contact__map-hit:hover, .page-contact__map-open:hover) .page-contact__pin-hop { transform: translateY(-5px); }
+  }
+  /* subject: the frontage, laid over the map's lower corner */
+  .page-contact__frontage { position: relative; z-index: 2; width: 86%; margin: max(-72px, calc(100px - 40vw)) 0 0 auto; }
+  .page-contact__frontage .photo-figure__caption { max-width: 32ch; }
+  .page-contact__address { position: relative; z-index: 3; margin-top: var(--space-4); padding: 18px var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
+  .page-contact__address h3 { font: var(--type-name); line-height: var(--leading-h3); }
+  .page-contact__address address { margin-top: var(--space-2); color: var(--ink-body); line-height: 1.5; text-wrap: pretty; }
+  .page-contact__directions { width: 100%; margin-top: var(--space-4); }
+  .page-contact__parking { display: grid; grid-template-columns: 20px 1fr; gap: 10px; margin-top: 14px; color: var(--ink-body); font: var(--type-notes); }
+  .page-contact__parking .icon { margin-top: 1px; color: var(--action); }
+  /* the credit the map's data asks for: small, and beside the map at every width */
+  .page-contact__map-credit { margin-top: var(--space-2); padding-left: 30px; color: var(--ink-muted); font: var(--type-meta); }
+
+  /* ---------- 3 · hours: the timetable, flat as a ledger ---------- */
+  .page-contact__hours { position: relative; background: var(--ground-light); padding: 36px 0 40px; overflow-x: clip; }
+  .page-contact__hours-grid { position: relative; display: grid; }
+  .page-contact__hours-copy { display: contents; }
+  .page-contact__hours-copy .section-head { order: 1; }
+  .page-contact__hours-copy .section-head__running { margin-right: 86px; }
+  /* the one accent: the desk calendar on a pale arch, beside the heading */
+  .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); }
+  .page-contact__calendar { position: absolute; z-index: 1; right: 3px; top: -10px; width: 64px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
+  .page-contact__ledger { order: 2; position: relative; z-index: 1; margin-top: var(--space-5); }
+  .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-4); }
+  .page-contact__observation .icon { width: 24px; height: 24px; margin-top: 1px; color: var(--action); }
+  .page-contact__observation h3 { font: var(--type-role); letter-spacing: 0; }
+  .page-contact__observation p { margin-top: var(--space-1); max-width: 46ch; color: var(--ink-body); font: var(--type-notes); }
+
+  /* ---------- 4 · the message form: a letter ---------- */
+  .page-contact__message { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
+  .page-contact__message-grid { position: relative; display: grid; }
+  .page-contact__urgent { display: grid; grid-template-columns: 20px 1fr; gap: 10px; margin-top: var(--space-3); color: var(--ink-body); font: var(--type-body); }
+  .page-contact__urgent .icon { margin-top: 3px; color: var(--action); }
+  .page-contact__pen { display: none; }
+
+  .message-form { display: grid; margin-top: 14px; }
+  /* the three steps: where the visitor is (the numbers are real: the order is fixed) */
+  .message-form__steps { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; }
+  .message-form__step { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-muted); font: var(--type-small); }
+  .message-form__step-number { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--flat-fill); color: var(--ink-muted); font: var(--type-tag); font-variant-numeric: tabular-nums lining-nums; }
+  /* a step already done keeps its ink; the one in hand is chosen (pressed-in); the rest wait, flat */
+  .message-form__step:has(~ [aria-current]) { color: var(--ink-body); }
+  .message-form__step:has(~ [aria-current]) .message-form__step-number { background: var(--surface); color: var(--action); box-shadow: var(--ring-quiet); }
+  .message-form__step[aria-current] { color: var(--ink); font-weight: 600; }
+  .message-form__step[aria-current] .message-form__step-number { background: var(--chosen); color: var(--ink); box-shadow: var(--ring), var(--elev-pressed); }
+  /* on phones the email field's own hint says why; from tablets up the line stands under the steps */
+  .message-form__why { display: none; margin-top: var(--space-3); color: var(--ink-body); font: var(--type-meta); max-width: 44ch; }
+  .message-form[data-state="closed"] .message-form__why, .message-form[data-state="failed"] .message-form__why, .message-form[data-state="blocked"] .message-form__why { display: none; }
+
+  /* the sheet: one screen at a time */
+  .message-form__sheet { position: relative; display: flex; flex-direction: column; gap: var(--space-4); margin-top: 14px; padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
+  .message-form__status { display: flex; align-items: center; gap: var(--space-2); color: var(--ink-body); font: var(--type-small); }
+  .message-form__status:empty { display: none; }
+  /* The status line is read out on every screen; it is seen only while something is under way. */
+  .message-form:not([data-state="opening"], [data-state="sending"], [data-state="resuming"]) .message-form__status { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .message-form__alert { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: var(--space-3) 14px; border-radius: var(--radius-small); background: var(--error-wash); box-shadow: inset 0 0 0 1px var(--error); color: var(--ink); font: var(--type-label); font-weight: 500; }
+  .message-form__alert .icon { margin-top: 1px; color: var(--error); }
+
+  .message-form__fields { display: grid; gap: var(--space-3); }
+  .message-form__field { display: grid; gap: 6px; }
+  .message-form__label { color: var(--ink); font: var(--type-label); }
+  .message-form__optional { color: var(--ink-muted); font-weight: 400; }
+  .message-form__hint { color: var(--ink-muted); font: var(--type-meta); }
+  /* fields are sunk-in: they take words */
+  .message-form__input { display: block; width: 100%; min-height: var(--control-height-large); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); appearance: none;
+    background: var(--ground-light); box-shadow: var(--ring-quiet), var(--elev-pressed); color: var(--ink); font: var(--type-body);
+    transition: box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move); }
+  .message-form__input--message { min-height: 88px; padding: 14px var(--space-4); resize: vertical; }
+  .message-form__input--code { max-width: 264px; font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .34em; text-align: center; padding-left: calc(var(--space-4) + .34em); }
+  .message-form__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-control); background: var(--surface-top); box-shadow: var(--ring), var(--elev-pressed); }
+  .message-form__input[aria-invalid="true"] { background: var(--error-wash); box-shadow: inset 0 0 0 1.5px var(--error), var(--elev-pressed); }
+  .message-form__fields:disabled .message-form__input, .message-form__input:disabled { background: var(--flat-fill); box-shadow: var(--ring-faint); color: var(--ink-muted); }
+  .message-form__fields:disabled .message-form__label { color: var(--ink-muted); }
+  .message-form__error { display: grid; grid-template-columns: 18px 1fr; gap: var(--space-2); color: var(--error); font: var(--type-small); }
+  .message-form__error .icon { width: 18px; height: 18px; margin-top: 1px; }
+
+  .message-form__compose { display: grid; gap: var(--space-1); }
+  .message-form__consent { color: var(--ink-body); font: var(--type-meta); }
+  .message-form__notice { display: flex; width: fit-content; }
+  .message-form__send { width: 100%; }
+
+  /* screens that replace the fields */
+  .message-form__code, .message-form__panel { display: grid; gap: var(--space-3); }
+  .message-form__panel-title { font: var(--type-name); letter-spacing: var(--tracking-display); }
+  .message-form__panel-title:focus-visible { outline: none; }
+  .message-form__panel-lead { color: var(--ink); font: var(--type-lead); }
+  .message-form__panel-text { max-width: 46ch; color: var(--ink-body); }
+  .message-form__panel--received { padding: var(--space-2) 0; }
+  /* the one mark on the thank-you screen: chosen and done */
+  .message-form__sent-mark { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-bottom: var(--space-1); border-radius: var(--radius-control); background: var(--chosen); color: var(--action); box-shadow: var(--ring-action-faint); }
+  .message-form__sent-mark .icon { width: 24px; height: 24px; stroke-width: 2; }
+  .message-form__code-entry { display: grid; gap: var(--space-4); margin-top: var(--space-2); }
+  .message-form__confirm { width: 100%; }
+  .message-form__resend { display: grid; justify-items: start; gap: 0; margin-top: var(--space-1); padding-top: var(--space-2); border-top: 1px solid var(--line); }
+  .message-form__meta { color: var(--ink-muted); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
+  .message-form__help { color: var(--ink-muted); font: var(--type-meta); max-width: 46ch; }
+  .message-form__instead { display: grid; gap: 10px; }
+  .message-form__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  .message-form__actions:not(:has(> :not([hidden]))) { display: none; }
+  .message-form__plain { margin-top: var(--space-5); }
+
+  /* the full privacy notice: one raised row that opens in place */
+  .page-contact__notice { margin-top: var(--space-4); }
+  .page-contact__notice-open { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5); border-radius: var(--radius-row); color: var(--ink);
+    background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
+  .page-contact__notice-words { display: grid; gap: 1px; }
+  .page-contact__notice-title { font: var(--type-row-strong); letter-spacing: 0; }
+  .page-contact__notice-note { color: var(--ink-body); font: var(--type-meta); }
+  .page-contact__notice-mark { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px; color: var(--action); }
+  .page-contact__notice-minus, .page-contact__notice[open] .page-contact__notice-plus { display: none; }
+  .page-contact__notice[open] .page-contact__notice-minus { display: block; }
+  .page-contact__notice-open:active { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
+  .page-contact__notice-open:focus-visible { border-radius: var(--radius-row); }
+  .page-contact__notice[open] .page-contact__notice-open { background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); }
+  .page-contact__notice:focus-visible { outline: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .page-contact__notice:not([open]) .page-contact__notice-open:hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+  }
+  .page-contact__notice-body { max-width: 70ch; padding: var(--space-6) var(--space-1) 0; color: var(--ink-body); }
+  .page-contact__notice-date { color: var(--ink-muted); font: var(--type-meta); }
+  .page-contact__notice-part { margin-top: var(--space-6); }
+  .page-contact__notice-part h3 { font: var(--type-role); letter-spacing: 0; }
+  .page-contact__notice-part p { margin-top: var(--space-2); }
+  .page-contact__notice-part ul { margin-top: 6px; padding-left: var(--space-5); list-style: disc; }
+  .page-contact__notice-part li { padding-left: 2px; }
+  .page-contact__notice-part li::marker { color: var(--action); }
+  .page-contact__notice-lead { color: var(--ink); font-weight: 600; }
+
+  /* ---------- small phones ---------- */
+  @media (max-width: 359px) {
+    .page-contact__handset { width: 64px; top: -58px; right: -6px; }
+    .page-contact__sign { max-width: calc(100% - 68px); }
+    .page-contact__map-label--north { display: none; }
+    .page-contact__map-label--west { top: 26%; }
+    .message-form__step-label { overflow-wrap: anywhere; }
+  }
+
+  /* ---------- from 480: the rows carry their digits on the right ---------- */
+  @media (min-width: 480px) {
+    .page-contact__frontage { width: 78%; }
+    .page-contact__book, .message-form__send, .message-form__confirm, .page-contact__directions { width: auto; }
+    .message-form__instead { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .message-form__instead > :last-child { grid-column: 1 / -1; }
+  }
+
+  /* ---------- tablets ---------- */
+  @media (min-width: 768px) {
+    .page-contact__opening { padding: var(--space-8) 0 var(--space-9); }
+    .page-contact__find, .page-contact__message { padding: calc(var(--section-pad) - 8px) 0 var(--section-pad); }
+    .page-contact__hours { padding: calc(var(--section-pad) - 8px) 0; }
+    .page-contact__sign { margin-top: var(--space-4); max-width: none; }
+    .page-contact__stage { max-width: 640px; margin-top: 72px; }
+    .page-contact__arch { right: 44px; top: -72px; width: 52%; height: 220px; }
+    .page-contact__light { display: block; }
+    .page-contact__directory { padding: var(--space-4) var(--space-4) var(--space-3); }
+    .page-contact__handset { right: -30px; top: -92px; width: 116px; }
+    .page-contact__actions { gap: var(--space-2); }
+
+    .page-contact__table { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-6); margin-top: var(--head-gap); }
+    .page-contact__locator { grid-column: 1 / -1; grid-row: 1; }
+    .page-contact__map { padding: 8px; }
+    .page-contact__map-window { aspect-ratio: auto; height: 380px; }
+    .page-contact__map-label--north { left: var(--space-4); top: var(--space-4); }
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
+    .page-contact__map-label--road { left: 31%; top: 44.1%; }
+    .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
+    .page-contact__pin-art { width: 62px; }
+    .page-contact__pin-shadow { left: -20px; top: -7px; width: 40px; height: 14px; }
+    .page-contact__map-label--pin { margin-top: var(--space-3); }
+    .page-contact__frontage { grid-column: 1 / 8; grid-row: 2; width: auto; margin: -112px 0 0 var(--space-6); }
+    .page-contact__address { grid-column: 8 / 13; grid-row: 2; align-self: start; margin: -72px var(--space-6) 0 0; padding: 26px 28px 28px; }
+    .page-contact__directions { width: 100%; }
+    .page-contact__address address { text-wrap: balance; }
+
+    .page-contact__hours-copy .section-head__running { margin-right: 150px; }
+    .page-contact__hours-arch { right: 0; top: -34px; width: 132px; height: 122px; }
+    .page-contact__calendar { right: 14px; top: -14px; width: 104px; }
+    .page-contact__ledger { margin-top: var(--head-gap); }
+    .page-contact__observation { max-width: 620px; margin-top: var(--space-7); }
+
+    .message-form__steps { gap: var(--space-2) var(--space-6); }
+    .message-form__why { display: block; }
+    .message-form__input--message { min-height: 132px; }
+    .message-form { margin-top: var(--space-5); }
+    .message-form__sheet { margin-top: var(--space-5); padding: var(--space-7); gap: var(--space-5); }
+    .message-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); align-items: start; }
+    .message-form__field:first-of-type, .message-form__field:last-of-type { grid-column: 1 / -1; }
+    .message-form__compose { grid-template-columns: 1fr auto; align-items: center; gap: var(--space-4); }
+    .message-form__instead { grid-template-columns: repeat(3, auto); justify-content: start; }
+    .message-form__instead > :last-child { grid-column: auto; }
+    .message-form__code-entry { grid-template-columns: 264px auto; align-items: start; justify-content: start; }
+    .message-form__code-entry .message-form__confirm { margin-top: 27px; }
+    .page-contact__notice { margin-top: var(--space-8); }
+    .page-contact__observation { margin-top: var(--space-7); }
+    .page-contact__notice-open { min-height: 72px; padding: var(--space-4) var(--space-5) var(--space-4) var(--space-6); }
+  }
+
+  /* ---------- laptops ---------- */
+  @media (min-width: 1024px) {
+    .page-contact__opening { padding: 0; }
+    .page-contact__opening-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); grid-template-rows: 1fr auto 1fr; column-gap: var(--space-7); row-gap: 0; min-height: min(calc(100svh - var(--header-height)), 780px); }
+    .page-contact__opening-copy { grid-column: 1; grid-row: 1; align-self: end; padding-top: var(--space-9); }
+    .page-contact__actions { grid-column: 1; grid-row: 2 / 4; align-self: start; margin-top: 34px; gap: var(--space-3); padding-bottom: var(--space-9); }
+    .page-contact__stage { grid-column: 2; grid-row: 1 / 4; align-self: stretch; display: grid; align-content: center; justify-items: center; max-width: none; margin: 0; padding: 104px 0 72px; }
+    /* the arch runs down into the sage section below: the two grounds meet inside it */
+    .page-contact__arch { left: 50%; right: auto; top: 44px; bottom: 0; width: min(100%, 640px); height: auto; transform: translateX(-50%); }
+    .page-contact__directory { width: min(100% - 56px, 552px); padding: var(--space-4) var(--space-4) var(--space-3); }
+    .page-contact__handset { right: -58px; top: -70px; width: 138px; transform: rotate(-14deg); filter: var(--elev-object); }
+    .page-contact__changes { margin: 14px 6px 4px; }
+    .page-contact__book { min-width: 0; }
+
+    /* the ground change and the arch are the boundary here; no hairline crosses the arch's foot */
+    .page-contact__find { padding-top: var(--section-pad); box-shadow: none; }
+    .page-contact__table { column-gap: var(--space-7); }
+    .page-contact__map-window { height: 440px; }
+    .page-contact__map-label--west { top: 38.9%; }
+    .page-contact__map-label--east { top: 51.3%; }
+    .page-contact__map-label--road { top: 42.9%; }
+    .page-contact__pin-art { width: 72px; }
+    .page-contact__pin-shadow { left: -24px; top: -8px; width: 48px; height: 16px; }
+    .page-contact__frontage { grid-column: 1 / 7; margin: -150px 0 0 var(--space-8); max-width: 520px; }
+    .page-contact__address { grid-column: 8 / 13; margin: -116px var(--space-8) 0 0; padding: 30px 32px 32px; }
+
+    .page-contact__hours-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-7); align-items: start; }
+    .page-contact__hours-copy { display: block; grid-column: 1 / 6; grid-row: 1; padding-top: 104px; }
+    .page-contact__hours-copy .section-head__running { margin-right: 0; }
+    /* the ledger's top rule is a shelf: the calendar stands on it, the arch rises behind */
+    .page-contact__ledger { grid-column: 7 / 13; grid-row: 1; margin-top: 126px; }
+    .page-contact__hours-arch { right: 28px; top: 0; width: 176px; height: 127px; }
+    .page-contact__calendar { right: 52px; top: 16px; width: 128px; transform: rotate(4deg); filter: var(--elev-object); }
+    .page-contact__observation { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); max-width: 440px; }
+
+    .page-contact__message-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
+    .page-contact__message-copy { grid-column: 1; grid-row: 1; }
+    .message-form { display: contents; }
+    .message-form__guide { grid-column: 1; grid-row: 2; margin-top: var(--space-8); }
+    .message-form__sheet { grid-column: 2; grid-row: 1 / 4; margin-top: 0; padding: 40px 44px 44px; }
+    /* beside the sheet the steps read downward, each on its own line */
+    .message-form__steps { flex-direction: column; flex-wrap: nowrap; gap: 0; }
+    .message-form__step { display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); font: var(--type-label); font-weight: 500; }
+    .message-form__step:first-child { border-top-color: var(--line-strong); }
+    .message-form__step[aria-current] { font-weight: 600; }
+    .message-form__why { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+    .page-contact__pen { display: block; position: absolute; z-index: 2; left: calc(38.3% - 46px); bottom: -34px; width: 74px; height: auto; transform: rotate(38deg); filter: var(--elev-object); pointer-events: none; }
+  }
+
+  @media (min-width: 1280px) {
+    .page-contact__opening-grid { grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); column-gap: var(--space-8); }
+    .page-contact__directory { width: min(100% - 96px, 568px); padding: 18px 18px 14px; }
+  }
 }

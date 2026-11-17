@@ -1,3 +1,166 @@
-/* doctors page: styles only for what sits inside .page-doctors */
+/* Meet the doctors: three sections, each its own composition. Everything here sits inside
+   .page-doctors; the shared parts bring their own look and are only placed here. */
 @layer pages {
+
+  /* ---------- 1 · opening: a double portrait ---------- */
+  .page-doctors__opening { position: relative; background: var(--ground-light); padding: var(--space-6) 0 40px; overflow-x: clip; }
+  .page-doctors__stage { display: grid; gap: 30px; }
+  .page-doctors__centre .section-head { max-width: none; }
+  .page-doctors__jump { display: none; }
+
+  /* phones and tablets: a zig-zag. Each frame and its caption are placed separately, so the
+     caption stands beside its portrait and the second portrait tucks under the first caption. */
+  .page-doctors__pair { --tuck: 62px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 18px; padding-top: var(--space-3); }
+  .page-doctors__sitter { display: contents; }
+  .page-doctors__frame { position: relative; }
+  .page-doctors__frame .photo-figure { position: relative; z-index: 1; }
+  .page-doctors__sitter--sanjay .page-doctors__frame { grid-column: 1; grid-row: 1; }
+  .page-doctors__sitter--sanjay .page-doctors__caption { grid-column: 2; grid-row: 1; align-self: start; padding-top: 10px; }
+  .page-doctors__sitter--parul .page-doctors__frame { grid-column: 2; grid-row: 2; margin-top: calc(-1 * var(--tuck)); }
+  .page-doctors__sitter--parul .page-doctors__caption { grid-column: 1; grid-row: 2; align-self: center; justify-items: end; text-align: right; padding-top: var(--space-5); }
+  /* far: an arch plate in the doctor's own tone; one slow light crosses both */
+  .page-doctors__plate { position: absolute; z-index: 0; inset: -12px -12px auto 12px; aspect-ratio: 4 / 5; border-radius: var(--radius-arch); background: var(--mist-sage); overflow: hidden; }
+  .page-doctors__sitter--parul .page-doctors__plate { inset: -12px 12px auto -12px; background: var(--mist-rose); }
+  .page-doctors__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+  html[data-motion="on"] .page-doctors__shaft { animation: page-doctors-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
+  /* the second plate is lit a moment after the first: one light, travelling left to right */
+  html[data-motion="on"] .page-doctors__sitter--parul .page-doctors__shaft { animation-delay: calc(var(--loop-light-start) + var(--loop-light) * .14); }
+  html[data-motion="on"] .page-doctors__stage[data-running] .page-doctors__shaft { animation-play-state: running; }
+  @keyframes page-doctors-shaft {
+    from { transform: translateX(-13%); }
+    to { transform: translateX(13%); }
+  }
+  /* once, as the page opens, the two portraits settle into their stagger */
+  html[data-motion="on"] .page-doctors__sitter--sanjay .page-doctors__frame { animation: page-doctors-settle-up var(--dur-settle) var(--ease-enter) both; }
+  html[data-motion="on"] .page-doctors__sitter--parul .page-doctors__frame { animation: page-doctors-settle-down var(--dur-settle) var(--ease-enter) both; }
+  @keyframes page-doctors-settle-up {
+    from { transform: translateY(12px); }
+    to { transform: none; }
+  }
+  @keyframes page-doctors-settle-down {
+    from { transform: translateY(-12px); }
+    to { transform: none; }
+  }
+  /* near: the caption — who, what, and where the photograph was taken */
+  .page-doctors__caption { display: grid; align-content: start; gap: 3px; min-width: 0; }
+  .page-doctors__caption strong { color: var(--ink); font: var(--type-name); letter-spacing: var(--tracking-display); }
+  .page-doctors__caption span { color: var(--ink-body); font: var(--type-formal); }
+  .page-doctors__caption em { margin-top: 5px; color: var(--ink-muted); font: var(--type-caption-italic); }
+
+  /* ---------- 2 · who should I see: a split spread ---------- */
+  .page-doctors__choose { position: relative; background: var(--ground-tint); padding: var(--section-pad) 0; box-shadow: inset 0 1px 0 var(--line); }
+  /* one sheet with a fold: two pages, never two cards */
+  .page-doctors__spread { display: grid; margin-top: var(--head-gap); }
+  .page-doctors__leaf { position: relative; display: grid; align-content: start; gap: var(--space-5); padding: var(--space-6) var(--card-pad) var(--card-pad); }
+  .page-doctors__leaf--sage { background: var(--wash-sage); border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: var(--elev-card); }
+  .page-doctors__leaf--rose { background: var(--wash-rose); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: inset 0 18px 20px -20px var(--line-strong), var(--elev-card-rose); }
+  /* as the sheet arrives its two pages part from the fold: the spread opens */
+  html[data-motion="on"] .page-doctors__leaf--sage { transform: translateY(calc((1 - var(--q, 1)) * 14px)); }
+  html[data-motion="on"] .page-doctors__leaf--rose { transform: translateY(calc((1 - var(--q, 1)) * -14px)); }
+  .page-doctors__leaf-head { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; }
+  .page-doctors__face { grid-row: 1 / 3; width: 56px; height: 56px; border-radius: var(--radius-control); box-shadow: 0 0 0 3px var(--surface), var(--elev-photo); }
+  .page-doctors__leaf-role { grid-column: 2; grid-row: 2; color: var(--ink-body); font: var(--type-formal); }
+  .page-doctors__leaf-title { grid-column: 2; grid-row: 1; font: var(--type-name); }
+  /* a plain list in the display face: information, so it is flat */
+  .page-doctors__concerns { display: grid; align-content: start; }
+  .page-doctors__concerns li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: var(--space-3); align-items: center; min-height: 44px; padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink); font: var(--type-ledger); }
+  .page-doctors__concerns li:last-child { border-bottom: 1px solid var(--line); }
+  .page-doctors__concerns .icon { width: 18px; height: 18px; color: var(--action); }
+  .page-doctors__facts { display: grid; align-content: start; justify-items: start; gap: 3px; }
+  .page-doctors__formal { color: var(--ink-body); font: var(--type-formal); }
+  .page-doctors__registration { color: var(--ink-body); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
+  .page-doctors__facts .tag { margin-top: 9px; }
+  .page-doctors__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .page-doctors__actions .button--main { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
+  .page-doctors__actions .button--second { flex: 0 0 auto; min-width: 92px; padding-inline: var(--space-4); }
+  /* while booking is off, Call is the page's main action and takes the row */
+  html[data-booking-state="off"] .page-doctors__actions .button--lead { flex: 1 1 auto; }
+  .page-doctors__profile { flex: 1 0 100%; margin-bottom: -10px; }
+  .page-doctors__more { display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; margin-top: var(--space-5); color: var(--ink-body); font: var(--type-formal); }
+
+  /* ---------- 3 · training and honours: a museum label and four documents ---------- */
+  .page-doctors__training { background: var(--ground-light); padding: calc(var(--section-pad) - 8px) 0 var(--space-4); }
+  .page-doctors__training-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .page-doctors__wall { --certificate-height: 132px; margin-top: var(--head-gap); }
+  .page-doctors__wall-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-5); margin-top: var(--space-2); color: var(--ink-body); font: var(--type-formal); }
+
+  @media (max-width: 359px) {
+    .page-doctors__pair { --tuck: 34px; column-gap: 14px; }
+    .page-doctors__caption em { display: none; }
+  }
+
+  @media (min-width: 480px) {
+    .page-doctors__pair { max-width: 440px; margin-inline: auto; width: 100%; }
+  }
+
+  @media (min-width: 768px) {
+    .page-doctors__opening { padding: var(--space-8) 0 var(--space-9); }
+    .page-doctors__stage { gap: 44px; }
+    .page-doctors__pair { --tuck: 110px; max-width: 560px; column-gap: 40px; }
+    .page-doctors__plate { inset: -16px -16px auto 16px; }
+    .page-doctors__sitter--parul .page-doctors__plate { inset: -16px 16px auto -16px; }
+    .page-doctors__sitter--sanjay .page-doctors__caption { padding-top: 26px; }
+    .page-doctors__caption { gap: 4px; }
+
+    .page-doctors__spread { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .page-doctors__leaf { padding: 34px var(--card-pad) var(--card-pad); gap: var(--space-6); }
+    .page-doctors__leaf--sage { border-radius: var(--radius-card) 0 0 var(--radius-card); }
+    .page-doctors__leaf--rose { border-radius: 0 var(--radius-card) var(--radius-card) 0; box-shadow: inset 20px 0 22px -22px var(--line-strong), var(--elev-card-rose); }
+    html[data-motion="on"] .page-doctors__leaf--sage { transform: translateX(calc((1 - var(--q, 1)) * 20px)); }
+    html[data-motion="on"] .page-doctors__leaf--rose { transform: translateX(calc((1 - var(--q, 1)) * -20px)); }
+    .page-doctors__concerns li { min-height: 50px; }
+    .page-doctors__more { margin-top: var(--space-6); }
+
+    /* the four documents stand two to a row: each doctor's pair together */
+    .page-doctors__training { padding: var(--section-pad) 0 var(--space-6); }
+    .page-doctors__wall { --certificate-height: 190px; --certificate-mat: 9px; width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; }
+    /* held narrow enough that a third document never joins a row */
+    .page-doctors__wall .certificate-wall { max-width: 720px; }
+    .page-doctors__wall .certificate-wall { flex-wrap: wrap; gap: 34px var(--space-5); overflow: visible; padding: 0; }
+    .page-doctors__wall-links { margin-top: var(--space-4); }
+  }
+
+  @media (min-width: 1024px) {
+    /* a triptych: portrait · heading · portrait, the second set a little lower */
+    .page-doctors__opening { padding: 56px 0 80px; }
+    /* the middle column is never narrower than the heading's longer line (8.8 times its size);
+       the frames take what is left, up to their own limit */
+    .page-doctors__stage { --frame: 208px; grid-template-columns: minmax(0, var(--frame)) minmax(calc(var(--size-h1) * 8.8), 1fr) minmax(0, var(--frame)); gap: 0 40px; align-items: start; }
+    .page-doctors__pair { display: contents; }
+    .page-doctors__sitter { display: grid; align-content: start; gap: 22px; grid-row: 1; }
+    .page-doctors__sitter--sanjay { grid-column: 1; }
+    .page-doctors__sitter--parul { grid-column: 3; margin-top: 56px; }
+    .page-doctors__sitter--sanjay .page-doctors__frame, .page-doctors__sitter--parul .page-doctors__frame { grid-column: auto; grid-row: auto; margin-top: 0; }
+    .page-doctors__sitter--sanjay .page-doctors__caption, .page-doctors__sitter--parul .page-doctors__caption { grid-column: auto; grid-row: auto; align-self: start; justify-items: start; text-align: left; padding: 0 0 0 10px; }
+    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 40px; }
+    .page-doctors__jump { display: block; margin-top: var(--space-5); }
+
+    .page-doctors__leaf { padding: 44px 48px 44px; }
+    .page-doctors__leaf-head { column-gap: 18px; }
+    .page-doctors__face { width: 64px; height: 64px; }
+    .page-doctors__concerns li { min-height: 54px; }
+    .page-doctors__actions { flex-wrap: nowrap; gap: var(--space-3); }
+    .page-doctors__actions .button--main { flex: 0 0 auto; padding-inline: 22px; }
+    .page-doctors__actions .button--second { padding-inline: 22px; }
+    html[data-booking-state="off"] .page-doctors__actions .button--lead { flex: 0 0 auto; }
+    .page-doctors__profile { flex: 0 0 auto; margin: 0 0 0 auto; }
+
+    .page-doctors__training { padding-bottom: var(--space-7); }
+    .page-doctors__training-grid { width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); grid-template-rows: auto 1fr; column-gap: var(--space-9); align-items: start; }
+    .page-doctors__training-head { grid-column: 1; grid-row: 1; width: auto; margin: 0; }
+    .page-doctors__wall-links { grid-column: 1; grid-row: 2; width: auto; margin: var(--space-4) 0 0; }
+    .page-doctors__wall { --certificate-height: 176px; grid-column: 2; grid-row: 1 / 3; width: auto; margin: 6px 0 0; }
+  }
+  /* the two pages share their rows, so lists, facts and buttons line up across the fold */
+  @supports (grid-template-rows: subgrid) {
+    @media (min-width: 768px) {
+      .page-doctors__spread { grid-template-rows: repeat(4, auto); }
+      .page-doctors__leaf { grid-row: span 4; grid-template-rows: subgrid; }
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .page-doctors__stage { --frame: 300px; column-gap: clamp(40px, 4.4vw, 72px); }
+    .page-doctors__wall { --certificate-height: 196px; --certificate-mat: 10px; }
+  }
 }
