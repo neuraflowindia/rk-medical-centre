@@ -7,6 +7,8 @@ import {bookingPaths} from './shared.mjs';
 export const bookingPage=Object.freeze({
  heading:'Book your visit.',
  emphasis:'your visit.',
+ // Once a booking is made the same head reads "Your visit." and its link is put away (there is nothing left to find).
+ done:Object.freeze({heading:'Your visit.',emphasis:'visit.'}),
  // The head's one link: for someone who has booked already. `spoken` says where it leads.
  link:Object.freeze({label:'Already booked?',spoken:'Already booked? Find your booking',path:bookingPaths.find})
 });

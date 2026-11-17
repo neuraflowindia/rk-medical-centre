@@ -166,7 +166,7 @@
   /* ----- the summary, "Your visit": one paper card, like a slip before it is signed ----- */
   .visit-summary { position: relative; display: grid; gap: var(--space-4); padding: var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
   .visit-summary__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 32px; }
-  .visit-summary__title { color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .visit-summary__title { color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; white-space: nowrap; }
   .visit-summary__doctor { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: center; gap: 14px; }
   .visit-summary__face { width: 56px; height: 56px; border-radius: var(--radius-control); object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
   .visit-summary__face--empty { display: inline-grid; place-items: center; color: var(--ink-muted); background: var(--flat-fill); box-shadow: none; }
@@ -232,6 +232,16 @@
   html[data-motion="on"] .booking-last.is-asked .booking-ack__box { animation: booking-nudge var(--dur-arrive) var(--ease-move) 1; }
   .booking-last.is-asked .booking-confirm-hint { color: var(--ink); font-weight: 600; }
   @keyframes booking-nudge { 0%, 100% { transform: none; } 30% { transform: translateX(-3px); } 65% { transform: translateX(3px); } }
+
+  /* ===================== a focused control is never under the bar ===================== */
+  /* While the steps are shown, the page keeps the bar's height (and a little air) clear at its foot
+     whenever it scrolls a control into view: Tab, a phone's keyboard, the browser's own "find".
+     The hidden radio of a card, tile or pill sits at its top edge, so it asks for the card's height too. */
+  html:has(.clinic-booking--steps) { scroll-padding-bottom: calc(var(--control-height-large) + var(--space-8) + var(--space-4)); }
+  html:has(.clinic-booking--steps[data-step="3"]) { scroll-padding-bottom: calc(var(--control-height-large) + 2 * var(--space-9) + var(--space-6)); }
+  .doctor-choice input { scroll-margin-bottom: 112px; }
+  .time-pill input { scroll-margin-bottom: var(--control-height-large); }
+  .payment-choice input { scroll-margin-bottom: 96px; }
 
   /* ===================== the bar: the summary and the step's main button ===================== */
   /* it stays at the foot of the screen while the steps are in view, so the next press is never out of sight */
@@ -318,12 +328,15 @@
   .clinic-booking .booking-record .abs-receipt { display: contents; }
   .booking-record .abs-receipt-actions { order: 1; }
   .booking-record__toggle { order: 2; justify-self: start; }
-  .booking-record .abs-receipt-facts { order: 3; margin-bottom: var(--space-3); }
+  .booking-record .abs-receipt-facts { order: 3; }
+  .booking-record__refresh { order: 4; justify-self: start; margin-top: calc(-1 * var(--space-2)); }
   .booking-record__toggle .icon { transition: transform var(--dur-hover) var(--ease-move); }
   .booking-record.is-open .booking-record__toggle .icon { transform: rotate(180deg); }
   .booking-record:not(.is-open) .abs-receipt-facts { display: none; }
-  .booking-receipt__more { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-5); padding-inline: var(--space-1); }
-  .booking-receipt__more .text-link:disabled { color: var(--ink-muted); cursor: default; }
+  /* under the ticket: the next thing a family does (a second visit), then who to call */
+  .booking-receipt__more { display: grid; justify-items: start; gap: var(--space-2); margin-top: var(--space-2); padding-inline: var(--space-1); }
+  .booking-receipt__another { justify-self: stretch; }
+  .booking-receipt__note { color: var(--ink-body); font: var(--type-notes); }
   .booking-receipt__notes { display: grid; gap: var(--space-2); padding-inline: var(--space-1); }
 
   /* ===================== the package's own parts, on the site's tokens ===================== */
@@ -341,6 +354,21 @@
   .clinic-booking .abs-receipt-actions p { width: 100%; margin: 0; color: var(--ink-body); font: var(--type-notes); }
   .clinic-booking .abs-receipt-actions button, .clinic-booking .abs-receipt-actions .abs-download { flex: 1 1 100%; width: auto; min-height: var(--tap); }
   .clinic-booking .abs-receipt-actions .abs-action-error { color: var(--ink); font-weight: 600; }
+  /* Once the PDF is ready the package prints four controls in one row of the same kind. Here they
+     get an order and a hierarchy: "Download PDF" filled and first, "Open PDF" outlined beside it,
+     the sentence that says the file is ready directly under them, then the email copy, and the
+     button that makes the file again as a quiet text button at the end. */
+  .clinic-booking .abs-receipt-actions:has(.abs-download) > * { order: 5; }
+  .clinic-booking .abs-receipt-actions:has(.abs-download) > .abs-download { order: 1; flex: 1 1 0; }
+  .clinic-booking .abs-receipt-actions:has(.abs-download) > .abs-download:first-of-type { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
+  .clinic-booking .abs-receipt-actions:has(.abs-download) > .abs-download:first-of-type:active { background: var(--action-pressed); box-shadow: var(--elev-main-pressed); }
+  .clinic-booking .abs-receipt-actions:has(.abs-download) > p[role="status"], .clinic-booking .abs-receipt-actions:has(.abs-download) > .abs-action-error { order: 2; }
+  .clinic-booking .booking-record .abs-receipt-actions:has(.abs-download) > button:first-child,
+  .clinic-booking--find .abs-receipt-actions:has(.abs-download) > button:nth-of-type(2):not(.abs-lookup-back) {
+    order: 9; flex: 0 1 auto; min-height: var(--tap); padding: 0 var(--space-1); color: var(--action); background: none; box-shadow: none; font: var(--type-link);
+    text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 4px;
+  }
+  .clinic-booking .abs-receipt .abs-download { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
   /* the package's buttons take the site's paper button; a short blink of "switched off" is not shown
      (the engine re-checks the booking state every five seconds and locks its actions while it does) */
   .clinic-booking .abs-receipt button, .clinic-booking .abs-receipt .abs-download, .clinic-booking .abs-receipt .abs-meet-link {
@@ -377,6 +405,7 @@
   .clinic-booking .abs-lookup-status { min-height: 0; margin: 0; color: var(--ink-body); font: var(--type-label); font-weight: 500; }
   .clinic-booking .abs-lookup-status:empty { display: none; }
   .clinic-booking .abs-lookup-results { display: grid; gap: var(--space-4); margin: 0; padding: var(--space-5) 0 0; border-top: 2px dotted var(--line-strong); }
+  /* the answer's heading is brought to the top of the screen (FindBooking); the page itself keeps the header's height clear */
   .clinic-booking .abs-lookup-results > h2 { margin: 0; }
   .clinic-booking .abs-lookup-results > h2:focus-visible { outline: none; }
   .clinic-booking .abs-lookup-results > p { margin: 0; color: var(--ink-body); font: var(--type-notes); }
@@ -431,6 +460,9 @@
     .appointment-card__directions:hover { color: var(--action-hover); text-decoration-color: currentColor; }
     .clinic-booking .abs-receipt button:hover:not(:disabled), .clinic-booking .abs-receipt .abs-download:hover { transform: translateY(var(--lift)); box-shadow: var(--ring-hover), var(--elev-raised-hover); }
     .clinic-booking .abs-lookup-form > button:hover:not(:disabled) { background: linear-gradient(180deg, var(--action) 0%, var(--action-hover) 70%); box-shadow: var(--elev-main-hover); }
+    .clinic-booking .abs-receipt-actions:has(.abs-download) > .abs-download:first-of-type:hover { background: linear-gradient(180deg, var(--action) 0%, var(--action-hover) 70%); box-shadow: var(--elev-main-hover); }
+    .clinic-booking .booking-record .abs-receipt-actions:has(.abs-download) > button:first-child:hover:not(:disabled),
+    .clinic-booking--find .abs-receipt-actions:has(.abs-download) > button:nth-of-type(2):not(.abs-lookup-back):hover:not(:disabled) { transform: none; box-shadow: none; color: var(--action-hover); text-decoration-color: currentColor; }
     .clinic-booking .abs-lookup-list button:hover:not(:disabled) { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
     .clinic-booking .abs-receipt .abs-lookup-back:hover:not(:disabled) { transform: none; box-shadow: none; text-decoration-color: currentColor; }
     .rk-date.abs-booking-picker button:hover:not(:disabled) { box-shadow: var(--ring), var(--elev-raised); }
@@ -462,7 +494,7 @@
     .clinic-booking__main { padding: var(--space-7) var(--space-7) 0; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
     .clinic-booking__step, .clinic-booking__step--3 { gap: var(--space-6); margin-top: var(--space-5); }
     /* progress: numbered markers with their names and a hairline between them */
-    .booking-progress { display: flex; align-items: center; gap: var(--space-3); }
+    .booking-progress { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
     .booking-progress__step { display: flex; align-items: center; gap: 10px; height: auto; border-radius: 0; background: none; color: var(--ink-muted); font: var(--type-label); font-weight: 500; white-space: nowrap; }
     .booking-progress__step.is-current, .booking-progress__step.is-done { background: none; }
     .booking-progress__step:not(:last-child)::after { content: ""; width: var(--space-6); height: 1px; margin-left: 2px; background: var(--line-strong); }
@@ -510,25 +542,29 @@
     .clinic-booking--find .abs-booking-details { padding: var(--space-7); }
   }
 
-  /* ===================== laptops ===================== */
+  /* ===================== small laptops and tablets on their side ===================== */
+  /* One column still, centred like the other booking screens: beside a summary the steps would be
+     too narrow here (the progress row and the doctors' names need the room) */
   @media (min-width: 1024px) {
-    .clinic-booking--steps { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; gap: var(--space-7); }
+    .clinic-booking--steps { max-width: 880px; margin-inline: auto; }
     .clinic-booking__main { padding: var(--space-8) var(--space-8) 0; }
+    .booking-bar { margin: var(--space-8) calc(-1 * var(--space-8)) 0; padding: var(--space-4) var(--space-8); background: var(--surface-low); }
+  }
+
+  /* ===================== laptops ===================== */
+  @media (min-width: 1280px) {
+    .clinic-booking--steps { grid-template-columns: minmax(0, 1fr) 392px; align-items: start; gap: var(--space-8); max-width: none; }
     /* the summary rides beside the steps and stays in view */
     .clinic-booking__aside { position: sticky; top: calc(var(--header-height) + var(--space-9)); display: block; margin-top: var(--space-8); }
     .clinic-booking__step .visit-summary { display: none; }
     .visit-summary__object { position: absolute; right: -18px; top: -46px; display: block; width: 92px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
-    .visit-summary__head { padding-right: var(--space-9); }
+    .visit-summary__head:first-of-type { padding-right: var(--space-9); }
     .visit-summary__facts > div { grid-template-columns: 104px minmax(0, 1fr); }
     /* the bar is the foot of the panel: Back on the left, the main button on the right (the summary is beside the steps) */
-    .booking-bar { margin: var(--space-8) calc(-1 * var(--space-8)) 0; padding: var(--space-4) var(--space-8); background: var(--surface-low); }
     .booking-bar__summary { display: none; }
     .visit-strip { display: none; }
     .booking-bar__hint { display: block; margin-left: auto; color: var(--ink-body); font: var(--type-notes); }
     .booking-bar__main { margin-left: auto; }
     .booking-bar__hint + .booking-bar__main { margin-left: 0; }
-  }
-  @media (min-width: 1280px) {
-    .clinic-booking--steps { grid-template-columns: minmax(0, 1fr) 392px; gap: var(--space-8); }
   }
 }

@@ -376,6 +376,21 @@ export function askFor({step,missing='',timesShown=true}={}){
  return '';
 }
 
+// ---------- a focused control is never under the bar ----------
+
+/**
+ * How far the page must move up so that a control which has just taken the cursor is clear of the
+ * bar at the foot of the screen (the browser itself moves the page only when a control is outside
+ * the screen, not when it is under the bar). 0 when it is clear, or beside the bar.
+ *   box  the control's place on the screen ({top, bottom, left, right})
+ *   bar  the bar's ({top, left, right}); null when the bar is not held at the foot of the screen
+ *   air  the room kept between the two
+ */
+export function liftAboveBar({box,bar,air=16}={}){
+ if(!box||!bar||Math.min(box.right,bar.right)-Math.max(box.left,bar.left)<=0)return 0;
+ return Math.max(0,Math.round(box.bottom+air-bar.top));
+}
+
 // ---------- Back, Forward and refresh ----------
 //
 // Each step is an entry in the browser's history, so Back means "the step before" and leaves the

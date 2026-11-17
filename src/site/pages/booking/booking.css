@@ -7,6 +7,11 @@
   .page-booking__head-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--tap); }
   .page-booking__title { font: var(--type-h2); letter-spacing: var(--tracking-h2); white-space: nowrap; }
   .page-booking__link { flex: none; }
+  /* once a booking is made (the booking screens mark the page): "Your visit.", and nothing left to find */
+  .page-booking__title-done { display: none; }
+  .page-booking[data-booking-screen="receipt"] .page-booking__title-now { display: none; }
+  .page-booking[data-booking-screen="receipt"] .page-booking__title-done { display: inline; }
+  .page-booking[data-booking-screen="receipt"] .page-booking__link { visibility: hidden; }
   .page-booking__root { padding-top: var(--space-4); min-width: 0; }
 
   /* ----- the panel: opening · checking · unavailable · could not open ----- */

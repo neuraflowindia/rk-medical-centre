@@ -35,14 +35,25 @@ test('the head: the page\'s one heading with one phrase in italics, and one link
  for(const [path,words] of SCREENS){
   const page=renderedPage(path);
   assert.ok(words.heading.endsWith(words.emphasis),'the phrase in italics closes the heading');
-  assert.match(page,new RegExp(`<h1 class="page-booking__title">[^<]*<em>${words.emphasis.replaceAll(' ','&nbsp;').replace('.','\\.')}</em></h1>`));
-  assert.equal(count(page,/<em>/g),1);
+  const italic=phrase=>`<em>${phrase.replaceAll(' ','&nbsp;').replace('.','\\.')}</em>`;
+  // the booking page's heading has a second reading for the moment a booking is made; "Find your booking" has one
+  assert.match(page,new RegExp(words.done
+   ?`<h1 class="page-booking__title"><span class="page-booking__title-now">[^<]*${italic(words.emphasis)}</span><span class="page-booking__title-done">[^<]*${italic(words.done.emphasis)}</span></h1>`
+   :`<h1 class="page-booking__title">[^<]*${italic(words.emphasis)}</h1>`));
+  assert.equal(count(page,/<em>/g),words.done?2:1,'one phrase in italics in each reading');
   const links=attributeValues(page,'href').filter(href=>href.startsWith('/'));
   assert.deepEqual(links,[words.link.path],`${path}: one link in the page itself`);
   assert.ok(page.includes(`aria-label="${words.link.spoken}"`));assert.ok(page.includes('>'+words.link.label+'<'));
   assert.ok(utilityMetadata[path].title.startsWith(words.heading.replace(/\.$/,'')),'the heading is the reviewed title, with its full stop');
  }
  assert.equal(bookingPage.link.path,bookingPaths.find);assert.equal(bookingDetailsPage.link.path,bookingPaths.book);
+ // once a booking is made: "Your visit.", shown by the stylesheet when the booking screens mark the page
+ assert.deepEqual(bookingPage.done,{heading:'Your visit.',emphasis:'visit.'});assert.equal(bookingDetailsPage.done,undefined);
+ const sheet=read('src/site/pages/booking/booking.css');
+ assert.match(sheet,/\.page-booking__title-done \{ display: none; \}/,'without the mark the page reads "Book your visit."');
+ assert.match(sheet,/\.page-booking\[data-booking-screen="receipt"\] \.page-booking__title-now \{ display: none; \}/);
+ assert.match(sheet,/\.page-booking\[data-booking-screen="receipt"\] \.page-booking__link \{ visibility: hidden; \}/);
+ assert.match(read('src/booking/clinic-booking.jsx'),/page\.setAttribute\('data-booking-screen', screen\)/);
  assert.equal(bookingHead(bookingPage),renderedPage('/booking').match(/<div class="page-booking__head">.*?<\/div><\/div>/)[0]);
  // "Find your booking" carries both roots: it shares the head and the panel with the booking page
  assert.match(renderedPage('/booking-details'),/^<section class="page-booking page-booking-details">/);
@@ -85,7 +96,7 @@ test('the panel shown while the booking screens cannot be used: four states, the
 
 test('the words around the booking screens are complete and typed with proper marks',()=>{
  const all=[bookingPage,bookingDetailsPage,bookingUnavailableWords].flatMap(group=>Object.values(group)).flatMap(value=>typeof value==='string'?[value]:Object.values(value));
- assert.equal(all.length,17);
+ assert.equal(all.length,19);
  for(const text of all){assert.ok(typeof text==='string'&&text.trim().length>0);assert.doesNotMatch(text,/['"]|STAND-IN|<|>/,text);}
  assert.deepEqual(Object.keys(bookingUnavailableWords).sort(),['checking','error','help','kept','opening','retry','unavailable']);
 });
@@ -145,7 +156,10 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  assert.match(island,/const disabled = s\.busy \|\| !flow\.viewAvailable \|\| !!s\.credential;/);
  assert.match(island,/<DateField[^>]*\n?[^>]*available=\{flow\.viewAvailable\}/);
  assert.doesNotMatch(island,/disabled=\{[^}]*!flow\.available/,'no control is switched off by the state check');
- assert.match(island,/useHeldAction\(flow\.available, flow\.viewAvailable\)/,'actions that need admission wait for it instead');
+ assert.match(island,/useHeldAction\(flow\.available && !s\.busy, flow\.viewAvailable\)/,'actions that need admission wait for it (and for the engine to be idle) instead');
+ // after the last press and on the appointment card no button is switched off while the engine reads: a press is kept instead
+ const after=island.slice(island.indexOf("if (screen === 'receipt')"),island.indexOf('const stepInfo ='));
+ assert.ok(after.length>1500);assert.doesNotMatch(after,/disabled=/);
  // Back, Forward and refresh: the steps are history entries the flow marks itself, and what is kept
  // lives in the tab's own storage only (never in storage that outlasts the tab)
  assert.match(island,/window\.history\.pushState\(withMark\(window\.history\.state, mark\), ''\)/);

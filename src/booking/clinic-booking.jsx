@@ -16,7 +16,7 @@ import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, 
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
   readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
-  waitingView, visitLine, WAIT_GRACE} from './booking-steps.mjs';
+  waitingView, visitLine, WAIT_GRACE, liftAboveBar} from './booking-steps.mjs';
 
 const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
@@ -57,8 +57,9 @@ function ClinicContact({service, bookingHelp = false}) {
 
 /**
  * An action that needs the engine's admission (the last press, a re-check) is kept for the moment
- * the five-second booking-state check is running, then handed over; the engine itself still
- * refuses anything it may not admit. `waiting` is true while one is being kept.
+ * the five-second booking-state check is running, or while the engine is busy with a read of its
+ * own, then handed over; the engine itself still refuses anything it may not admit. So no button
+ * has to be switched off for those moments, and no press is lost. `waiting` is true while one is kept.
  */
 function useHeldAction(available, viewAvailable) {
   const kept = useRef(null), [waiting, setWaiting] = useState(false);
@@ -206,7 +207,7 @@ function Booking({draft = {}}) {
   // The part of the step the visitor was shown after pressing the main button too early ("" = none).
   const [asked, setAsked] = useState('');
   const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({});
-  const [act, waiting] = useHeldAction(flow.available, flow.viewAvailable);
+  const [act, waiting] = useHeldAction(flow.available && !s.busy, flow.viewAvailable);
   // What the page is waiting for after the last press: 'save', 'open' (a saved booking read again), 'check', or ''.
   const [wait, setWait] = useState(() => s.credential ? 'open' : '');
   const engaged = useRef(false);
@@ -352,6 +353,13 @@ function Booking({draft = {}}) {
     wasReceipt.current = screen === 'receipt';
   }, [screen]);
 
+  // The page around the steps is told which screen is shown: its head changes once a booking is made.
+  useEffect(() => {
+    const page = root.current?.closest('.page-booking');
+    if (!page) return undefined;
+    page.setAttribute('data-booking-screen', screen);
+    return () => page.removeAttribute('data-booking-screen');
+  }, [screen]);
   // A new step, the waiting screen and each of its states, and the card after the last press start at their heading.
   const waitView = screen === 'checking' ? waitingView({wait, error: s.error}) : '';
   useEffect(() => {
@@ -370,6 +378,18 @@ function Booking({draft = {}}) {
       const box = laterBox.current; if (!box) return;
       if (window.innerHeight - box.getBoundingClientRect().bottom < 440) box.scrollIntoView({block: 'start', behavior: 'instant'});
       box.querySelector('.abs-date-group button')?.click();
+    });
+  };
+  // A control that takes the cursor while it sits under the bar is brought above it (Tab, arrow keys, a phone's keyboard).
+  const bar = useRef(null);
+  const keepClear = event => {
+    const node = event.target, held = bar.current;
+    if (!held || held.contains(node) || getComputedStyle(held).position !== 'sticky') return;
+    // the hidden radio of a card, tile or pill: the thing that is seen sits beside it
+    const face = node.classList?.contains('visually-hidden') && node.nextElementSibling || node;
+    requestAnimationFrame(() => {
+      const lift = liftAboveBar({box: face.getBoundingClientRect(), bar: held.getBoundingClientRect()});
+      if (lift) window.scrollBy({top: lift});
     });
   };
   // The main button is never a dead press: pressed too early, it shows the visitor what is still missing.
@@ -401,7 +421,7 @@ function Booking({draft = {}}) {
 
   if (screen === 'unavailable') {
     // Booking stopped while someone was here: the same panel as the page's own, with the clinic's numbers.
-    return <div className="clinic-booking clinic-booking--paused" onClick={event => { if (event.target.closest('[data-booking-retry]')) void productState.refresh({force: true}); }}
+    return <div className="clinic-booking clinic-booking--paused" ref={root} onClick={event => { if (event.target.closest('[data-booking-retry]')) void productState.refresh({force: true}); }}
       dangerouslySetInnerHTML={{__html: bookingUnavailable({state: product.checking ? 'checking' : 'unavailable', doctor: doctorFor(shown.service) || draft.doctor || '', kept: true})}}/>;
   }
 
@@ -409,7 +429,8 @@ function Booking({draft = {}}) {
 
   if (screen === 'receipt') {
     const r = s.receipt, service = serviceFor(doctorFor(r.resource_id));
-    const busy = s.busy || waiting;
+    const can = action => r.next_actions.includes(action), settled = r.appointment_state === 'confirmed';
+    const refresh = <button type="button" className="text-link booking-record__refresh" onClick={() => act(flow.check)}><span>{words.receipt.refresh}</span></button>;
     return <div className="clinic-booking clinic-booking--receipt" ref={root}>
       <div className="booking-receipt">
         {error}
@@ -421,18 +442,18 @@ function Booking({draft = {}}) {
             <ReceiptFields flow={flow} showTitle={false}/>
             <button type="button" className="text-link booking-record__toggle" aria-expanded={record} aria-controls={id + 'record'} onClick={() => setRecord(open => !open)}>
               <span>{record ? words.receipt.record.hide : words.receipt.record.show}</span><Icon name="down"/></button>
+            {/* a confirmed visit needs no re-reading: the engine's "Refresh details" sits with the full record */}
+            {settled && record && refresh}
           </div>
         </div>
         <div className="booking-receipt__more">
-          {r.next_actions.includes('resume_payment') && <button type="button" className="button button--main" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.resume}</span></button>}
-          {r.next_actions.includes('check_payment') && !r.next_actions.includes('resume_payment') && <button type="button" className="button button--second" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.checkPayment}</span></button>}
-          <button type="button" className="text-link" disabled={busy} onClick={() => act(flow.check)}><span>{words.receipt.refresh}</span></button>
-          {r.next_actions.includes('choose_new_time') && <button type="button" className="text-link" disabled={busy} onClick={() => act(flow.restart)}><span>{words.receipt.another}</span><Icon name="arrow"/></button>}
+          {can('resume_payment') && <button type="button" className="button button--main" onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.resume}</span></button>}
+          {can('check_payment') && !can('resume_payment') && <button type="button" className="button button--second" onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.checkPayment}</span></button>}
+          {can('choose_new_time') && <button type="button" className="button button--second booking-receipt__another" onClick={() => act(flow.restart)}><span className="button__label">{words.receipt.another}</span><Icon name="arrow"/></button>}
+          {!settled && refresh}
+          {can('choose_new_time') && <p className="booking-receipt__note">{words.receipt.anotherNote}</p>}
         </div>
-        <div className="booking-receipt__notes">
-          <ClinicContact service={service}/>
-          {r.next_actions.includes('choose_new_time') && <p className="booking-contact">{words.receipt.anotherNote}</p>}
-        </div>
+        <div className="booking-receipt__notes"><ClinicContact service={service}/></div>
       </div>
     </div>;
   }
@@ -482,7 +503,7 @@ function Booking({draft = {}}) {
       <Progress step={step}/>
       {error}
       {gone && !s.error && <Notice icon="clock" calm={gone === 'again'}><p>{gone === 'again' ? words.time.again : words.time.gone}</p></Notice>}
-      <form className="booking-form" aria-label={words.formLabel} noValidate onSubmit={event => { event.preventDefault(); advance(); }}>
+      <form className="booking-form" aria-label={words.formLabel} noValidate onSubmit={event => { event.preventDefault(); advance(); }} onFocus={keepClear}>
         <section className={'clinic-booking__step clinic-booking__step--' + step} aria-labelledby={id + 'step'}>
           <h2 className="clinic-booking__title" id={id + 'step'} ref={title} tabIndex={-1}>{stepInfo.title}</h2>
 
@@ -595,7 +616,7 @@ function Booking({draft = {}}) {
           </>}
         </section>
 
-        <div className={classes('booking-bar', 'booking-bar--' + step, step === 3 && 'booking-bar--last')}>
+        <div className={classes('booking-bar', 'booking-bar--' + step, step === 3 && 'booking-bar--last')} ref={bar}>
           {/* The last two presses stay together and in sight: the tick box and what it confirms, then the button. */}
           {step === 3 && <div className={classes('booking-last', asked === 'tick' && 'is-asked')} ref={node => { parts.current.tick = node; }}>
             <label className={classes('booking-ack', tickWaits && 'is-waiting')}>
@@ -626,4 +647,13 @@ function mount(node, element, signal) {
   signal?.addEventListener('abort', stop, {once: true}); return stop;
 }
 export const mountBooking = (node, {draft, signal} = {}) => mount(node, <Booking draft={draft}/>, signal);
-export const mountBookingDetails = (node, {signal} = {}) => mount(node, <div className="clinic-booking clinic-booking--find"><BookingDetailsFields/><ClinicContact bookingHelp/></div>, signal);
+/**
+ * "Find your booking": the package's own screen. When it has an answer it moves the cursor to the
+ * answer's heading; the page then brings that heading to the top of the screen, so the answer is seen
+ * (on a phone it used to appear at the foot of the screen, or below it).
+ */
+function FindBooking() {
+  const answered = event => { if (event.target.matches?.('.abs-lookup-results > h2')) event.target.scrollIntoView({block: 'start'}); };
+  return <div className="clinic-booking clinic-booking--find" onFocus={answered}><BookingDetailsFields/><ClinicContact bookingHelp/></div>;
+}
+export const mountBookingDetails = (node, {signal} = {}) => mount(node, <FindBooking/>, signal);

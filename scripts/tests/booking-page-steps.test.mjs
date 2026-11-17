@@ -18,7 +18,7 @@ import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
  stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
  paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
- saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE} from '../../src/booking/booking-steps.mjs';
+ saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE,liftAboveBar} from '../../src/booking/booking-steps.mjs';
 
 const settings=readSettings();
 const NOW=Date.parse('2026-11-16T05:30:00Z'); // Monday 16 November 2026, 11:00 am in India
@@ -512,4 +512,17 @@ test('after the last press: a quiet waiting state while the request travels; the
  assert.doesNotMatch(words.waiting.stalled.title,/…/);assert.match(words.waiting.stalled.text,/cannot be booked twice/);
  assert.equal(words.waiting.check,'Check my booking');assert.equal(words.waiting.retry,'Retry the same request');
  assert.ok(WAIT_GRACE>=2000&&WAIT_GRACE<=6000);
+});
+
+test('a control that takes the cursor under the bar is lifted clear of it',()=>{
+ const bar={top:768,left:0,right:390};
+ // the notes box at 686 to 798 on a phone: 30 px under the bar, lifted with 16 px of air
+ assert.equal(liftAboveBar({box:{top:686,bottom:798,left:20,right:370},bar}),46);
+ assert.equal(liftAboveBar({box:{top:686,bottom:798,left:20,right:370},bar,air:0}),30);
+ // clear of it already, or only just: the air is kept
+ assert.equal(liftAboveBar({box:{top:500,bottom:556,left:20,right:370},bar}),0);assert.equal(liftAboveBar({box:{top:700,bottom:760,left:20,right:370},bar}),8);
+ // a control beside the bar (the summary's links on laptops) is not under it
+ assert.equal(liftAboveBar({box:{top:700,bottom:800,left:948,right:1340},bar:{top:680,left:100,right:900}}),0);
+ // no bar held at the foot of the screen, nothing measured
+ assert.equal(liftAboveBar({box:{top:700,bottom:800,left:0,right:10},bar:null}),0);assert.equal(liftAboveBar(),0);
 });

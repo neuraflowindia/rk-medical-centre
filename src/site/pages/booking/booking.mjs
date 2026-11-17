@@ -14,9 +14,12 @@ import {textLink} from '../../parts/button/button.mjs';
 /**
  * The head every booking screen shares: sage ground, the page's one heading and one quiet link to
  * the other booking screen (an ordinary booking link: it exists only while booking is ON).
+ * `done` is what the same heading reads once a booking is made: the booking screens mark the page
+ * (`data-booking-screen="receipt"`) and the stylesheet shows these words instead.
  */
-export function bookingHead({heading,emphasis,link}){
- return `<div class="page-booking__head"><div class="wrap page-booking__head-row"><h1 class="page-booking__title">${emphasise(heading,emphasis)}</h1>`
+export function bookingHead({heading,emphasis,link,done=null}){
+ const title=done?`<span class="page-booking__title-now">${emphasise(heading,emphasis)}</span><span class="page-booking__title-done">${emphasise(done.heading,done.emphasis)}</span>`:emphasise(heading,emphasis);
+ return `<div class="page-booking__head"><div class="wrap page-booking__head-row"><h1 class="page-booking__title">${title}</h1>`
   +textLink({label:link.label,href:link.path,className:'page-booking__link',attributes:{'aria-label':link.spoken}})+`</div></div>`;
 }
 
