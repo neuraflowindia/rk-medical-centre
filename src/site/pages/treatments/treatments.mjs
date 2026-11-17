@@ -42,7 +42,7 @@ function panel(row,group,ctx){
   [words.labels.bring,`<dd><ul class="page-treatments__bring">${row.bring.map(item=>`<li>${icon('check')}<span>${text(item)}</span></li>`).join('')}</ul></dd>`]];
  return `<div class="page-treatments__panel-place"><div${attrs({class:'page-treatments__panel',id:ids.panel,role:'region','aria-labelledby':ids.title,'data-topic-panel':true})}>`
   +`<span class="page-treatments__alive" aria-hidden="true" data-ambient></span>`
-  +`<div class="page-treatments__stage" aria-hidden="true"><span class="page-treatments__arch" data-ambient><span class="page-treatments__shaft"></span></span>${object(row.object,'page-treatments__stage-object')}</div>`
+  +`<div class="page-treatments__stage" aria-hidden="true"><span class="page-treatments__arch" data-ambient><span class="page-treatments__shaft"></span></span><span class="page-treatments__stage-float" data-ambient="float">${object(row.object,'page-treatments__stage-object')}</span></div>`
   // The row beside or above the panel already names it for everyone; this larger name is for the eye only.
   +`<p class="page-treatments__panel-title" aria-hidden="true">${text(row.title)}</p>`
   +`<dl class="page-treatments__facts">${facts.map(([label,value])=>`<div><dt>${text(label)}</dt>${value}</div>`).join('')}</dl>`

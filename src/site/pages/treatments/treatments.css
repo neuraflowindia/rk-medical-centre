@@ -187,6 +187,9 @@
     .page-treatments__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
     html[data-motion="on"] .page-treatments__shaft { animation: page-treatments-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
     html[data-motion="on"] .page-treatments__arch[data-running] .page-treatments__shaft { animation-play-state: running; }
+    /* near: the object floats, very slowly, on a layer of its own the size of the stage (the motion
+       module lets it run only while its panel is the one shown; its own arrival still uses transform) */
+    .page-treatments__stage-float { position: absolute; inset: 0; display: block; }
     .page-treatments__stage-object { position: absolute; left: 0; bottom: 0; width: 150px; height: 150px; object-fit: contain; object-position: left bottom; filter: var(--elev-object); }
     .page-treatments__strip { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: var(--space-6); padding: 14px 14px 14px 16px; }
     .page-treatments__strip-actions { grid-column: auto; flex-wrap: nowrap; }
@@ -197,8 +200,8 @@
     .page-treatments__doctor-slot:first-child, .page-treatments__doctor-slot:last-child { grid-column: auto; grid-row: auto; margin: 0; }
   }
   @keyframes page-treatments-shaft {
-    from { transform: translateX(-11%); }
-    to { transform: translateX(11%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
 
   /* ---------- laptops: the index on the left, the open row's panel beside it ---------- */
