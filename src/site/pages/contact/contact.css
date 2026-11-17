@@ -203,7 +203,7 @@
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
   .page-contact__notice-words { display: grid; gap: 1px; }
   .page-contact__notice-title { font: var(--type-row-strong); letter-spacing: 0; }
-  .page-contact__notice-note { color: var(--ink-body); font: var(--type-meta); }
+  .page-contact__notice-note { color: var(--ink-body); font: var(--type-meta); text-wrap: balance; }
   .page-contact__notice-mark { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px; color: var(--action); }
   .page-contact__notice-minus, .page-contact__notice[open] .page-contact__notice-plus { display: none; }
   .page-contact__notice[open] .page-contact__notice-minus { display: block; }
@@ -233,7 +233,7 @@
        (each already stands at its own end of the road) so the pin's label fits beside "Munshi Pulia" */
     .page-contact__map-label--road { left: 21%; }
     .page-contact__map-label--west .icon, .page-contact__map-label--east .icon { display: none; }
-    .page-contact__map-label--pin { padding-inline: 10px; transform: translateX(calc(-100% + 32px)); }
+    .page-contact__map-label--pin { transform: translateX(calc(-100% + 34px)); }
     /* WAITING: request contact-05. The day column keeps to 110 px (the "Today" tag sits under the day here),
        so the two time columns stand 14 px or more apart. */
     .page-contact__week tbody th { width: 110px; }
@@ -270,9 +270,10 @@
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
     .page-contact__map-label--north { display: inline-flex; left: var(--space-4); top: var(--space-4); }
-    /* from here the road is wide enough to carry the two names at its ends, like road signs */
-    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; text-shadow: none; }
-    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; text-shadow: none; }
+    /* from here the road is wide enough to carry the two names at its ends, like road signs; each stands on a
+       patch of the road's own white, so the centre line stops behind the words instead of striking through them */
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; padding: 0 6px 0 2px; background: var(--surface-top); text-shadow: none; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; padding: 0 2px 0 6px; background: var(--surface-top); text-shadow: none; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
     .page-contact__pin-art { width: 62px; }
