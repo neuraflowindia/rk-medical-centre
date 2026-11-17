@@ -177,6 +177,10 @@ test('Contact\'s behaviour is fetched when Contact is shown; a page left meanwhi
  await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing)('root');
  // the registry lists Contact's behaviour this way, and every other page's directly
  assert.equal(pages['/contact'].bind.name,'bindLater');assert.equal(pages['/'].bind.name,'bindHome');
+ // the real file is fetched and its bind is run (here on a page without the form, which it leaves alone)
+ const asked=[];
+ await pages['/contact'].bind({querySelector:selector=>{asked.push(selector);return null;}},context);
+ assert.deepEqual(asked,['[data-contact-form]','[data-privacy-notice]'],'Contact\'s own behaviour looked for its form and its notice');
 });
 
 test('when the message form\'s engine cannot be fetched the form says so, keeps Call and WhatsApp in reach and offers to try again',()=>{
