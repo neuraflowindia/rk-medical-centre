@@ -34,11 +34,13 @@ function instead(ctx){
  return calls+button({label:contactPage.whatsapp.label,href:contactPage.whatsapp.href,variant:'second',icon:'whatsapp',iconAfter:'out',external:true,note:contactPage.whatsapp.opens});
 }
 
-/** One screen that replaces the fields: a heading and a sentence. */
-function panel(name,{title,lead='',body}){
+/**
+ * One screen that replaces the fields: a heading and a sentence. The heading takes the focus when
+ * its screen opens. `mark` sets a small sign before the heading's words (the thank-you's check).
+ */
+function panel(name,{title,lead='',body,mark=''}){
  return `<div class="message-form__panel message-form__panel--${name}" data-contact-panel="${name}" hidden>`
-  +`${name==='received'?`<span class="message-form__sent-mark" aria-hidden="true">${icon('check')}</span>`:''}`
-  +`<h3 class="message-form__panel-title" tabindex="-1"${name==='received'?' data-contact-received-title':''}>${text(title)}</h3>`
+  +`<h3 class="message-form__panel-title" tabindex="-1" data-contact-panel-title>${mark?`${icon(mark,{className:'message-form__panel-mark'})}<span>${text(title)}</span>`:text(title)}</h3>`
   +`${lead?`<p class="message-form__panel-lead">${text(lead)}</p>`:''}<p class="message-form__panel-text">${text(body)}</p></div>`;
 }
 
@@ -57,10 +59,11 @@ function codeScreen(){
   +`<p class="message-form__panel-text" data-contact-sent-to>${text(code.sentTo(''))}</p>`
   +`<div class="message-form__code-entry" data-contact-code-entry><div class="message-form__field">`
   +`<label class="message-form__label" for="contact-code">${text(code.label)}</label>`
-  +`<input class="message-form__input message-form__input--code" id="contact-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" aria-describedby="contact-code-error contact-code-help">`
+  +`<input class="message-form__input message-form__input--code" id="contact-code" name="code" inputmode="numeric" enterkeyhint="send" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" aria-describedby="contact-code-error contact-code-help">`
   +`${fieldError('code')}</div>`
   +button({label:code.verify,size:'large',className:'message-form__confirm',attributes:{'data-contact-verify':true}})+`</div>`
-  +`<div class="message-form__resend"><button class="text-link" type="button" data-contact-resend>${text(code.resend)}</button>`
+  // "Send another code" is a paper button: raised when it can be pressed, flat while the countdown runs.
+  +`<div class="message-form__resend">${button({label:code.resend,variant:'second',size:'compact',attributes:{'data-contact-resend':true}})}`
   +`<p class="message-form__meta"><span data-contact-countdown></span> <span data-contact-remaining></span></p></div>`
   +`<p class="message-form__help" id="contact-code-help">${text(code.help)}</p></div>`;
 }
@@ -71,27 +74,29 @@ export function messageForm(ctx){
   +`<div class="message-form__guide">${steps()}</div>`
   +`<form class="message-form__sheet" data-contact-form method="post" novalidate aria-label="${text(words.label)}" data-needs-script>`
   +`<p class="message-form__status" data-contact-status role="status" aria-live="polite">${text(words.status.opening)}</p>`
-  +`<div class="message-form__alert" data-contact-alert hidden>${icon('alert')}<p data-contact-error-summary role="alert" hidden></p></div>`
+  +`<div class="message-form__alert" data-contact-alert tabindex="-1" hidden>${icon('alert')}<p data-contact-error-summary role="alert" hidden></p></div>`
   // screen: the fields
   +`<fieldset class="message-form__fields" data-contact-fields disabled><legend class="visually-hidden">${text(words.legend)}</legend>`
   +words.fields.map(field).join('')
   +`<div class="message-form__field"><label class="message-form__label" for="contact-message">${text(message.label)}</label>`
-  +`<textarea class="message-form__input message-form__input--message" id="contact-message" name="message" rows="4" required minlength="2" maxlength="${message.maxlength}" aria-describedby="contact-message-error"></textarea>`
+  +`<textarea class="message-form__input message-form__input--message" id="contact-message" name="message" rows="3" required minlength="2" maxlength="${message.maxlength}" aria-describedby="contact-message-error"></textarea>`
   +`${fieldError('message')}</div></fieldset>`
   +`<div class="message-form__compose" data-contact-compose>`
   +`<p class="message-form__consent" id="contact-collection">${text(words.consent)} <button class="text-link message-form__notice" type="button" aria-haspopup="dialog" data-collection-notice>${text(words.notice)}</button></p>`
+  // The built document prints Send locked; the form's logic then switches it on and off (aria-disabled:
+  // it keeps its place in the keyboard's path, so the focus is never lost while a message is sent).
   +`<button class="button button--main button--large message-form__send" type="submit" aria-describedby="contact-collection" data-contact-send><span class="button__label" data-contact-send-label>${text(words.send)}</span></button></div>`
   // screen: the emailed code (also expired and locked)
   +codeScreen()
   // screens that replace the fields
-  +panel('received',{title:words.received.title,lead:words.received.lead,body:words.received.text})
+  +panel('received',{title:words.received.title,lead:words.received.lead,body:words.received.text,mark:'check'})
   +panel('closed',{title:words.closed.title,body:words.closed.text})
   +panel('failed',{title:words.failed.title,body:words.failed.text})
   +panel('blocked',{title:words.blocked.title,body:words.blocked.text})
   +`<div class="message-form__instead" data-contact-instead hidden>${instead(ctx)}</div>`
   +`<div class="message-form__actions">`
   +button({labelMarkup:`<span data-contact-retry-label>${text(words.retry)}</span>`,variant:'second',attributes:{'data-contact-retry':true,hidden:true}})
-  +`<button class="text-link" type="button" data-contact-check hidden>${text(words.check)}</button>`
+  +button({label:words.check,variant:'second',attributes:{'data-contact-check':true,hidden:true}})
   +button({label:words.received.restart,variant:'second',attributes:{'data-contact-restart':true,hidden:true}})
   +`</div></form>`
   // without scripts: an honest note, never a form that cannot be sent

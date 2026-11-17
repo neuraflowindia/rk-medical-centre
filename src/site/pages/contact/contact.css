@@ -5,17 +5,21 @@
   /* ---------- 1 · first screen: the directory card ---------- */
   .page-contact__opening { position: relative; z-index: 1; background: var(--ground-light); padding: var(--space-6) 0 30px; overflow-x: clip; }
   .page-contact__opening-grid { display: grid; gap: var(--space-4); }
+  /* the heading and the live sign always stand in front of the arch */
+  .page-contact__opening-copy { position: relative; z-index: 1; }
   .page-contact__sign { margin-top: var(--space-3); min-height: 28px; max-width: calc(100% - 96px); }
-  .page-contact__stage { position: relative; margin-top: var(--space-4); }
+  /* The dome rises 36 px above the card; the card stands 48 px below the sign (the grid's gap and this margin),
+     so the dome's top stays 12 px clear of the sign's last line, however the sign wraps. */
+  .page-contact__stage { position: relative; margin-top: var(--space-7); }
   /* far: a flat sage arch standing behind the card */
-  .page-contact__arch { position: absolute; z-index: 0; right: 14px; top: -46px; width: 54%; height: 150px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
+  .page-contact__arch { position: absolute; z-index: 0; right: 14px; top: -36px; width: 54%; height: 150px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
   .page-contact__light { display: none; position: absolute; inset: 0; }
   .page-contact__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
   html[data-motion="on"] .page-contact__shaft { animation: page-contact-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-contact__light[data-running] .page-contact__shaft { animation-play-state: running; }
   @keyframes page-contact-shaft {
-    from { transform: translateX(-12%); }
-    to { transform: translateX(12%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   /* subject: the paper card with its three raised rows */
   .page-contact__directory { position: relative; z-index: 1; padding: var(--space-3) var(--space-3) 10px; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
@@ -46,13 +50,18 @@
   .page-contact__map-edge--side { stroke-width: 19.5; }
   .page-contact__map-road--side { stroke-width: 16; }
   .page-contact__map-median { fill: none; stroke: var(--line-strong); stroke-width: 1.6; stroke-dasharray: 12 9; }
-  .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; }
+  /* words on the map carry a soft halo of the map's own ground, so a lane passing behind never cuts a letter */
+  .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; text-shadow: 0 0 3px var(--ground-tint-light), 0 0 3px var(--ground-tint-light), 0 0 6px var(--ground-tint-light); }
   .page-contact__map-label .icon { width: 16px; height: 16px; }
-  .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
-  .page-contact__map-label--west { left: var(--space-3); top: 29%; transform: translateY(-50%); }
-  .page-contact__map-label--east { right: var(--space-3); top: 41%; transform: translateY(-50%); }
-  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: 9px; padding: 4px var(--space-3) 5px; transform: translateX(-50%); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); }
-  .page-contact__map-label--north { left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); }
+  .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; text-shadow: none; }
+  /* On phones the road is too narrow to hold a name at each end. "Tedhi Pulia" stands 8 px above the road's
+     upper edge at its west end, "Munshi Pulia" just below its lower edge at its east end, and on narrow phones
+     the pin's own label is set to the left of the pin, so the three never meet at any phone width. */
+  .page-contact__map-label--west { left: var(--space-3); top: calc(34.4% - 8px); transform: translateY(-100%); }
+  .page-contact__map-label--east { right: var(--space-3); top: calc(58.2% + 6px); }
+  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: var(--space-2); padding: 4px var(--space-3) 5px; transform: translateX(calc(-100% + 18px)); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); text-shadow: none; }
+  /* the compass mark needs the room the two names take on phones; it is shown from tablets up */
+  .page-contact__map-label--north { display: none; left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); text-shadow: none; }
   .page-contact__map-label--north .icon { color: var(--action); }
   /* near: the pin on the clinic's spot. Its tip is the point; it comes down as the map is scrolled to. */
   .page-contact__pin { position: absolute; z-index: 3; left: 50.3%; top: 52.8%; width: 0; height: 0; --rise: 0px; pointer-events: none; }
@@ -68,7 +77,8 @@
     .page-contact__map-window:has(.page-contact__map-hit:hover, .page-contact__map-open:hover) .page-contact__pin-hop { transform: translateY(-5px); }
   }
   /* subject: the frontage, laid over the map's lower corner */
-  .page-contact__frontage { position: relative; z-index: 2; width: 86%; margin: max(-72px, calc(100px - 40vw)) 0 0 auto; }
+  /* it lies over the map's lower corner, never so far that it reaches the map's words */
+  .page-contact__frontage { position: relative; z-index: 2; width: 86%; margin: max(-48px, calc(96px - 38vw)) 0 0 auto; }
   .page-contact__frontage .photo-figure__caption { max-width: 32ch; }
   .page-contact__address { position: relative; z-index: 3; margin-top: var(--space-4); padding: 18px var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
   .page-contact__address h3 { font: var(--type-name); line-height: var(--leading-h3); }
@@ -86,7 +96,7 @@
   .page-contact__hours-copy .section-head { order: 1; }
   .page-contact__hours-copy .section-head__running { margin-right: 86px; }
   /* the one accent: the desk calendar on a pale arch, beside the heading */
-  .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); }
+  .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
   .page-contact__calendar { position: absolute; z-index: 1; right: 3px; top: -10px; width: 64px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
   .page-contact__ledger { order: 2; position: relative; z-index: 1; margin-top: var(--space-5); }
   .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-4); }
@@ -123,6 +133,14 @@
   .message-form:not([data-state="opening"], [data-state="sending"], [data-state="resuming"]) .message-form__status { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .message-form__alert { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: var(--space-3) 14px; border-radius: var(--radius-small); background: var(--error-wash); box-shadow: inset 0 0 0 1px var(--error); color: var(--ink); font: var(--type-label); font-weight: 500; }
   .message-form__alert .icon { margin-top: 1px; color: var(--error); }
+  /* the alert row takes the focus when it is the next thing to read; its own ring already marks it */
+  .message-form__alert:focus-visible { outline: none; }
+  /* A message that is still waiting: its alert stands beside the button that tries again (the foot of the
+     sheet is what the visitor is looking at), not at the sheet's head, which may be off the screen. */
+  .message-form[data-state="stalled"] .message-form__alert { order: 1; }
+  .message-form[data-state="stalled"] .message-form__compose { order: 2; }
+  /* whatever takes the focus in the sheet comes to rest clear of the phone bar, with its whole height on screen */
+  .message-form__input, .message-form__alert, .message-form__panel-title, .message-form__sheet .button, .message-form__sheet .text-link { scroll-margin-bottom: calc(var(--bar-height) + var(--space-7)); }
 
   .message-form__fields { display: grid; gap: var(--space-3); }
   .message-form__field { display: grid; gap: 6px; }
@@ -133,8 +151,10 @@
   .message-form__input { display: block; width: 100%; min-height: var(--control-height-large); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); appearance: none;
     background: var(--ground-light); box-shadow: var(--ring-quiet), var(--elev-pressed); color: var(--ink); font: var(--type-body);
     transition: box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move); }
-  .message-form__input--message { min-height: 88px; padding: 14px var(--space-4); resize: vertical; }
-  .message-form__input--code { max-width: 264px; font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .34em; text-align: center; padding-left: calc(var(--space-4) + .34em); }
+  /* three lines to begin with; where the browser can, the field grows with what is written (up to about ten lines) */
+  .message-form__input--message { min-height: 104px; max-height: 284px; padding: 14px var(--space-4); resize: vertical; field-sizing: content; }
+  /* the six digits: as wide as the button below on phones, centred, evenly spaced */
+  .message-form__input--code { font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .3em; text-align: center; padding-left: calc(var(--space-4) + .3em); }
   .message-form__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-control); background: var(--surface-top); box-shadow: var(--ring), var(--elev-pressed); }
   .message-form__input[aria-invalid="true"] { background: var(--error-wash); box-shadow: inset 0 0 0 1.5px var(--error), var(--elev-pressed); }
   .message-form__fields:disabled .message-form__input, .message-form__input:disabled { background: var(--flat-fill); box-shadow: var(--ring-faint); color: var(--ink-muted); }
@@ -154,12 +174,14 @@
   .message-form__panel-lead { color: var(--ink); font: var(--type-lead); }
   .message-form__panel-text { max-width: 46ch; color: var(--ink-body); }
   .message-form__panel--received { padding: var(--space-2) 0; }
-  /* the one mark on the thank-you screen: chosen and done */
-  .message-form__sent-mark { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-bottom: var(--space-1); border-radius: var(--radius-control); background: var(--chosen); color: var(--action); box-shadow: var(--ring-action-faint); }
-  .message-form__sent-mark .icon { width: 24px; height: 24px; stroke-width: 2; }
+  /* the thank-you's one mark: a check set before the words, in the heading's own line */
+  .message-form__panel--received .message-form__panel-title { display: flex; align-items: center; gap: 10px; }
+  .message-form__panel-mark { flex: none; width: 26px; height: 26px; color: var(--action); stroke-width: 2; }
   .message-form__code-entry { display: grid; gap: var(--space-4); margin-top: var(--space-2); }
   .message-form__confirm { width: 100%; }
-  .message-form__resend { display: grid; justify-items: start; gap: 0; margin-top: var(--space-1); padding-top: var(--space-2); border-top: 1px solid var(--line); }
+  .message-form__resend { display: grid; justify-items: start; gap: 10px; margin-top: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  /* nothing left to offer (no further code, nothing to count): the row and its hairline go */
+  .message-form__resend:has(> [hidden]):not(:has(.message-form__meta span:not(:empty))) { display: none; }
   .message-form__meta { color: var(--ink-muted); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
   .message-form__help { color: var(--ink-muted); font: var(--type-meta); max-width: 46ch; }
   .message-form__instead { display: grid; gap: 10px; }
@@ -168,12 +190,12 @@
   .message-form__plain { margin-top: var(--space-5); }
 
   /* the full privacy notice: one raised row that opens in place */
-  .page-contact__notice { margin-top: var(--space-4); }
+  .page-contact__notice { margin-top: var(--space-7); }
   .page-contact__notice-open { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5); border-radius: var(--radius-row); color: var(--ink);
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
   .page-contact__notice-words { display: grid; gap: 1px; }
   .page-contact__notice-title { font: var(--type-row-strong); letter-spacing: 0; }
-  .page-contact__notice-note { color: var(--ink-body); font: var(--type-meta); }
+  .page-contact__notice-note { color: var(--ink-body); font: var(--type-meta); text-wrap: balance; }
   .page-contact__notice-mark { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px; color: var(--action); }
   .page-contact__notice-minus, .page-contact__notice[open] .page-contact__notice-plus { display: none; }
   .page-contact__notice[open] .page-contact__notice-minus { display: block; }
@@ -186,7 +208,8 @@
   }
   .page-contact__notice-body { max-width: 70ch; padding: var(--space-6) var(--space-1) 0; color: var(--ink-body); }
   .page-contact__notice-date { color: var(--ink-muted); font: var(--type-meta); }
-  .page-contact__notice-part { margin-top: var(--space-6); }
+  /* space above each section is padding, so the tops of two columns stay level */
+  .page-contact__notice-part { padding-top: var(--space-6); break-inside: avoid; }
   .page-contact__notice-part h3 { font: var(--type-role); letter-spacing: 0; }
   .page-contact__notice-part p { margin-top: var(--space-2); }
   .page-contact__notice-part ul { margin-top: 6px; padding-left: var(--space-5); list-style: disc; }
@@ -197,16 +220,22 @@
   /* ---------- small phones ---------- */
   @media (max-width: 359px) {
     .page-contact__handset { width: 64px; top: -58px; right: -6px; }
-    .page-contact__sign { max-width: calc(100% - 68px); }
-    .page-contact__map-label--north { display: none; }
-    .page-contact__map-label--west { top: 26%; }
+    .page-contact__sign { max-width: calc(100% - 78px); }
+    /* the narrowest map: the road's name moves clear of the pin; the two place names drop their arrows
+       (each already stands at its own end of the road) so the pin's label fits beside "Munshi Pulia" */
+    .page-contact__map-label--road { left: 21%; }
+    .page-contact__map-label--west .icon, .page-contact__map-label--east .icon { display: none; }
+    .page-contact__map-label--pin { transform: translateX(calc(-100% + 34px)); }
     .message-form__step-label { overflow-wrap: anywhere; }
   }
 
   /* ---------- from 480: the rows carry their digits on the right ---------- */
   @media (min-width: 480px) {
     .page-contact__frontage { width: 78%; }
+    /* room enough again: the pin's label stands centred under the pin */
+    .page-contact__map-label--pin { transform: translateX(-50%); }
     .page-contact__book, .message-form__send, .message-form__confirm, .page-contact__directions { width: auto; }
+    .message-form__input--code { max-width: 264px; }
     .message-form__instead { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .message-form__instead > :last-child { grid-column: 1 / -1; }
   }
@@ -228,14 +257,17 @@
     .page-contact__locator { grid-column: 1 / -1; grid-row: 1; }
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
-    .page-contact__map-label--north { left: var(--space-4); top: var(--space-4); }
-    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
-    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
+    .page-contact__map-label--north { display: inline-flex; left: var(--space-4); top: var(--space-4); }
+    /* From here the road is wide enough to carry the two names at its ends, like road signs. Each lies along the
+       road's centre line on a patch of the road's own white that runs out to the map's edge, so the centre line
+       stops before the words instead of striking through them or running beneath them. */
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 39.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; padding: 0 var(--space-2) 0 2px; background: var(--surface-top); box-shadow: -40px 0 0 var(--surface-top); text-shadow: none; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.9%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; padding: 0 2px 0 var(--space-2); background: var(--surface-top); box-shadow: 40px 0 0 var(--surface-top); text-shadow: none; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
     .page-contact__pin-art { width: 62px; }
     .page-contact__pin-shadow { left: -20px; top: -7px; width: 40px; height: 14px; }
-    .page-contact__map-label--pin { margin-top: var(--space-3); }
+    .page-contact__map-label--pin { margin-top: var(--space-3); transform: translateX(-50%); }
     .page-contact__frontage { grid-column: 1 / 8; grid-row: 2; width: auto; margin: -112px 0 0 var(--space-6); }
     .page-contact__address { grid-column: 8 / 13; grid-row: 2; align-self: start; margin: -72px var(--space-6) 0 0; padding: 26px 28px 28px; }
     .page-contact__directions { width: 100%; }
@@ -253,10 +285,12 @@
     .message-form { margin-top: var(--space-5); }
     .message-form__sheet { margin-top: var(--space-5); padding: var(--space-7); gap: var(--space-5); }
     .message-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); align-items: start; }
-    .message-form__field:first-of-type, .message-form__field:last-of-type { grid-column: 1 / -1; }
+    /* the name and the message run the sheet's full width; the email and the phone number share a row */
+    .message-form__fields > .message-form__field:first-of-type, .message-form__fields > .message-form__field:last-of-type { grid-column: 1 / -1; }
     .message-form__compose { grid-template-columns: 1fr auto; align-items: center; gap: var(--space-4); }
     .message-form__instead { grid-template-columns: repeat(3, auto); justify-content: start; }
     .message-form__instead > :last-child { grid-column: auto; }
+    /* the six digits and their button stand side by side; the button is level with the field, under the label's line */
     .message-form__code-entry { grid-template-columns: 264px auto; align-items: start; justify-content: start; }
     .message-form__code-entry .message-form__confirm { margin-top: 27px; }
     .page-contact__notice { margin-top: var(--space-8); }
@@ -274,7 +308,8 @@
     /* the arch runs down into the sage section below: the two grounds meet inside it */
     .page-contact__arch { left: 50%; right: auto; top: 44px; bottom: 0; width: min(100%, 640px); height: auto; transform: translateX(-50%); }
     .page-contact__directory { width: min(100% - 56px, 552px); padding: var(--space-4) var(--space-4) var(--space-3); }
-    .page-contact__handset { right: -58px; top: -70px; width: 138px; transform: rotate(-14deg); filter: var(--elev-object); }
+    /* narrower laptops leave 60 px beside the card: the handset is a size smaller there and stays inside the screen */
+    .page-contact__handset { right: -36px; top: -66px; width: 124px; transform: rotate(-14deg); filter: var(--elev-object); }
     .page-contact__changes { margin: 14px 6px 4px; }
     .page-contact__book { min-width: 0; }
 
@@ -282,8 +317,6 @@
     .page-contact__find { padding-top: var(--section-pad); box-shadow: none; }
     .page-contact__table { column-gap: var(--space-7); }
     .page-contact__map-window { height: 440px; }
-    .page-contact__map-label--west { top: 38.9%; }
-    .page-contact__map-label--east { top: 51.3%; }
     .page-contact__map-label--road { top: 42.9%; }
     .page-contact__pin-art { width: 72px; }
     .page-contact__pin-shadow { left: -24px; top: -8px; width: 48px; height: 16px; }
@@ -293,10 +326,12 @@
     .page-contact__hours-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-7); align-items: start; }
     .page-contact__hours-copy { display: block; grid-column: 1 / 6; grid-row: 1; padding-top: 104px; }
     .page-contact__hours-copy .section-head__running { margin-right: 0; }
-    /* the ledger's top rule is a shelf: the calendar stands on it, the arch rises behind */
+    /* the ledger's top rule is a shelf: the calendar stands on it, the arch rises behind. They stand over the
+       day column (the ledger's own left edge), whose head is empty, so the calendar's shadow falls on no words. */
     .page-contact__ledger { grid-column: 7 / 13; grid-row: 1; margin-top: 126px; }
-    .page-contact__hours-arch { right: 28px; top: 0; width: 176px; height: 127px; }
-    .page-contact__calendar { right: 52px; top: 16px; width: 128px; transform: rotate(4deg); filter: var(--elev-object); }
+    .page-contact__hours-arch { left: calc(50% + var(--space-7) / 2); right: auto; top: 0; width: 176px; height: 127px; }
+    /* it floats a few pixels, so it is held 8 px clear of the rule and never sinks through it */
+    .page-contact__calendar { left: calc(50% + var(--space-7) / 2 + 24px); right: auto; top: 8px; width: 128px; transform: rotate(-4deg); filter: var(--elev-object); }
     .page-contact__observation { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); max-width: 440px; }
 
     .page-contact__message-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
@@ -310,11 +345,15 @@
     .message-form__step:first-child { border-top-color: var(--line-strong); }
     .message-form__step[aria-current] { font-weight: 600; }
     .message-form__why { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+    /* the opened notice reads as a document: two columns of whole sections, a hairline between them */
+    .page-contact__notice-body { max-width: 1104px; }
+    .page-contact__notice-columns { columns: 2; column-gap: var(--space-9); column-rule: 1px solid var(--line); }
     .page-contact__pen { display: block; position: absolute; z-index: 2; left: calc(38.3% - 46px); bottom: -34px; width: 74px; height: auto; transform: rotate(38deg); filter: var(--elev-object); pointer-events: none; }
   }
 
   @media (min-width: 1280px) {
     .page-contact__opening-grid { grid-template-columns: minmax(0, 5.2fr) minmax(0, 6.8fr); column-gap: var(--space-8); }
     .page-contact__directory { width: min(100% - 96px, 568px); padding: 18px 18px 14px; }
+    .page-contact__handset { right: -54px; top: -70px; width: 138px; }
   }
 }

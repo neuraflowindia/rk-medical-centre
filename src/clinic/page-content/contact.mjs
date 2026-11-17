@@ -35,7 +35,8 @@ export const findUs=Object.freeze({
   north:'N',
   pin:clinicName,
   open:'Open in Google Maps',
-  opens:essentials.place.opens,
+  // Said after the label for assistive technology. The label already names Google Maps.
+  opens:'(new tab)',
   href:directions,
   // The drawing's roads and parks were traced from OpenStreetMap, whose licence asks for this credit
   // wherever a drawing made from its data is shown.
@@ -107,8 +108,10 @@ export const messageForm=Object.freeze({
  stepsWhy:'The code shows the email address is yours, so the clinic can reply.',
  fields:Object.freeze([
   Object.freeze({name:'name',label:'Full name',type:'text',autocomplete:'name',maxlength:100,required:true,hint:''}),
-  Object.freeze({name:'email',label:'Email address',type:'email',autocomplete:'email',maxlength:254,required:true,inputmode:'email',hint:'A six-digit code is emailed here, to check it is yours.'}),
-  Object.freeze({name:'phone',label:'Phone number',type:'tel',autocomplete:'tel',maxlength:32,required:false,inputmode:'tel',hint:'Ten digits, or + and the country code.'})
+  // One short line under the email field (it fits one line on a 360 px phone). The phone field has no hint:
+  // an ordinary ten-digit number is accepted as typed, and its error says the form to use.
+  Object.freeze({name:'email',label:'Email address',type:'email',autocomplete:'email',maxlength:254,required:true,inputmode:'email',hint:'We email a code to check this address.'}),
+  Object.freeze({name:'phone',label:'Phone number',type:'tel',autocomplete:'tel',maxlength:32,required:false,inputmode:'tel',hint:''})
  ]),
  optional:'optional',
  message:Object.freeze({label:'Your message',maxlength:4000}),
@@ -228,21 +231,26 @@ export const privacyNotice=Object.freeze({
  summary:Object.freeze([
   'When you send a message, we take your name, your email address, your message and, if you give one, your phone number. We email a six-digit code to check the address is yours.',
   'When you book, we take the patient’s name, a phone number, the doctor, day and time you choose and, if you give them, an email address and a note for the doctor.',
+  'Like any website, ours also receives your device’s internet address. The forms use it only to limit misuse.',
   'We use these details only to answer you and to arrange and carry out your visit. We do not sell them or use them for advertising.',
   'They are seen by the clinic’s doctors and staff, and handled for the clinic by the service companies that run this website, keep its records and send its emails. Booking records are also kept in the clinic’s own records.',
-  `You can ask to see, correct or delete your details, or take back your permission, at any time: call ${numbers}.`
+  `You can ask to see, correct or delete your details, or take back your permission, at any time: call ${numbers}, or write to the clinic.`
  ]),
  more:Object.freeze({label:'Read the full notice',href:'/contact#privacy-notice'}),
  // The full notice, at the foot of the Contact page.
  full:Object.freeze({
   id:'privacy-notice',
-  open:footer.detailsNotice,
-  openNote:'The full notice',
+  // The row's own name: the sheet above it already carries "How your details are used" as a link.
+  open:'Privacy notice',
+  openNote:'How the clinic uses your details, in full',
   updated:'Last updated November 2026',
   sections:Object.freeze([
    Object.freeze({
     heading:'Who is responsible',
-    paragraphs:Object.freeze([`${clinicName}, ${address}, decides how the details you give on this website are used.`])
+    paragraphs:Object.freeze([
+     `${clinicName}, ${address}, decides how the details you give on this website are used.`,
+     'A phone call, or a chat you start from your own phone, goes straight to the clinic and does not pass through this website.'
+    ])
    }),
    Object.freeze({
     heading:'What we take, and why',
@@ -252,6 +260,9 @@ export const privacyNotice=Object.freeze({
     ]),
     paragraphs:Object.freeze([
      'We ask only for what is needed, and we use it only for these purposes.',
+     // True of this site's engine (its request limits read the caller's address and store only a keyed
+     // digest of it, never the address itself) and of any web server (the request itself carries both).
+     'As with any website, the servers that run this one also receive your device’s internet address and basic technical details, such as the kind of browser, when you open a page or send a form. The message and booking service uses the address only to limit misuse, and keeps it only in a scrambled form.',
      'This website does not measure your visits or show advertising. All it keeps on your own device are your choices here (privacy and motion) and a private reference to a message or booking you are in the middle of.'
     ])
    }),
@@ -269,8 +280,9 @@ export const privacyNotice=Object.freeze({
    Object.freeze({
     heading:'Your choices',
     paragraphs:Object.freeze([
-     'You can ask us at any time to show you the details we hold about you, to correct or complete them, or to delete them. You can also take back your permission as easily as you gave it; what was done before stays as it was, and we may then be unable to answer you or keep your booking. You may name another person to make these choices for you if you ever cannot.',
-     `To do any of this, call ${contact.phones.map(phone=>`${phone.digits} (${phone.name})`).join(' or ')}, or write to ${contact.post}. Tell us the name and the phone number or email address you used, so that we can find your record.`
+     'You can ask us at any time to show you the details we hold about you, to correct or complete them, or to delete them. You can also take back your permission at any time; what was done before stays as it was, and we may then be unable to answer you or keep your booking. You may name another person to make these choices for you if you ever cannot.',
+     // How: said plainly. The website itself has no button for this; it is done by a call or a letter.
+     `To take back your permission, to have your details deleted, or to make any of these requests, call ${contact.phones.map(phone=>`${phone.digits} (${phone.name})`).join(' or ')}, or write to ${contact.post}. Tell us the name and the phone number or email address you used, so that we can find your record.`
     ])
    }),
    Object.freeze({
