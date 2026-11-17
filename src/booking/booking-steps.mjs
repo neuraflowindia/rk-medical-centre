@@ -6,7 +6,7 @@ import {doctors} from '../clinic/model.mjs';
 import {doctorOrder} from '../clinic/care-catalogue.mjs';
 import {doctorAvatars,closePortraits,clinicObjects} from '../clinic/client-media.mjs';
 import {bookForSomeoneElseAnswer} from '../clinic/standins.mjs';
-import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
+import {addressCard,actionLabels,clinicPlace,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
 import {localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
 
 const NBSP=' ';
@@ -101,10 +101,18 @@ export const words=Object.freeze({
   ack:'I have checked the doctor, day, starting time and my details.',
   at_clinic:'Confirm appointment',
   online:'Continue to payment',
-  choose:'Choose a payment option',
-  saving:'Saving your request…',
+  saving:'Saving your appointment…',
+  // the line under the tick box: what the last press does, or the one thing it still waits for
   final:'This books your visit straight away.',
-  tick:'Tick the box above to confirm.'
+  tick:'Tick the box to confirm.',
+  payFirst:'Choose a payment option first.',
+  checking:'Checking the latest times…'
+ }),
+ // said beside the thing that is still missing when the step's main button is pressed too early
+ ask:Object.freeze({
+  time:'Choose a starting time to continue.',
+  day:'Choose another day to continue.',
+  payment:'Choose how you would like to pay.'
  }),
  contact:Object.freeze({
   change:'To change or cancel, call',
@@ -305,15 +313,43 @@ export function detailProblems(details,{requiredContacts=['phone']}={}){
 /** The detail fields in the order they are printed (and the order the cursor goes to the first problem). */
 export const DETAIL_FIELDS=Object.freeze(['full_name','phone','email']);
 
-/** The last button's words. */
-export function confirmLabel({busy=false,method=''}={}){
- if(busy)return words.confirm.saving;
- return method==='at_clinic'||method==='online'?words.confirm[method]:words.confirm.choose;
+/**
+ * What the last step still needs before the last press: "" when it may go, else "checking" (the
+ * engine is re-reading the options or the times), "payment" or "tick". Admission is not part of
+ * it: a press made during a booking-state check is kept and handed over when the check ends.
+ */
+export function stepThreeMissing({usable,state,methodAvailable=false,held=null}){
+ if(!usable||!state.policyFresh||!state.slotsFresh||!state.slot||!state.quote||held)return 'checking';
+ if(!state.payment_method||!methodAvailable)return 'payment';
+ return state.ack?'':'tick';
 }
-/** The line under the last button: what pressing it does, or what it still waits for. */
-export function confirmHint({method='',methodAvailable=false,ack=false}={}){
- if(!method||!methodAvailable)return '';
- return ack?words.confirm.final:words.confirm.tick;
+/** The payment options in the order they are listed: the ones that can be chosen first; otherwise the engine's order. */
+export function paymentOrder(methods,isAvailable){
+ const list=[...(methods||[])];
+ return [...list.filter(method=>isAvailable(method)),...list.filter(method=>!isAvailable(method))];
+}
+/**
+ * The last button's words. It always names what the press will do: with no option chosen yet,
+ * that is the first option that can be chosen (`offered`, in listed order).
+ */
+export function confirmLabel({busy=false,method='',offered=[]}={}){
+ if(busy)return words.confirm.saving;
+ const named=[method,...offered].find(item=>item==='at_clinic'||item==='online');
+ return words.confirm[named||'at_clinic'];
+}
+/** The line under the tick box: what the last press does, or the one thing it still waits for. */
+export function confirmHint({missing=''}={}){
+ return missing==='payment'?words.confirm.payFirst:missing==='tick'?words.confirm.tick:missing==='checking'?words.confirm.checking:words.confirm.final;
+}
+/**
+ * Which part of the step the visitor is shown when the main button is pressed too early:
+ * "doctor", "day" (no starting time can be chosen on the day shown), "time", "payment", "tick",
+ * or "" when there is nothing to point at (the engine is still reading).
+ */
+export function askFor({step,missing='',timesShown=true}={}){
+ if(step===1)return missing==='doctor'?'doctor':missing==='time'?(timesShown?'time':'day'):'';
+ if(step===3)return missing==='payment'||missing==='tick'?missing:'';
+ return '';
 }
 
 // ---------- the summary ("Your visit") ----------
@@ -337,7 +373,8 @@ export function visitSummary({state,usable,chosen=true,shown={},methodAvailable=
   waiting:!!service&&waiting&&!settled,
   fee:Number.isSafeInteger(amount)?money(amount):'',
   payment:methodAvailable&&state.payment_method==='at_clinic'?words.summary.atClinic:methodAvailable&&state.payment_method==='online'?words.summary.online:'',
-  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address}):null
+  // `short` is the clinic's own two-word place, shown on phones (the full address is on the appointment card)
+  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address,short:clinicPlace}):null
  });
 }
 /** The two short lines of the phone bar: who, then the day and time (or what is still missing). */

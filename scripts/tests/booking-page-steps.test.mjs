@@ -7,7 +7,7 @@ import {existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {doctors} from '../../src/clinic/model.mjs';
 import {bookForSomeoneElseAnswer} from '../../src/clinic/standins.mjs';
-import {addressCard} from '../../src/clinic/page-content/shared.mjs';
+import {addressCard,clinicPlace} from '../../src/clinic/page-content/shared.mjs';
 import {createBookingController} from '../../appointment-system/browser/booking/controller.mjs';
 import {createReceiptStore} from '../../appointment-system/browser/booking/credentials.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
@@ -16,8 +16,8 @@ import {dateRange} from '../../appointment-system/browser/display-formatting.mjs
 import {createStubs,readSettings} from '../dev-preview.mjs';
 import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,serviceFor,doctorFor,doctorChoice,usablePolicy,doctorChoices,sittingHours,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
- stepOneMissing,mustChooseAgain,validPhone,phoneCountry,detailProblems,confirmLabel,confirmHint,visitSummary,barLines,paymentNote,contactRows,
- receiptDoctor,appointmentCard,calendarObject} from '../../src/booking/booking-steps.mjs';
+ stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
+ paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject} from '../../src/booking/booking-steps.mjs';
 
 const settings=readSettings();
 const NOW=Date.parse('2026-11-16T05:30:00Z'); // Monday 16 November 2026, 11:00 am in India
@@ -217,13 +217,55 @@ test('details: only what a visitor can put right at once is caught',()=>{
  assert.deepEqual(detailProblems({...good,phone:'',email:'a@b.in'},{requiredContacts:['email']}),{});
 });
 
-test('the last button says what it does, and the line under it says what it waits for',()=>{
+test('the last button always names what the press will do, and the line under the tick box says what it waits for',()=>{
  assert.equal(confirmLabel({method:'at_clinic'}),'Confirm appointment');assert.equal(confirmLabel({method:'online'}),'Continue to payment');
- assert.equal(confirmLabel({method:''}),'Choose a payment option');assert.equal(confirmLabel(),'Choose a payment option');assert.equal(confirmLabel({method:'cheque'}),'Choose a payment option');
- assert.equal(confirmLabel({busy:true,method:'at_clinic'}),'Saving your request…');
- assert.equal(confirmHint({method:'at_clinic',methodAvailable:true,ack:true}),'This books your visit straight away.');
- assert.equal(confirmHint({method:'at_clinic',methodAvailable:true,ack:false}),'Tick the box above to confirm.');
- assert.equal(confirmHint({method:'online',methodAvailable:false,ack:true}),'');assert.equal(confirmHint(),'');
+ // nothing chosen yet: the first option that can be chosen names the button, so its words never change under the finger
+ assert.equal(confirmLabel({method:'',offered:['at_clinic']}),'Confirm appointment');assert.equal(confirmLabel({offered:['online','at_clinic']}),'Continue to payment');
+ assert.equal(confirmLabel(),'Confirm appointment');assert.equal(confirmLabel({method:'cheque',offered:['barter']}),'Confirm appointment');
+ assert.equal(confirmLabel({busy:true,method:'at_clinic'}),'Saving your appointment…');
+ assert.equal(confirmHint({missing:''}),'This books your visit straight away.');assert.equal(confirmHint(),'This books your visit straight away.');
+ assert.equal(confirmHint({missing:'tick'}),'Tick the box to confirm.');
+ assert.equal(confirmHint({missing:'payment'}),'Choose a payment option first.');
+ assert.equal(confirmHint({missing:'checking'}),'Checking the latest times…');
+});
+
+test('the last step: what is still missing, in the order a visitor meets it',async()=>{
+ const {controller,state}=await engine();
+ const usable=usablePolicy(state().policy),available=method=>paymentAvailable(state().policy,method);
+ const missing=(extra={})=>stepThreeMissing({usable,state:state(),methodAvailable:!!state().payment_method&&available(state().payment_method),...extra});
+ assert.equal(missing(),'checking','no starting time: nothing can be confirmed');
+ controller.edit('slot',state().slots[0]);
+ assert.equal(missing(),'payment','the engine starts with no payment option chosen');
+ // a tick made before the payment option is chosen is cleared by the engine when the option is chosen: the box waits
+ controller.acknowledge(true);assert.equal(state().ack,true);
+ controller.edit('payment_method','at_clinic');assert.equal(state().ack,false);
+ assert.equal(missing(),'tick');
+ controller.acknowledge(true);assert.equal(missing(),'');
+ // a change of doctor or day that is being held, stale options, an option the engine cannot offer
+ assert.equal(missing({held:{day:SUNDAY}}),'checking');
+ assert.equal(stepThreeMissing({usable,state:{...state(),policyFresh:false},methodAvailable:true}),'checking');
+ assert.equal(stepThreeMissing({usable,state:{...state(),slotsFresh:false},methodAvailable:true}),'checking');
+ assert.equal(stepThreeMissing({usable,state:{...state(),quote:null},methodAvailable:true}),'checking');
+ assert.equal(stepThreeMissing({usable:false,state:state(),methodAvailable:true}),'checking');
+ assert.equal(stepThreeMissing({usable,state:{...state(),payment_method:'online'},methodAvailable:false}),'payment');
+ assert.equal(stepThreeMissing({usable,state:state()}),'payment','availability must be said');
+ // the options are listed with the ones that can be chosen first, otherwise in the engine's order
+ assert.deepEqual(settings.payment_methods,['online','at_clinic']);
+ assert.deepEqual(paymentOrder(state().policy.policy.payment_methods,available),['at_clinic','online']);
+ assert.deepEqual(paymentOrder(['online','at_clinic'],()=>true),['online','at_clinic']);assert.deepEqual(paymentOrder(['online','at_clinic'],()=>false),['online','at_clinic']);
+ assert.deepEqual(paymentOrder(undefined,()=>true),[]);
+});
+
+test('a main button pressed too early points at the one thing that is missing',()=>{
+ assert.equal(askFor({step:1,missing:'doctor'}),'doctor');
+ assert.equal(askFor({step:1,missing:'time'}),'time');
+ assert.equal(askFor({step:1,missing:'time',timesShown:false}),'day','no time can be chosen on the day shown: another day is the way on');
+ assert.equal(askFor({step:1,missing:'checking'}),'','nothing to point at while the engine reads');
+ assert.equal(askFor({step:1,missing:''}),'');
+ assert.equal(askFor({step:3,missing:'payment'}),'payment');assert.equal(askFor({step:3,missing:'tick'}),'tick');
+ assert.equal(askFor({step:3,missing:'checking'}),'');assert.equal(askFor({step:3,missing:''}),'');
+ assert.equal(askFor({step:2,missing:'time'}),'','step 2 marks its own boxes');assert.equal(askFor(),'');
+ for(const what of ['time','day','payment'])assert.match(words.ask[what],/^Choose .+\.$/);
 });
 
 test('the summary follows the engine: who, when, how much, where',async()=>{
@@ -232,7 +274,8 @@ test('the summary follows the engine: who, when, how much, where',async()=>{
  // before the visitor has chosen a doctor
  const blank=visitSummary({state:state(),usable,chosen:false});
  assert.equal(blank.doctor,null);assert.equal(blank.day,'');assert.equal(blank.time,'');assert.equal(blank.fee,'');assert.equal(blank.waiting,false);
- assert.deepEqual(blank.place,{name:settings.location.name,address:settings.location.address});
+ assert.deepEqual(blank.place,{name:settings.location.name,address:settings.location.address,short:clinicPlace});
+ assert.ok(settings.location.address.includes(clinicPlace),'the short place is part of the engine\'s own address');
  assert.deepEqual(barLines(blank),{top:'Choose a doctor',bottom:''});
  // doctor chosen, no time yet
  const started=visitSummary({state:state(),usable});

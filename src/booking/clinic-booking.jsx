@@ -13,8 +13,8 @@ import {paymentAvailable} from '../../appointment-system/browser/booking/index.m
 import {bookingUnavailable} from '../site/pages/booking/booking.mjs';
 import {archPortrait} from '../site/parts/photo-figure/photo-figure.mjs';
 import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, usablePolicy, doctorChoices, sittingHours, dayTiles, dayBeyondTiles, dayLong,
-  slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, mustChooseAgain, phoneCountry, detailProblems, confirmLabel, confirmHint,
-  visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject} from './booking-steps.mjs';
+  slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
+  paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject} from './booking-steps.mjs';
 
 const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
@@ -28,6 +28,11 @@ function Notice({calm = false, icon, role = 'alert', children}) {
   return <div className={classes('booking-notice', calm && 'booking-notice--calm')} role={role}>
     <Icon name={icon || (calm ? 'info' : 'alert')}/>{children}
   </div>;
+}
+
+/** Said beside the thing that is still missing, after the step's main button was pressed too early. */
+function Ask({children}) {
+  return <p className="booking-ask" role="alert"><Icon name="info"/><span>{children}</span></p>;
 }
 
 /** "To change or cancel, call Dr. Sanjay Gupta: 94150 49410" (one doctor if known, otherwise both). */
@@ -95,7 +100,8 @@ function VisitSummary({summary, id, onChange, aside = false}) {
       <div><dt>{words.summary.fee}</dt>{summary.fee
         ? <dd>{summary.fee}{summary.payment && <span className="visit-summary__pay"> · {summary.payment}</span>}</dd>
         : empty}</div>
-      {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}<small>{summary.place.address}</small></dd></div>}
+      {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}
+        <small className="visit-summary__address">{kt(summary.place.address)}</small><small className="visit-summary__area">{summary.place.short}</small></dd></div>}
     </dl>
     {aside && onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
   </section>;
@@ -152,7 +158,9 @@ function Booking({draft = {}}) {
   const [problems, setProblems] = useState({});
   const [record, setRecord] = useState(false);
   const [gone, setGone] = useState(false);
-  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({});
+  // The part of the step the visitor was shown after pressing the main button too early ("" = none).
+  const [asked, setAsked] = useState('');
+  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({});
   const [act, waiting] = useHeldAction(flow.available, flow.viewAvailable);
 
   useEffect(() => {
@@ -203,8 +211,13 @@ function Booking({draft = {}}) {
   const summary = visitSummary({state: s, usable, chosen, shown: held || {}, methodAvailable});
   const missing = stepOneMissing({chosen, held, state: s, usable});
   // What the last press needs. Admission is not part of it: a press during a state check is kept (useHeldAction).
-  const ready = usable && s.policyFresh && s.slotsFresh && !!s.slot && !!s.quote && methodAvailable && s.ack && !s.busy && !held;
+  const missingLast = stepThreeMissing({usable, state: s, methodAvailable, held});
+  const ready = !missingLast && !s.busy;
   const readyNow = useRef(ready); readyNow.current = ready;
+  const timesShown = s.slotsStatus === 'ready' && s.slots.length > 0 && !held;
+  const ask = askFor({step, missing: step === 1 ? missing : step === 3 ? missingLast : '', timesShown});
+  // Once the missing thing is there (or the step has moved on), nothing is pointed at any more.
+  useEffect(() => { if (asked && asked !== ask) setAsked(''); }, [asked, ask]);
 
   // The chosen time has gone (someone else took it, or the day's times changed): back to step 1 to choose again.
   useEffect(() => {
@@ -232,8 +245,18 @@ function Booking({draft = {}}) {
       box.querySelector('.abs-date-group button')?.click();
     });
   };
+  // The main button is never a dead press: pressed too early, it shows the visitor what is still missing.
+  const pointTo = what => {
+    if (!what) return;
+    setAsked(what);
+    requestAnimationFrame(() => {
+      const node = parts.current[what]; if (!node) return;
+      node.scrollIntoView({block: what === 'tick' ? 'nearest' : 'center'});
+      node.querySelector('input:not(:disabled), button:not(:disabled)')?.focus({preventScroll: true});
+    });
+  };
   const advance = () => {
-    if (step === 1) { if (!missing) go(2); return; }
+    if (step === 1) { if (missing) pointTo(ask); else go(2); return; }
     if (step === 2) {
       const found = detailProblems(s.details, {requiredContacts: p?.required_contacts});
       setProblems(found);
@@ -241,7 +264,9 @@ function Booking({draft = {}}) {
       if (wrong) { fieldNodes.current[wrong]?.focus(); return; }
       go(3); return;
     }
-    if (ready) act(() => { if (readyNow.current) void flow.start(); });
+    if (s.busy || waiting) return;
+    if (missingLast) { pointTo(ask); return; }
+    act(() => { if (readyNow.current) void flow.start(); });
   };
 
   if (screen === 'unavailable') {
@@ -306,6 +331,11 @@ function Booking({draft = {}}) {
   const optionsStale = !usable || !s.policyFresh;
   const timesWaiting = !!held || s.slotsStatus === 'loading';
   const noTimes = !timesWaiting && s.slotsStatus === 'ready' && s.slots.length === 0;
+  const methods = usable ? paymentOrder(p.payment_methods, method => paymentAvailable(s.policy, method)) : [];
+  // The tick box waits for the payment option (choosing one clears the tick in the engine); pressed before that, it points there.
+  const tickWaits = missingLast === 'payment' || missingLast === 'checking';
+  // Flat until the step is complete, but never dead: a press shows what is missing (advance).
+  const notReady = step === 1 ? !!missing : step === 3 ? !!missingLast && !sending : false;
   const fields = [
     ['full_name', words.details.name, 'text', 'name', true, 100, words.details.someoneElse],
     ['phone', words.details.phone, 'tel', 'tel-national', p?.required_contacts.includes('phone') ?? true, 32, words.details.phoneHint],
@@ -325,7 +355,8 @@ function Booking({draft = {}}) {
             {s.loadingPolicy && !usable && <p className="booking-wait" role="status">{words.options.checking}</p>}
             {!s.loadingPolicy && !usable && <Notice><p>{words.options.failed}</p><ClinicContact bookingHelp/></Notice>}
             {!s.policyFresh && !s.loadingPolicy && <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button>}
-            {usable && <fieldset className={classes('doctor-choices', chosen && !changing && 'is-folded')} disabled={disabled || optionsStale}>
+            {usable && <fieldset className={classes('doctor-choices', chosen && !changing && 'is-folded', asked === 'doctor' && 'is-asked')} disabled={disabled || optionsStale}
+              ref={node => { parts.current.doctor = node; }}>
               <legend>{words.doctor.legend}</legend>
               <button type="button" className="text-link doctor-choices__change" onClick={() => setChanging(true)}><span>{words.change}</span></button>
               <div className="doctor-choices__list">
@@ -345,10 +376,11 @@ function Booking({draft = {}}) {
               {!chosen && <p className="doctor-choices__more"><span>{words.doctor.unsure}</span>
                 <a className="text-link" href={words.doctor.meetPath}><span>{words.doctor.meet}</span><Icon name="arrow"/></a></p>}
             </fieldset>}
-            {usable && !chosen && <p className="booking-prompt">{words.doctor.prompt}</p>}
+            {usable && !chosen && <p className={classes('booking-prompt', asked === 'doctor' && 'is-asked')} role={asked === 'doctor' ? 'alert' : undefined}>{words.doctor.prompt}</p>}
 
-            {usable && chosen && <fieldset className="booking-days" disabled={disabled || optionsStale}>
+            {usable && chosen && <fieldset className={classes('booking-days', asked === 'day' && 'is-asked')} disabled={disabled || optionsStale} ref={node => { parts.current.day = node; }}>
               <legend>{words.day.legend}</legend>
+              {asked === 'day' && <Ask>{words.ask.day}</Ask>}
               <div className="booking-days__row">
                 {tiles.map(tile => <button type="button" key={tile.iso} className="day-tile" data-booking-day={tile.iso} aria-pressed={shown.day === tile.iso} disabled={!tile.available}
                   aria-label={tile.spoken + (tile.available ? '' : ', ' + words.day.notOffered)} onClick={() => edit('day', tile.iso)}>
@@ -363,8 +395,9 @@ function Booking({draft = {}}) {
               </div>
             </fieldset>}
 
-            {usable && chosen && <fieldset className="slot-choices" disabled={disabled || !s.slotsFresh || !!held}>
+            {usable && chosen && <fieldset className={classes('slot-choices', asked === 'time' && 'is-asked')} disabled={disabled || !s.slotsFresh || !!held} ref={node => { parts.current.time = node; }}>
               <legend>{words.time.legend}</legend>
+              {asked === 'time' && <Ask>{words.ask.time}</Ask>}
               {timesWaiting && <div className="slot-group"><p className="booking-wait" role="status">{words.time.checking}</p>
                 <div className="slot-group__pills" aria-hidden="true"><span className="time-pill__ghost"/><span className="time-pill__ghost"/><span className="time-pill__ghost"/></div></div>}
               {noTimes && <Notice calm role="status"><p>{words.time.noneLeft(dayLong(shown.day))}</p><ClinicContact service={shown.service} bookingHelp/></Notice>}
@@ -403,10 +436,11 @@ function Booking({draft = {}}) {
 
           {step === 3 && <>
             <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => go(1)}/>
-            <fieldset className="payment-choices" disabled={disabled || optionsStale}>
+            <fieldset className={classes('payment-choices', asked === 'payment' && 'is-asked')} disabled={disabled || optionsStale} ref={node => { parts.current.payment = node; }}>
               <legend>{words.payment.legend}</legend>
+              {asked === 'payment' && <Ask>{words.ask.payment}</Ask>}
               <div className="payment-choices__list">
-                {(usable ? p.payment_methods : []).map(method => {
+                {methods.map(method => {
                   const available = paymentAvailable(s.policy, method), selected = s.payment_method === method;
                   return <label key={method} className={classes('payment-choice', selected && 'selected', !available && 'payment-unavailable')} data-booking-payment={method}>
                     <input type="radio" className="visually-hidden" name={id + 'payment'} disabled={!available} checked={selected} onChange={() => edit('payment_method', method)}/>
@@ -419,21 +453,26 @@ function Booking({draft = {}}) {
             </fieldset>
             {s.payment_method && !methodAvailable && <p role="status" className="booking-pay-note">{words.payment.chosenUnavailable}</p>}
             <p className="booking-pay-note">{words.payment.later}</p>
-            <div className="booking-last"><label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled || !s.slot || !methodAvailable}
-              onChange={event => dispatch({type: 'ack', value: event.target.checked})}/>
-              <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>
-              <p className="booking-confirm-hint" role="status">{confirmHint({method: s.payment_method, methodAvailable, ack: s.ack})}</p></div>
           </>}
         </section>
 
         <div className={classes('booking-bar', step === 3 && 'booking-bar--last')}>
+          {/* The last two presses stay together and in sight: the tick box and what it confirms, then the button. */}
+          {step === 3 && <div className={classes('booking-last', asked === 'tick' && 'is-asked')} ref={node => { parts.current.tick = node; }}>
+            <label className={classes('booking-ack', tickWaits && 'is-waiting')}>
+              <input type="checkbox" checked={s.ack} disabled={disabled} aria-disabled={tickWaits || undefined} aria-describedby={id + 'last'}
+                onChange={event => { if (tickWaits) pointTo(ask); else dispatch({type: 'ack', value: event.target.checked}); }}/>
+              <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>
+            <p className="booking-confirm-hint" id={id + 'last'} role="status">{confirmHint({missing: missingLast})}</p>
+          </div>}
           {step === 1 && <p className="booking-bar__summary"><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
           {step === 1 && missing && <p className="booking-bar__hint" aria-hidden="true">{words.missing[missing]}</p>}
           {step === 2 && <button type="button" className="booking-bar__summary" onClick={() => go(1)} aria-label={`${words.summary.change}: ${lines.top}, ${lines.bottom}`}>
             <span className="booking-bar__top">{kt(lines.top)}</span><span className="booking-bar__bottom">{kt(lines.bottom)}</span><Icon name="edit"/></button>}
           {step > 1 && <button type="button" className={classes('text-link booking-bar__back', step === 2 && 'booking-bar__back--laptop')} disabled={sending} onClick={() => go(step - 1)}><span>{words.back}</span></button>}
-          <button type="submit" className="button button--main button--large booking-bar__main" data-booking-continue disabled={step === 1 ? !!missing : step === 2 ? disabled : !ready || waiting}>
-            <span className="button__label">{step === 3 ? confirmLabel({busy: sending, method: methodAvailable ? s.payment_method : ''}) : words.next}</span>
+          <button type="submit" className={classes('button button--main button--large booking-bar__main', notReady && 'is-not-ready', step === 3 && sending && 'is-busy')} data-booking-continue
+            disabled={step === 2 && disabled} aria-busy={step === 3 && sending ? 'true' : undefined} aria-describedby={step === 3 ? id + 'last' : undefined}>
+            <span className="button__label">{step === 3 ? confirmLabel({busy: sending, method: methodAvailable ? s.payment_method : '', offered: methods.filter(method => paymentAvailable(s.policy, method))}) : words.next}</span>
             {step < 3 && <Icon name="arrow"/>}
           </button>
         </div>

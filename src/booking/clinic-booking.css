@@ -47,6 +47,15 @@
   .booking-contact__link:active { color: var(--action-pressed); }
   .booking-wait { color: var(--ink-body); font: var(--type-label); font-weight: 500; }
   .booking-prompt { padding: var(--space-4); border-radius: var(--radius-row); color: var(--ink-body); background: var(--flat-fill); font: var(--type-label); font-weight: 500; }
+  /* ----- pressed too early: the step's main button shows what is still missing, in words and with a ring ----- */
+  .booking-ask { display: flex; align-items: flex-start; gap: var(--space-2); clear: both; margin-bottom: var(--space-3); color: var(--ink); font: var(--type-label); }
+  .booking-ask .icon { flex: none; width: 20px; height: 20px; color: var(--action); }
+  .booking-prompt.is-asked { color: var(--ink); background: var(--wash-sage); box-shadow: var(--ring), var(--halo-wide); }
+  .doctor-choices.is-asked .doctor-choice__card { box-shadow: var(--ring), var(--halo-wide), var(--elev-raised); }
+  .booking-days.is-asked .day-tile:not(:disabled):not([aria-pressed="true"]):not([aria-expanded="true"]) { box-shadow: var(--ring), var(--elev-raised); }
+  .slot-choices.is-asked .time-pill:not(.selected) .time-pill__face { box-shadow: var(--ring), var(--elev-raised); }
+  .payment-choices.is-asked .payment-choice:not(.payment-unavailable):not(.selected) .payment-choice__card { box-shadow: var(--ring), var(--halo-wide), var(--elev-raised); }
+  .booking-days, .slot-choices, .payment-choices, .doctor-choices { scroll-margin-block: var(--space-6); }
 
   /* ===================== step 1 ===================== */
   /* ----- doctors: two raised cards, each in its doctor's wash ----- */
@@ -164,6 +173,8 @@
   .visit-summary__facts dd { color: var(--ink); font: var(--type-row-strong); font-variant-numeric: tabular-nums lining-nums; overflow-wrap: anywhere; }
   .visit-summary__facts dd.is-empty { color: var(--ink-muted); font-weight: 400; }
   .visit-summary__facts dd small { display: block; color: var(--ink-body); font: var(--type-notes); }
+  /* phones: the clinic's two-word place; the full address is shown from tablets up and on the appointment card */
+  .visit-summary__facts dd .visit-summary__address { display: none; }
   .visit-summary__pay { color: var(--ink-body); font-weight: 400; }
   .visit-summary__change { justify-self: start; margin: calc(-1 * var(--space-2)) 0 calc(-1 * var(--space-3)); }
   .visit-summary__head .visit-summary__change { margin: -8px 0; }
@@ -192,19 +203,28 @@
   .payment-choice.payment-unavailable .payment-choice__card { min-height: var(--control-height); }
   .payment-choice.payment-unavailable .payment-choice__words { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
   .booking-pay-note { margin-top: calc(-1 * var(--space-2)); color: var(--ink-body); font: var(--type-notes); }
-  .booking-last { display: grid; gap: var(--space-1); }
 
-  /* ----- the tick box: a 24 px box inside a 48 px row; the real box stays focusable ----- */
-  .booking-ack { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: var(--space-3); min-height: var(--tap); padding: var(--space-3) 0; color: var(--ink); cursor: pointer; }
+  /* ----- the tick box: a 24 px box in a row at least 48 px tall; the real box stays focusable.
+     It lives in the bar, directly above the last button, so the last two presses are always
+     together and in sight ----- */
+  .booking-last { flex: 1 1 100%; display: grid; min-width: 0; }
+  .booking-ack { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; align-content: center; gap: var(--space-3); min-height: var(--tap); padding: var(--space-1) 0; color: var(--ink); cursor: pointer; }
   .booking-ack input { position: absolute; left: -12px; top: 0; width: 48px; height: 48px; margin: 0; opacity: 0; cursor: pointer; }
-  .booking-ack__box { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-focus); color: transparent; background: var(--surface-top); box-shadow: inset 0 0 0 1.5px var(--control-border), var(--elev-raised-quiet); transition: background-color var(--dur-hover), box-shadow var(--dur-hover); }
+  .booking-ack__box { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-top: -1px; border-radius: var(--radius-focus); color: transparent; background: var(--surface-top); box-shadow: inset 0 0 0 1.5px var(--control-border), var(--elev-raised-quiet); transition: background-color var(--dur-hover), box-shadow var(--dur-hover); }
   .booking-ack__box .icon { width: 16px; height: 16px; stroke-width: 2.4; }
+  .booking-ack__words { font: var(--type-label); font-weight: 500; }
   .booking-ack input:checked + .booking-ack__box { color: var(--on-action); background: var(--action); box-shadow: var(--elev-pressed); }
   .booking-ack input:focus-visible + .booking-ack__box { outline: 2px solid var(--focus); outline-offset: 3px; }
   .booking-ack input:disabled { cursor: default; }
-  .booking-ack input:disabled + .booking-ack__box { background: var(--flat-fill); box-shadow: var(--ring-faint); }
-  .booking-ack input:disabled ~ .booking-ack__words { color: var(--ink-muted); }
+  /* it waits for the payment option: flat, and a press on it points to the payment options */
+  .booking-ack.is-waiting .booking-ack__box, .booking-ack input:disabled + .booking-ack__box { background: var(--flat-fill); box-shadow: var(--ring-faint); }
+  .booking-ack.is-waiting .booking-ack__words, .booking-ack input:disabled ~ .booking-ack__words { color: var(--ink-muted); }
+  .booking-ack input:disabled:checked + .booking-ack__box { color: var(--on-action); background: var(--action); box-shadow: var(--elev-pressed); }
+  .booking-ack input:disabled:checked ~ .booking-ack__words { color: var(--ink); }
   .booking-confirm-hint { min-height: 1.45em; padding-left: 36px; color: var(--ink-body); font: var(--type-notes); }
+  .booking-last.is-asked .booking-ack__box { box-shadow: inset 0 0 0 2px var(--action), var(--halo-wide); animation: booking-nudge var(--dur-arrive) var(--ease-move) 1; }
+  .booking-last.is-asked .booking-confirm-hint { color: var(--ink); font-weight: 600; }
+  @keyframes booking-nudge { 0%, 100% { transform: none; } 30% { transform: translateX(-3px); } 65% { transform: translateX(3px); } }
 
   /* ===================== the bar: the summary and the step's main button ===================== */
   /* it stays at the foot of the screen while the steps are in view, so the next press is never out of sight */
@@ -218,7 +238,13 @@
   .booking-bar__summary .icon { grid-column: 2; grid-row: 1 / span 2; width: 20px; height: 20px; color: var(--action); }
   .booking-bar__back { flex: none; padding: 0 var(--space-2); }
   .booking-bar__main { flex: none; }
+  .booking-bar--last { flex-wrap: wrap; row-gap: var(--space-2); }
   .booking-bar--last .booking-bar__main { flex: 1; }
+  /* before the step is complete the main button is flat, yet it answers a press by showing what is missing */
+  .booking-bar__main.is-not-ready, .booking-bar__main.is-not-ready:active { color: var(--ink-muted); background: var(--flat-fill); box-shadow: none; transform: none; }
+  .booking-bar__main.is-busy { cursor: progress; }
+  /* a short screen (a phone on its side, or one whose keyboard takes the room): the bar ends the step instead of covering it */
+  @media (max-height: 520px) { .booking-bar { position: static; } }
   .booking-bar__back--laptop { display: none; }
   .booking-bar__hint { display: none; }
 
@@ -376,6 +402,7 @@
     .booking-days:not(:disabled) .day-tile:not(:disabled):not([aria-pressed="true"]):not([aria-expanded="true"]):hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
     .slot-choices:not(:disabled) .time-pill:not(.selected):hover .time-pill__face { box-shadow: var(--ring), var(--halo), var(--elev-raised); }
     .payment-choices:not(:disabled) .payment-choice:not(.selected):not(.payment-unavailable):hover .payment-choice__card { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+    .booking-bar__main.is-not-ready:hover { transform: none; color: var(--ink-body); background: var(--flat-fill); box-shadow: var(--ring-faint); }
     .booking-ack:hover input:not(:disabled):not(:checked) + .booking-ack__box { box-shadow: inset 0 0 0 1.5px var(--action), var(--halo); }
     .booking-contact__link:hover { color: var(--action-hover); }
     .booking-contact__link:hover span { text-decoration-color: currentColor; }
@@ -445,7 +472,9 @@
     .payment-choice__card { min-height: 84px; }
 
     .booking-bar { margin: var(--space-7) calc(-1 * var(--space-7)) 0; padding: var(--space-3) var(--space-7) calc(var(--space-3) + env(safe-area-inset-bottom, 0px)); border-radius: 0 0 var(--radius-card) var(--radius-card); box-shadow: 0 -1px 0 var(--line-strong), 0 -14px 26px -20px var(--line-ink), inset 0 -1px 0 var(--line-edge); }
-    .booking-bar--last .booking-bar__main { flex: none; }
+    .booking-bar--last .booking-bar__main { flex: none; margin-left: auto; }
+    .visit-summary__facts dd .visit-summary__address { display: block; }
+    .visit-summary__facts dd .visit-summary__area { display: none; }
     .payment-choice.payment-unavailable .payment-choice__card { min-height: 84px; }
     .payment-choice.payment-unavailable .payment-choice__words { display: grid; gap: 1px; }
 
