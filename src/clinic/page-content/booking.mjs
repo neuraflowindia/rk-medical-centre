@@ -6,13 +6,15 @@ import {bookingPaths} from './shared.mjs';
 /** `/booking`. `emphasis` is the one phrase of the heading set in italics. */
 export const bookingPage=Object.freeze({
  heading:'Book your visit.',
- emphasis:'your visit.'
+ emphasis:'your visit.',
+ // The head's one link: for someone who has booked already. `spoken` says where it leads.
+ link:Object.freeze({label:'Already booked?',spoken:'Already booked? Find your booking',path:bookingPaths.find})
 });
 /** `/booking-details` (and the older `/booking-help`). */
 export const bookingDetailsPage=Object.freeze({
  heading:'Find your booking.',
  emphasis:'your booking.',
- bookNew:Object.freeze({label:'Book a new appointment',path:bookingPaths.book})
+ link:Object.freeze({label:'Book a visit',spoken:'Book a new appointment',path:bookingPaths.book})
 });
 /**
  * The panel shown instead of the booking screens while they cannot be used.

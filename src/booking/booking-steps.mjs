@@ -6,7 +6,7 @@ import {doctors} from '../clinic/model.mjs';
 import {doctorOrder} from '../clinic/care-catalogue.mjs';
 import {doctorAvatars,closePortraits,clinicObjects} from '../clinic/client-media.mjs';
 import {bookForSomeoneElseAnswer} from '../clinic/standins.mjs';
-import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths,bookingPaths} from '../clinic/page-content/shared.mjs';
+import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
 import {localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
 
 const NBSP=' ';
@@ -95,8 +95,7 @@ export const words=Object.freeze({
   onlineNote:'Continue to secure payment after this step.',
   // The engine's own words for a method it reports as unavailable.
   unavailable:'Temporarily unavailable',
-  chosenUnavailable:'This payment option is unavailable. Please choose another available option.',
-  noOnlineCharge:'No online payment will be taken for this booking.'
+  chosenUnavailable:'This payment option is unavailable. Please choose another available option.'
  }),
  confirm:Object.freeze({
   ack:'I have checked the doctor, day, starting time and my details.',
@@ -130,12 +129,10 @@ export const words=Object.freeze({
   resume:'Continue payment',
   checkPayment:'Check payment status',
   another:'Book another appointment',
-  anotherNote:'Booking another appointment does not change this one.',
+  anotherNote:'A second booking does not change this one.',
   atClinic:'pay at the clinic',
   online:'online payment'
  }),
- find:Object.freeze({label:'Already booked? Find your booking',path:bookingPaths.find}),
- bookNew:Object.freeze({label:'Book a new appointment',path:bookingPaths.book})
 });
 
 /** The three steps: the engine's three stages, shown one at a time. */
@@ -343,12 +340,11 @@ export function visitSummary({state,usable,chosen=true,shown={},methodAvailable=
   place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address}):null
  });
 }
-/** The two short lines of the phone bar: who and when, then the time and the fee (or what is still missing). */
+/** The two short lines of the phone bar: who, then the day and time (or what is still missing). */
 export function barLines(summary,missing=''){
  if(!summary.doctor)return Object.freeze({top:words.missing.doctor,bottom:''});
- const top=[summary.doctor.short,summary.dayShort].filter(Boolean).join(' · ');
- const bottom=summary.time?[summary.time,summary.fee].filter(Boolean).join(' · '):words.missing[missing]||words.missing.time;
- return Object.freeze({top,bottom});
+ const bottom=summary.time?[summary.dayShort,summary.time].filter(Boolean).join(' · '):words.missing[missing]||words.missing.time;
+ return Object.freeze({top:summary.doctor.short,bottom});
 }
 /** "₹800 when you arrive." and the other payment rows' second lines. */
 export function paymentNote(method,{available,fee=''}){

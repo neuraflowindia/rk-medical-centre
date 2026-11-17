@@ -3,5 +3,4 @@
    is styled with the booking steps, in src/booking/clinic-booking.css) */
 @layer pages {
   .page-booking-details__root { max-width: 720px; margin-inline: auto; }
-  .page-booking-details__more { display: flex; justify-content: center; max-width: 720px; margin: var(--space-4) auto 0; }
 }

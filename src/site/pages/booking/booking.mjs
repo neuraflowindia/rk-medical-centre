@@ -9,10 +9,15 @@ import {callRows} from '../../../clinic/page-content/shared.mjs';
 import {attrs,emphasise,image,text} from '../../lib/html.mjs';
 import {icon} from '../../icons/icons.mjs';
 import {callRow,doctorAvatar} from '../../parts/action-bar/action-bar.mjs';
+import {textLink} from '../../parts/button/button.mjs';
 
-/** The head every booking screen shares: sage ground, the page's one heading. */
-export function bookingHead({heading,emphasis}){
- return `<div class="page-booking__head"><div class="wrap"><h1 class="page-booking__title">${emphasise(heading,emphasis)}</h1></div></div>`;
+/**
+ * The head every booking screen shares: sage ground, the page's one heading and one quiet link to
+ * the other booking screen (an ordinary booking link: it exists only while booking is ON).
+ */
+export function bookingHead({heading,emphasis,link}){
+ return `<div class="page-booking__head"><div class="wrap page-booking__head-row"><h1 class="page-booking__title">${emphasise(heading,emphasis)}</h1>`
+  +textLink({label:link.label,href:link.path,className:'page-booking__link',attributes:{'aria-label':link.spoken}})+`</div></div>`;
 }
 
 export function booking(ctx){

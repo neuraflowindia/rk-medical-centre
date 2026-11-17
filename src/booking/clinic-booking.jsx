@@ -72,14 +72,15 @@ function Progress({step}) {
 }
 
 /** "Your visit": who, when, how much, where. The same card serves the side column and step 3. */
-function VisitSummary({summary, id, onChange, withObject = false}) {
+function VisitSummary({summary, id, onChange, aside = false}) {
   const value = (text, waiting = false) => text
     ? <dd>{kt(text)}</dd>
     : <dd className="is-empty">{waiting ? words.summary.checking : words.summary.empty}</dd>;
   return <section className="visit-summary" aria-labelledby={id}>
-    {withObject && <img className="visit-summary__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" loading="lazy" decoding="async"/>}
+    {aside && <img className="visit-summary__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" loading="lazy" decoding="async"/>}
     <div className="visit-summary__head"><h3 className="visit-summary__title" id={id}>{words.summary.title}</h3>
-      <p className="tag tag--plain">{words.summary.pending}</p></div>
+      {aside ? <p className="tag tag--plain">{words.summary.pending}</p>
+        : onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.change}</span></button>}</div>
     <div className="visit-summary__doctor">
       {summary.doctor?.avatar
         ? <img className="visit-summary__face" src={summary.doctor.avatar.src} width={summary.doctor.avatar.width} height={summary.doctor.avatar.height} alt="" decoding="async"/>
@@ -97,7 +98,7 @@ function VisitSummary({summary, id, onChange, withObject = false}) {
         : <dd className="is-empty">{words.summary.empty}</dd>}</div>
       {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}<small>{summary.place.address}</small></dd></div>}
     </dl>
-    {onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
+    {aside && onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
   </section>;
 }
 
@@ -116,7 +117,6 @@ function Field({id, label, optional = false, hint, error, children}) {
 function AppointmentCard({receipt, titleRef, id}) {
   const card = appointmentCard(receipt);
   return <article className={classes('appointment-card', 'appointment-card--' + card.state)} aria-labelledby={id}>
-    <img className="appointment-card__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" decoding="async"/>
     <div className="appointment-card__head">
       {card.tag && <p className="tag appointment-card__tag">{card.state === 'confirmed' && <Icon name="check"/>}{card.tag}</p>}
       <h2 className="appointment-card__title" id={id} ref={titleRef} tabIndex={-1}>{card.title}</h2>
@@ -126,17 +126,16 @@ function AppointmentCard({receipt, titleRef, id}) {
       <div>
         <p className="appointment-card__name">{kt(card.doctor.name)}</p>
         {card.doctor.role && <p className="appointment-card__role">{card.doctor.role}</p>}
-        <p className="appointment-card__when"><time dateTime={card.instant} className="appointment-card__day">{card.day}</time>
-          <span className="appointment-card__time">{kt(card.time)}</span></p>
       </div>
     </div>
+    <p className="appointment-card__when"><time dateTime={card.instant} className="appointment-card__day">{card.day}</time>
+      <span className="appointment-card__time">{kt(card.time)}</span></p>
     <div className="appointment-card__tear" aria-hidden="true"/>
     <div className="appointment-card__foot">
-      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}</span></p>}
+      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}{' '}
+        <a className="appointment-card__directions" href={card.place.maps} target="_blank" rel="noopener noreferrer">{words.receipt.directions}<Icon name="out"/><span className="visually-hidden"> {words.receipt.opensMaps}</span></a></span></p>}
       {card.pay && <p className="appointment-card__line"><Icon name="banknote"/><strong>{card.pay}</strong></p>}
       {card.bring && <p className="appointment-card__line"><Icon name="file"/><span>{card.bring}</span></p>}
-      {card.place && <a className="button button--second appointment-card__directions" href={card.place.maps} target="_blank" rel="noopener noreferrer">
-        <span className="button__label">{words.receipt.directions}</span><Icon name="out"/><span className="visually-hidden"> {words.receipt.opensMaps}</span></a>}
     </div>
   </article>;
 }
@@ -226,8 +225,13 @@ function Booking({draft = {}}) {
   const openLater = () => {
     if (laterOpen) { if (!dayBeyondTiles(tiles, shown.day)) setLater(false); return; }
     setLater(true);
-    // Show the package's date box and open its calendar in the same press.
-    requestAnimationFrame(() => laterBox.current?.querySelector('.abs-date-group button')?.click());
+    // Show the package's date box and open its calendar in the same press. The box is brought to the
+    // top of the screen first, so the calendar opens below it instead of over the header.
+    requestAnimationFrame(() => {
+      const box = laterBox.current; if (!box) return;
+      if (window.innerHeight - box.getBoundingClientRect().bottom < 440) box.scrollIntoView({block: 'start', behavior: 'instant'});
+      box.querySelector('.abs-date-group button')?.click();
+    });
   };
   const advance = () => {
     if (step === 1) { if (!missing) go(2); return; }
@@ -248,7 +252,6 @@ function Booking({draft = {}}) {
   }
 
   const error = s.error && <Notice><p>{s.error}</p></Notice>;
-  const findLink = <p className="clinic-booking__find"><a className="text-link" data-booking-only href={words.find.path}><span>{words.find.label}</span><Icon name="arrow"/></a></p>;
 
   if (screen === 'receipt') {
     const r = s.receipt, service = serviceFor(doctorFor(r.resource_id));
@@ -256,16 +259,20 @@ function Booking({draft = {}}) {
     return <div className="clinic-booking clinic-booking--receipt" ref={root}>
       <div className="booking-receipt">
         {error}
-        <AppointmentCard receipt={r} titleRef={title} id={id + 'card'}/>
-        <div className={classes('booking-record', record && 'is-open')} id={id + 'record'}>
-          <button type="button" className="text-link booking-record__toggle" aria-expanded={record} aria-controls={id + 'record'} onClick={() => setRecord(open => !open)}>
-            <span>{record ? words.receipt.record.hide : words.receipt.record.show}</span><Icon name="down"/></button>
-          <ReceiptFields flow={flow} showTitle={false}/>
+        <div className="appointment-ticket">
+          <img className="appointment-ticket__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" decoding="async"/>
+          <AppointmentCard receipt={r} titleRef={title} id={id + 'card'}/>
+          <div className="appointment-card__tear" aria-hidden="true"/>
+          <div className={classes('booking-record', record && 'is-open')} id={id + 'record'}>
+            <ReceiptFields flow={flow} showTitle={false}/>
+            <button type="button" className="text-link booking-record__toggle" aria-expanded={record} aria-controls={id + 'record'} onClick={() => setRecord(open => !open)}>
+              <span>{record ? words.receipt.record.hide : words.receipt.record.show}</span><Icon name="down"/></button>
+          </div>
         </div>
         <div className="booking-receipt__more">
-          <button type="button" className="button button--second" disabled={busy} onClick={() => act(flow.check)}><span className="button__label">{words.receipt.refresh}</span></button>
           {r.next_actions.includes('resume_payment') && <button type="button" className="button button--main" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.resume}</span></button>}
           {r.next_actions.includes('check_payment') && !r.next_actions.includes('resume_payment') && <button type="button" className="button button--second" disabled={busy} onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.checkPayment}</span></button>}
+          <button type="button" className="text-link" disabled={busy} onClick={() => act(flow.check)}><span>{words.receipt.refresh}</span></button>
           {r.next_actions.includes('choose_new_time') && <button type="button" className="text-link" disabled={busy} onClick={() => act(flow.restart)}><span>{words.receipt.another}</span><Icon name="arrow"/></button>}
         </div>
         <div className="booking-receipt__notes">
@@ -273,7 +280,6 @@ function Booking({draft = {}}) {
           {r.next_actions.includes('choose_new_time') && <p className="booking-contact">{words.receipt.anotherNote}</p>}
         </div>
       </div>
-      {findLink}
     </div>;
   }
 
@@ -281,9 +287,9 @@ function Booking({draft = {}}) {
     return <div className="clinic-booking clinic-booking--waiting" ref={root}>
       {screen === 'checking'
         ? <div className="booking-panel" role="status">
-          {error}
           <h2 className="clinic-booking__title" ref={title} tabIndex={-1}>{words.checking.title}</h2>
           <p>{words.checking.text}</p>
+          {error}
           <div className="booking-panel__actions">
             <button type="button" className="button button--main" disabled={s.busy || waiting} onClick={() => act(flow.check)}><span className="button__label">{words.checking.check}</span></button>
             {flow.canRetryOriginal && <button type="button" className="button button--second" disabled={s.busy || waiting} onClick={() => act(flow.retryOriginal)}><span className="button__label">{words.checking.retry}</span></button>}
@@ -292,7 +298,6 @@ function Booking({draft = {}}) {
         </div>
         // The saved booking in this browser cannot be read: the engine's sentence and the numbers; no form that cannot work.
         : <div className="booking-panel">{error}<ClinicContact bookingHelp/></div>}
-      {findLink}
     </div>;
   }
 
@@ -323,6 +328,7 @@ function Booking({draft = {}}) {
             {!s.policyFresh && !s.loadingPolicy && <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button>}
             {usable && <fieldset className={classes('doctor-choices', chosen && !changing && 'is-folded')} disabled={disabled || optionsStale}>
               <legend>{words.doctor.legend}</legend>
+              <button type="button" className="text-link doctor-choices__change" onClick={() => setChanging(true)}><span>{words.change}</span></button>
               <div className="doctor-choices__list">
                 {choices.map(item => {
                   const selected = chosen && shown.service === item.service;
@@ -336,7 +342,6 @@ function Booking({draft = {}}) {
                     </span>
                   </label>;
                 })}
-                <button type="button" className="text-link doctor-choices__change" onClick={() => setChanging(true)}><span>{words.change}</span></button>
               </div>
               {!chosen && <p className="doctor-choices__more"><span>{words.doctor.unsure}</span>
                 <a className="text-link" href={words.doctor.meetPath}><span>{words.doctor.meet}</span><Icon name="arrow"/></a></p>}
@@ -414,18 +419,17 @@ function Booking({draft = {}}) {
               </div>
             </fieldset>
             {s.payment_method && !methodAvailable && <p role="status" className="booking-pay-note">{words.payment.chosenUnavailable}</p>}
-            <div className="booking-receipt__notes">
-              <ClinicContact service={s.service}/>
-              {s.payment_method === 'at_clinic' && methodAvailable && <p className="booking-pay-note">{words.payment.noOnlineCharge}</p>}
-            </div>
-            <label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled || !s.slot || !methodAvailable}
+            <ClinicContact service={s.service}/>
+            <div className="booking-last"><label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled || !s.slot || !methodAvailable}
               onChange={event => dispatch({type: 'ack', value: event.target.checked})}/>
               <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>
+              <p className="booking-confirm-hint" role="status">{confirmHint({method: s.payment_method, methodAvailable, ack: s.ack})}</p></div>
           </>}
         </section>
 
         <div className={classes('booking-bar', step === 3 && 'booking-bar--last')}>
           {step === 1 && <p className="booking-bar__summary"><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
+          {step === 1 && missing && <p className="booking-bar__hint" aria-hidden="true">{words.missing[missing]}</p>}
           {step === 2 && <button type="button" className="booking-bar__summary" onClick={() => go(1)} aria-label={`${words.summary.change}: ${lines.top}, ${lines.bottom}`}>
             <span className="booking-bar__top">{kt(lines.top)}</span><span className="booking-bar__bottom">{kt(lines.bottom)}</span><Icon name="edit"/></button>}
           {step > 1 && <button type="button" className={classes('text-link booking-bar__back', step === 2 && 'booking-bar__back--laptop')} disabled={sending} onClick={() => go(step - 1)}><span>{words.back}</span></button>}
@@ -434,11 +438,9 @@ function Booking({draft = {}}) {
             {step < 3 && <Icon name="arrow"/>}
           </button>
         </div>
-        {step === 3 && <p className="booking-confirm-hint" role="status">{confirmHint({method: s.payment_method, methodAvailable, ack: s.ack})}</p>}
       </form>
     </div>
-    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => go(1) : null} withObject/></aside>
-    {findLink}
+    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => go(1) : null} aside/></aside>
   </div>;
 }
 
