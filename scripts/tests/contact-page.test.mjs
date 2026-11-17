@@ -76,6 +76,8 @@ test('hours: the one full timetable, seven rows, Sunday evening closed',()=>{
  for(const [index,row] of weekRows().entries())assert.ok(rows[index][0].includes(`>${row.label}<`));
  assert.ok(rows[6][0].includes(`<td class="hours-table__none">${timetable.closed}</td>`));
  assert.equal(count(page,/data-today hidden/g),7,'today is marked by the browser, never by the build');
+ // The timetable is the subject of its section: taller rows, and today's row on the part's own soft band.
+ assert.match(page,/<table class="hours-table hours-table--roomy hours-table--band page-contact__week" data-hours-table>/);
  assert.ok(has(page,hours.note.title));assert.ok(has(page,hours.note.text));
  assert.match(page,/<h2[^>]*id="hours-title"[^>]*>Open every day\. Sundays, <em>mornings&nbsp;only\.<\/em><\/h2>/);
 });
@@ -137,7 +139,12 @@ test('the full privacy notice is on the page, closed, with every section',()=>{
   for(const list of section.lists||[]){assert.ok(has(page,list.lead));for(const item of list.items)assert.ok(page.includes(`<li>${text(item)}</li>`));}
  }
  assert.equal(privacyNotice.more.href,PATH+'#privacy-notice');
- assert.equal(privacyNotice.full.open,footer.detailsNotice);
+ // The row has its own name ("How your details are used" is the link in the sheet just above it), and
+ // the sections sit together in the block that becomes two columns on laptops.
+ assert.match(page,/<h2 class="page-contact__notice-title">Privacy notice<\/h2>/);
+ assert.equal(count(page,new RegExp(text(footer.detailsNotice),'g')),count(renderedPage('/','on'),new RegExp(text(footer.detailsNotice),'g'))+1,'on this page the phrase is added once: the link in the sheet');
+ const columns=page.slice(page.indexOf('<div class="page-contact__notice-columns">'),page.indexOf('</details>'));
+ assert.equal(count(columns,/<div class="page-contact__notice-part">/g),privacyNotice.full.sections.length);
 });
 
 test('entrances: nothing in the first screen moves in; the pin lands after its map',()=>{
@@ -145,7 +152,14 @@ test('entrances: nothing in the first screen moves in; the pin lands after its m
  const first=page.slice(0,page.indexOf('id="find-us"'));
  assert.doesNotMatch(first,/data-enter/);
  assert.match(page,/<span class="page-contact__pin" data-enter="drop" data-enter-after="0\.35" aria-hidden="true">/);
- assert.equal(count(page,/data-ambient(?!="minor")/g),1,'one slow light on the page');
+ // Two slow lights, never in one view: the first screen's arch, and the small arch behind the timetable's calendar.
+ assert.equal(count(page,/data-ambient(?!="(?:minor|float)")/g),2);
+ assert.equal(count(first,/data-ambient(?!="(?:minor|float)")/g),1);
+ assert.match(page,/<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient>/);
+ // Two paper-cut objects float, one in each of those views: the handset and the desk calendar.
+ assert.equal(count(page,/data-ambient="float"/g),2);assert.equal(count(first,/data-ambient="float"/g),1);
+ assert.match(page,/<img class="page-contact__handset"[^>]*data-ambient="float"/);
+ assert.match(page,/<img class="page-contact__calendar"[^>]*data-ambient="float"/);
 });
 
 // ---------- the page's own behaviour ----------

@@ -2,17 +2,19 @@
 //   Meet the doctors:  opening (a double portrait) · who should I see (a split spread) · training and honours · closing
 //   A profile:         cover · essentials · what the doctor sees patients for · about · certificates · reviews · closing
 //
-// Facts come from model.mjs, care-catalogue.mjs, certificate-catalogue.mjs and open-status.mjs;
-// degrees are read through degreesOf() and registrations through registrationLine() (their one
-// home is standins.mjs and model.mjs); words shared with Home come from home.mjs and shared.mjs.
-// No markup lives in this file: emphasis and links are separate fields.
+// Facts come from model.mjs, care-catalogue.mjs and certificate-catalogue.mjs; degrees are read
+// through degreesOf() and registrations through registrationLine() (their one home is standins.mjs
+// and model.mjs); words shared with Home come from home.mjs and shared.mjs, and a topic's name,
+// line and object from treatments.mjs. No markup lives in this file: emphasis and links are
+// separate fields. The clinic's live state (open, closed, next opening) is not said here: on these
+// pages it has two homes only, the header's sign and the essentials strip.
 import {doctors,doctorFacts,locality,city} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificatesFor} from '../certificate-catalogue.mjs';
-import {workPortraits,roomCrops,doctorAvatars} from '../client-media.mjs';
-import {clinicClock,sessionsFor,formatTime,NEUTRAL} from '../open-status.mjs';
+import {workPortraits,roomCrops,aboutArt,doctorAvatars} from '../client-media.mjs';
 import {registrationLine} from '../standins.mjs';
 import {hero,doctorChips,doctorsSection,degreesBeside} from './home.mjs';
+import {rowById} from './treatments.mjs';
 import {clinicName,pagePaths,actionLabels,bookWithLabel,callDoctorSpoken,degreesOf,doctorShortName,localPhone} from './shared.mjs';
 
 function known(id){
@@ -33,18 +35,28 @@ export function shortRole(id){return hero.portraits.find(item=>item.id===known(i
 const homeCard=id=>doctorsSection.cards.find(card=>card.id===known(id));
 /** "KGMU gold medalist" for Dr. Parul Gupta; null for a doctor without an honour tag. */
 export function honourTag(id){return homeCard(id).tag||null;}
-/** "Physician & Diabetology · MBBS, DGO": the formal specialty and the degrees, exactly as on the Home card. */
-export function formalLine(id){return homeCard(id).formalLine;}
 /** The degrees alone, for a place where the formal specialty already stands beside them. */
 export function degreesLine(id){return degreesBeside(doctors[known(id)].formal,degreesOf(id));}
 
 // ---- photographs ----
 /** The wider 4 : 5 "at work" portrait of a doctor (Meet the doctors, profile cover). Never shown wider than 300 px. */
 export function workPortrait(id){return workPortraits[known(id)];}
-/** The 3 : 2 picture of a doctor's consulting room (profile, "About the doctor"). Never shown wider than 444 px. */
-export function roomPicture(id){return roomCrops[known(id)];}
+/**
+ * The 3 : 2 picture beside "About the doctor": the id of a record in clinicPhotos, never shown
+ * wider than that record's own width.
+ *   Dr. Sanjay Gupta   a second photograph: his consulting room
+ *   Dr. Parul Gupta    the clinic's paper-cut picture for women's health. The clinic holds one
+ *                      photograph of her and it is on her cover, so the same scene is not shown
+ *                      twice on one page; a second photograph goes here when there is one.
+ */
+export function aboutPicture(id){return aboutArt[known(id)]||roomCrops[id];}
 /** A doctor's small square face (decorative: the name is always beside it). */
 export function avatarOf(id){return doctorAvatars[known(id)];}
+/**
+ * Each doctor's own instrument, a paper-cut object (clinicObjects): the stethoscope for the
+ * physician, the scan probe for the gynaecologist. An accent beside the portrait, never a person.
+ */
+export const doctorInstrument=Object.freeze({sanjay:'stethoscope-general',parul:'ultrasound-probe'});
 /** What each portrait shows, as its credit: a moment at work, and where. */
 export const portraitCredit=Object.freeze(Object.fromEntries(doctorOrder.map(id=>[id,`In ${pronouns[id].possessive} consulting room`])));
 /** Where: added to the credit where there is room for it. */
@@ -54,6 +66,17 @@ export const portraitPlace=locality;
 /** [{id, label, href}] — `href` is the topic's row on the Treatments page, exactly where the Home chip leads. */
 export function careTopics(id){
  return doctorChips(known(id)).map(chip=>Object.freeze({id:chip.id,label:chip.label,href:chip.href}));
+}
+/**
+ * The same topics as rows of a small index (a profile): [{id, title, deck, object, href}]. Name, line
+ * and object are the Treatments row's own, so a row here reads exactly like the opened row it leads to.
+ */
+export function careRows(id){
+ return careTopics(id).map(topic=>{
+  const row=rowById(topic.id);
+  if(!row)throw new Error(`The Treatments page has no row "${topic.id}".`);
+  return Object.freeze({id:topic.id,title:row.title,deck:row.deck,object:row.object,href:topic.href});
+ });
 }
 
 // =====================================================================================
@@ -77,7 +100,8 @@ function leaf(id){
   role:doctor.role,
   heading:`See ${doctorShortName(id)} for`,
   concerns:Object.freeze(careTopics(id).map(topic=>topic.label)),
-  formalLine:formalLine(id),
+  // The field is named under the portrait and under "See Dr. … for"; this line adds only what they do not say.
+  degrees:degreesLine(id),
   registration:registrationLine(id),
   tag:honourTag(id),
   profile:Object.freeze({label:actionLabels.fullProfile,href:doctor.path,spoken:`${actionLabels.fullProfile} of ${doctor.name}`})
@@ -90,7 +114,7 @@ export const doctorsPage=Object.freeze({
  runningHead:'The doctors',
  heading:`Meet ${doctorShortName('sanjay')} ${MEET_EMPHASIS}`,
  emphasis:MEET_EMPHASIS,
- portraits:Object.freeze(doctorOrder.map(id=>Object.freeze({id,name:doctors[id].name,role:shortRole(id),credit:portraitCredit[id]}))),
+ portraits:Object.freeze(doctorOrder.map(id=>Object.freeze({id,name:doctors[id].name,role:shortRole(id),credit:portraitCredit[id],instrument:doctorInstrument[id]}))),
  jump:Object.freeze({label:'Who should I see?',href:'#who'}),
 
  // 2 · who should I see: a split spread, one page per doctor
@@ -120,40 +144,15 @@ export const doctorsPage=Object.freeze({
 // A doctor's profile
 // =====================================================================================
 
-const DAY_NAMES=Object.freeze(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']);
-/** The words of the "next clinic session" line. */
-export const sessionWords=Object.freeze({now:'In clinic now',next:'Next clinic session',pending:'Clinic sessions',until:'until',today:'today',tomorrow:'tomorrow',unknown:'call for timings'});
-/**
- * When a patient can next see a doctor, worked out from the appointment starting times (India time):
- *   during a session   → {state:'open',   label:'In clinic now',       detail:'until 1:30 pm'}
- *   later the same day → {state:'later',  label:'Next clinic session', detail:'today, 6:00 pm'}
- *   after the last one → {state:'closed', label:'Next clinic session', detail:'tomorrow, 10:00 am'}
- * Both doctors keep the clinic's sessions, so one answer serves either profile.
- */
-export function nextSession(date=new Date(),sessions){
- const {day,minutes}=clinicClock(date),today=sessionsFor(day,sessions);
- const current=today.find(([start,end])=>minutes>=start&&minutes<=end);
- if(current)return {state:'open',label:sessionWords.now,detail:`${sessionWords.until} ${formatTime(current[1])}`};
- const later=today.find(([start])=>start>minutes);
- if(later)return {state:'later',label:sessionWords.next,detail:`${sessionWords.today}, ${formatTime(later[0])}`};
- for(let ahead=1;ahead<=7;ahead++){
-  const next=sessionsFor((day+ahead)%7,sessions)[0];
-  if(next)return {state:'closed',label:sessionWords.next,detail:`${ahead===1?sessionWords.tomorrow:DAY_NAMES[(day+ahead)%7]}, ${formatTime(next[0])}`};
- }
- return {state:'closed',label:sessionWords.next,detail:sessionWords.unknown};
-}
-/** What the line says before the browser has worked out the time (and with scripts off). */
-export const nextSessionNeutral=Object.freeze({state:'pending',label:sessionWords.pending,detail:NEUTRAL.detail});
-
-// About the doctor: 60 to 80 words each, from facts the site already holds (training, the year
-// practice began, the care topics and the care catalogue's own description of a consultation).
-// `lede` is the first sentence, set larger; `body` follows it.
+// About the doctor: 55 to 80 words each, from facts the site already holds (training, the care
+// topics and the care catalogue's own description of a consultation). The year practice began is
+// said once, in the heading. `lede` is the first sentence, set larger; `body` follows it.
 const stories=Object.freeze({
  sanjay:Object.freeze({
   heading:`A physician for Lucknow families since ${doctorFacts.sanjay.since}.`,
   emphasis:`since ${doctorFacts.sanjay.since}.`,
   lede:`${doctors.sanjay.name} is the clinic’s physician and diabetologist.`,
-  body:`He trained at ${university}, Lucknow, and has been in practice since ${doctorFacts.sanjay.since}. Families see him for diabetes, blood pressure, thyroid concerns and fevers, and for the everyday illnesses in between. A consultation gives you time to explain what has changed, go through your reports and readings, and ask about your ongoing care.`,
+  body:`He trained at ${university}, Lucknow. Families see him for diabetes, blood pressure, thyroid concerns and fevers, and for the everyday illnesses in between. A consultation gives you time to explain what has changed, go through your reports and readings, and ask about your ongoing care.`,
   caption:`${doctors.sanjay.name} in his consulting room at the clinic.`
  }),
  parul:Object.freeze({
@@ -161,12 +160,11 @@ const stories=Object.freeze({
   emphasis:`since ${doctorFacts.parul.since}.`,
   // "a senior woman gynaecologist" is said once on the site, here (concept brief §9, decision 6).
   lede:`${doctors.parul.name} is a senior woman gynaecologist and a gold medalist of ${university}, Lucknow.`,
-  body:`In practice since ${doctorFacts.parul.since}, she sees women for period problems and PCOS, through pregnancy and after childbirth, and about pregnancy and pelvic ultrasound scans. Bring your earlier records and your questions: a consultation is the time to talk through what has been troubling you.`,
-  caption:`${doctors.parul.name} in her consulting room, with the scan machine beside her desk.`
+  body:`She sees women for period problems and PCOS, through pregnancy and after childbirth, and about pregnancy and pelvic ultrasound scans. Bring your earlier records and your questions: a consultation is the time to talk through what has been troubling you.`,
+  // Under the paper-cut picture: what it shows, in the words of her own field.
+  caption:`${doctors.parul.role}, pictured in cut paper.`
  })
 });
-// One paper-cut object beside each doctor's list on wide screens: an accent, never an illustration of a person.
-const careObjects=Object.freeze({sanjay:'stethoscope-general',parul:'ultrasound-probe'});
 const certificateHeadings=Object.freeze({
  sanjay:Object.freeze({heading:'Training and professional memberships.',emphasis:'professional memberships.'}),
  parul:Object.freeze({heading:'Fellowships, training and awards.',emphasis:'and awards.'})
@@ -190,7 +188,6 @@ export function profilePage(id){
   creditPlace:portraitPlace,
   book:bookWithLabel(id),
   call:Object.freeze({label:`${actionLabels.call} ${localPhone(id)}`,href:`tel:${doctor.tel}`,spoken:callDoctorSpoken(id)}),
-  session:nextSessionNeutral,
   // 3 · what the doctor sees patients for
   care:Object.freeze({
    id:'care',
@@ -198,8 +195,7 @@ export function profilePage(id){
    heading:`What ${they.subject} sees patients for.`,
    emphasis:'sees patients for.',
    listLabel:`What ${doctor.name} sees patients for`,
-   object:careObjects[id],
-   topics:Object.freeze(careTopics(id))
+   topics:Object.freeze(careRows(id))
   }),
   // 4 · about the doctor
   about:Object.freeze({
@@ -210,6 +206,7 @@ export function profilePage(id){
    lede:story.lede,
    body:story.body,
    caption:story.caption,
+   picture:aboutPicture(id),
    // Preparation advice has its one home on Home ("Visiting us"); the profile only points to it.
    bring:Object.freeze({label:'What to bring to your visit',href:`${pagePaths.home}#visiting`})
   }),
@@ -242,6 +239,6 @@ export function profilePage(id){
  */
 export const proposedDescriptions=Object.freeze({
  [pagePaths.doctors]:`Meet ${doctors.sanjay.name}, physician, and ${doctors.parul.name}, gynaecologist, at ${clinicName}, ${city}: who treats what, and how to book or call.`,
- [pagePaths.sanjay]:`${doctors.sanjay.name}, physician and diabetologist in ${locality}, ${city}, in practice since ${doctorFacts.sanjay.since}: what he treats, his next clinic session, booking and calls.`,
+ [pagePaths.sanjay]:`${doctors.sanjay.name}, physician and diabetologist in ${locality}, ${city}, in practice since ${doctorFacts.sanjay.since}: what he treats, his certificates, booking and calls.`,
  [pagePaths.parul]:`${doctors.parul.name}, a senior woman gynaecologist and KGMU gold medalist in ${locality}, ${city}: periods, PCOS and pregnancy care, booking and calls.`
 });

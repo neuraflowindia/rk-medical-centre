@@ -1,16 +1,17 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {checkPage,renderedPage,renderedApp,attributeValues,count} from './support/page-contract.mjs';
-import {profile,sessionLine} from '../../src/site/pages/profile/profile.mjs';
-import {profilePage,workPortrait,roomPicture,nextSession} from '../../src/clinic/page-content/doctors.mjs';
+import * as template from '../../src/site/pages/profile/profile.mjs';
+import {profilePage,workPortrait,aboutPicture} from '../../src/clinic/page-content/doctors.mjs';
 import {doctors} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificatesFor} from '../../src/clinic/certificate-catalogue.mjs';
-import {clinicPhotos,clinicObjects,archPortraits} from '../../src/clinic/client-media.mjs';
+import {clinicPhotos,clinicObjects,archPortraits,roomCrops} from '../../src/clinic/client-media.mjs';
 import {reviewsFor} from '../../src/clinic/review-list.mjs';
 import {essentials,readAllReviewsLabel} from '../../src/clinic/page-content/shared.mjs';
 import {text} from '../../src/site/lib/html.mjs';
 import {pageContext} from '../../src/site/runtime/render.mjs';
 
+const {profile}=template;
 const pathOf=id=>doctors[id].path;
 const section=(html,name)=>{const from=html.indexOf(`page-profile__${name}`);assert.ok(from>=0,`section ${name}`);const to=html.indexOf('<section',from);return html.slice(from,to<0?undefined:to);};
 
@@ -35,7 +36,7 @@ test('six sections in order, then this doctor\'s own closing',()=>{
  }
 });
 
-test('the cover: the doctor\'s face, name and standing, both actions, and the session line, all in the first section',()=>{
+test('the cover: the doctor\'s face, name and standing and both actions, all in the first section',()=>{
  for(const id of doctorOrder){
   const html=section(renderedPage(pathOf(id),'on'),'cover'),words=profilePage(id),doctor=doctors[id];
   const portrait=clinicPhotos[workPortrait(id)];
@@ -46,16 +47,15 @@ test('the cover: the doctor\'s face, name and standing, both actions, and the se
   assert.ok(html.includes(`<p class="page-profile__kicker"><span>${text(doctor.formal)}</span></p>`));
   assert.ok(html.includes(`<p class="page-profile__role">${text(doctor.role)}</p>`));
   assert.ok(html.includes(`<span>${text(words.degrees)}</span> <span class="page-profile__registration">${text(words.registration)}</span>`));
-  assert.ok(html.includes(`>${text(words.credit)}<span class="wide-only">, ${text(words.creditPlace)}</span>`));
-  // actions: the lead for the phone bar
-  const actions=html.slice(html.indexOf('data-bar-lead'),html.indexOf('data-next-session'));
+  // the credit reads across, after the frame, as one line: what the photograph shows and where
+  assert.ok(html.includes(`</div><p class="page-profile__credit">${text(`${words.credit}, ${words.creditPlace}`)}</p></div>`));
+  // actions: the lead for the phone bar, and the last thing in the cover's words
+  const actions=html.slice(html.indexOf('data-bar-lead'),html.indexOf('page-profile__strip'));
   assert.ok(actions.includes(`href="/booking?doctor=${id}"`)&&actions.includes(text(words.book)));
   assert.ok(actions.includes(`href="${words.call.href}"`)&&actions.includes(text(words.call.label))&&actions.includes(`aria-label="${words.call.spoken}"`));
   assert.match(actions,/button--second button--lead/);assert.ok(actions.includes(`data-open-call="${id}"`));
   assert.match(actions,/\d{5}&nbsp;\d{5}/,'the digits never break across two lines');
-  // the session line starts neutral
-  assert.match(html,/data-next-session data-state="pending" data-nosnippet/);
-  assert.ok(html.includes(`data-session-label>${text(words.session.label)}<`)&&html.includes(`data-session-detail>${text(words.session.detail)}<`));
+  assert.match(actions,/<\/a><\/div><\/div><\/div><div class="wrap $/,'nothing follows the two buttons');
   // the shared strip sits inside the cover, across its lower edge
   assert.equal(count(html,/data-essentials-strip/g),1);assert.ok(html.includes(text(essentials.fee.value)));
   assert.equal(count(html,/data-ambient(?!="minor")/g),1,'one light, inside the plate');
@@ -67,11 +67,17 @@ test('the cover: the doctor\'s face, name and standing, both actions, and the se
  assert.doesNotMatch(section(renderedPage(pathOf('sanjay'),'on'),'cover'),/gold medalist|tag--gold/);
 });
 
-test('the session line prints any answer it is given',()=>{
- const open=nextSession(new Date('2026-11-16T05:30:00Z')),line=sessionLine(open);
- assert.match(line,/^<p class="page-profile__session" data-next-session data-state="open" data-nosnippet>/);
- assert.ok(line.includes('data-session-label>In clinic now<')&&line.includes('data-session-detail>until 1:30&nbsp;pm<'));
- assert.match(line,/<use href="#i-clock"\/>/);
+test('the clinic\'s live state has one home on a profile besides the header: the essentials strip',()=>{
+ assert.deepEqual(Object.keys(template),['profile'],'the template has no session line to print');
+ for(const id of doctorOrder)for(const mode of ['on','off']){
+  const page=renderedPage(pathOf(id),mode);
+  assert.doesNotMatch(page,/data-next-session|data-session-|page-profile__session|In clinic now|clinic session/i);
+  // in the page's own markup the open sign is printed by the strip and by the closing, nowhere else
+  const signs=attributeValues(page,'data-open-sign');
+  assert.deepEqual(signs.filter(form=>form==='strip'),['strip']);
+  assert.equal(page.indexOf('data-open-sign="strip"')>page.indexOf('data-essentials-strip'),true);
+  assert.ok(signs.every(form=>form==='strip'||form==='closing'),`open signs on the page: ${signs}`);
+ }
 });
 
 test('booking OFF: the cover keeps one filled action, Call with its digits, and no booking address',()=>{
@@ -83,33 +89,57 @@ test('booking OFF: the cover keeps one filled action, Call with its digits, and 
  }
 });
 
-test('what the doctor sees patients for: raised rows into Treatments, one destination each, nothing re-explained',()=>{
+test('what the doctor sees patients for: a small index into Treatments, each row with its object, name and one line',()=>{
  for(const id of doctorOrder){
   const html=section(renderedPage(pathOf(id),'on'),'care'),words=profilePage(id).care;
-  const rows=[...html.matchAll(/<a class="page-profile__topic" href="([^"]+)"><span class="page-profile__topic-name">([^<]+)<\/span>/g)].map(match=>({href:match[1],label:match[2]}));
-  assert.deepEqual(rows,words.topics.map(topic=>({href:topic.href,label:text(topic.label)})));
-  assert.equal(count(html,/<li data-enter="card" style="--i:\d"/g),words.topics.length);
-  assert.doesNotMatch(html,/<p\b(?![^>]*section-head)/,'no paragraph explains a topic here');
+  const rows=[...html.matchAll(/<li data-enter="card" style="--i:(\d)"><a class="page-profile__topic" href="([^"]+)"><span class="page-profile__topic-object" data-object="([^"]+)"><img class="page-profile__topic-art" src="([^"]+)"[^>]*alt=""[^>]*><\/span><span class="page-profile__topic-words"><span class="page-profile__topic-name">([^<]+)<\/span> <span class="page-profile__topic-deck">([^<]+)<\/span><\/span><span class="page-profile__topic-go" aria-hidden="true"><svg[^>]*><use href="#i-arrow"\/><\/svg><\/span><\/a><\/li>/g)]
+   .map(match=>({order:Number(match[1]),href:match[2],object:match[3],src:match[4],title:match[5],deck:match[6]}));
+  assert.deepEqual(rows,words.topics.map((topic,index)=>({order:index,href:topic.href,object:topic.object,src:clinicObjects[topic.object].src,title:text(topic.title),deck:text(topic.deck)})));
+  assert.equal(count(html,/<li\b/g),words.topics.length,'every row is whole');
+  assert.equal(count(html,/<img\b/g),words.topics.length,'one object per row and no lone object beside the list');
+  assert.doesNotMatch(html,/<p\b(?![^>]*section-head)/,'a row carries one line; no paragraph explains a topic here');
   assert.ok(html.includes(`aria-label="${text(words.listLabel)}"`));
-  assert.ok(html.includes(`src="${clinicObjects[words.object].src}"`)&&/<img[^>]*alt=""[^>]*>/.test(html),'the object is an accent: decorative');
+  assert.match(html,/<header class="section-head page-profile__care-head">/);
  }
  assert.equal(count(section(renderedPage(pathOf('sanjay'),'on'),'care'),/page-profile__topic-name/g),5);
  assert.equal(count(section(renderedPage(pathOf('parul'),'on'),'care'),/page-profile__topic-name/g),4);
 });
 
-test('about the doctor: the heading first, the room photograph with its caption, and the story',()=>{
+test('about the doctor: the heading first, a framed picture with its caption, and the story',()=>{
  for(const id of doctorOrder){
-  const html=section(renderedPage(pathOf(id),'on'),'about'),words=profilePage(id).about,room=clinicPhotos[roomPicture(id)];
+  const html=section(renderedPage(pathOf(id),'on'),'about'),words=profilePage(id).about,picture=clinicPhotos[aboutPicture(id)];
   assert.ok(html.indexOf('<h2')<html.indexOf('<img'),'the heading comes before the picture');
-  assert.ok(html.includes(`src="${room.src}"`)&&html.includes('photo-figure--plain photo-figure--3x2'));
-  assert.ok(html.includes(`<div class="page-profile__room" style="--room:${room.width}px">`),'the frame is held to the photograph\'s own width');
-  assert.ok(html.includes(`<figcaption class="photo-figure__caption">${text(words.caption)}</figcaption>`));
+  assert.equal(count(html,/<img\b/g),1);assert.equal(count(html,/<figure\b/g),1);assert.equal(count(html,/<figcaption\b/g),1);
   assert.match(html,/<img[^>]*loading="lazy"/);
+  // one frame and one tone plate for both doctors: the shared photograph frame, held to the picture's own width
+  assert.ok(html.includes(`<div class="page-profile__room" style="--room:${picture.width}px"><span class="page-profile__room-plate" aria-hidden="true"></span><figure class="photo-figure photo-figure--plain photo-figure--3x2" data-enter="photo">`));
+  assert.ok(html.includes(`src="${picture.src}"`)&&html.includes(`alt="${picture.alt}"`));
+  assert.ok(html.includes(`<figcaption class="photo-figure__caption">${text(words.caption)}</figcaption>`));
   assert.ok(html.includes(`>${text(words.lede)}</p>`)&&html.includes(`>${text(words.body)}</p>`));
   assert.ok(html.includes(`href="${words.bring.href}"`)&&html.includes(text(words.bring.label)));
-  assert.doesNotMatch(html,/<button|data-open-photo|aria-haspopup/,'the photograph does not enlarge');
+  assert.doesNotMatch(html,/<button|data-open-photo|aria-haspopup/,'the picture does not enlarge');
  }
+ // Dr. Sanjay Gupta: a second photograph. Dr. Parul Gupta: the clinic's paper-cut picture, at three widths.
+ assert.equal(aboutPicture('sanjay'),roomCrops.sanjay);
+ const hers=section(renderedPage(pathOf('parul'),'on'),'about'),art=clinicPhotos[aboutPicture('parul')];
+ assert.match(art.src,/^\/clinic-assets\/womens-health-paper-illustration-/);
+ for(const source of art.sources)assert.ok(hers.includes(`${source.src} ${source.width}w`));
  assert.equal(count(renderedPage(pathOf('parul'),'on'),/senior woman gynaecologist/g),1);
+});
+
+test('no photograph is shown twice on a profile: Dr. Parul Gupta\'s one photograph is on her cover only',()=>{
+ for(const id of doctorOrder){
+  const page=renderedPage(pathOf(id),'on');
+  const photographs=[...new Set(attributeValues(page,'src').filter(src=>src.startsWith('/client-photos/')&&!src.includes('-avatar-')))];
+  for(const src of photographs)assert.equal(count(page,new RegExp(`src="${src}"`,'g')),1,`${src} appears once`);
+  assert.equal(count(page,new RegExp(`src="${clinicPhotos[workPortrait(id)].src}"`,'g')),1);
+ }
+ const parul=renderedPage(pathOf('parul'),'on'),sanjay=renderedPage(pathOf('sanjay'),'on');
+ // every other picture of her on file is a crop of the cover's scene
+ for(const other of [roomCrops.parul,'parul-room','parul-portrait','portrait-parul','desk-parul','close-parul'])assert.ok(!parul.includes(clinicPhotos[other].src),`${other} is the same scene as her cover`);
+ assert.deepEqual(attributeValues(parul,'src').filter(src=>src.startsWith('/client-photos/')&&!src.includes('-avatar-')),[clinicPhotos[workPortrait('parul')].src]);
+ // Dr. Sanjay Gupta's two photographs are two different scenes
+ assert.deepEqual(attributeValues(sanjay,'src').filter(src=>src.startsWith('/client-photos/')&&!src.includes('-avatar-')),[clinicPhotos[workPortrait('sanjay')].src,clinicPhotos[roomCrops.sanjay].src]);
 });
 
 test('certificates: this doctor\'s five on the deep ground, each opening the viewer, on a shelf the visitor moves',()=>{
