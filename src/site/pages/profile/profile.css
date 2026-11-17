@@ -1,3 +1,162 @@
-/* profile page: styles only for what sits inside .page-profile */
+/* A doctor's profile: six sections, each its own composition. Everything here sits inside
+   .page-profile; the shared parts bring their own look and are only placed here.
+   --plate is the doctor's own tone (sage for Dr. Sanjay Gupta, rose for Dr. Parul Gupta). */
 @layer pages {
+  .page-profile--sage { --plate: var(--mist-sage); }
+  .page-profile--rose { --plate: var(--mist-rose); }
+
+  /* ---------- 1 · cover: a cover portrait ---------- */
+  .page-profile__cover { position: relative; z-index: 2; background: var(--ground-light); padding-top: var(--space-5); }
+  .page-profile__cover-grid { display: grid; justify-items: center; gap: 18px; text-align: center; }
+  .page-profile__sitter { --frame: 200px; position: relative; width: var(--frame); margin-top: 10px; }
+  .page-profile__sitter--tagged { margin-bottom: 10px; }
+  .page-profile__frame { position: relative; }
+  .page-profile__frame .photo-figure { position: relative; z-index: 1; }
+  /* far: a wider arch in the doctor's tone; the slow light moves inside it */
+  .page-profile__plate { position: absolute; z-index: 0; inset: -12px -30px 40px; border-radius: var(--radius-arch); background: var(--plate); overflow: hidden; }
+  .page-profile__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+  html[data-motion="on"] .page-profile__shaft { animation: page-profile-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
+  html[data-motion="on"] .page-profile__plate[data-running] .page-profile__shaft { animation-play-state: running; }
+  @keyframes page-profile-shaft {
+    from { transform: translateX(-13%); }
+    to { transform: translateX(13%); }
+  }
+  /* near: the honour, pinned over the foot of the frame like the plate on a picture */
+  .page-profile__honour { position: absolute; z-index: 2; left: 50%; bottom: -15px; transform: translateX(-50%); }
+  /* the credit runs up the side of the frame, so it costs the first screen no height */
+  .page-profile__credit { position: absolute; z-index: 1; right: calc(100% + 40px); bottom: 44px; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; color: var(--ink-muted); font: var(--type-credit); letter-spacing: .02em; }
+
+  .page-profile__identity { display: grid; justify-items: center; width: 100%; min-width: 0; }
+  .page-profile__kicker { display: flex; align-items: center; gap: var(--space-4); width: 100%; color: var(--action); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
+  .page-profile__kicker::before, .page-profile__kicker::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
+  .page-profile__name { margin-top: 8px; }
+  .page-profile__role { margin-top: 5px; color: var(--ink); font: var(--type-lead); }
+  .page-profile__standing { display: grid; gap: 0; margin-top: 6px; color: var(--ink-body); font: var(--type-formal); }
+  .page-profile__registration { font-variant-numeric: tabular-nums lining-nums; }
+  .page-profile__actions { display: grid; gap: 10px; width: 100%; max-width: 380px; margin-top: 16px; }
+  .page-profile__actions .button { width: 100%; }
+  .page-profile__session { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: 12px; min-height: 24px; color: var(--ink-body); font: var(--type-formal); text-align: left; }
+  .page-profile__session .icon { width: 18px; height: 18px; color: var(--action); }
+  .page-profile__session[data-state="open"] .icon { color: var(--open); }
+  .page-profile__session-detail { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+  /* the essentials strip straddles the boundary to the next section */
+  .page-profile__strip { position: relative; z-index: 3; margin-top: var(--space-6); margin-bottom: calc(-1 * var(--strip-out)); }
+
+  /* ---------- 3 · what the doctor sees patients for: an index of raised rows ---------- */
+  .page-profile__care { position: relative; z-index: 1; background: var(--ground-tint); padding: calc(var(--section-pad) + var(--strip-out) - 20px) 0 var(--section-pad); }
+  .page-profile__care-grid { display: grid; gap: var(--head-gap); }
+  .page-profile__care-object { display: none; }
+  .page-profile__topics { display: grid; gap: 10px; }
+  .page-profile__topic {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 60px; padding: 8px 18px 8px 20px;
+    border-radius: var(--radius-row); color: var(--ink); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised);
+    transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move);
+  }
+  .page-profile__topic-name { font: var(--type-ledger); }
+  .page-profile__topic-go { display: inline-flex; color: var(--action); transition: transform var(--dur-hover) var(--ease-move); }
+  .page-profile__topic:active { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
+  .page-profile__topic:focus-visible { border-radius: var(--radius-row); }
+  @media (hover: hover) and (pointer: fine) {
+    .page-profile__topic:hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+    .page-profile__topic:hover .page-profile__topic-go { transform: translateX(4px); }
+    .page-profile__topic:active { transform: translateY(var(--press)); }
+  }
+
+  /* ---------- 4 · about the doctor: an editorial two-column ---------- */
+  .page-profile__about { background: var(--ground-light); padding: var(--section-pad) 0; box-shadow: inset 0 1px 0 var(--line); }
+  .page-profile__about-grid { display: grid; gap: var(--head-gap); }
+  .page-profile__room { position: relative; margin-right: 12px; }
+  .page-profile__room .photo-figure { position: relative; z-index: 1; }
+  /* far: a plate in the doctor's tone, set off behind the photograph */
+  .page-profile__room-plate { position: absolute; z-index: 0; inset: 14px -12px auto 14px; aspect-ratio: 3 / 2; border-radius: var(--radius-media); background: var(--plate); }
+  .page-profile__lede { color: var(--ink); font: var(--type-lead); max-width: 34em; }
+  .page-profile__body { margin-top: 14px; max-width: 60ch; }
+  .page-profile__bring { margin-top: var(--space-3); }
+
+  /* ---------- 5 · certificates: a gallery wall on the deep ground ---------- */
+  .page-profile__gallery { position: relative; background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: var(--section-pad) 0 calc(var(--section-pad) - 8px); overflow: clip; }
+  .page-profile__gallery :focus-visible { outline-color: var(--focus-on-deep); }
+  .page-profile__wall { --certificate-height: 150px; --certificate-mat: 8px; position: relative; margin-top: var(--head-gap); }
+  /* the ledge the frames stand on: a hairline with a little light under it; the labels sit below */
+  .page-profile__ledge { position: absolute; left: 0; right: 0; top: calc(4px + var(--certificate-height) + 2 * var(--certificate-mat)); height: 10px; border-top: 1px solid var(--line-on-deep-strong); background: linear-gradient(180deg, var(--wash-on-deep), transparent); pointer-events: none; }
+  .page-profile__hung { position: relative; }
+  .page-profile__hung .certificate-frame { --certificate-height: inherit; }
+  .page-profile__hint { margin-top: 14px; color: var(--ink-on-deep-muted); font: var(--type-meta); }
+
+  /* ---------- 6 · reviews: this doctor's patients ---------- */
+  .page-profile__reviews { background: var(--ground-light); padding: var(--section-pad) 0 calc(var(--section-pad) - 6px); }
+
+  @media (max-width: 359px) {
+    .page-profile__sitter { --frame: 176px; }
+    .page-profile__credit { display: none; }
+  }
+
+  @media (min-width: 768px) {
+    .page-profile__cover { padding-top: var(--space-8); }
+    .page-profile__cover-grid { gap: 30px; }
+    .page-profile__sitter { --frame: 240px; }
+    .page-profile__plate { inset: -18px -40px 48px; }
+    .page-profile__credit { right: calc(100% + 54px); bottom: 60px; }
+    .page-profile__kicker { max-width: 520px; }
+    .page-profile__standing { grid-auto-flow: column; justify-content: center; gap: 0; }
+    .page-profile__registration::before { content: "·"; margin: 0 .5em; }
+    .page-profile__actions { grid-auto-flow: column; grid-auto-columns: max-content; justify-content: center; width: auto; max-width: none; gap: var(--space-3); margin-top: 26px; }
+    .page-profile__actions .button { width: auto; }
+    .page-profile__session { margin-top: var(--space-4); }
+    .page-profile__strip { margin-top: var(--space-7); }
+
+    .page-profile__care { padding: calc(var(--section-pad) + var(--strip-out)) 0 var(--section-pad); }
+    .page-profile__topics { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-3) var(--space-4); }
+    .page-profile__topic { min-height: 68px; padding: 10px 22px 10px 24px; }
+
+    /* words left, photograph right: the cover has its picture on the other side */
+    .page-profile__about-grid { grid-template-columns: minmax(0, 6.2fr) minmax(0, 5.8fr); grid-template-rows: auto 1fr; column-gap: var(--space-7); row-gap: var(--space-5); align-items: start; }
+    .page-profile__about-head { grid-column: 1 / -1; grid-row: 1; }
+    .page-profile__story { grid-column: 1; grid-row: 2; }
+    .page-profile__room { grid-column: 2; grid-row: 2; max-width: calc(var(--room, 420px) + 16px); margin: 6px 16px 0 0; }
+    .page-profile__room-plate { inset: 18px -16px auto 18px; }
+    .page-profile__wall { --certificate-height: 176px; --certificate-mat: 9px; }
+  }
+
+  @media (min-width: 1024px) {
+    /* portrait left, words right: the mirror of Home's first screen */
+    .page-profile__cover { padding-top: 0; }
+    .page-profile__cover-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--space-8); justify-items: start; align-items: center; text-align: left;
+      min-height: calc(clamp(620px, 100svh, 840px) - var(--header-height) - var(--strip-in) - var(--strip-out) - 16px); }
+    .page-profile__sitter { --frame: 264px; justify-self: center; margin: 56px 0 64px; }
+    .page-profile__plate { inset: -24px -52px 56px; }
+    /* no room beside the frame at this width: the credit sits under it, as a caption */
+    .page-profile__credit { position: static; writing-mode: horizontal-tb; transform: none; margin-top: var(--space-4); text-align: center; }
+    .page-profile__sitter--tagged .page-profile__credit { margin-top: 28px; }
+    .page-profile__identity { justify-items: start; padding: 40px 0 48px; }
+    .page-profile__kicker { max-width: 560px; }
+    .page-profile__kicker::before { content: none; }
+    .page-profile__name { margin-top: 18px; }
+    .page-profile__role { margin-top: 12px; }
+    .page-profile__standing { justify-content: start; margin-top: 10px; }
+    .page-profile__actions { justify-content: start; margin-top: 34px; gap: 14px; }
+    .page-profile__actions .button { min-height: var(--control-height-large); padding: 0 26px; }
+    .page-profile__session { margin-top: 22px; }
+    .page-profile__strip { margin-top: 0; }
+
+    .page-profile__care-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
+    .page-profile__care-head { position: relative; }
+    .page-profile__care-object { display: block; width: 104px; height: auto; margin: 44px 0 0 8px; transform: rotate(-8deg); filter: var(--elev-object); pointer-events: none; }
+    .page-profile__topics { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+    .page-profile__topic { min-height: 72px; padding: 12px 26px 12px 28px; }
+
+    .page-profile__about-grid { grid-template-columns: minmax(0, 6.6fr) minmax(0, 5.4fr); column-gap: var(--space-9); row-gap: 28px; }
+    .page-profile__about-head { grid-column: 1; }
+    .page-profile__room { grid-row: 1 / 3; justify-self: end; width: 100%; margin: 8px 16px 0 0; }
+    .page-profile__body { margin-top: var(--space-4); }
+    .page-profile__bring { margin-top: var(--space-4); }
+
+    .page-profile__wall { --certificate-height: 196px; --certificate-mat: 10px; }
+  }
+
+  @media (min-width: 1280px) {
+    .page-profile__sitter { --frame: 300px; }
+    .page-profile__plate { inset: -28px -60px 64px; }
+    .page-profile__credit, .page-profile__sitter--tagged .page-profile__credit { position: absolute; right: calc(100% + 78px); bottom: 72px; writing-mode: vertical-rl; transform: rotate(180deg); margin-top: 0; text-align: left; }
+  }
 }
