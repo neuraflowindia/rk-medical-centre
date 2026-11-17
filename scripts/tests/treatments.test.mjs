@@ -210,7 +210,7 @@ test('booking OFF: no booking address is left, and Call names the doctor',()=>{
 });
 
 test('the two doctors are shown once more for anything not listed, without buttons',()=>{
- const html=renderedPage(PATH,'on'),part=section(html,'<section class="page-treatments page-treatments__doctors"','<section class="closing"');
+ const html=renderedPage(PATH,'on'),part=section(html,'<section class="page-treatments__doctors"','<section class="closing"');
  assert.match(part,/<h2 class="section-head__title" id="treatments-doctors-title" data-enter>Something else <em>on&nbsp;your&nbsp;mind\?<\/em><\/h2>/);
  assert.equal(count(part,/<article class="doctor-mini-card/g),2);
  assert.deepEqual(attributeValues(part,'href').filter(href=>!href.startsWith('#i-')),doctorOrder.map(id=>doctors[id].path));
@@ -230,10 +230,14 @@ test('an older link that names a topic is drawn with that row open; anything els
 });
 
 test('nothing that moves on entrance wraps a panel (a moved wrapper would capture the laptop panel\'s place)',()=>{
- const html=renderedPage(PATH,'on'),index=section(html,'<section class="page-treatments__index"','<section class="page-treatments page-treatments__doctors"');
+ const html=renderedPage(PATH,'on'),index=section(html,'<section class="page-treatments__index"','<section class="page-treatments__doctors"');
  assert.equal(count(index,/data-enter/g),11,'the two bylines and the nine objects enter; nothing else in the index does');
  assert.doesNotMatch(index,/<(?:li|ul|section|div|a)\b[^>]*data-enter/,'rows, lists and groups never move: the rhythm of the list stays even');
  assert.equal(count(html,/class="page-treatments__arch" data-ambient/g),9,'one slow light per panel; only the one that is shown runs');
+ assert.equal(count(html,/<div class="page-treatments__panel"[^>]*><span class="page-treatments__alive" aria-hidden="true" data-ambient><\/span>/g),9,'each panel starts with the marker that lets the open row\'s object float on a phone');
+ // the two doctors sit inside the same block as the index, so the laptop panel can travel on beside them
+ assert.match(html,/<\/section><section class="page-treatments__doctors" aria-labelledby="treatments-doctors-title">/);
+ assert.match(html,/<\/section><\/div><section class="closing"/);
 });
 
 test('the stylesheet styles only what the page prints, and knows the three ways a row opens',()=>{
@@ -246,6 +250,9 @@ test('the stylesheet styles only what the page prints, and knows the three ways 
  assert.match(css,/\.page-treatments__topic\[data-open\]/);
  assert.match(css,/\.page-treatments__index:not\(\[data-topics-bound\]\) \.page-treatments__topic:target/);
  assert.match(css,/:not\(:has\(\.page-treatments__topic\[data-open\], \.page-treatments__topic:target\)\) \.page-treatments__group:first-child \.page-treatments__topic:first-child/);
+ // what moves by itself is scoped to "motion on", so pausing motion (or the device setting) stills it
+ for(const rule of css.match(/[^{}]*\{[^{}]*animation:[^{}]*\}/g))assert.match(rule,/^\s*(?:\/\*[\s\S]*?\*\/\s*)*html\[data-motion="on"\] /,rule.trim().slice(0,90));
+ assert.match(css,/\.page-treatments__topic:has\(\.page-treatments__alive\[data-running\]\) \.page-treatments__object-art \{ animation: page-treatments-float /);
  for(const object of new Set([...css.matchAll(/\[data-object="([^"]+)"\]/g)].map(match=>match[1])))assert.ok(treatmentRows.some(row=>row.object===object),`${object} is not a row's object`);
 });
 
