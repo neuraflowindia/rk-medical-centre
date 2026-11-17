@@ -3,7 +3,7 @@
 // answers, so every rule is checked on states the engine really produces.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {existsSync} from 'node:fs';
+import {existsSync,readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {doctors} from '../../src/clinic/model.mjs';
 import {bookForSomeoneElseAnswer} from '../../src/clinic/standins.mjs';
@@ -18,6 +18,7 @@ import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
  stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,tidyPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
  tileMove,tileStop,readFault,askedDoctor,
+ PDF_HELP_MS,PDF_CURSOR_GRACE_MS,PDF_STUCK_MS,PDF_BUTTON,PDF_BUSY,PDF_SENTENCE,pdfIdle,pdfPressed,pdfSeen,pdfTook,pdfLine,pdfHolding,pdfWaiting,pdfKeepsCursor,
  paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
  saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE,liftAboveBar,blockedWords} from '../../src/booking/booking-steps.mjs';
 
@@ -622,4 +623,123 @@ test('a browser the engine will not take a booking in: the page says why and kee
  // a saved booking that cannot be read, in a browser that does keep site data: the engine's own sentence stays on screen
  assert.deepEqual(blockedWords({sentence:'Your saved booking could not be read.'}),{title:'Your saved booking could not be opened',text:'Your saved booking could not be read.'});
  assert.deepEqual(blockedWords(),{title:'Your saved booking could not be opened',text:'Please call the clinic before booking again.'});
+});
+
+test('the appointment PDF: one press gives the file, and the page never points to buttons that are gone',()=>{
+ const none={href:'',busy:false,ready:true},making={href:'',busy:true,ready:false},offered=href=>({href,busy:false,ready:true});
+ // nothing asked: the page does nothing and says nothing, whatever the package shows
+ assert.deepEqual(pdfSeen(pdfIdle,offered('blob:a'),10),{state:pdfIdle,act:''});
+ assert.equal(pdfLine(pdfIdle,offered('blob:a')),'');assert.equal(pdfHolding(pdfIdle,10),false);assert.equal(pdfKeepsCursor(pdfIdle,10),false);assert.equal(pdfWaiting(pdfIdle),false);
+ assert.equal(pdfTook(pdfIdle,'saved'),pdfIdle,'a link pressed without the page having been asked is the package\'s own business');
+ assert.ok(Object.isFrozen(pdfIdle));
+
+ // the ordinary press: the package makes the file, offers its link, the page presses it at once, and only once
+ let state=pdfPressed(1000);
+ assert.deepEqual({...state},{...pdfIdle,asked:true,armedUntil:1000+PDF_HELP_MS});assert.equal(PDF_HELP_MS,5000);
+ assert.equal(pdfLine(state,none),'','nothing is said before there is something to say');
+ let seen=pdfSeen(state,making,1010);assert.equal(seen.act,'');assert.equal(seen.state.began,true);
+ assert.equal(pdfSeen(seen.state,making,1020).state,seen.state,'the same view again changes nothing');
+ assert.equal(pdfWaiting(seen.state),true,'the package\'s sentence is covered before it arrives');
+ seen=pdfSeen(seen.state,offered('blob:a'),1400);assert.equal(seen.act,'download');assert.equal(seen.state.offered,true);assert.equal(seen.state.auto,true);
+ assert.equal(pdfWaiting(seen.state),false,'from here the sentence is covered for what it says, and the package\'s other sentences are left alone');
+ assert.equal(pdfLine(seen.state,offered('blob:a')),'ready','until the press on the link has gone through, the page promises nothing');
+ state=pdfTook(seen.state,'saved');
+ assert.equal(pdfSeen(state,offered('blob:a'),1410).act,'','the link is not pressed twice');
+ assert.equal(pdfLine(state,offered('blob:a')),'done');
+ // the package takes its links away at its next check: the page's line stays true, and the same
+ assert.equal(pdfSeen(state,none,1700).act,'');assert.equal(pdfLine(state,none),'done');
+ assert.equal(words.pdf.done,'Your PDF has been downloaded. You can download it again whenever you need it.');
+ assert.doesNotMatch(Object.values(words.pdf).join(' '),/\bcop(?:y|ies)\b/i,'"copy" is the package\'s word for an emailed copy, in the line beside these');
+ assert.doesNotMatch(Object.values(words.pdf).join(' '),/Use Download PDF or Open PDF/,'none of the page\'s lines is the package\'s sentence');
+
+ // a second press while the first link is still on screen: only the new link counts
+ state=pdfPressed(3000,'blob:a');assert.equal(state.stale,'blob:a');
+ assert.equal(pdfSeen(state,offered('blob:a'),3010).act,'');assert.equal(pdfSeen(state,offered('blob:a'),3010).state.offered,false);
+ seen=pdfSeen(pdfSeen(state,making,3020).state,offered('blob:b'),3300);assert.equal(seen.act,'download');
+
+ // the routine check cut the first try short: the page asks once more, and hides the package's "could not be prepared" until then
+ state=pdfPressed(0);assert.equal(pdfHolding(state,10),true);
+ state=pdfSeen(state,making,10).state;
+ seen=pdfSeen(state,{href:'',busy:false,ready:false},300);assert.equal(seen.act,'','not while the package still has its button switched off');
+ seen=pdfSeen(seen.state,none,420);assert.equal(seen.act,'retry');assert.equal(seen.state.retried,true);assert.equal(seen.state.began,false);
+ assert.equal(pdfHolding(seen.state,430),false,'a second failure is the package\'s to tell');
+ const again=pdfSeen(pdfSeen(seen.state,making,440).state,none,700);assert.equal(again.act,'','and it is asked once, not for ever');
+ assert.equal(pdfLine(again.state,none),'');
+ seen=pdfSeen(pdfSeen(seen.state,making,440).state,offered('blob:c'),900);assert.equal(seen.act,'download','the second try gives the file');
+ // a press the package did not take up (nothing was ever being made) is not repeated
+ assert.equal(pdfSeen(pdfPressed(0),none,50).act,'');
+
+ // too slow for the page to act (a browser no longer counts the press as the visitor's): the links are theirs to press
+ state=pdfSeen(pdfPressed(0),making,10).state;
+ seen=pdfSeen(state,offered('blob:d'),PDF_HELP_MS+1);assert.equal(seen.act,'');assert.equal(seen.state.offered,true);
+ assert.equal(pdfLine(seen.state,offered('blob:d')),'ready');assert.match(words.pdf.ready,/^Your PDF is ready\. Press Download PDF or Open PDF\.$/);
+ assert.equal(pdfLine(pdfTook(seen.state,'opened'),offered('blob:d')),'opened');
+ assert.equal(pdfLine(pdfTook(pdfTook(seen.state,'saved'),'opened'),none),'done','once saved, it stays saved');
+ assert.equal(pdfLine(pdfTook(pdfTook(seen.state,'opened'),'saved'),none),'done');
+ assert.equal(pdfTook(seen.state,'something else'),seen.state);
+ assert.equal(pdfLine(seen.state,none),'closed','the links went before they were pressed: the page says so, and how to get the file');
+ assert.match(words.pdf.closed,/not downloaded/);assert.match(words.pdf.closed,/Press Download appointment PDF again/,'by then the package\'s button carries exactly this name');
+ assert.equal(pdfHolding(pdfPressed(0),PDF_HELP_MS+1),false);
+ assert.equal(pdfSeen(state,none,PDF_HELP_MS+1).act,'','no second try after the five seconds');
+ // the page's own press of the link, when the package refuses it, is not counted and not repeated
+ seen=pdfSeen(pdfPressed(0),offered('blob:e'),100);assert.equal(seen.act,'download');
+ assert.equal(pdfSeen(seen.state,offered('blob:e'),110).act,'');assert.equal(pdfLine(seen.state,none),'closed');
+
+ // the cursor is given back to the pressed button for the five seconds and a moment, never after
+ state=pdfPressed(2000);
+ assert.equal(pdfKeepsCursor(state,2000+PDF_HELP_MS+PDF_CURSOR_GRACE_MS),true);assert.equal(pdfKeepsCursor(state,2001+PDF_HELP_MS+PDF_CURSOR_GRACE_MS),false);
+ assert.ok(PDF_CURSOR_GRACE_MS>0&&PDF_CURSOR_GRACE_MS<=2000);
+
+ // "Find your booking": the package's check fell inside the making and left its buttons off for good.
+ // The page says so once the five seconds are over, never sooner, and never on the appointment card.
+ const dead={href:'',busy:false,ready:false,dead:true},off={href:'',busy:false,ready:false,dead:false};
+ state=pdfSeen(pdfPressed(0),{...making,dead:true},10).state;
+ assert.equal(state.deadSince,null,'while the file is being made the buttons are off for a reason');
+ state=pdfSeen(state,dead,400).state;assert.equal(state.deadSince,400);assert.equal(pdfSeen(state,dead,450).act,'','nothing can be pressed');
+ assert.equal(pdfSeen(state,dead,500).state,state,'looking again changes nothing');
+ assert.equal(pdfLine(state,dead,400+PDF_STUCK_MS),'','a routine check may still be on its way');assert.equal(pdfLine(state,dead),'');
+ assert.equal(pdfLine(state,dead,401+PDF_STUCK_MS),'stuck');assert.equal(PDF_STUCK_MS,4000);
+ assert.equal(pdfLine(state,{...dead,busy:true},401+PDF_STUCK_MS),'','still being made');
+ // the buttons came back (it was only a routine check): the count starts again, and the page asks once more as usual
+ seen=pdfSeen(state,none,900);assert.equal(seen.state.deadSince,null);assert.equal(seen.act,'retry');
+ assert.equal(pdfLine(seen.state,none,99999),'');
+ seen=pdfSeen(pdfSeen(seen.state,{...making,dead:true},950).state,dead,1200);assert.equal(seen.state.deadSince,1200);
+ assert.equal(pdfLine(seen.state,dead,1201+PDF_STUCK_MS),'stuck','the second try can end the same way');
+ // with "Refresh details" still usable the package explains itself (its note about details it could not read)
+ assert.equal(pdfLine(pdfSeen(pdfSeen(pdfPressed(0),making,10).state,off,400).state,off,99999),'');
+ assert.equal(pdfLine(pdfSeen(pdfPressed(0),dead,10).state,dead,99999),'','a press the package never took up');
+ assert.match(words.pdf.stuck,/Press Back to my bookings, open the booking again and press Download appointment PDF\.$/);
+
+ // every line the page can show has words, typed with proper marks
+ for(const key of ['done','opened','ready','closed','stuck'])assert.ok(words.pdf[key].length>20&&/\.$/.test(words.pdf[key])&&!/'|"|\.\.\./.test(words.pdf[key]),key);
+});
+
+test('the package still shows its PDF action the way the page reads it',()=>{
+ // The page finds the package's PDF button by its words, its link by its class and the "download"
+ // attribute, and covers its sentence by its first words. A new version of the package that changes
+ // any of these must be looked at again (and may no longer need the help at all).
+ const read=name=>readFileSync(fileURLToPath(new URL('../../appointment-system/browser/booking/'+name,import.meta.url)),'utf8');
+ const labels=source=>[...source.matchAll(/'((?:Download appointment|Refresh|Preparing) PDF[^']*)'/g)].map(match=>match[1]);
+ const receipt=read('receipt-fields.mjs'),found=read('booking-details-fields.mjs');
+ assert.deepEqual(labels(receipt),['Preparing PDF…','Refresh PDF','Download appointment PDF']);
+ assert.deepEqual(labels(found),['Preparing PDF…','Download appointment PDF']);
+ for(const label of [...labels(receipt),...labels(found)]){assert.match(label,PDF_BUTTON);assert.equal(PDF_BUSY.test(label),label==='Preparing PDF…');}
+ for(const other of ['Email appointment details','Refresh details','Back to my bookings','Retry the same email request'])assert.doesNotMatch(other,PDF_BUTTON,other);
+ assert.match(found,/h\('button',\{type:'button',className:'abs-lookup-back',onClick:controller\.back\},'Back to my bookings'\)/,'the way out the page names');
+ assert.match(found,/h\('button',\{type:'button',disabled:!enabled\|\|state\.busy\|\|file\.busy,onClick:refresh\},'Refresh details'\)/);
+ assert.doesNotMatch(receipt,/abs-lookup-back/,'the appointment card has no such button, so the page never speaks of it there');
+ for(const source of [receipt,found]){
+  assert.match(source,/className:'abs-receipt-actions'/);
+  assert.match(source,/h\('a',\{\.\.\.linkProps,className:'abs-download'\},'Download PDF'\)/);
+  assert.match(source,/linkProps=\{href:[a-z]+\.pdfURL,download:[a-z]+\.filename,/,'the saving link carries "download"; the opening link does not');
+  assert.match(source,/h\('p',\{role:'status'\},/);assert.match(source,/role:'alert'/);
+ }
+ assert.match(receipt,/className:'abs-action-error'/);
+ for(const name of ['receipt-actions.mjs','booking-details-pdf.mjs']){
+  const sentence=read(name).match(/message:'(Your PDF is ready[^']*)'/);
+  assert.ok(sentence,name);assert.match(sentence[1],PDF_SENTENCE);assert.equal(sentence[1],'Your PDF is ready. Use Download PDF or Open PDF.');
+  assert.match(read(name),/expiry=set(?:Timer|Timeout)\((?:\(\)=>revoke\(\)|revoke),5000\)/,'the links still last five seconds at most: the reason the page presses for the visitor');
+ }
+ // the package's other sentences in the same place are never covered
+ for(const other of ['Your email-copy request is saved.','Your email-copy request is saved. Check booking status for the latest delivery update.'])assert.doesNotMatch(other,PDF_SENTENCE);
 });

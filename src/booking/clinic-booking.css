@@ -389,6 +389,18 @@
     text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 4px;
   }
   .clinic-booking .abs-receipt .abs-download { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+  /* The package's sentence about its two links outlives them, so it is covered: while the answer
+     to the visitor's press is awaited (so it is never read out), and for as long as it stands. The
+     page's own line (PdfHelp) takes its place and says what has happened. While the page may still
+     ask the package once more, the package's "could not be prepared" is not shown either. */
+  .clinic-booking [data-pdf-waiting] .abs-receipt-actions > p[role="status"]:not(.booking-pdf-line),
+  .clinic-booking [data-pdf-covered] .abs-receipt-actions > p[role="status"]:not(.booking-pdf-line),
+  .clinic-booking [data-pdf-hold] .abs-receipt-actions > .abs-action-error { display: none; }
+  .clinic-booking .abs-receipt-actions > .booking-pdf-line { order: 2; color: var(--ink); font-weight: 500; }
+  /* without the two links the page's line stands directly under the buttons, before the package's notes on email */
+  .clinic-booking .abs-receipt-actions:not(:has(.abs-download)) > p:not(.booking-pdf-line) { order: 3; }
+  /* empty, it stays on the page for screen readers (the shared hidden-text class) but takes no room in the row */
+  .clinic-booking .abs-receipt-actions > .booking-pdf-line.visually-hidden { width: 1px; }
   /* the package's buttons take the site's paper button; a short blink of "switched off" is not shown
      (the engine re-checks the booking state every five seconds and locks its actions while it does) */
   .clinic-booking .abs-receipt button, .clinic-booking .abs-receipt .abs-download, .clinic-booking .abs-receipt .abs-meet-link {

@@ -233,3 +233,46 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  assert.match(island,/from '\.\/booking-steps\.mjs';/);
  assert.doesNotMatch(island,/NeuraFlow|Claude|agency/i);
 });
+
+test('the appointment PDF: the island presses the package\'s download link for the visitor, covers its stale sentence and leaves the package alone',()=>{
+ const island=read('src/booking/clinic-booking.jsx'),css=stripComments(read('src/booking/clinic-booking.css'));
+ const help=island.slice(island.indexOf('function PdfHelp('),island.indexOf('/** Icon and words;'));
+ assert.ok(help.length>1500,'the wrapper is where it is expected');
+ // both places the package draws its PDF action are wrapped: the appointment card and "Find your booking"
+ assert.match(island,/<PdfHelp className=\{classes\('booking-record', record && 'is-open'\)\} id=\{id \+ 'record'\}>\n\s+<ReceiptFields flow=\{flow\} showTitle=\{false\}\/>/);
+ assert.match(island,/<PdfHelp className="booking-find"><BookingDetailsFields\/><\/PdfHelp>/);
+ assert.equal(island.match(/<PdfHelp /g).length,2);
+ // armed by the visitor's own press only, and what it does is decided by the tested rules
+ assert.match(help,/if \(!button \|\| !event\.isTrusted\) return;/,'a press made by a script arms nothing');
+ assert.match(help,/help\.current = own \? pdfPressed\(performance\.now\(\), [^;]+\) : pdfIdle;/,'any other button of the row ends the help');
+ assert.match(help,/const now = performance\.now\(\), next = pdfSeen\(help\.current, view, now\);/);
+ assert.match(help,/const state = help\.current, line = pdfLine\(state, view, now\), hold = pdfHolding\(state, now\)/);
+ assert.match(help,/dead: !!back && buttons\.every\(item => item === back \|\| item\.disabled\)\};/,'a found booking whose every button but the way back is off');
+ assert.match(help,/if \(slot !== row\.current\) \{ row\.current = slot; help\.current = pdfIdle; pressed\.current = null; \}/,'another booking\'s row starts with nothing asked');
+ assert.match(help,/if \(next\.act === 'download'\) link\.click\(\);/);assert.match(help,/else if \(next\.act === 'retry'\) button\.click\(\);/);
+ assert.match(help,/querySelector\('a\.abs-download\[download\]\[href\]'\)/,'the saving link, never the one that opens a new tab');
+ assert.match(help,/if \(!link \|\| event\.isDefaultPrevented\(\)\) return;/,'a link the package refused is not counted as taken');
+ assert.equal(help.match(/\.click\(\)/g).length,2);
+ // said once, in the page's own line, which is on the page (empty) before there is anything to say
+ assert.match(help,/createPortal\(<p className=\{classes\('booking-pdf-line', !shown\.line && 'visually-hidden'\)\} role="status">\{shown\.line \? words\.pdf\[shown\.line\] : ''\}<\/p>, shown\.slot\)/);
+ assert.doesNotMatch(help,/aria-live="assertive"|role="alert"/);
+ // the cursor: given back only to the button that had it, only while the rules say so, and never against the visitor
+ assert.match(help,/pressed\.current = own && document\.activeElement === button \? button : null;/);
+ assert.match(help,/!pdfKeepsCursor\(help\.current, now\) \|\| cursor !== kept && cursor !== document\.body\)\) pressed\.current = null;/);
+ assert.match(help,/else if \(kept && cursor === document\.body && !kept\.disabled\) kept\.focus\(\{preventScroll: true\}\);/);
+ assert.equal(help.match(/\.focus\(/g).length,1);assert.doesNotMatch(help,/scrollIntoView|scrollTo/);
+ assert.match(help,/document\.addEventListener\('pointerdown', elsewhere, true\);/);assert.match(help,/document\.removeEventListener\('pointerdown', elsewhere, true\);/);
+ assert.match(help,/watcher\.disconnect\(\);/);assert.match(help,/timers\.current\.forEach\(clearTimeout\)/);
+ // the package's sentence and its "could not be prepared" are covered from outside, by rules of the island's own stylesheet
+ assert.match(css,/\.clinic-booking \[data-pdf-waiting\] \.abs-receipt-actions > p\[role="status"\]:not\(\.booking-pdf-line\),\s+\.clinic-booking \[data-pdf-covered\] \.abs-receipt-actions > p\[role="status"\]:not\(\.booking-pdf-line\),\s+\.clinic-booking \[data-pdf-hold\] \.abs-receipt-actions > \.abs-action-error \{ display: none; \}/);
+ assert.match(css,/\.clinic-booking \.abs-receipt-actions > \.booking-pdf-line\.visually-hidden \{ width: 1px; \}/,'empty, the line takes no room and cannot widen the page');
+ assert.match(css,/\.clinic-booking \.abs-receipt-actions > \.booking-pdf-line \{ order: 2;/);
+ assert.match(css,/\.clinic-booking \.abs-receipt-actions:not\(:has\(\.abs-download\)\) > p:not\(\.booking-pdf-line\) \{ order: 3; \}/,'the line stands under the buttons, before the notes on email');
+ assert.doesNotMatch(css,/(?<!:not\()\.booking-pdf-line[^{]*\{[^}]*display: none/,'a line that is taken off the page is not read out when its words arrive');
+ for(const attribute of ['data-pdf-waiting','data-pdf-covered','data-pdf-hold'])assert.match(help,new RegExp(attribute+'=\\{shown\\.'));
+ assert.match(help,/const waiting = pdfWaiting\(state\);/);
+ assert.match(help,/const lookAt = state\.deadSince === null \|\| line \? 0 : state\.deadSince \+ PDF_STUCK_MS;/,'buttons left off are looked at again, by a timer that is cleared with the wrapper');
+ assert.match(help,/clearTimeout\(watch\.current\.id\); \};\n  \}, \[\]\);/);
+ // the island's words about the PDF never repeat the package's sentence
+ assert.doesNotMatch(island,/Use Download PDF or Open PDF/);
+});
