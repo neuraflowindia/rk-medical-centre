@@ -73,13 +73,14 @@ test('About words: the three standards are the shared list (the one Home’s led
 
 test('About words: the walk has three steps in order, each with a photograph that exists',()=>{
  assert.deepEqual(walk.steps.map(step=>step.id),['arrive','doors','waiting']);
- // Step 1 shows the name board on the green wall once that crop exists; until then the gate, with the gate's own line.
+ // Step 1 shows the name board on the green wall: a detail of the street with no car and nobody in it.
  const first=words.arrival();
- assert.deepEqual(walk.steps.map(step=>step.photo),[first.photo,'walk-doors','waiting']);
+ assert.deepEqual(first,{photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'});
+ assert.deepEqual(walk.steps.map(step=>step.photo),['walk-wall','walk-doors','waiting']);
  assert.equal(walk.steps[0].line,first.line);
  assert.ok(!walk.steps.some(step=>step.photo===cover.photo.photo),'the cover’s photograph is not shown again');
- assert.deepEqual(words.arrival({'walk-wall':{},'walk-gate':{}}),{photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'});
- assert.deepEqual(words.arrival({'walk-gate':{}}),{photo:'walk-gate',line:'The gate is under the blue board with both doctors’ names.'});
+ assert.equal(clinicPhotos['walk-wall'].sources.at(-1).width,428,'its larger file is the crop at its own size: never enlarged');
+ assert.ok(!Object.hasOwn(clinicPhotos,'walk-gate'),'the gate crop went with the step that showed it');
  for(const step of walk.steps){
   assert.ok(Object.hasOwn(clinicPhotos,step.photo),`${step.id} names a photograph`);
   assert.ok(step.title.length<=40&&step.line.endsWith('.'));
