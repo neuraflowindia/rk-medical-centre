@@ -104,8 +104,10 @@ function hoursPart(ctx){
   +`<div class="page-contact__hours-copy">`
   +sectionHead({runningHead:hours.runningHead,heading:head.heading,emphasis:head.emphasis,id:'hours-title'})
   +`<div class="page-contact__observation" data-enter>${icon('shield')}<div><h3>${text(note.title)}</h3><p>${text(note.text)}</p></div></div></div>`
-  // The timetable is flat (it is information); the calendar on its pale arch is the one accent.
-  +`<span class="page-contact__hours-arch" aria-hidden="true"></span>`+image(clinicObjects['desk-calendar'],{className:'page-contact__calendar'})
+  // The timetable is flat (it is information); the calendar on its pale arch is the one accent, and
+  // from tablets up the slow light crosses that arch (the section's one mover).
+  +`<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient><span class="page-contact__shaft"></span></span></span>`
+  +image(clinicObjects['desk-calendar'],{className:'page-contact__calendar'})
   +`<div class="page-contact__ledger" data-enter>${hoursTable(ctx,{rows:weekRows(),caption:hours.caption,roomy:true,className:'page-contact__week'})}</div>`
   +`</div></section>`;
 }
@@ -116,14 +118,19 @@ function noticeSection(section){
  return `<div class="page-contact__notice-part"><h3>${text(section.heading)}</h3>${lists}${(section.paragraphs||[]).map(words=>`<p>${text(words)}</p>`).join('')}</div>`;
 }
 
-/** The full privacy notice: one raised row that opens in place (it works without scripts). */
+/**
+ * The full privacy notice: one raised row that opens in place (it works without scripts). Its
+ * sections are set as a document: one measure on phones and tablets, two columns on laptops,
+ * and a section is never split between them.
+ */
 function privacyPart(){
  const full=privacyNotice.full;
  return `<details class="page-contact__notice" id="${full.id}" data-privacy-notice>`
   +`<summary class="page-contact__notice-open"><span class="page-contact__notice-words"><h2 class="page-contact__notice-title">${text(full.open)}</h2>`
   +`<span class="page-contact__notice-note">${text(full.openNote)}</span></span>`
   +`<span class="page-contact__notice-mark" aria-hidden="true">${icon('plus',{className:'page-contact__notice-plus'})}${icon('minus',{className:'page-contact__notice-minus'})}</span></summary>`
-  +`<div class="page-contact__notice-body"><p class="page-contact__notice-date">${text(full.updated)}</p>${full.sections.map(noticeSection).join('')}</div></details>`;
+  +`<div class="page-contact__notice-body"><p class="page-contact__notice-date">${text(full.updated)}</p>`
+  +`<div class="page-contact__notice-columns">${full.sections.map(noticeSection).join('')}</div></div></details>`;
 }
 
 function messagePart(ctx){

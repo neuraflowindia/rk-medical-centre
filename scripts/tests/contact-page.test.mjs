@@ -137,7 +137,12 @@ test('the full privacy notice is on the page, closed, with every section',()=>{
   for(const list of section.lists||[]){assert.ok(has(page,list.lead));for(const item of list.items)assert.ok(page.includes(`<li>${text(item)}</li>`));}
  }
  assert.equal(privacyNotice.more.href,PATH+'#privacy-notice');
- assert.equal(privacyNotice.full.open,footer.detailsNotice);
+ // The row has its own name ("How your details are used" is the link in the sheet just above it), and
+ // the sections sit together in the block that becomes two columns on laptops.
+ assert.match(page,/<h2 class="page-contact__notice-title">Privacy notice<\/h2>/);
+ assert.equal(count(page,new RegExp(text(footer.detailsNotice),'g')),count(renderedPage('/','on'),new RegExp(text(footer.detailsNotice),'g'))+1,'on this page the phrase is added once: the link in the sheet');
+ const columns=page.slice(page.indexOf('<div class="page-contact__notice-columns">'),page.indexOf('</details>'));
+ assert.equal(count(columns,/<div class="page-contact__notice-part">/g),privacyNotice.full.sections.length);
 });
 
 test('entrances: nothing in the first screen moves in; the pin lands after its map',()=>{
@@ -145,7 +150,10 @@ test('entrances: nothing in the first screen moves in; the pin lands after its m
  const first=page.slice(0,page.indexOf('id="find-us"'));
  assert.doesNotMatch(first,/data-enter/);
  assert.match(page,/<span class="page-contact__pin" data-enter="drop" data-enter-after="0\.35" aria-hidden="true">/);
- assert.equal(count(page,/data-ambient(?!="minor")/g),1,'one slow light on the page');
+ // Two slow lights, never in one view: the first screen's arch, and the small arch behind the timetable's calendar.
+ assert.equal(count(page,/data-ambient(?!="minor")/g),2);
+ assert.equal(count(first,/data-ambient(?!="minor")/g),1);
+ assert.match(page,/<span class="page-contact__hours-arch" aria-hidden="true"><span class="page-contact__light" data-ambient>/);
 });
 
 // ---------- the page's own behaviour ----------

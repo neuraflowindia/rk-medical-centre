@@ -50,13 +50,18 @@
   .page-contact__map-edge--side { stroke-width: 19.5; }
   .page-contact__map-road--side { stroke-width: 16; }
   .page-contact__map-median { fill: none; stroke: var(--line-strong); stroke-width: 1.6; stroke-dasharray: 12 9; }
-  .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; }
+  /* words on the map carry a soft halo of the map's own ground, so a lane passing behind never cuts a letter */
+  .page-contact__map-label { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; pointer-events: none; color: var(--ink); font: var(--type-small); font-weight: 600; text-shadow: 0 0 3px var(--ground-tint-light), 0 0 3px var(--ground-tint-light), 0 0 6px var(--ground-tint-light); }
   .page-contact__map-label .icon { width: 16px; height: 16px; }
-  .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; }
-  .page-contact__map-label--west { left: var(--space-3); top: 29%; transform: translateY(-50%); }
-  .page-contact__map-label--east { right: var(--space-3); top: 41%; transform: translateY(-50%); }
-  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: 9px; padding: 4px var(--space-3) 5px; transform: translateX(-50%); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); }
-  .page-contact__map-label--north { left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); }
+  .page-contact__map-label--road { left: 25.9%; top: 42.9%; transform: translate(-50%, -50%) rotate(5.5deg); color: var(--ink); font: var(--type-caps); letter-spacing: var(--tracking-caps); text-transform: uppercase; text-shadow: none; }
+  /* On phones the road is too narrow to hold a name at each end. "Tedhi Pulia" stands 8 px above the road's
+     upper edge at its west end, "Munshi Pulia" just below its lower edge at its east end, and on narrow phones
+     the pin's own label is set to the left of the pin, so the three never meet at any phone width. */
+  .page-contact__map-label--west { left: var(--space-3); top: calc(34.4% - 8px); transform: translateY(-100%); }
+  .page-contact__map-label--east { right: var(--space-3); top: calc(58.2% + 6px); }
+  .page-contact__map-label--pin { left: 50.3%; top: 52.8%; margin-top: var(--space-2); padding: 4px var(--space-3) 5px; transform: translateX(calc(-100% + 18px)); border-radius: var(--radius-tag); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink); font: var(--type-caption-strong); text-shadow: none; }
+  /* the compass mark needs the room the two names take on phones; it is shown from tablets up */
+  .page-contact__map-label--north { display: none; left: var(--space-3); top: var(--space-3); gap: 5px; min-height: 30px; padding: 0 var(--space-3) 0 9px; border-radius: var(--radius-tag); background: var(--surface); box-shadow: var(--ring-faint); color: var(--ink); font: var(--type-tag); text-shadow: none; }
   .page-contact__map-label--north .icon { color: var(--action); }
   /* near: the pin on the clinic's spot. Its tip is the point; it comes down as the map is scrolled to. */
   .page-contact__pin { position: absolute; z-index: 3; left: 50.3%; top: 52.8%; width: 0; height: 0; --rise: 0px; pointer-events: none; }
@@ -72,7 +77,8 @@
     .page-contact__map-window:has(.page-contact__map-hit:hover, .page-contact__map-open:hover) .page-contact__pin-hop { transform: translateY(-5px); }
   }
   /* subject: the frontage, laid over the map's lower corner */
-  .page-contact__frontage { position: relative; z-index: 2; width: 86%; margin: max(-72px, calc(100px - 40vw)) 0 0 auto; }
+  /* it lies over the map's lower corner, never so far that it reaches the map's words */
+  .page-contact__frontage { position: relative; z-index: 2; width: 86%; margin: max(-48px, calc(96px - 38vw)) 0 0 auto; }
   .page-contact__frontage .photo-figure__caption { max-width: 32ch; }
   .page-contact__address { position: relative; z-index: 3; margin-top: var(--space-4); padding: 18px var(--card-pad); border-radius: var(--radius-card); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line), var(--elev-ambient); }
   .page-contact__address h3 { font: var(--type-name); line-height: var(--leading-h3); }
@@ -90,13 +96,21 @@
   .page-contact__hours-copy .section-head { order: 1; }
   .page-contact__hours-copy .section-head__running { margin-right: 86px; }
   /* the one accent: the desk calendar on a pale arch, beside the heading */
-  .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); }
+  .page-contact__hours-arch { position: absolute; z-index: 0; right: -4px; top: -22px; width: 78px; height: 70px; border-radius: var(--radius-arch-open); background: var(--ground-tint); overflow: hidden; }
   .page-contact__calendar { position: absolute; z-index: 1; right: 3px; top: -10px; width: 64px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
   .page-contact__ledger { order: 2; position: relative; z-index: 1; margin-top: var(--space-5); }
   .page-contact__observation { order: 3; display: grid; grid-template-columns: 24px 1fr; gap: var(--space-3); margin-top: var(--space-4); }
   .page-contact__observation .icon { width: 24px; height: 24px; margin-top: 1px; color: var(--action); }
   .page-contact__observation h3 { font: var(--type-role); letter-spacing: 0; }
   .page-contact__observation p { margin-top: var(--space-1); max-width: 46ch; color: var(--ink-body); font: var(--type-notes); }
+  /* WAITING: request contact-05 (the shared timetable's own option for today's band, and its spacing under 360 px).
+     Today's row lies on a soft sage band that runs 12 px past the row's ends; the "Today" tag stays, so the row is
+     never marked by colour alone. The band is the cells' own ground plus a rounded cap at each end. */
+  .page-contact__week tr.is-today > * { background: linear-gradient(var(--ground-tint-light), var(--ground-tint-light)) 0 50% / 100% calc(100% - 6px) no-repeat; }
+  .page-contact__week tr.is-today > :first-child, .page-contact__week tr.is-today > :last-child { position: relative; }
+  .page-contact__week tr.is-today > :first-child::before, .page-contact__week tr.is-today > :last-child::after { content: ""; position: absolute; top: 3px; bottom: 3px; width: 13px; background: var(--ground-tint-light); }
+  .page-contact__week tr.is-today > :first-child::before { right: calc(100% - 1px); border-radius: var(--radius-link) 0 0 var(--radius-link); }
+  .page-contact__week tr.is-today > :last-child::after { left: calc(100% - 1px); border-radius: 0 var(--radius-link) var(--radius-link) 0; }
 
   /* ---------- 4 · the message form: a letter ---------- */
   .page-contact__message { position: relative; background: var(--ground-tint); padding: 36px 0 40px; box-shadow: inset 0 1px 0 var(--line); }
@@ -175,7 +189,7 @@
   .message-form__plain { margin-top: var(--space-5); }
 
   /* the full privacy notice: one raised row that opens in place */
-  .page-contact__notice { margin-top: var(--space-4); }
+  .page-contact__notice { margin-top: var(--space-7); }
   .page-contact__notice-open { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5); border-radius: var(--radius-row); color: var(--ink);
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised); transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move); }
   .page-contact__notice-words { display: grid; gap: 1px; }
@@ -193,7 +207,8 @@
   }
   .page-contact__notice-body { max-width: 70ch; padding: var(--space-6) var(--space-1) 0; color: var(--ink-body); }
   .page-contact__notice-date { color: var(--ink-muted); font: var(--type-meta); }
-  .page-contact__notice-part { margin-top: var(--space-6); }
+  /* space above each section is padding, so the tops of two columns stay level */
+  .page-contact__notice-part { padding-top: var(--space-6); break-inside: avoid; }
   .page-contact__notice-part h3 { font: var(--type-role); letter-spacing: 0; }
   .page-contact__notice-part p { margin-top: var(--space-2); }
   .page-contact__notice-part ul { margin-top: 6px; padding-left: var(--space-5); list-style: disc; }
@@ -205,14 +220,23 @@
   @media (max-width: 359px) {
     .page-contact__handset { width: 64px; top: -58px; right: -6px; }
     .page-contact__sign { max-width: calc(100% - 68px); }
-    .page-contact__map-label--north { display: none; }
-    .page-contact__map-label--west { top: 26%; }
+    /* the narrowest map: the road's name moves clear of the pin; the two place names drop their arrows
+       (each already stands at its own end of the road) so the pin's label fits beside "Munshi Pulia" */
+    .page-contact__map-label--road { left: 21%; }
+    .page-contact__map-label--west .icon, .page-contact__map-label--east .icon { display: none; }
+    .page-contact__map-label--pin { padding-inline: 10px; transform: translateX(calc(-100% + 32px)); }
+    /* WAITING: request contact-05. The day column keeps to 110 px (the "Today" tag sits under the day here),
+       so the two time columns stand 14 px or more apart. */
+    .page-contact__week tbody th { width: 110px; }
+    .page-contact__week td:not(:last-child) { padding-right: 14px; }
     .message-form__step-label { overflow-wrap: anywhere; }
   }
 
   /* ---------- from 480: the rows carry their digits on the right ---------- */
   @media (min-width: 480px) {
     .page-contact__frontage { width: 78%; }
+    /* room enough again: the pin's label stands centred under the pin */
+    .page-contact__map-label--pin { transform: translateX(-50%); }
     .page-contact__book, .message-form__send, .message-form__confirm, .page-contact__directions { width: auto; }
     .message-form__input--code { max-width: 264px; }
     .message-form__instead { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -236,14 +260,15 @@
     .page-contact__locator { grid-column: 1 / -1; grid-row: 1; }
     .page-contact__map { padding: 8px; }
     .page-contact__map-window { aspect-ratio: auto; height: 380px; }
-    .page-contact__map-label--north { left: var(--space-4); top: var(--space-4); }
-    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; }
-    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; }
+    .page-contact__map-label--north { display: inline-flex; left: var(--space-4); top: var(--space-4); }
+    /* from here the road is wide enough to carry the two names at its ends, like road signs */
+    .page-contact__map-label--west { left: max(var(--space-3), 1.8%); top: 40.2%; transform: translateY(-50%) rotate(5.5deg); transform-origin: left center; text-shadow: none; }
+    .page-contact__map-label--east { right: max(var(--space-3), 1.6%); top: 52.6%; transform: translateY(-50%) rotate(4.8deg); transform-origin: right center; text-shadow: none; }
     .page-contact__map-label--road { left: 31%; top: 44.1%; }
     .page-contact__map-open { right: var(--space-4); top: var(--space-4); }
     .page-contact__pin-art { width: 62px; }
     .page-contact__pin-shadow { left: -20px; top: -7px; width: 40px; height: 14px; }
-    .page-contact__map-label--pin { margin-top: var(--space-3); }
+    .page-contact__map-label--pin { margin-top: var(--space-3); transform: translateX(-50%); }
     .page-contact__frontage { grid-column: 1 / 8; grid-row: 2; width: auto; margin: -112px 0 0 var(--space-6); }
     .page-contact__address { grid-column: 8 / 13; grid-row: 2; align-self: start; margin: -72px var(--space-6) 0 0; padding: 26px 28px 28px; }
     .page-contact__directions { width: 100%; }
@@ -302,10 +327,11 @@
     .page-contact__hours-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-7); align-items: start; }
     .page-contact__hours-copy { display: block; grid-column: 1 / 6; grid-row: 1; padding-top: 104px; }
     .page-contact__hours-copy .section-head__running { margin-right: 0; }
-    /* the ledger's top rule is a shelf: the calendar stands on it, the arch rises behind */
+    /* the ledger's top rule is a shelf: the calendar stands on it, the arch rises behind. They stand over the
+       day column (the ledger's own left edge), whose head is empty, so the calendar's shadow falls on no words. */
     .page-contact__ledger { grid-column: 7 / 13; grid-row: 1; margin-top: 126px; }
-    .page-contact__hours-arch { right: 28px; top: 0; width: 176px; height: 127px; }
-    .page-contact__calendar { right: 52px; top: 16px; width: 128px; transform: rotate(4deg); filter: var(--elev-object); }
+    .page-contact__hours-arch { left: calc(50% + var(--space-7) / 2); right: auto; top: 0; width: 176px; height: 127px; }
+    .page-contact__calendar { left: calc(50% + var(--space-7) / 2 + 24px); right: auto; top: 16px; width: 128px; transform: rotate(-4deg); filter: var(--elev-object); }
     .page-contact__observation { margin-top: var(--space-8); padding-top: var(--space-5); border-top: 1px solid var(--line); max-width: 440px; }
 
     .page-contact__message-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
@@ -319,6 +345,9 @@
     .message-form__step:first-child { border-top-color: var(--line-strong); }
     .message-form__step[aria-current] { font-weight: 600; }
     .message-form__why { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+    /* the opened notice reads as a document: two columns of whole sections, a hairline between them */
+    .page-contact__notice-body { max-width: 1104px; }
+    .page-contact__notice-columns { columns: 2; column-gap: var(--space-9); column-rule: 1px solid var(--line); }
     .page-contact__pen { display: block; position: absolute; z-index: 2; left: calc(38.3% - 46px); bottom: -34px; width: 74px; height: auto; transform: rotate(38deg); filter: var(--elev-object); pointer-events: none; }
   }
 

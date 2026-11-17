@@ -109,7 +109,7 @@ test('the privacy notice holds what a notice must hold',()=>{
  const all=strings(privacyNotice.full).join('\n'),summary=privacyNotice.summary.join('\n');
  assert.equal(privacyNotice.title,footer.detailsNotice);
  assert.equal(privacyNotice.more.href,'/contact#'+privacyNotice.full.id);
- assert.ok(privacyNotice.summary.length>=5&&privacyNotice.summary.length<=6,'five or six plain lines for the dialog');
+ assert.equal(privacyNotice.summary.length,6,'six plain lines for the dialog');
  // what is taken, for a message and for a booking
  for(const item of [/name/,/email address/,/six-digit code/,/phone number/,/message/])assert.match(summary,item);
  for(const item of [/patient’s name/,/doctor, day and time/,/note for the doctor/])assert.match(summary,item);
@@ -119,7 +119,17 @@ test('the privacy notice holds what a notice must hold',()=>{
  assert.match(all,/doctors and staff/);assert.match(all,/service companies that run this website, keep its records and send its emails/);
  assert.match(all,/copied into the clinic’s own records/);
  // rights, withdrawal, children, grievance and the Board
- assert.match(all,/correct or complete them, or to delete them/);assert.match(all,/take back your permission as easily as you gave it/);
+ assert.match(all,/correct or complete them, or to delete them/);
+ // How to take permission back or have details deleted is said plainly, and nothing is promised that the clinic cannot do.
+ assert.match(all,/take back your permission at any time/);assert.doesNotMatch(all+summary,/as easily as/);
+ assert.match(all,/To take back your permission, to have your details deleted, or to make any of these requests, call .+, or write to /);
+ assert.match(summary,/take back your permission, at any time: call .+, or write to the clinic\./);
+ // what the servers receive without being typed, in the notice and in its short form
+ assert.match(all,/receive your device’s internet address and basic technical details, such as the kind of browser, when you open a page or send a form/);
+ assert.match(all,/uses the address only to limit misuse, and keeps it only in a scrambled form/);
+ assert.match(summary,/receive your device’s internet address when you open a page or send a form/);
+ // calls and chats do not pass through the website
+ assert.match(all,/does not pass through this website/);
  assert.match(all,/under 18/);assert.match(all,/parent or guardian/);
  assert.match(all,/Data Protection Board of India/);
  assert.ok(all.includes(retentionPeriod));assert.ok(all.includes(`within ${privacyAnswerTime}`));
@@ -127,7 +137,10 @@ test('the privacy notice holds what a notice must hold',()=>{
  for(const row of callRows()){assert.ok(all.includes(row.digits));assert.ok(summary.includes(row.digits));}
  assert.ok(all.includes(address));
  // no agency, tool or vendor is named
- assert.doesNotMatch(all+summary,/vercel|neon|resend|supabase|google|claude|anthropic|neuraflow|openai/i);
+ assert.doesNotMatch(all+summary,/vercel|neon|resend|supabase|google|claude|anthropic|neuraflow|openai|whatsapp|razorpay/i);
+ // the row that opens the notice has its own name: the sheet above already says "How your details are used"
+ assert.equal(privacyNotice.full.open,'Privacy notice');assert.notEqual(privacyNotice.full.open,footer.detailsNotice);
+ assert.ok(privacyNotice.full.openNote.length>10);
  const headings=privacyNotice.full.sections.map(section=>section.heading);
  assert.deepEqual(headings,['Who is responsible','What we take, and why','Who sees your details','How long we keep them','Your choices','Children','Questions and complaints','Changes to this notice']);
 });
