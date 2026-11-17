@@ -4,7 +4,7 @@ import * as words from '../../src/clinic/page-content/doctors.mjs';
 import {doctors,doctorFacts,locality} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue,certificatesFor} from '../../src/clinic/certificate-catalogue.mjs';
-import {clinicPhotos,clinicObjects,doctorAvatars,archPortraits} from '../../src/clinic/client-media.mjs';
+import {clinicPhotos,clinicObjects,doctorAvatars,archPortraits,roomCrops,aboutArt} from '../../src/clinic/client-media.mjs';
 import {registrationLine,registrationNumbers,STAND_IN_NOTE} from '../../src/clinic/standins.mjs';
 import {hero,doctorChips,doctorsSection,homeCertificates} from '../../src/clinic/page-content/home.mjs';
 import {rowById,rowAddress,treatmentRows} from '../../src/clinic/page-content/treatments.mjs';
@@ -60,24 +60,20 @@ test('photographs: the wider at-work portraits and the small faces exist, and no
 
 test('the picture beside "About the doctor": a second photograph where the clinic has one, the paper-cut picture where it has not',()=>{
  // Dr. Sanjay Gupta: his consulting room, a different photograph from his cover.
- const his=words.aboutPicture('sanjay'),room=clinicPhotos[his.photo];
- assert.ok(room&&!his.art);assert.equal(his.photo,'room-sanjay');
+ const his=words.aboutPicture('sanjay'),room=clinicPhotos[his];
+ assert.equal(his,roomCrops.sanjay);assert.ok(room);
  assert.equal(room.width/room.height,3/2);assert.ok(room.width<=444,'a room picture is never wider than 444 px');
  assert.ok(room.alt.includes(doctors.sanjay.name));
  assert.notEqual(room.src,clinicPhotos[words.workPortrait('sanjay')].src);
+ assert.match(room.src,/^\/client-photos\//);
  // Dr. Parul Gupta: every photograph of her on file is one scene, and it is on her cover.
- const hers=words.aboutPicture('parul'),art=hers.art;
- assert.ok(art&&!hers.photo);
- assert.equal(art.width/art.height,3/2);assert.equal(hers.width,art.width);assert.ok(art.width<=444);
- assert.match(art.src,/^\/clinic-assets\/womens-health-paper-illustration-\d+\.webp$/);
- assert.deepEqual(art.sources.map(source=>source.width),[480,800,1200]);
- for(const source of art.sources){
-  assert.match(source.src,/^\/clinic-assets\/womens-health-paper-illustration-\d+\.webp$/);
-  assert.ok(existsSync(new URL(`../../public${source.src}`,import.meta.url)),`${source.src} exists`);
- }
- assert.ok(art.sources.some(source=>source.src===art.src));
+ const hers=words.aboutPicture('parul'),art=clinicPhotos[hers];
+ assert.equal(hers,aboutArt.parul);assert.notEqual(hers,roomCrops.parul);assert.ok(art);
+ assert.equal(art.width/art.height,3/2);assert.ok(art.width<=444);
+ assert.match(art.src,/^\/clinic-assets\/womens-health-paper-illustration-\d+\.webp$/,'the clinic\'s own paper-cut picture, not a photograph');
+ for(const source of art.sources)assert.ok(existsSync(new URL(`../../public${source.src}`,import.meta.url)),`${source.src} exists`);
  assert.match(art.alt,/illustration/i);assert.ok(!art.alt.includes(doctors.parul.name),'the picture is not presented as a portrait of her');
- for(const photo of Object.values(clinicPhotos))assert.notEqual(photo.src,art.src);
+ assert.equal(aboutArt.sanjay,undefined,'he has a second photograph, so no picture stands in for one');
 });
 
 test('what each doctor sees patients for is the Home chips\' own list: same labels, same places on Treatments',()=>{
@@ -190,7 +186,7 @@ test('a profile: the list, the story, the certificates and the reviews',()=>{
   const year=String(doctorFacts[id].since);
   assert.ok(page.about.heading.endsWith(page.about.emphasis)&&page.about.heading.includes(year));
   assert.equal((`${page.about.heading} ${story} ${page.about.caption}`.match(new RegExp(year,'g'))||[]).length,1,`${id}: "${year}" once`);
-  assert.deepEqual(page.about.picture,words.aboutPicture(id));
+  assert.equal(page.about.picture,words.aboutPicture(id));assert.ok(Object.hasOwn(clinicPhotos,page.about.picture));
   // A photograph's caption says who and where; the paper-cut picture's says what it shows.
   assert.ok(page.about.caption.startsWith(she?doctor.role:doctor.name));
   assert.equal(page.about.bring.href,'/#visiting');

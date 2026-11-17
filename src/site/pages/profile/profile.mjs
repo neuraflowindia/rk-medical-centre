@@ -55,26 +55,14 @@ function care(words){
   +`</div></section>`;
 }
 
-/**
- * The picture beside the story, in one captioned frame for both doctors: a photograph through the
- * shared frame, or the clinic's paper-cut picture in this page's own frame of the same make.
- */
-function aboutFigure(picture,caption){
- const sizes='(min-width: 768px) 420px, 92vw';
- if(picture.photo)return photoFigure(picture.photo,{ratio:'3:2',caption,sizes});
- // WAITING: request doctors-06 — once the picture is a record the shared frame knows, this is photoFigure() too.
- return `<figure class="page-profile__art" data-enter="photo"><div class="page-profile__art-frame">${image(picture.art,{sizes})}</div>`
-  +`<figcaption class="page-profile__art-caption">${text(caption)}</figcaption></figure>`;
-}
-
 function about(words){
- const section=words.about,picture=section.picture;
- // The frame is never wider than the picture's own 1× width (444 px for Dr. Sanjay Gupta's room, 420 px for the paper-cut picture).
- const width=Number(picture.width||clinicPhotos[picture.photo].width);
+ const section=words.about;
  return `<section${attrs({class:`page-profile page-profile__about page-profile--${words.tone}`,id:section.id,'aria-labelledby':`${section.id}-title`})}><div class="wrap page-profile__about-grid">`
   +sectionHead({runningHead:section.runningHead,heading:section.heading,emphasis:section.emphasis,id:`${section.id}-title`,className:'page-profile__about-head'})
-  +`<div class="page-profile__room" style="--room:${width}px"><span class="page-profile__room-plate" aria-hidden="true"></span>`
-  +aboutFigure(picture,section.caption)+`</div>`
+  // One captioned frame for both doctors, never wider than the picture's own 1× width (444 px for
+  // Dr. Sanjay Gupta's room photograph, 420 px for the paper-cut picture on Dr. Parul Gupta's page).
+  +`<div class="page-profile__room" style="--room:${Number(clinicPhotos[section.picture].width)}px"><span class="page-profile__room-plate" aria-hidden="true"></span>`
+  +photoFigure(section.picture,{ratio:'3:2',caption:section.caption,sizes:'(min-width: 768px) 420px, 92vw'})+`</div>`
   +`<div class="page-profile__story">`
   +`<p class="page-profile__lede" data-enter style="--i:2">${text(section.lede)}</p>`
   +`<p class="page-profile__body" data-enter style="--i:3">${text(section.body)}</p>`

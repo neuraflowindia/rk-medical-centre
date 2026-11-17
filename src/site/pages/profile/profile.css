@@ -80,17 +80,6 @@
   .page-profile__room .photo-figure { position: relative; z-index: 1; }
   /* far: a plate in the doctor's tone, set off behind the picture */
   .page-profile__room-plate { position: absolute; z-index: 0; inset: 14px -12px auto 14px; aspect-ratio: 3 / 2; border-radius: var(--radius-media); background: var(--plate); }
-  /* WAITING: request doctors-06 — the paper-cut picture in this page's own frame, of the same make
-     as the shared photograph frame (paper mat, wide soft shadow, caption below). */
-  .page-profile__art { position: relative; z-index: 1; }
-  .page-profile__art-frame { padding: 5px; border-radius: var(--radius-media); background: var(--surface); box-shadow: var(--elev-photo); }
-  .page-profile__art-frame img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius-media-inner); box-shadow: 0 0 0 1px var(--line-faint); }
-  .page-profile__art-caption { padding: 14px 0 0 4px; color: var(--ink-body); font: var(--type-caption); }
-  /* it arrives as the shared frame does: it rises, grows its last few per cent and unrolls downward */
-  html[data-motion="on"] .page-profile__art[data-enter="photo"] .page-profile__art-frame {
-    clip-path: inset(0 0 calc((1 - var(--q)) * 34%) 0 round var(--radius-media));
-    translate: 0 calc((1 - var(--q)) * var(--rise-card)); scale: calc(1 - (1 - var(--q)) * var(--settle-scale)); transform-origin: 50% 0;
-  }
   .page-profile__lede { color: var(--ink); font: var(--type-lead); max-width: 34em; }
   .page-profile__body { margin-top: 14px; max-width: 60ch; }
   .page-profile__bring { margin-top: var(--space-3); }
@@ -145,8 +134,6 @@
     .page-profile__story { grid-column: 1; grid-row: 2; }
     .page-profile__room { grid-column: 2; grid-row: 2; max-width: calc(var(--room, 420px) + 16px); margin: 6px 16px 0 0; }
     .page-profile__room-plate { inset: 18px -16px auto 18px; }
-    .page-profile__art-frame { padding: 8px; }
-    .page-profile__art-caption { padding: var(--space-4) 0 0 var(--space-2); }
     .page-profile__wall { --certificate-height: 176px; --certificate-mat: 9px; }
   }
 

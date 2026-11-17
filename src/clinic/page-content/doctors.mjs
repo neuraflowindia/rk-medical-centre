@@ -11,7 +11,7 @@
 import {doctors,doctorFacts,locality,city} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificatesFor} from '../certificate-catalogue.mjs';
-import {workPortraits,roomCrops,doctorAvatars} from '../client-media.mjs';
+import {workPortraits,roomCrops,aboutArt,doctorAvatars} from '../client-media.mjs';
 import {registrationLine} from '../standins.mjs';
 import {hero,doctorChips,doctorsSection,degreesBeside} from './home.mjs';
 import {rowById} from './treatments.mjs';
@@ -41,23 +41,15 @@ export function degreesLine(id){return degreesBeside(doctors[known(id)].formal,d
 // ---- photographs ----
 /** The wider 4 : 5 "at work" portrait of a doctor (Meet the doctors, profile cover). Never shown wider than 300 px. */
 export function workPortrait(id){return workPortraits[known(id)];}
-// WAITING: request doctors-06 — this record belongs in client-media.mjs (as a photograph the
-// shared frame can show); until it is there it is written here, from the three files in public/.
-const WOMENS_HEALTH_ART=Object.freeze({
- src:'/clinic-assets/womens-health-paper-illustration-800.webp',width:420,height:280,
- alt:'A paper-cut illustration of a woman in profile, in layers of blue, green and cream paper',
- sources:Object.freeze([480,800,1200].map(width=>Object.freeze({width,src:`/clinic-assets/womens-health-paper-illustration-${width}.webp`})))
-});
 /**
- * The 3 : 2 picture beside "About the doctor", never shown wider than its own `width`.
- *   Dr. Sanjay Gupta   {photo}  a second photograph: his consulting room (a record in clinicPhotos)
- *   Dr. Parul Gupta    {art}    the clinic's paper-cut picture for women's health. The clinic holds
- *                               one photograph of her and it is on her cover, so the same scene is
- *                               not shown twice on one page; a second photograph goes here when there is one.
+ * The 3 : 2 picture beside "About the doctor": the id of a record in clinicPhotos, never shown
+ * wider than that record's own width.
+ *   Dr. Sanjay Gupta   a second photograph: his consulting room
+ *   Dr. Parul Gupta    the clinic's paper-cut picture for women's health. The clinic holds one
+ *                      photograph of her and it is on her cover, so the same scene is not shown
+ *                      twice on one page; a second photograph goes here when there is one.
  */
-export function aboutPicture(id){
- return known(id)==='parul'?Object.freeze({art:WOMENS_HEALTH_ART,width:WOMENS_HEALTH_ART.width}):Object.freeze({photo:roomCrops[id],width:null});
-}
+export function aboutPicture(id){return aboutArt[known(id)]||roomCrops[id];}
 /** A doctor's small square face (decorative: the name is always beside it). */
 export function avatarOf(id){return doctorAvatars[known(id)];}
 /**

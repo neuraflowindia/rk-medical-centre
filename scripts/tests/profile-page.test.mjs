@@ -107,28 +107,23 @@ test('what the doctor sees patients for: a small index into Treatments, each row
 
 test('about the doctor: the heading first, a framed picture with its caption, and the story',()=>{
  for(const id of doctorOrder){
-  const html=section(renderedPage(pathOf(id),'on'),'about'),words=profilePage(id).about;
+  const html=section(renderedPage(pathOf(id),'on'),'about'),words=profilePage(id).about,picture=clinicPhotos[aboutPicture(id)];
   assert.ok(html.indexOf('<h2')<html.indexOf('<img'),'the heading comes before the picture');
   assert.equal(count(html,/<img\b/g),1);assert.equal(count(html,/<figure\b/g),1);assert.equal(count(html,/<figcaption\b/g),1);
   assert.match(html,/<img[^>]*loading="lazy"/);
-  assert.match(html,/<div class="page-profile__room" style="--room:\d+px"><span class="page-profile__room-plate" aria-hidden="true"><\/span><figure/,'one frame and one tone plate for both doctors');
+  // one frame and one tone plate for both doctors: the shared photograph frame, held to the picture's own width
+  assert.ok(html.includes(`<div class="page-profile__room" style="--room:${picture.width}px"><span class="page-profile__room-plate" aria-hidden="true"></span><figure class="photo-figure photo-figure--plain photo-figure--3x2" data-enter="photo">`));
+  assert.ok(html.includes(`src="${picture.src}"`)&&html.includes(`alt="${picture.alt}"`));
+  assert.ok(html.includes(`<figcaption class="photo-figure__caption">${text(words.caption)}</figcaption>`));
   assert.ok(html.includes(`>${text(words.lede)}</p>`)&&html.includes(`>${text(words.body)}</p>`));
   assert.ok(html.includes(`href="${words.bring.href}"`)&&html.includes(text(words.bring.label)));
   assert.doesNotMatch(html,/<button|data-open-photo|aria-haspopup/,'the picture does not enlarge');
  }
- // Dr. Sanjay Gupta: a second photograph, in the shared frame, held to its own width.
- const his=section(renderedPage(pathOf('sanjay'),'on'),'about'),room=clinicPhotos[aboutPicture('sanjay').photo];
- assert.ok(his.includes(`src="${room.src}"`)&&his.includes('photo-figure--plain photo-figure--3x2'));
- assert.ok(his.includes(`<div class="page-profile__room" style="--room:${room.width}px">`));
- assert.ok(his.includes(`<figcaption class="photo-figure__caption">${text(profilePage('sanjay').about.caption)}</figcaption>`));
- // Dr. Parul Gupta: the paper-cut picture, in a frame of the same make, with its own caption.
- const hers=section(renderedPage(pathOf('parul'),'on'),'about'),art=aboutPicture('parul').art;
- assert.ok(hers.includes(`<figure class="page-profile__art" data-enter="photo"><div class="page-profile__art-frame"><img src="${art.src}"`));
- assert.ok(hers.includes(`<div class="page-profile__room" style="--room:${art.width}px">`));
- assert.ok(hers.includes(`alt="${text(art.alt)}"`)&&hers.includes(` width="${art.width}" height="${art.height}"`));
+ // Dr. Sanjay Gupta: a second photograph. Dr. Parul Gupta: the clinic's paper-cut picture, at three widths.
+ assert.equal(aboutPicture('sanjay'),roomCrops.sanjay);
+ const hers=section(renderedPage(pathOf('parul'),'on'),'about'),art=clinicPhotos[aboutPicture('parul')];
+ assert.match(art.src,/^\/clinic-assets\/womens-health-paper-illustration-/);
  for(const source of art.sources)assert.ok(hers.includes(`${source.src} ${source.width}w`));
- assert.ok(hers.includes(`<figcaption class="page-profile__art-caption">${text(profilePage('parul').about.caption)}</figcaption>`));
- assert.doesNotMatch(hers,/photo-figure/,'the shared frame\'s own markup is not copied');
  assert.equal(count(renderedPage(pathOf('parul'),'on'),/senior woman gynaecologist/g),1);
 });
 

@@ -172,8 +172,7 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
   assert.deepEqual(used.filter(name=>!tokens.has(name)&&!own.has(name)&&!fromMotion.has(name)),[],`${sheet} uses a token that does not exist`);
  }
  assert.match(read('motion/motion.css'),/--q:/,'the entrance progress still comes from the motion styles');
- // Meet the doctors floats its two instruments with the site's own float; the profile's paper-cut picture arrives as a photograph does.
+ // Meet the doctors floats its two instruments with the site's own float.
  assert.match(read('motion/motion.css'),/@keyframes motion-float\b/);assert.match(read('pages/doctors/doctors.css'),/animation: motion-float var\(--loop-float\)/);
- assert.match(read('motion/motion.css'),/\[data-enter="photo"\] \.photo-figure__frame/);assert.match(read('pages/profile/profile.css'),/\.page-profile__art\[data-enter="photo"\] \.page-profile__art-frame/);
  assert.match(read('pages/profile/profile.mjs'),/style="--room:\$\{/,'the profile template still sets the room photograph\'s width');
 });
