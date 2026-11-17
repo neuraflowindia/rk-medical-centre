@@ -145,7 +145,7 @@
        is never narrower than the heading's longer line (8.7 times its size); the frames take what
        is left, up to their own limit. Each plate's band and a little air stand between a frame
        and the heading. */
-    .page-doctors__opening { padding: 76px 0 76px; }
+    .page-doctors__opening { --dome: 116px; --stage-foot: 76px; padding: 76px 0 var(--stage-foot); }
     .page-doctors__stage { --frame: 200px; --band: 40px; --crown: 30px; --inset: 22px; --air: 22px;
       grid-template-columns: minmax(0, var(--frame)) minmax(calc(var(--size-h1) * 8.7), 1fr) minmax(0, var(--frame)); gap: 0 calc(var(--band) + var(--air)); align-items: start; }
     .page-doctors__pair { display: contents; }
@@ -157,14 +157,20 @@
     .page-doctors__sitter--sanjay .page-doctors__caption, .page-doctors__sitter--parul .page-doctors__caption { grid-column: auto; grid-row: auto; align-self: start; padding: 0 var(--space-2); white-space: nowrap; }
     .page-doctors__sitter--sanjay .page-doctors__caption { justify-items: start; text-align: left; }
     .page-doctors__sitter--parul .page-doctors__caption { justify-items: end; text-align: right; }
-    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 44px; }
-    .page-doctors__jump { display: block; margin-top: var(--space-6); }
+    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 64px; }
+    /* the next step stands on the crown of the dome below (see .page-doctors__choose::before): the way into the next section */
+    .page-doctors__jump { display: block; position: absolute; z-index: 3; left: 50%; bottom: calc(var(--dome) - var(--stage-foot) - var(--tap) / 2); translate: -50% 0; }
     /* near: each doctor's own instrument rests against the foot of the frame, on the heading's side */
     .page-doctors__instrument { display: block; position: absolute; z-index: 2; bottom: -20px; height: auto; max-width: none; filter: var(--elev-object-strong); pointer-events: none; }
     .page-doctors__sitter--sanjay .page-doctors__instrument { right: calc(-1 * var(--band) - 6px); width: 88px; rotate: 9deg; }
     .page-doctors__sitter--parul .page-doctors__instrument { left: calc(-1 * var(--band) - 8px); width: 108px; rotate: -7deg; }
     html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__instrument { animation: page-doctors-float calc(var(--loop-light) / 2) var(--ease-drift) calc(var(--loop-light-start) / 2) infinite alternate; }
     html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__sitter--parul .page-doctors__instrument { animation-direction: alternate-reverse; }
+
+    /* far, between the two doctors: the next section's ground wells up as a low dome, under the
+       button that leads to it */
+    .page-doctors__choose::before { content: ""; position: absolute; z-index: 0; left: 50%; bottom: calc(100% - 1px); width: min(460px, 38vw); height: 117px; translate: -50% 0;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: linear-gradient(180deg, var(--ground-tint-light), var(--ground-tint)); box-shadow: inset 0 1px 0 var(--line); pointer-events: none; }
 
     .page-doctors__leaf { padding: 44px 48px 44px; }
     .page-doctors__leaf-head { column-gap: 18px; }
