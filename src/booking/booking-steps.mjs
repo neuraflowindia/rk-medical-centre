@@ -154,6 +154,19 @@ export const words=Object.freeze({
   otherTitle:'Your saved booking could not be opened',
   other:'Please call the clinic before booking again.'
  }),
+ // The appointment PDF. The package offers its two links for five seconds at most, and withdraws
+ // them at its next routine check, while its own sentence about them stays. The page therefore
+ // starts the download itself after the visitor's press and says what has happened in its own words.
+ pdf:Object.freeze({
+  // (not "another copy": the package's line about email copies, "No copy requested", stands beside these)
+  done:'Your PDF has been downloaded. You can download it again whenever you need it.',
+  opened:'Your PDF has been opened in a new tab. You can also download it whenever you need it.',
+  ready:'Your PDF is ready. Press Download PDF or Open PDF.',
+  closed:'The PDF was not downloaded. Press Download appointment PDF again to get it.',
+  // "Find your booking" only: the package's routine check fell inside the making of the file and left
+  // both of its buttons switched off (a fault of the package, noted for its next version)
+  stuck:'The PDF could not be prepared this time. Press Back to my bookings, open the booking again and press Download appointment PDF.'
+ }),
  receipt:Object.freeze({
   // The same five states the engine's own receipt names.
   titles:Object.freeze({confirmed:'Your appointment is confirmed',held:'Your time is reserved',expired:'This reservation has ended',
@@ -451,6 +464,98 @@ export function askFor({step,missing='',timesShown=true}={}){
 export function liftAboveBar({box,bar,air=16}={}){
  if(!box||!bar||Math.min(box.right,bar.right)-Math.max(box.left,bar.left)<=0)return 0;
  return Math.max(0,Math.round(box.bottom+air-bar.top));
+}
+
+// ---------- the appointment PDF: one press gives the file ----------
+//
+// The package's PDF action has two presses ("Download appointment PDF", then "Download PDF"), and
+// its second button lasts five seconds at most: it is also withdrawn at the engine's next routine
+// check of the booking state, which may come a fraction of a second later, while the sentence
+// "Your PDF is ready. Use Download PDF or Open PDF." stays on screen. Nothing of that can be changed
+// in the package. So the page helps from outside, and only after the visitor's own press:
+//   - for PDF_HELP_MS after that press, the moment the package offers its download link the page
+//     presses it, so one press gives the file;
+//   - if the routine check cuts the preparation short, the page asks the package once more;
+//   - the package's own sentence is covered, and the page says what has happened in its own line.
+// One thing the page cannot repair from outside: under "Find your booking", a routine check that
+// falls inside the making of the file can leave the package's "Refresh details" and "Download
+// appointment PDF" switched off for good. The page then says so, and names the way out.
+
+/** How long after the visitor's press the page may act for them (the time a browser counts a press as theirs). */
+export const PDF_HELP_MS=5000;
+/** A routine check that began inside those five seconds has ended by this much later. */
+export const PDF_CURSOR_GRACE_MS=1000;
+/** No routine check keeps the package's buttons switched off for this long: after it, they are off for good. */
+export const PDF_STUCK_MS=4000;
+/** The package's PDF button, by its words ("Download appointment PDF", "Refresh PDF", "Preparing PDF…"). */
+export const PDF_BUTTON=/PDF/u;
+/** … while it is making the file. */
+export const PDF_BUSY=/^Preparing/u;
+/** The package's sentence about its two links, which outlives them. */
+export const PDF_SENTENCE=/^Your PDF is ready\./u;
+/** Nothing asked. */
+export const pdfIdle=Object.freeze({asked:false,armedUntil:0,stale:'',began:false,offered:false,auto:false,taken:'',retried:false,deadSince:null});
+/** The visitor pressed the package's PDF button. `stale` is a download link already on screen from an earlier press. */
+export function pdfPressed(now,stale=''){
+ return Object.freeze({...pdfIdle,asked:true,armedUntil:now+PDF_HELP_MS,stale:String(stale||'')});
+}
+/**
+ * The package's part of the screen changed.
+ *   view  {href (its download link's address, "" when there is none), busy (it is making the file),
+ *          ready (its PDF button can be pressed), dead (a found booking whose every button but
+ *          "Back to my bookings" is switched off)}
+ * Returns the new state and what the page does now: 'download' (press the package's download link),
+ * 'retry' (press its PDF button once more: the routine check cut the first try short) or ''.
+ */
+export function pdfSeen(state,view,now){
+ if(!state.asked)return Object.freeze({state,act:''});
+ const armed=now<=state.armedUntil,fresh=!!view.href&&view.href!==state.stale;
+ // since when the found booking's buttons have all been off with nothing being made (null: they are not)
+ const deadSince=view.dead&&!view.busy?state.deadSince??now:null;
+ let next=deadSince===state.deadSince?state:{...state,deadSince},act='';
+ if(fresh){
+  if(armed&&!next.auto&&!next.taken)act='download';
+  if(!next.offered||act)next={...next,offered:true,auto:next.auto||act==='download'};
+ }else if(view.busy){
+  if(!next.began)next={...next,began:true};
+ }else if(next.began&&!next.offered&&!next.retried&&armed&&view.ready){
+  next={...next,began:false,retried:true};act='retry';
+ }
+ return Object.freeze({state:next===state?state:Object.freeze(next),act});
+}
+/** A press on one of the package's two links went through: 'saved' (Download PDF) or 'opened' (Open PDF). */
+export function pdfTook(state,kind){
+ return state.asked&&(kind==='saved'||kind==='opened')?Object.freeze({...state,taken:state.taken==='saved'?'saved':kind}):state;
+}
+/** Which of the page's own lines is shown: a key of `words.pdf`, or "" for none. */
+export function pdfLine(state,view,now=0){
+ if(!state.asked)return '';
+ if(state.taken==='saved')return 'done';
+ if(state.taken==='opened')return 'opened';
+ if(view.href)return 'ready';
+ if(state.offered)return 'closed';
+ // nothing came, and the package's buttons have been off for longer than any routine check lasts
+ return state.began&&!view.busy&&!!view.dead&&state.deadSince!==null&&now-state.deadSince>PDF_STUCK_MS?'stuck':'';
+}
+/**
+ * From the press until the package answers, its sentence about the two links is expected: it is
+ * covered before it arrives, so that it is never read out. (Afterwards it is covered for what it says.)
+ */
+export function pdfWaiting(state){
+ return state.asked&&!state.offered;
+}
+/** While the page may still ask once more, the package's own "could not be prepared" is not shown. */
+export function pdfHolding(state,now){
+ return state.asked&&!state.offered&&!state.retried&&now<=state.armedUntil;
+}
+/**
+ * The package switches its PDF button off while it makes the file and during its routine check, and
+ * a browser then drops the cursor from it. For this long after the visitor's press the page gives
+ * the cursor back to that button, so a person using the keyboard ends where they pressed. Later the
+ * page leaves the cursor alone: it would otherwise name the button aloud every five seconds.
+ */
+export function pdfKeepsCursor(state,now){
+ return state.asked&&now<=state.armedUntil+PDF_CURSOR_GRACE_MS;
 }
 
 // ---------- Back, Forward and refresh ----------

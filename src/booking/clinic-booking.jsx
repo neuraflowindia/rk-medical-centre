@@ -2,6 +2,7 @@
 // Every booking decision stays in the sealed package's coordinator (useBooking); this file only
 // draws its state. Words and step rules live in booking-steps.mjs so they can be tested.
 import React, {useEffect, useId, useRef, useState, useSyncExternalStore} from 'react';
+import {createPortal} from 'react-dom';
 import {createRoot} from 'react-dom/client';
 import {createUseBooking} from '../../appointment-system/browser/booking/index.mjs';
 import {productState} from '../clinic/product-state.mjs';
@@ -17,7 +18,9 @@ import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, 
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
   readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
-  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor, FIRST_TIMES, blockedWords} from './booking-steps.mjs';
+  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor, FIRST_TIMES, blockedWords,
+  PDF_HELP_MS, PDF_CURSOR_GRACE_MS, PDF_STUCK_MS, PDF_BUTTON, PDF_BUSY, PDF_SENTENCE, pdfIdle, pdfPressed, pdfSeen, pdfTook, pdfLine, pdfHolding, pdfWaiting,
+  pdfKeepsCursor} from './booking-steps.mjs';
 
 const classes = (...names) => names.filter(Boolean).join(' ');
 
@@ -52,6 +55,81 @@ function dropDraft() { clearTimeout(draftClock); clearDraft(tabStorage); }
 
 function Icon({name}) {
   return <svg className="icon" aria-hidden="true" focusable="false"><use href={'#i-' + name}/></svg>;
+}
+
+/**
+ * Around the package's PDF action (on the appointment card and under "Find your booking"): one
+ * press gives the file. The package offers its download link for five seconds at most and takes it
+ * away at its next routine check, while its sentence about the link stays; nothing of that can be
+ * changed in the package. So, armed only by the visitor's own press and only for a few seconds,
+ * this wrapper presses the package's download link the moment it appears, asks once more if the
+ * routine check cut the preparation short, covers the package's sentence (the stylesheet, through
+ * the attributes set here) and says what has happened in one line of its own, placed where the
+ * package's sentence stood. That line is on the page from the start, empty, so that a screen
+ * reader says its words once, when they arrive. The cursor is moved only to give it back to the
+ * button the visitor pressed, which loses it while the package has that button switched off, and
+ * only if the visitor has not gone elsewhere. booking-steps.mjs decides; this only reads the
+ * package's part of the screen and acts.
+ */
+function PdfHelp({className, id, children}) {
+  const wrapper = useRef(null), help = useRef(pdfIdle), timers = useRef([]), watch = useRef({at: 0, id: 0}), pressed = useRef(null), row = useRef(null), read = useRef(null);
+  const [shown, setShown] = useState({line: '', waiting: false, covered: false, hold: false, slot: null});
+  read.current = () => {
+    const node = wrapper.current; if (!node) return;
+    const slot = node.querySelector('.abs-receipt-actions');
+    if (slot !== row.current) { row.current = slot; help.current = pdfIdle; pressed.current = null; } // another booking's row: nothing was asked of it
+    const buttons = slot ? [...slot.querySelectorAll('button')] : [], back = buttons.find(item => item.matches('.abs-lookup-back'));
+    const button = buttons.find(item => PDF_BUTTON.test(item.textContent)) || null;
+    const link = slot?.querySelector('a.abs-download[download][href]') || null;
+    const sentence = slot ? [...slot.children].find(item => item.matches('p[role="status"]:not(.booking-pdf-line)')) : null;
+    const view = {href: link?.getAttribute('href') || '', busy: !!button && PDF_BUSY.test(button.textContent), ready: !!button && !button.disabled,
+      dead: !!back && buttons.every(item => item === back || item.disabled)};
+    const now = performance.now(), next = pdfSeen(help.current, view, now);
+    help.current = next.state;
+    if (next.act === 'download') link.click(); // the click handler below records that it went through
+    else if (next.act === 'retry') button.click();
+    // the button the visitor pressed lost the cursor while the package had it switched off: give it back
+    const kept = pressed.current, cursor = document.activeElement;
+    if (kept && (!kept.isConnected || !pdfKeepsCursor(help.current, now) || cursor !== kept && cursor !== document.body)) pressed.current = null;
+    else if (kept && cursor === document.body && !kept.disabled) kept.focus({preventScroll: true});
+    const state = help.current, line = pdfLine(state, view, now), hold = pdfHolding(state, now), covered = !!sentence && PDF_SENTENCE.test(sentence.textContent);
+    // buttons that are all off are looked at once more when that has lasted longer than a routine check
+    const lookAt = state.deadSince === null || line ? 0 : state.deadSince + PDF_STUCK_MS;
+    if (lookAt !== watch.current.at) { clearTimeout(watch.current.id); watch.current = {at: lookAt, id: lookAt ? setTimeout(() => read.current(), Math.max(0, lookAt - now) + 60) : 0}; }
+    const waiting = pdfWaiting(state);
+    setShown(old => old.line === line && old.waiting === waiting && old.covered === covered && old.hold === hold && old.slot === slot ? old : {line, waiting, covered, hold, slot});
+  };
+  useEffect(() => {
+    const watcher = new MutationObserver(() => read.current());
+    watcher.observe(wrapper.current, {subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['href', 'disabled']});
+    // a press anywhere else means the visitor has moved on: the cursor is theirs
+    const elsewhere = event => { if (pressed.current && !pressed.current.contains(event.target)) pressed.current = null; };
+    document.addEventListener('pointerdown', elsewhere, true);
+    read.current();
+    return () => { watcher.disconnect(); document.removeEventListener('pointerdown', elsewhere, true); timers.current.forEach(clearTimeout); clearTimeout(watch.current.id); };
+  }, []);
+  // Only the visitor's own press arms the help (the page's own second try is not one); any other button of the row ends it.
+  const arm = event => {
+    const button = event.target.closest?.('.abs-receipt-actions button');
+    if (!button || !event.isTrusted) return;
+    const own = PDF_BUTTON.test(button.textContent);
+    help.current = own ? pdfPressed(performance.now(), wrapper.current.querySelector('.abs-receipt-actions a.abs-download[download]')?.getAttribute('href')) : pdfIdle;
+    pressed.current = own && document.activeElement === button ? button : null; // only a cursor that was there is given back
+    timers.current.forEach(clearTimeout);
+    timers.current = own ? [PDF_HELP_MS, PDF_HELP_MS + PDF_CURSOR_GRACE_MS].map(wait => setTimeout(() => read.current(), wait + 60)) : [];
+    read.current();
+  };
+  const taken = event => {
+    const link = event.target.closest?.('.abs-receipt-actions a.abs-download');
+    if (!link || event.isDefaultPrevented()) return; // the package refuses a link that is no longer good
+    help.current = pdfTook(help.current, link.hasAttribute('download') ? 'saved' : 'opened');
+    if (event.isTrusted) read.current();
+  };
+  return <div className={className} id={id} ref={wrapper} onClickCapture={arm} onClick={taken}
+    data-pdf-waiting={shown.waiting ? '' : undefined} data-pdf-covered={shown.covered ? '' : undefined} data-pdf-hold={shown.hold ? '' : undefined}>
+    {children}
+    {shown.slot && createPortal(<p className={classes('booking-pdf-line', !shown.line && 'visually-hidden')} role="status">{shown.line ? words.pdf[shown.line] : ''}</p>, shown.slot)}
+  </div>;
 }
 
 /** Icon and words; `calm` is for news that is not a fault. */
@@ -520,13 +598,13 @@ function Booking({draft = {}}) {
           <img className="appointment-ticket__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" decoding="async"/>
           <AppointmentCard receipt={r} titleRef={title} id={id + 'card'}/>
           <div className="appointment-card__tear" aria-hidden="true"/>
-          <div className={classes('booking-record', record && 'is-open')} id={id + 'record'}>
+          <PdfHelp className={classes('booking-record', record && 'is-open')} id={id + 'record'}>
             <ReceiptFields flow={flow} showTitle={false}/>
             <button type="button" className="text-link booking-record__toggle" aria-expanded={record} aria-controls={id + 'record'} onClick={() => setRecord(open => !open)}>
               <span>{record ? words.receipt.record.hide : words.receipt.record.show}</span><Icon name="down"/></button>
             {/* a confirmed visit needs no re-reading: the engine's "Refresh details" sits with the full record */}
             {settled && record && refresh}
-          </div>
+          </PdfHelp>
         </div>
         <div className="booking-receipt__more">
           {can('resume_payment') && <button type="button" className="button button--main" onClick={() => act(flow.resume)}><span className="button__label">{words.receipt.resume}</span></button>}
@@ -753,6 +831,6 @@ export const mountBooking = (node, {draft, signal} = {}) => mount(node, <Booking
  */
 function FindBooking() {
   const answered = event => { if (event.target.matches?.('.abs-lookup-results > h2')) event.target.scrollIntoView({block: 'start'}); };
-  return <div className="clinic-booking clinic-booking--find" onFocus={answered}><BookingDetailsFields/><ClinicContact bookingHelp/></div>;
+  return <div className="clinic-booking clinic-booking--find" onFocus={answered}><PdfHelp className="booking-find"><BookingDetailsFields/></PdfHelp><ClinicContact bookingHelp/></div>;
 }
 export const mountBookingDetails = (node, {signal} = {}) => mount(node, <FindBooking/>, signal);
