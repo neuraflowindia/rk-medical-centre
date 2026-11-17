@@ -11,7 +11,7 @@ import {arrivalFor,rowById,rowIds,showingLabel} from '../../../clinic/page-conte
 /** From this width the open row's panel stands beside the index (the stylesheet's own breakpoint). */
 export const PAIRED_FROM=1024;
 /** Space kept clear under the header, and above the lower edge of the screen, when a row is brought into view. */
-export const CLEARANCE=Object.freeze({top:12,bottom:16,bar:32});
+export const CLEARANCE=Object.freeze({top:12,bottom:16,bar:24});
 
 /** Is the panel beside the index at this window width? */
 export function paired(width){return Number.isFinite(width)&&width>=PAIRED_FROM;}
@@ -42,7 +42,7 @@ export function startingRow({arrival=null,drawn=null,beside=false}){
  *   rowTop          the opened row's top edge
  *   panelBottom     the lower edge of its panel
  *   viewportHeight  the screen's height
- *   topLine         the lowest point the header covers, plus a little air
+ *   topLine         the lowest point the header covers right now (nothing while it is tucked away), plus a little air
  *   bottomReserve   what the lower edge of the screen hides (the phone action bar), plus a little air
  * A row hidden under the header comes down to the top line. Otherwise the page moves up only as
  * far as the panel needs, and never so far that the row itself would go under the header.
@@ -64,6 +64,12 @@ export function besideScroll({panelTop,stickyLine}){
  if(![panelTop,stickyLine].every(Number.isFinite))return 0;
  return panelTop<stickyLine-1?Math.round(panelTop-stickyLine):0;
 }
+
+/**
+ * The lowest point of the screen the site header covers (pure): its lower edge while it is shown,
+ * nothing while it is tucked away above the screen (phones hide it on the way down the page).
+ */
+export function headerCover(bottom){return Number.isFinite(bottom)?Math.max(0,Math.round(bottom)):0;}
 
 /** The address of the page with a row open ("/treatment#thyroid") or with none ("/treatment"). */
 export function addressFor(pathname,row){return row?`${pathname}#${row}`:pathname;}
@@ -105,7 +111,7 @@ export function bindTreatments(root,{signal,ctx,services,windowObject=globalThis
   const header=documentObject.querySelector('.site-header'),bar=documentObject.querySelector('[data-action-bar]');
   const barShown=!!bar&&windowObject.getComputedStyle(bar).display!=='none';
   const by=revealScroll({rowTop:topOf(entry.row),panelBottom:entry.panel.getBoundingClientRect().bottom,viewportHeight:windowObject.innerHeight,
-   topLine:(header?.offsetHeight||0)+CLEARANCE.top,bottomReserve:barShown?bar.offsetHeight+CLEARANCE.bar:CLEARANCE.bottom});
+   topLine:headerCover(header?.getBoundingClientRect().bottom)+CLEARANCE.top,bottomReserve:barShown?bar.offsetHeight+CLEARANCE.bar:CLEARANCE.bottom});
   if(by)windowObject.scrollBy({top:by,left:0,behavior:motionAllowed()?'smooth':'instant'});
   return by;
  }
@@ -135,6 +141,8 @@ export function bindTreatments(root,{signal,ctx,services,windowObject=globalThis
    if(Math.abs(moved)>.5)windowObject.scrollBy({top:moved,left:0,behavior:'instant'});
   }
   history.replaceState(history.state,'',addressFor(location.pathname,next));
+  // The page below the row has moved: parts still waiting to enter are measured again.
+  services?.motion?.remeasure?.();
   if(next){
    services?.announce?.(showingLabel(rowById(next).title));
    if(side)revealBeside(next);else reveal(next);

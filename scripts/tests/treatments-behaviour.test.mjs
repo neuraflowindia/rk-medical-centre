@@ -2,7 +2,7 @@
 // stand-in page that lays its rows out the way the real one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {bindTreatments,paired,nextOpen,startingRow,revealScroll,besideScroll,addressFor,arrivedByQuery,PAIRED_FROM,CLEARANCE} from '../../src/site/pages/treatments/treatments.behaviour.mjs';
+import {bindTreatments,paired,nextOpen,startingRow,revealScroll,besideScroll,headerCover,addressFor,arrivedByQuery,PAIRED_FROM,CLEARANCE} from '../../src/site/pages/treatments/treatments.behaviour.mjs';
 import {rowIds,groupIds,rowById} from '../../src/clinic/page-content/treatments.mjs';
 
 // ---- decisions ----
@@ -58,6 +58,12 @@ test('beside the index the page moves only when the end of the index has carried
  assert.equal(besideScroll({panelTop:10,stickyLine:NaN}),0);
 });
 
+test('the header covers the top of the screen only while it is shown',()=>{
+ assert.equal(headerCover(56),56);assert.equal(headerCover(55.6),56);
+ assert.equal(headerCover(-1.12),0);assert.equal(headerCover(0),0);
+ assert.equal(headerCover(undefined),0);assert.equal(headerCover(NaN),0);
+});
+
 test('the address of a row, and which arrivals are tidied into one',()=>{
  assert.equal(addressFor('/treatment','thyroid'),'/treatment#thyroid');
  assert.equal(addressFor('/treatment',null),'/treatment');
@@ -78,8 +84,8 @@ const ROW=90,PANEL=520,FIRST=400;
  * 520 px under it (in place) or stands at a fixed line (beside the index). Positions are measured
  * from the top of the screen, so scrolling moves them.
  */
-function standIn({width=390,height=844,search='',hash='',drawn=null,header=56,bar=true,motion=true,media=true,panelLine=null}={}){
- const state={scrollY:0,scrolls:[],replaced:[],announced:[],frames:[],listeners:{},mediaListeners:[],focused:null,intoView:[]};
+function standIn({width=390,height=844,search='',hash='',drawn=null,header=56,headerAway=false,bar=true,motion=true,media=true,panelLine=null}={}){
+ const state={scrollY:0,scrolls:[],replaced:[],announced:[],frames:[],listeners:{},mediaListeners:[],focused:null,intoView:[],remeasured:0};
  const beside=()=>state.width>=1024;
  state.width=width;
  const element=(extra={})=>{
@@ -110,7 +116,8 @@ function standIn({width=390,height=844,search='',hash='',drawn=null,header=56,ba
   querySelectorAll:selector=>selector==='[data-topic]'?[...items.values()].map(entry=>entry.item):[],
   addEventListener:(type,listener,options)=>{state.listeners[type]=listener;state.listenerOptions=options;}
  });
- const headerElement={offsetHeight:header},barElement={offsetHeight:64,style:{display:bar?'grid':'none'}};
+ // a header that is tucked away keeps its height but sits just above the screen
+ const headerElement={offsetHeight:header,getBoundingClientRect:()=>({bottom:headerAway?-1.12:header})},barElement={offsetHeight:64,style:{display:bar?'grid':'none'}};
  const windowObject={
   get innerWidth(){return state.width;},innerHeight:height,
   document:{querySelector:selector=>selector==='.site-header'?(header?headerElement:null):selector==='[data-action-bar]'?barElement:null,
@@ -122,7 +129,7 @@ function standIn({width=390,height=844,search='',hash='',drawn=null,header=56,ba
   scrollBy:options=>{state.scrolls.push(options);state.scrollY+=options.top;},
   requestAnimationFrame:callback=>state.frames.push(callback)
  };
- const services={motion:{allowed:()=>motion},announce:words=>state.announced.push(words)};
+ const services={motion:{allowed:()=>motion,remeasure:()=>{state.remeasured++;}},announce:words=>state.announced.push(words)};
  const root={querySelector:selector=>selector==='[data-topics]'?index:null};
  const click=(id,extra={})=>{
   const event={target:{closest:selector=>selector==='[data-topic-row]'&&id?items.get(id).row:null},defaultPrevented:false,button:0,prevented:false,preventDefault(){this.prevented=true;},...extra};
@@ -162,9 +169,11 @@ test('a tap opens the row in place, announces it, puts it in the address and sho
  assert.equal(page.items.get('fever-infections').item.hasAttribute('data-arriving'),true);
  assert.deepEqual(page.state.announced,['Showing '+rowById('fever-infections').title]);
  assert.deepEqual(page.state.replaced,[{historyState:{key:7},address:'/treatment#fever-infections'}]);
- // row at 670, panel to 1280; the screen shows to 844 - (64 + 32): the page moves up by 532
+ // row at 670, panel to 1280; the screen shows to 844 - (64 + 24): the page moves up by 524
+ assert.equal(CLEARANCE.bar,24);
  assert.deepEqual(page.state.scrolls,[{top:1280-(844-64-CLEARANCE.bar),left:0,behavior:'smooth'}]);
- assert.equal(page.rowTop('fever-infections'),670-532);
+ assert.equal(page.rowTop('fever-infections'),670-524);
+ assert.equal(page.state.remeasured,1,'parts waiting to enter are measured again after the page has moved');
 });
 
 test('opening a row below the open one keeps the tapped row under the finger, then reveals its panel',()=>{
@@ -194,6 +203,18 @@ test('with motion paused the page moves at once; without the phone bar it keeps 
  page.click('thyroid');
  // row at 580, panel to 1190, screen to 844 - 16
  assert.deepEqual(page.state.scrolls,[{top:1190-(844-CLEARANCE.bottom),left:0,behavior:'instant'}]);
+});
+
+test('a long panel on a small phone: the row stops under the header while it is shown, and goes to the top once it is tucked away',()=>{
+ // 320 x 740: the panel (520) and its row (90) cannot both fit between the header and the bar
+ const shown=standIn({width:320,height:740});bind(shown);
+ shown.click('general-health');
+ assert.equal(shown.rowTop('general-health'),56+CLEARANCE.top,'the row stays clear of the header');
+ const away=standIn({width:320,height:740,headerAway:true});bind(away);
+ away.click('general-health');
+ // row at 760, panel to 1370, the screen shows to 740 - 88 = 652: it needs 718 and has 760 - 12 = 748 to give
+ assert.deepEqual(away.state.scrolls,[{top:718,left:0,behavior:'smooth'}]);
+ assert.equal(away.rowTop('general-health'),42);
 });
 
 test('a row whose panel is already in view moves nothing',()=>{

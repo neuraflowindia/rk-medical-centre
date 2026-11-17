@@ -31,12 +31,17 @@ function guideRow(){
   +`</a>`;
 }
 
-/** The open row's panel: the large object over its arch, three labelled lines, and the doctor strip. */
+/**
+ * The open row's panel: the large object over its arch, three labelled lines, and the doctor strip.
+ * Its first element is a marker that is on screen only while the row is open: on phones the motion
+ * module runs it as the index's one slow mover, and the open row's object floats while it runs.
+ */
 function panel(row,group,ctx){
  const ids=topicIds(row.id);
  const facts=[[words.labels.what,`<dd>${text(row.what)}</dd>`],[words.labels.when,`<dd>${text(row.when)}</dd>`],
   [words.labels.bring,`<dd><ul class="page-treatments__bring">${row.bring.map(item=>`<li>${icon('check')}<span>${text(item)}</span></li>`).join('')}</ul></dd>`]];
  return `<div class="page-treatments__panel-place"><div${attrs({class:'page-treatments__panel',id:ids.panel,role:'region','aria-labelledby':ids.title,'data-topic-panel':true})}>`
+  +`<span class="page-treatments__alive" aria-hidden="true" data-ambient></span>`
   +`<div class="page-treatments__stage" aria-hidden="true"><span class="page-treatments__arch" data-ambient><span class="page-treatments__shaft"></span></span>${object(row.object,'page-treatments__stage-object')}</div>`
   // The row beside or above the panel already names it for everyone; this larger name is for the eye only.
   +`<p class="page-treatments__panel-title" aria-hidden="true">${text(row.title)}</p>`
@@ -75,11 +80,12 @@ export function treatments(ctx){
   +guideRow()+`</div></div></section>`
   +`<section${attrs({class:'page-treatments__index','aria-label':words.indexLabel,'data-topics':true})}><div class="wrap"><div class="page-treatments__groups">`
   +words.groups.map(group=>groupOf(group,ctx,openRow)).join('')
-  +`</div></div></section></div>`
-  +`<section class="page-treatments page-treatments__doctors" aria-labelledby="treatments-doctors-title">`
+  +`</div></div></section>`
+  // The two doctors sit inside the same block as the index: on laptops the open row's panel travels on beside them.
+  +`<section class="page-treatments__doctors" aria-labelledby="treatments-doctors-title">`
   +`<div class="page-treatments__doctors-head">${sectionHead({heading:words.doctors.heading,emphasis:words.doctors.emphasis,id:'treatments-doctors-title'})}</div>`
   +`<div class="page-treatments__doctors-cards">${words.groups.map(group=>
    `<div${attrs({class:classes('page-treatments__doctor-slot',`page-treatments__doctor-slot--${group.tone}`),'data-enter':'card'})}>${doctorMiniCard(group.doctor,ctx,{actions:false})}</div>`).join('')}</div>`
-  +`</section>`
+  +`</section></div>`
   +closing(ctx);
 }
