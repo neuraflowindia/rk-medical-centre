@@ -12,11 +12,17 @@ import {bindDoctors} from '../pages/doctors/doctors.behaviour.mjs';
 import {profile} from '../pages/profile/profile.mjs';
 import {bindProfile} from '../pages/profile/profile.behaviour.mjs';
 import {contact} from '../pages/contact/contact.mjs';
-import {bindContact} from '../pages/contact/contact.behaviour.mjs';
+import {behaviourLater,formCouldNotOpen} from './later.mjs';
 import {booking} from '../pages/booking/booking.mjs';
 import {bindBooking} from '../pages/booking/booking.behaviour.mjs';
 import {bookingDetails} from '../pages/booking-details/booking-details.mjs';
 import {bindBookingDetails} from '../pages/booking-details/booking-details.behaviour.mjs';
+
+/**
+ * Contact's behaviour brings the message form's engine (about a seventh of the public script), so
+ * it is fetched when Contact is shown, not with every page. Its template is listed like the others.
+ */
+const bindContact=behaviourLater(()=>import('../pages/contact/contact.behaviour.mjs'),module=>module.bindContact,formCouldNotOpen);
 
 /**
  * `chrome`: 'full' = header with links, footer and the phone action bar; 'slim' = the booking

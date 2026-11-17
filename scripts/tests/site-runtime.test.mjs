@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {tidyPath,resolveAddress,isBookingAddress,linkAction,createScrollMemory,addressAliases} from '../../src/site/runtime/router.mjs';
-import {knownPaths} from '../../src/site/runtime/registry.mjs';
+import {knownPaths,pages} from '../../src/site/runtime/registry.mjs';
+import {behaviourLater,formCouldNotOpen,paintFormOpening} from '../../src/site/runtime/later.mjs';
+import {messageForm} from '../../src/clinic/page-content/contact.mjs';
+import {renderedPage} from './support/page-contract.mjs';
 import {createView,watchPictures,releaseControls} from '../../src/site/runtime/render.mjs';
 import {entryState,syncEntries,syncBookingState,bindBookingState,ENTRY_SELECTOR} from '../../src/site/runtime/booking-state.mjs';
 import {createIsland,unavailableState} from '../../src/site/runtime/booking-island.mjs';
@@ -154,4 +157,46 @@ test('pictures that fail leave their frame; locked controls are released except 
  releaseControls(page.document.body);
  assert.equal(page.document.getElementById('freed').disabled,false);assert.equal(page.document.getElementById('kept').disabled,true);
  assert.equal(typeof bindClock,'function');assert.ok(Object.isFrozen(partBehaviours)&&partBehaviours.length>=10);
+});
+
+test('Contact\'s behaviour is fetched when Contact is shown; a page left meanwhile is not bound',async()=>{
+ const calls=[],module={bindThing:(root,context)=>calls.push([root,context])};
+ const bind=behaviourLater(()=>Promise.resolve(module),found=>found.bindThing,()=>calls.push('failed'));
+ const context={signal:new AbortController().signal};
+ await bind('root',context);assert.deepEqual(calls,[['root',context]]);
+ // the visitor has already moved on when the file arrives: nothing is bound, nothing is said
+ const gone=new AbortController(),later=bind('root',{signal:gone.signal});gone.abort();await later;assert.equal(calls.length,1);
+ // it could not be fetched (or the behaviour itself threw): the page is told, never the console
+ const failures=[];
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ await behaviourLater(()=>{throw new Error('no such file');},found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ await behaviourLater(()=>Promise.resolve({bindThing(){throw new Error('broken');}}),found=>found.bindThing,(root,given)=>failures.push([root,given]))('root',context);
+ assert.equal(failures.length,3);assert.deepEqual(failures[0],['root',context]);
+ const left=new AbortController();left.abort();
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing,()=>failures.push('late'))('root',{signal:left.signal});assert.equal(failures.length,3);
+ await behaviourLater(()=>Promise.reject(new Error('offline')),found=>found.bindThing)('root');
+ // the registry lists Contact's behaviour this way, and every other page's directly
+ assert.equal(pages['/contact'].bind.name,'bindLater');assert.equal(pages['/'].bind.name,'bindHome');
+});
+
+test('when the message form\'s engine cannot be fetched the form says so, keeps Call and WhatsApp in reach and offers to try again',()=>{
+ const page=createPage({body:`<main>${renderedPage('/contact','on')}</main>`}),main=page.document.querySelector('main');
+ const $=selector=>main.querySelector(selector),shell=$('[data-message-form]');
+ assert.equal(shell.getAttribute('data-state'),'opening');assert.equal($('[data-contact-status]').textContent,messageForm.status.opening);assert.ok($('[data-contact-retry]').hidden);
+ let reloads=0;const scope=new AbortController();
+ formCouldNotOpen(main,{signal:scope.signal},()=>{reloads++;});
+ assert.equal(shell.getAttribute('data-state'),'failed');assert.equal($('[data-contact-status]').textContent,'We could not open the message form.');
+ assert.ok($('[data-contact-fields]').hidden&&$('[data-contact-compose]').hidden&&$('[data-message-steps]').hidden,'no field that cannot be sent is shown, nor the steps of sending');
+ assert.ok(!$('[data-contact-panel="failed"]').hidden&&!$('[data-contact-instead]').hidden&&!$('[data-contact-retry]').hidden);
+ assert.match($('[data-contact-instead]').innerHTML,/tel:\+919415049410/,'Call stays in reach');
+ // Try again puts the form back to "opening" and loads the page afresh
+ $('[data-contact-retry]').click();
+ assert.equal(reloads,1);assert.equal(shell.getAttribute('data-state'),'opening');assert.equal($('[data-contact-status]').textContent,messageForm.status.opening);
+ assert.ok(!$('[data-contact-fields]').hidden&&$('[data-contact-panel="failed"]').hidden&&$('[data-contact-retry]').hidden);
+ $('[data-contact-retry]').click();assert.equal(reloads,1,'once');
+ // a page without the form is left alone; the painter says so
+ assert.equal(paintFormOpening(createPage({body:'<main></main>'}).document.querySelector('main'),true),null);assert.equal(paintFormOpening(null,true),null);
+ formCouldNotOpen(createPage({body:'<main></main>'}).document.querySelector('main'));
+ // the retry button printed disabled (as built documents print submit controls) is made usable
+ const again=$('[data-contact-retry]');again.disabled=true;paintFormOpening(main,true);assert.equal(again.disabled,false);
 });
