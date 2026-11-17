@@ -5,7 +5,10 @@
   .closing__arch { position: absolute; z-index: 0; right: -70px; bottom: -40px; width: 250px; height: 300px; border-radius: var(--radius-arch-open); background: var(--ground-tint-light); }
   .closing__copy, .closing__calls { position: relative; z-index: 1; }
   .closing__copy { display: grid; justify-items: start; }
-  .closing__calls .call-row { min-height: 68px; padding: 8px 14px 8px 8px; row-gap: 0; }
+  .closing__calls .call-row { min-height: 68px; padding: 8px 14px 8px var(--row-start, 8px); row-gap: 0; }
+  /* without the faces (a page whose last section already shows them) a row is the name and, at its
+     right edge, the number: the words keep clear of the row's edge and the two numbers line up */
+  .closing__calls .call-row:not(:has(.call-row__avatar)) { --row-start: 14px; grid-template-columns: minmax(0, 1fr) auto; }
   .closing__calls .call-row__need { display: none; }
   .closing__sign { margin-top: var(--space-3); min-height: 28px; }
   .closing__action { margin-top: var(--space-5); width: 100%; }

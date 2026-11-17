@@ -218,6 +218,18 @@ test('the two doctors are shown once more for anything not listed, without butto
  assert.deepEqual(attributeValues(part,'data-doctor'),doctorOrder);
 });
 
+test('the closing under the two doctor cards names both doctors and their numbers without showing the faces again',()=>{
+ for(const mode of ['on','off']){
+  const html=renderedPage(PATH,mode),end=section(html,'<section class="closing"','</section>');
+  assert.equal(count(end,/class="call-row"/g),doctorOrder.length,'one call row for each doctor');
+  assert.doesNotMatch(end,/class="call-row__avatar"/,'the faces stand in the cards directly above');
+  for(const id of doctorOrder){
+   assert.ok(end.includes(text(doctors[id].name).replace('Dr. ','Dr.&nbsp;')),'the name stays: '+id);
+   assert.ok(end.includes(`href="tel:${doctors[id].tel}"`),'the number stays: '+id);
+  }
+ }
+});
+
 test('an older link that names a topic is drawn with that row open; anything else is drawn closed',()=>{
  const draw=search=>treatments(pageContext({path:PATH,mode:'on',now:TEST_NOW,search}));
  const open=html=>(html.match(/<li class="page-treatments__topic" id="[^"]+" data-topic="[^"]+" data-open>/g)||[]).map(tag=>/id="([^"]+)"/.exec(tag)[1]);

@@ -87,5 +87,6 @@ export function treatments(ctx){
   +`<div class="page-treatments__doctors-cards">${words.groups.map(group=>
    `<div${attrs({class:classes('page-treatments__doctor-slot',`page-treatments__doctor-slot--${group.tone}`),'data-enter':'card'})}>${doctorMiniCard(group.doctor,ctx,{actions:false})}</div>`).join('')}</div>`
   +`</section></div>`
-  +closing(ctx);
+  // The two doctors' faces stand directly above, so the closing's call rows go without them.
+  +closing(ctx,{avatars:false});
 }
