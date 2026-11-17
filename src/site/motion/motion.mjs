@@ -14,6 +14,8 @@
 // The script only ever writes one number per part (`--p`, 0 to 1); motion.css turns it into
 // movement, and only under html[data-motion="on"]. A page without scripts is simply still.
 
+import {safeStorage} from '../lib/storage.mjs';
+
 export const MOTION_KEY='rk-motion';
 /** A part starts when its top crosses this share of the screen height … */
 export const ENTER_START=.85;
@@ -30,10 +32,10 @@ export const WIDE_FROM=768;
 export function readPreference(storage){
  try{const value=storage?.getItem(MOTION_KEY);return value==='paused'||value==='on'?value:null;}catch{return null;}
 }
-/** Keep the choice on this device. Returns false when it could not be kept. */
+/** Keep the choice on this device. Returns false when the browser could not keep it. */
 export function writePreference(storage,value){
  if(value!=='paused'&&value!=='on')throw new RangeError('Motion is "on" or "paused"');
- try{storage.setItem(MOTION_KEY,value);return true;}catch{return false;}
+ try{return storage.setItem(MOTION_KEY,value)!==false;}catch{return false;}
 }
 /** The motion state from the stored choice and the device setting: a choice always wins. */
 export function motionState(stored,reduced){
@@ -90,8 +92,10 @@ export function pageTop(element){
 /**
  * Start motion for the page. Everything from the browser can be replaced in tests.
  * Returns the service the parts use: state(), allowed(), set(), toggle(), subscribe(), observe().
+ * The stored choice is read through `safeStorage`, so a browser that refuses storage cannot stop
+ * the site: the choice then holds while the page stays open.
  */
-export function createMotion({documentObject=document,windowObject=window,storage=windowObject.localStorage,
+export function createMotion({documentObject=document,windowObject=window,storage=safeStorage(()=>windowObject.localStorage),
  Observer=windowObject.IntersectionObserver,reducedQuery=windowObject.matchMedia?.('(prefers-reduced-motion: reduce)'),
  frame=callback=>windowObject.requestAnimationFrame(callback)}={}){
  const root=documentObject.documentElement,listeners=new Set();

@@ -406,6 +406,7 @@
     "src/site/fonts/newsreader-roman-400-600.woff2",
     "src/site/icons/icons.mjs",
     "src/site/lib/html.mjs",
+    "src/site/lib/storage.mjs",
     "src/site/motion/motion.css",
     "src/site/motion/motion.mjs",
     "src/site/pages/about/about.behaviour.mjs",

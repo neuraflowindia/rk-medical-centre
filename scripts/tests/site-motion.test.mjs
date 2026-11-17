@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {MOTION_KEY,ENTER_START,ENTER_END,FOLLOW_MS,LOOP_LIMIT,readPreference,writePreference,motionState,soften,partRange,partProgress,followShare,
  alreadyOnScreen,chooseRunning,loopLimit,toggleFace,pageTop,createMotion} from '../../src/site/motion/motion.mjs';
 import {createPage} from './support/mini-dom.mjs';
+import {safeStorage} from '../../src/site/lib/storage.mjs';
 
 const shell=readFileSync(new URL('../../index.html',import.meta.url),'utf8');
 const storage=(initial={})=>{const map=new Map(Object.entries(initial));return {getItem:key=>map.has(key)?map.get(key):null,setItem:(key,value)=>map.set(key,String(value)),map};};
@@ -25,10 +26,23 @@ test('the shell sets the motion state before the first paint exactly as the modu
  for(const stored of [null,'on','paused','off'])for(const reduced of [false,true])for(const broken of [false,true]){
   const attributes={},fake={documentElement:{setAttribute:(name,value)=>{attributes[name]=value;}}};
   const local={getItem:()=>{if(broken)throw new Error('closed');return stored;}};
-  new Function('document','localStorage','matchMedia',inline)(fake,local,()=>({matches:reduced}));
+  new Function('document','localStorage','matchMedia','addEventListener',inline)(fake,local,()=>({matches:reduced}),()=>{});
   assert.equal(attributes['data-js'],'');
   assert.equal(attributes['data-motion'],motionState(broken?null:readPreference({getItem:()=>stored}),reduced),JSON.stringify({stored,reduced,broken}));
  }
+});
+
+test('the shell takes its marks back when the site\'s script cannot be loaded, so the page is the scripts-off page',()=>{
+ const inline=/<script>(\(function\(\)\{[\s\S]*?\}\)\(\);)<\/script>/.exec(shell)[1];
+ const attributes=new Map(),heard=[];
+ const fake={documentElement:{setAttribute:(name,value)=>attributes.set(name,value),removeAttribute:name=>attributes.delete(name)}};
+ new Function('document','localStorage','matchMedia','addEventListener',inline)(fake,{getItem:()=>null},()=>({matches:false}),(type,listener,capture)=>heard.push({type,listener,capture}));
+ assert.deepEqual([...attributes.keys()].sort(),['data-js','data-motion']);
+ assert.equal(heard.length,1);assert.equal(heard[0].type,'error');assert.equal(heard[0].capture,true,'a failed file does not bubble: it is heard on its way down');
+ heard[0].listener({target:{tagName:'IMG'}});heard[0].listener({target:null});heard[0].listener({});
+ assert.equal(attributes.size,2,'a picture that fails, or an error inside a running script, changes nothing');
+ heard[0].listener({target:{tagName:'SCRIPT'}});
+ assert.equal(attributes.size,0);
 });
 
 test('an entrance follows the scroll: it starts at 85% of the screen, rests at 45%, and lands softly',()=>{
@@ -120,4 +134,19 @@ test('the device setting counts as paused until the visitor chooses; another tab
  const bare=createPage({body:'<div id="app"><p data-enter>x</p></div>'});
  const without=createMotion({documentObject:bare.document,windowObject:bare.window,Observer:undefined,reducedQuery:undefined});
  without.observe(bare.document.getElementById('app'));assert.equal(without.state(),'on');without.dispose();
+});
+
+test('motion starts and works in a browser that refuses site storage; the choice holds for the visit',()=>{
+ const page=createPage({body:'<div id="app"><p id="low" data-enter>low</p></div>'});
+ Object.defineProperty(page.window,'localStorage',{configurable:true,get(){throw new Error('Access is denied for this document.');}});
+ const motion=createMotion({documentObject:page.document,windowObject:page.window});
+ motion.observe(page.document.getElementById('app'));
+ assert.equal(motion.state(),'on');assert.equal(motion.toggle(),'paused');assert.equal(page.document.documentElement.getAttribute('data-motion'),'paused');
+ // the device setting changes afterwards: the visitor's choice, held in memory, still wins
+ page.media('(prefers-reduced-motion: reduce)').set(true);page.media('(prefers-reduced-motion: reduce)').set(false);assert.equal(motion.state(),'paused');
+ page.window.dispatchEvent({type:'storage',key:null,bubbles:false});assert.equal(motion.state(),'paused');
+ assert.equal(motion.toggle(),'on');motion.dispose();
+ // a choice the browser could not keep is reported as not kept
+ const memoryOnly=safeStorage(()=>{throw new Error('closed');});
+ assert.equal(writePreference(memoryOnly,'paused'),false);assert.equal(readPreference(memoryOnly),'paused');
 });
