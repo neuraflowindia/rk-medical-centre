@@ -1,4 +1,3 @@
-import {reviews} from './content.mjs';
 
 // Existing author/quotation pairs remain in content.mjs.
 // Presentation values reproduce the owner-approved, fully populated Home mockup.
@@ -63,10 +62,3 @@ export function reviewWithDetails(review){
  const [topic,icon]=details[review.name]||['Clinic visit','calendar'];
  return Object.freeze({...review,topic,icon,...presentation[review.name]});
 }
-const chosen=[...reviews.home,...reviews.doctors,...reviews.sanjay.slice(0,2),...reviews.parul.slice(0,2)];
-const seen=new Set();
-export const homeReviewItems=Object.freeze(chosen.filter(review=>{
- const key=JSON.stringify([review.name,review.text]);
- if(seen.has(key))return false;
- seen.add(key);return true;
-}).map(reviewWithDetails));

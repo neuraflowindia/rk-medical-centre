@@ -2,7 +2,7 @@
 // is driven against the real template (read into small stand-in elements) and a pretend engine.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalisePhone,checkContact,validateContact,engineAnswer,formView,paintForm,paintFieldError,focusAfter,bindContactForm,contactFormMarkup} from '../../src/clinic/contact-form.js';
+import {normalisePhone,checkContact,validateContact,engineAnswer,formView,paintForm,paintFieldError,focusAfter,bindContactForm} from '../../src/clinic/contact-form.js';
 import {messageForm as words} from '../../src/clinic/page-content/contact.mjs';
 import {messageFor} from '../../appointment-system/browser/enquiry/messages.mjs';
 import {messageForm} from '../../src/site/pages/contact/message-form.mjs';
@@ -461,9 +461,4 @@ test('paintForm writes only what changed, and works without the surrounding shel
  const view=formView({policy:'open',state:IDLE});
  paintForm(form,view);paintForm(form,view);
  assert.equal(form.closest('[data-message-form]').getAttribute('data-state'),'ready');
-});
-
-test('the old page\'s markup still carries the engine\'s hooks until it is deleted',()=>{
- const old=contactFormMarkup();
- for(const hook of ['data-contact-form','data-contact-fields','data-contact-status','data-contact-error-summary','data-contact-verification','data-contact-verify','data-contact-resend','data-contact-countdown','data-contact-check','data-contact-retry','data-contact-restart','data-collection-notice'])assert.ok(old.includes(hook),hook);
 });

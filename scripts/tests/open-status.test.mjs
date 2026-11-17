@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {clinicClock,clinicStatus,formatTime,sessionsFor,openStatus,paintOpenStatus,bindOpenStatus,NEUTRAL} from '../../src/clinic/open-status.mjs';
+import {clinicClock,clinicStatus,formatTime,sessionsFor,NEUTRAL} from '../../src/clinic/open-status.mjs';
 import {consultationSessions,appointmentTimes} from '../../src/clinic/model.mjs';
 
 const at=iso=>new Date(iso);
@@ -61,36 +61,4 @@ test('skips days without sessions and never invents a time',()=>{
 test('every live line stays short enough for one line on a 320 px phone',()=>{
  for(let m=0;m<7*24*60;m+=15){const s=clinicStatus(new Date(Date.UTC(2026,10,15,0,m)-330*60000));assert.ok(s.detail.length<=36,s.detail);}
  assert.ok(NEUTRAL.detail.length<=36);
-});
-test('page markup starts neutral and hidden until the browser paints it',()=>{
- const html=openStatus('dark');
- assert.match(html,/^<div class="open-status open-status-dark" data-open-status data-state="pending" data-nosnippet>/);
- assert.match(html,/Appointment times/);assert.match(html,/Mornings daily · evenings Mon–Sat/);
- assert.match(openStatus(),/open-status-light/);assert.match(openStatus('<x>'),/open-status-&lt;x&gt;/);
-});
-function fakeNode(){const parts={'.open-status-label':{textContent:'Appointment times'},'.open-status-detail':{textContent:'…'}};return {dataset:{state:'pending'},querySelector:s=>parts[s]||null,parts};}
-test('painting sets state and words, and skips unchanged writes',()=>{
- const node=fakeNode();paintOpenStatus(node,{open:true,label:'Open now',detail:'Last appointment starts at 1:30 pm'});
- assert.equal(node.dataset.state,'open');assert.equal(node.parts['.open-status-label'].textContent,'Open now');
- paintOpenStatus(node,{open:false,soon:true,label:'Closed now',detail:'Appointments in 5 min, at 6:00 pm'});assert.equal(node.dataset.state,'soon');
- paintOpenStatus(node,{open:false,soon:false,label:'Closed now',detail:'Appointments from 6:00 pm today'});assert.equal(node.dataset.state,'closed');
- paintOpenStatus(node,{open:false,soon:false,label:'Closed now',detail:'Appointments from 6:00 pm today'});assert.equal(node.dataset.state,'closed');
- const bare={dataset:{},querySelector:()=>null};paintOpenStatus(bare,{open:true,label:'Open now',detail:'x'});assert.equal(bare.dataset.state,'open');
-});
-test('binding paints now, refreshes on a timer and stops when the page changes',()=>{
- const nodes=[fakeNode(),fakeNode()];const root={querySelectorAll:()=>nodes};
- let tick=null,cleared=null;const timers={setInterval:(fn,ms)=>{tick=fn;assert.equal(ms,30000);return 7;},clearInterval:id=>{cleared=id;}};
- let now=at('2026-11-16T05:30:00Z');const controller=new AbortController();
- bindOpenStatus({root,signal:controller.signal,now:()=>now,timers});
- assert.deepEqual(nodes.map(n=>n.dataset.state),['open','open']);
- now=at('2026-11-16T08:01:00Z');tick();assert.equal(nodes[1].parts['.open-status-detail'].textContent,'Appointments from 6:00 pm today');
- controller.abort();assert.equal(cleared,7);
- const stop=bindOpenStatus({root:{querySelectorAll:()=>[]},timers});assert.equal(typeof stop,'function');stop();
- const manual=bindOpenStatus({root,now:()=>now,timers});manual();assert.equal(cleared,7);
-});
-test('a failure leaves the sign as it was and never throws into the page',()=>{
- const nodes=[fakeNode()];let tick=null;const timers={setInterval:fn=>{tick=fn;return 1;},clearInterval:()=>{}};
- assert.doesNotThrow(()=>bindOpenStatus({root:{querySelectorAll:()=>nodes},now:()=>{throw new Error('clock');},timers}));
- assert.equal(nodes[0].dataset.state,'pending');assert.doesNotThrow(()=>tick());
- const broken=bindOpenStatus({root:{querySelectorAll:()=>{throw new Error('dom');}},timers});assert.equal(typeof broken,'function');broken();
 });
