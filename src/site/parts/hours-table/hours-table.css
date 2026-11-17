@@ -10,9 +10,20 @@
   .hours-table td { color: var(--ink); font-weight: 500; }
   .hours-table .hours-table__none { color: var(--ink-muted); font-weight: 400; }
   .hours-table tbody tr:last-child th, .hours-table tbody tr:last-child td { border-bottom-color: var(--line-strong); }
-  .hours-table__today { display: inline-block; padding: 1px 10px 2px; white-space: nowrap; border-radius: var(--radius-focus); background: var(--chosen); color: var(--ink); font: var(--type-tag); line-height: var(--leading-tight); vertical-align: 1px; }
+  /* 12 px each side of the word; the word sits a pixel below the middle, where its small letters read as centred */
+  .hours-table__today { display: inline-flex; align-items: center; min-height: 24px; padding: 1px var(--space-3) 0; white-space: nowrap; border-radius: var(--radius-focus); background: var(--chosen); color: var(--ink); font: var(--type-tag); vertical-align: 1px; }
+  /* today's row on a soft band that runs 12 px past the row's ends: the cells' own ground, and a rounded cap at each end.
+     The row keeps its "Today" tag, so it is never marked by colour alone. The band needs 12 px of free space beside the table. */
+  .hours-table--band tr.is-today > * { background: linear-gradient(var(--ground-tint-light), var(--ground-tint-light)) 0 50% / 100% calc(100% - 6px) no-repeat; }
+  .hours-table--band tr.is-today > :first-child, .hours-table--band tr.is-today > :last-child { position: relative; }
+  .hours-table--band tr.is-today > :first-child::before, .hours-table--band tr.is-today > :last-child::after { content: ""; position: absolute; top: 3px; bottom: 3px; width: 13px; background: var(--ground-tint-light); }
+  .hours-table--band tr.is-today > :first-child::before { right: calc(100% - 1px); border-radius: var(--radius-link) 0 0 var(--radius-link); }
+  .hours-table--band tr.is-today > :last-child::after { left: calc(100% - 1px); border-radius: 0 var(--radius-link) var(--radius-link) 0; }
   @media (max-width: 359px) {
     .hours-table th, .hours-table td { padding-right: var(--space-2); }
+    /* the roomy table: the day column holds the day over its tag, and the two time columns keep 14 px between them */
+    .hours-table--roomy tbody th { width: 110px; }
+    .hours-table--roomy td:not(:last-child) { padding-right: 14px; }
   }
   @media (min-width: 768px) {
     .hours-table th, .hours-table td { padding-block: 10px; }

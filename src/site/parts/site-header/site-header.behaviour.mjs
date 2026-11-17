@@ -1,5 +1,6 @@
 // Header behaviour: open the menu; on phones slide the header away on the way down and bring it
-// back on the way up; add a soft shadow once the page has moved.
+// back on the way up; add a soft shadow once the page has moved. From 768 px the header carries
+// the main booking button (there is no phone bar from that width), so it stays in view.
 
 /** Phones only: the header may leave once the page has moved this far. */
 export const AWAY_AFTER=120;
@@ -29,7 +30,8 @@ export function bindSiteHeader(root,{signal,services,windowObject=globalThis.win
  const header=root.querySelector('[data-site-header]');
  if(!header||!windowObject)return;
  const documentObject=windowObject.document,menuButton=header.querySelector('[data-open-menu]');
- const phone=windowObject.matchMedia('(max-width: 1023px)');
+ // `phone`: the layout with a menu button. `slides`: the widths where the header may leave the screen.
+ const phone=windowObject.matchMedia('(max-width: 1023px)'),slides=windowObject.matchMedia('(max-width: 767px)');
  if(menuButton&&services?.menu){
   menuButton.addEventListener('click',event=>{event.preventDefault();services.menu.open({trigger:menuButton});},{signal});
   menuButton.addEventListener('keydown',event=>{if(event.key===' '){event.preventDefault();services.menu.open({trigger:menuButton});}},{signal});
@@ -41,13 +43,14 @@ export function bindSiteHeader(root,{signal,services,windowObject=globalThis.win
   ticking=false;
   // The header stays while a dialog is open, and while someone is moving through it with the keyboard.
   const blocked=documentObject.documentElement.classList.contains('dialog-open')||!!header.querySelector(':focus-visible');
-  state=headerTravel(state,windowObject.scrollY,{phone:phone.matches,blocked});
+  state=headerTravel(state,windowObject.scrollY,{phone:slides.matches,blocked});
   header.classList.toggle('is-away',state.away);
   header.classList.toggle('is-scrolled',state.y>8);
  };
  const onScroll=()=>{if(!ticking){ticking=true;windowObject.requestAnimationFrame(update);}};
  windowObject.addEventListener('scroll',onScroll,{passive:true,signal});
  windowObject.addEventListener('resize',onScroll,{signal});
+ slides.addEventListener('change',onScroll,{signal});
  header.addEventListener('focusin',onScroll,{signal});
  update();
 }

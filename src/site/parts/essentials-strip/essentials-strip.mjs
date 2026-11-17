@@ -10,11 +10,12 @@ export function essentialsStrip(ctx){
  return `<ul class="essentials-strip" aria-label="${text(essentials.label)}" data-essentials-strip>`
   +`<li class="essentials-strip__cell essentials-strip__cell--open">${openSign(ctx,{form:'strip',tag:'div'})}</li>`
   +`<li class="essentials-strip__cell"><span class="essentials-strip__icon">${icon(fee.icon)}</span>`
-  +`<span class="essentials-strip__text"><span class="essentials-strip__label"><span class="laptop-only">${text(fee.labelWide)}</span><span class="below-laptop">${text(fee.label)}</span></span><span class="essentials-strip__value">${text(fee.value)}</span></span></li>`
+  +`<span class="essentials-strip__text"><span class="essentials-strip__label"><span class="laptop-only">${text(fee.labelWide)}</span><span class="below-laptop">${text(fee.label)}</span></span> <span class="essentials-strip__value">${text(fee.value)}</span></span></li>`
   +`<li class="essentials-strip__cell essentials-strip__cell--place"><a class="essentials-strip__link" href="${text(place.href)}" target="_blank" rel="noopener">`
   +`<span class="essentials-strip__icon">${icon(place.icon)}</span>`
   +`<span class="essentials-strip__text"><span class="essentials-strip__label">${text(place.labelShort)}<span class="wide-only">${text(place.label.slice(place.labelShort.length))}</span></span>`
-  +`<span class="essentials-strip__value">${text(place.action)} ${icon('out',{className:'essentials-strip__out'})}<span class="visually-hidden"> ${text(place.opens)}</span></span></span>`
+  // the space keeps the two lines apart when the link is read out ("Tedhi Pulia, Ring Road Directions")
+  +` <span class="essentials-strip__value">${text(place.action)} ${icon('out',{className:'essentials-strip__out'})}<span class="visually-hidden"> ${text(place.opens)}</span></span></span>`
   +`<span class="essentials-strip__go" aria-hidden="true">${icon('out')}</span>`
   +`</a></li></ul>`;
 }

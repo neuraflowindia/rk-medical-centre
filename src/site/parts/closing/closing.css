@@ -33,7 +33,7 @@
   }
   @media (min-width: 1280px) {
     /* the handset hangs over the panel's corner, but never past the screen on a 1280-wide laptop */
-    .closing__object { right: clamp(-34px, calc(-10px - (100vw - 1280px) * .3), -10px); width: 138px; }
+    .closing__object { right: clamp(-34px, calc(-6px - (100vw - 1280px) * .2), -6px); width: 138px; }
     /* the pale arch stands behind the call rows: a little wider than them, on the same centre */
     .closing__arch { width: 608px; right: 56px; height: 86%; }
     .closing__panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 72px; padding: 84px 88px 84px 80px; min-height: 460px; }

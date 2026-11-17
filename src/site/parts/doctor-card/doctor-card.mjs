@@ -31,7 +31,8 @@ export function doctorCard(card,ctx,{order=0}={}){
   +`<div class="doctor-card__chips"><p class="doctor-card__prompt" id="doctor-${id}-prompt">${text(doctorsSection.chipPrompt)}</p>`
   +`<div class="chip-row" aria-labelledby="doctor-${id}-prompt" data-chip-row>${chips}</div></div>`
   +`<div class="doctor-card__answers" data-answers>${answers}</div>`
-  +`<div class="doctor-card__objects" aria-hidden="true">${objects}</div>`
+  // the object floats; a card beside another keeps a different beat, so the two never move as one
+  +`<div${attrs({class:'doctor-card__objects','aria-hidden':'true','data-ambient':'float',style:order>0?`--float-phase:${-2.6*order}s`:null})}>${objects}</div>`
   +`<p class="visually-hidden" aria-live="polite" data-chip-live></p>`
   // "Full profile" sits in the name block on phones and beside the buttons on laptops; only one of the two is ever shown.
   +`<div class="doctor-card__actions">${bookButton(ctx,{doctor:id,topic:first.topic,attributes:{'data-card-book':true}})}${callButton(ctx,{doctor:id,lead:true})}`

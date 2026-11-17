@@ -15,20 +15,24 @@ export function closingTitle(signState,enabled){
 }
 
 /**
- *   doctor  'sanjay' or 'parul': the closing of that doctor's profile (their button, their number);
- *           without it, the general closing with both doctors
+ *   doctor   'sanjay' or 'parul': the closing of that doctor's profile (their button, their number);
+ *            without it, the general closing with both doctors
+ *   avatars  false leaves the small faces out of the call rows (the names and numbers stay): for a
+ *            page whose last section already shows both doctors' faces
+ * A call row reads need first, then the name, as the call sheet and Contact do.
  */
-export function closing(ctx,{doctor=''}={}){
+export function closing(ctx,{doctor='',avatars=true}={}){
  const enabled=bookingOn(ctx),title=closingTitle(liveSignNeutral.state,enabled);
  const rows=callRows().filter(row=>!doctor||row.id===doctor);
  if(doctor&&!rows.length)throw new RangeError('Unknown doctor: '+doctor);
- const row=item=>`<li data-enter="card">${callRow(item,{avatar:doctorAvatar(item.id)})}</li>`;
+ const row=item=>`<li data-enter="card">${callRow(item,{needFirst:true,avatar:avatars?doctorAvatar(item.id):''})}</li>`;
  return `<section class="closing" id="closing" aria-labelledby="closing-title" data-closing${doctor?` data-closing-doctor="${doctor}"`:''}>`
   +`<div class="wrap"><div class="closing__panel"><span class="closing__arch" aria-hidden="true"></span>`
   +`<div class="closing__copy"><h2 class="closing__title" id="closing-title" data-enter><span data-closing-title>${emphasise(title.heading,title.emphasis,{keep:title.keep})}</span></h2>`
   +openSign(ctx,{form:'closing',className:'closing__sign'})
   +`<p class="closing__action">${bookButton(ctx,{doctor,size:'large',label:doctor?'':entryWords.page.on.label})}</p></div>`
   +`<ul${attrs({class:'call-rows closing__calls','aria-label':words.callsLabel})}>${rows.map(row).join('')}</ul>`
-  +image(clinicObjects['telephone-handset'],{className:'closing__object'})
+  // the handset floats over the panel's corner (laptops; it is not shown on phones)
+  +image(clinicObjects['telephone-handset'],{className:'closing__object',attributes:{'data-ambient':'float'}})
   +`</div></div></section>`;
 }

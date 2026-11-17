@@ -3,6 +3,7 @@
 // buttons move between documents.
 import {certificateCatalogue} from '../../../clinic/certificate-catalogue.mjs';
 import {doctors} from '../../../clinic/model.mjs';
+import {keepFocusInView} from '../still-shelf/still-shelf.behaviour.mjs';
 import {certificateViewer} from './certificate-frame.mjs';
 
 export const viewerWords=Object.freeze({all:'All certificates',of:name=>`Certificates of ${name}`});
@@ -21,10 +22,21 @@ export function viewerTitle(doctor=''){
  return doctor&&Object.hasOwn(doctors,doctor)?viewerWords.of(doctors[doctor].name):viewerWords.all;
 }
 
+/** How far a finger must travel sideways for a swipe to turn the page. */
+export const SWIPE_MIN=40;
+/**
+ * Which way a finished touch turns the viewer (pure): 1 (next) for a swipe to the left, -1
+ * (previous) for one to the right, 0 when the touch was short or mostly up and down.
+ */
+export function swipeDirection({dx=0,dy=0},min=SWIPE_MIN){
+ if(Math.abs(dx)<min||Math.abs(dx)<Math.abs(dy)*1.5)return 0;
+ return dx<0?1:-1;
+}
+
 /**
  * Step through `total` slides in the viewer. `draw(index)` returns one slide's markup, with its own
  * [data-viewer-previous] / [data-viewer-next] buttons if there is more than one. The ends are flat
- * (no wrapping); ← and → move; focus stays on the arrow that was pressed.
+ * (no wrapping); ← and → move, and so does a sideways swipe; focus stays on the arrow that was pressed.
  */
 export function openViewerWalk(services,{total,index=0,title='',draw,trigger=null,signal}={}){
  if(!services?.viewer||!(total>0)||typeof draw!=='function')return;
@@ -49,8 +61,19 @@ export function openViewerWalk(services,{total,index=0,title='',draw,trigger=nul
  paint();
  const node=services.viewer.node();
  const onKey=event=>{if(event.key==='ArrowRight'){event.preventDefault();move(1);}else if(event.key==='ArrowLeft'){event.preventDefault();move(-1);}};
+ let touch=null;
+ const point=event=>event.changedTouches?.[0]||null;
+ const onTouchStart=event=>{const first=point(event);touch=first&&(event.touches?.length??1)===1?{x:first.clientX,y:first.clientY}:null;};
+ const onTouchEnd=event=>{
+  const last=point(event);
+  if(!touch||!last)return;
+  const direction=swipeDirection({dx:last.clientX-touch.x,dy:last.clientY-touch.y});touch=null;
+  if(direction)move(direction);
+ };
  node?.addEventListener('keydown',onKey,{signal});
- node?.addEventListener('close',()=>node.removeEventListener('keydown',onKey),{once:true});
+ node?.addEventListener('touchstart',onTouchStart,{signal,passive:true});
+ node?.addEventListener('touchend',onTouchEnd,{signal,passive:true});
+ node?.addEventListener('close',()=>{node.removeEventListener('keydown',onKey);node.removeEventListener('touchstart',onTouchStart);node.removeEventListener('touchend',onTouchEnd);},{once:true});
 }
 
 /** Open the viewer on certificates `items` at `index`. */
@@ -59,24 +82,47 @@ export function openCertificateViewer(services,{items,index=0,title=viewerWords.
  openViewerWalk(services,{total:items.length,index,title,draw:at=>certificateViewer(items,at),trigger,signal});
 }
 
+/**
+ * What a framed document opens (pure): `set` 'all' = every certificate, standing at this one;
+ * otherwise the documents of its own wall (`wallIds`), headed by their doctor if they share one.
+ */
+export function viewerPlan({id,set='',wallIds=[]},catalogue=certificateCatalogue){
+ if(set==='all'){
+  const items=viewerItems('',catalogue);
+  return {items,index:Math.max(0,items.findIndex(item=>item.id===id)),title:viewerTitle()};
+ }
+ const items=wallIds.map(wanted=>catalogue.find(item=>item.id===wanted)).filter(Boolean);
+ return {items,index:Math.max(0,items.findIndex(item=>item.id===id)),title:viewerTitle(items.length&&items.every(item=>item.doctor===items[0].doctor)?items[0].doctor:'')};
+}
+
 export function bindCertificates(root,{signal,services}={}){
+ // on phones a wall is a row the visitor moves: whatever takes the focus is brought wholly into view
+ for(const wall of root.querySelectorAll('[data-certificate-wall]'))keepFocusInView(wall,{signal,smooth:()=>services?.motion?.allowed?.()??false});
  if(!services?.viewer)return;
+ const plain=event=>!(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button>0);
  // "All certificates": a link to Meet the doctors that, with scripts, opens the viewer instead.
  for(const opener of root.querySelectorAll('[data-open-certificates]')){
   opener.addEventListener('click',event=>{
-   if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button>0)return;
+   if(!plain(event))return;
    const doctor=opener.getAttribute('data-open-certificates')||'';
    event.preventDefault();openCertificateViewer(services,{items:viewerItems(doctor),title:viewerTitle(doctor),trigger:opener,signal});
   },{signal});
  }
- // A framed document that is a control opens the viewer on itself, among its wall's documents.
+ // A framed document that is a control is printed as a link to its own picture (what it does
+ // without scripts). Here it becomes the button that opens the viewer on itself.
  for(const control of root.querySelectorAll('[data-view-certificate]')){
-  control.addEventListener('click',()=>{
+  if(control.tagName==='A')control.setAttribute('role','button');
+  control.setAttribute('aria-haspopup','dialog');
+  const open=event=>{
+   if(!plain(event))return;
+   event.preventDefault();
    const wall=control.closest('[data-certificate-wall]')||root;
-   const ids=[...wall.querySelectorAll('[data-view-certificate]')].map(item=>item.getAttribute('data-view-certificate'));
-   const items=ids.map(id=>certificateCatalogue.find(item=>item.id===id)).filter(Boolean);
-   openCertificateViewer(services,{items,index:Math.max(0,ids.indexOf(control.getAttribute('data-view-certificate'))),
-    title:viewerTitle(items.every(item=>item.doctor===items[0]?.doctor)?items[0]?.doctor:''),trigger:control,signal});
-  },{signal});
+   const plan=viewerPlan({id:control.getAttribute('data-view-certificate'),set:control.getAttribute('data-view-set')||'',
+    wallIds:[...wall.querySelectorAll('[data-view-certificate]')].map(item=>item.getAttribute('data-view-certificate'))});
+   openCertificateViewer(services,{...plan,trigger:control,signal});
+  };
+  control.addEventListener('click',open,{signal});
+  // a link turned button also answers the space bar
+  control.addEventListener('keydown',event=>{if(event.key===' '&&control.tagName==='A')open(event);},{signal});
  }
 }

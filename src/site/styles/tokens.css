@@ -24,7 +24,7 @@
     /* text */
     --ink: #1B2A27;                 /* headings, labels */
     --ink-body: #364541;            /* body text: 9.35 ivory, 8.00 sage, 9.91 paper */
-    --ink-muted: #566662;           /* captions, meta: 5.61 ivory, 4.80 sage */
+    --ink-muted: #566662;           /* captions, meta on ivory (5.61) and paper (5.95) only; on sage it is 4.80 and under a shadow below 4.5: use --ink-body there */
     --ink-on-deep: #FAF6EE;         /* 11.20 */
     --ink-on-deep-soft: #C5D3CB;    /* 7.79 */
     --ink-on-deep-muted: #A9BBB3;   /* 6.00 */
@@ -131,7 +131,9 @@
     --type-row-title: 500 var(--size-feature)/1.2 var(--font-display);  /* menu rows */
     --type-sub: 400 var(--size-body)/var(--leading-lead) var(--font-text);          /* a section's intro; lead size from tablets up */
     --type-strip-label: 500 var(--size-small)/1.5 var(--font-text);
-    --type-strip-value: 600 var(--size-body)/var(--leading-tight) var(--font-text);
+    /* the essentials strip's value line on phones: 15 px on a 360-wide screen, 16 px from 380, so its three cells keep 12 px each side */
+    --size-strip-value: clamp(15px, calc(15px + (100vw - 360px) / 20), 16px);
+    --type-strip-value: 600 var(--size-strip-value)/var(--leading-tight) var(--font-text);
     --type-strip-value-wide: 500 var(--size-h3)/1.2 var(--font-display);
     --type-caption-strong: 600 var(--size-label)/var(--leading-label) var(--font-text);
     --type-caption: 400 var(--size-small)/1.45 var(--font-text);
@@ -265,19 +267,23 @@
     --dur-rule: 1100ms;
     --dur-settle: 900ms;
     --stagger: 90ms;
-    --loop-light: 14s;              /* the first screen's light, each way */
-    --loop-light-start: -6s;        /* it begins mid-way, so the first movement is seen at once */
-    --loop-light-slow: 16s;         /* the credentials light, each way */
-    --loop-light-slow-start: -7s;
+    --loop-light: 12s;              /* a light crossing its arch or plate, each way: plainly seen to move within two or three seconds */
+    --loop-light-start: -5s;        /* it begins mid-way, so the first movement is seen at once */
+    --loop-light-slow: 14s;         /* the credentials light, each way */
+    --loop-light-slow-start: -6s;
     --loop-dot: 2.4s;               /* the ring around the open dot */
+    --loop-float: 7s;               /* a paper-cut object's float, each way (a fourteen-second loop) */
+    --float-rise: 6px;              /* how far it drifts above and below its place … */
+    --float-turn: 1.5deg;           /* … and how far it turns each way */
     --rise: 16px;                   /* how far words travel on entrance; they never fade */
     --rise-card: 28px;
+    --settle-scale: .035;           /* how much smaller a photograph's frame is as it starts to arrive */
     --lift: -2px;                   /* a raised control under the pointer */
     --press: 1px;                   /* and under the finger */
   }
 
   @media (max-width: 359px) {
-    :root { --size-h1: 31px; --gutter: 18px; }
+    :root { --size-h1: 31px; --gutter: 18px; --size-strip-value: var(--size-body); }
   }
   @media (min-width: 768px) {
     :root {
@@ -301,7 +307,7 @@
 
   /* Motion is paused by the footer control, or by the device setting unless the visitor chose to play. */
   :root[data-motion="paused"] {
-    --rise: 0px; --rise-card: 0px; --stagger: 0ms;
+    --rise: 0px; --rise-card: 0px; --settle-scale: 0; --float-rise: 0px; --float-turn: 0deg; --stagger: 0ms;
     --dur-enter: 1ms; --dur-rule: 1ms; --dur-settle: 1ms; --dur-arrive: 1ms; --dur-swap: 1ms; --dur-sheet: 1ms; --dur-sheet-move: 1ms; --dur-header: 1ms; --dur-bar: 1ms; --dur-underline: 1ms; --dur-portrait: 1ms; --dur-question: 1ms; --dur-object-fade: 1ms;
   }
 }

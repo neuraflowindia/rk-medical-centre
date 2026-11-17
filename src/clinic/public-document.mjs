@@ -21,5 +21,21 @@ export function renderPublicDocument({path,mode,booking,html}){
  const output=html.replace(/<div id="app">[\s\S]*?(?=<dialog id="reader")/,()=>`<div id="app" data-rendered-path="${path}" data-display-mode="${mode}">${body}</div>`)
   .replace('<html lang="en">',`<html lang="en" data-booking-state="${mode}">`);
  if(!output.includes('data-rendered-path=')||!output.includes(`<html lang="en" data-booking-state="${mode}">`))throw Error('Public root replacement failed');
- return output.replace('</head>',()=>`<meta property="og:image" content="${siteOrigin}/clinic-assets/rk-medical-centre-social.png"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json" data-site-graph>${graph}</script></head>`);
+ return output.replace('</head>',()=>`${sharingTags(path)}<script type="application/ld+json" data-site-graph>${graph}</script></head>`);
+}
+
+const attribute=value=>String(value).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/**
+ * What a page shows when its address is shared (a message, a social post): its reviewed title and
+ * description, the clinic's picture and its own address. The same values the browser sets after
+ * every page change (`applyPageMetadata`), printed here so they are there without scripts.
+ */
+export function sharingTags(path){
+ const entry=pageMetadata[path];
+ if(!entry)throw Error('Not a public page');
+ const picture=`${siteOrigin}/clinic-assets/rk-medical-centre-social.png`;
+ return `<meta property="og:type" content="website"><meta property="og:site_name" content="R. K. Medical Centre">`
+  +`<meta property="og:title" content="${attribute(entry.title)}"><meta property="og:description" content="${attribute(entry.description)}">`
+  +`<meta property="og:url" content="${siteOrigin}${path}"><meta property="og:image" content="${picture}">`
+  +`<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${attribute(entry.title)}"><meta name="twitter:description" content="${attribute(entry.description)}"><meta name="twitter:image" content="${picture}">`;
 }

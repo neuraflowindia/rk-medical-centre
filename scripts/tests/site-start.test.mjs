@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {start} from '../../src/site/runtime/start.mjs';
+import {start,boot as bootSite} from '../../src/site/runtime/start.mjs';
+import {MOTION_KEY} from '../../src/site/motion/motion.mjs';
+import {preferenceKey} from '../../src/clinic/visitor-preferences.mjs';
 import {renderPublicDocument} from '../../src/clinic/public-document.mjs';
 import {createPage,installGlobals,Event} from './support/mini-dom.mjs';
 
@@ -17,14 +19,21 @@ function fakeState(initial){
 const admitted={enabled:true,verified:true,checking:false},closed={enabled:false,verified:true,checking:false};
 const wait=()=>new Promise(resolve=>setImmediate(resolve));
 
-function boot({path='/',mode='on',state=fakeState(mode==='on'?admitted:closed),document:printed=true}={}){
+function boot({path='/',mode='on',state=fakeState(mode==='on'?admitted:closed),document:printed=true,prepare=()=>{},begin=start}={}){
  const html=printed?renderPublicDocument({path:'/',mode,booking:false,html:shell}):shell;
  const page=createPage({url:'https://clinic.test'+path,html:inner(html),attributes:{lang:'en','data-booking-state':mode}});
  const restore=installGlobals(page);
  globalThis.MutationObserver=class{observe(){}disconnect(){}};
- const app=start({windowObject:page.window,documentObject:page.document,state});
- return {page,app,state,$:selector=>page.document.querySelector(selector),end(){app.dispose();restore();delete globalThis.MutationObserver;}};
+ prepare(page);
+ const app=begin({windowObject:page.window,documentObject:page.document,state});
+ return {page,app,state,$:selector=>page.document.querySelector(selector),end(){app?.dispose();restore();delete globalThis.MutationObserver;}};
 }
+/** A browser that refuses site storage: merely reading the property throws (Chrome with "block all cookies"). */
+function refuseStorage(page){
+ for(const name of ['localStorage','sessionStorage'])Object.defineProperty(page.window,name,{configurable:true,get(){throw new Error('Access is denied for this document.');}});
+}
+/** How many listeners the test page still holds, per event name. */
+const listening=target=>[...target.listeners].filter(([,list])=>list.length).map(([type])=>type).sort();
 const follow=(page,anchor,more)=>{const event=new Event('click',more);anchor.dispatchEvent(event);return event;};
 
 test('the site starts on the printed page, then moves between pages without a new page request',async()=>{
@@ -79,4 +88,67 @@ test('the older booking address is corrected; an unknown one shows Home; the bar
  try{assert.equal(help.page.window.location.pathname,'/booking-details');assert.equal(help.app.route(),'/booking-details');assert.ok(help.$('#clinic-booking-root'));assert.equal(help.$('#app').querySelectorAll('h1').length,1);}finally{help.end();}
  const lost=boot({path:'/nowhere',mode:'off',document:false});
  try{assert.equal(lost.app.route(),'/');assert.equal(lost.page.window.location.pathname,'/nowhere');assert.ok(lost.$('.page-home__hero'));assert.equal(lost.$('#app').getAttribute('data-display-mode'),'off');}finally{lost.end();}
+});
+
+test('a browser that refuses site storage gets the whole site; choices hold while the page stays open',()=>{
+ const {page,app,$,end}=boot({prepare:refuseStorage});
+ try{
+  assert.throws(()=>page.window.localStorage,/denied/,'the test browser really refuses storage');
+  assert.equal(page.document.documentElement.getAttribute('data-motion'),'on');assert.ok($('#announce'),'start-up ran to its end');
+  assert.equal(app.route(),'/');assert.equal($('#menu-links').querySelectorAll('.menu__link').length,5,'the dialogs are drawn');
+  // every control is bound: the motion control works and its choice is kept for this visit
+  const toggle=$('[data-motion-toggle]');assert.equal(toggle.getAttribute('aria-pressed'),'false');
+  toggle.click();assert.equal(page.document.documentElement.getAttribute('data-motion'),'paused');assert.equal(toggle.getAttribute('aria-pressed'),'true');
+  assert.equal(app.services.motion.state(),'paused');
+  follow(page,$('.site-header__link[href="/treatment"]'));assert.equal(app.route(),'/treatment');
+  assert.equal(app.services.motion.state(),'paused','the choice is still held on the next page');assert.equal($('[data-motion-toggle]').getAttribute('aria-pressed'),'true');
+  // another tab cannot change it (there is no shared store), and the event does not throw
+  page.window.dispatchEvent(new Event('storage',{bubbles:false,key:MOTION_KEY}));assert.equal(app.services.motion.state(),'paused');
+  // the privacy choice cannot be kept, and says so without throwing
+  assert.equal(app.services.privacy.choose(false),null);
+  $('[data-collection-notice]').click();assert.ok($('#reader').open,'the notice opens');$('#reader [data-close]').click();assert.ok(!$('#reader').open);
+ }finally{end();}
+});
+
+test('where storage works, the choices are kept on the device',()=>{
+ const {page,app,$,end}=boot();
+ try{
+  $('[data-motion-toggle]').click();assert.equal(page.window.localStorage.getItem(MOTION_KEY),'paused');
+  const record=app.services.privacy.choose(false);assert.equal(record.measurement,false);assert.equal(JSON.parse(page.window.localStorage.getItem(preferenceKey)).measurement,false);
+ }finally{end();}
+});
+
+test('a start-up that fails leaves the page exactly as it is without scripts, with nothing half bound',()=>{
+ // the shell marked the document before the first paint, as the built page does
+ const mark=page=>{page.document.documentElement.setAttribute('data-js','');page.document.documentElement.setAttribute('data-motion','on');};
+ const reported=[];
+ // 1. start-up throws midway (here: the page cannot be drawn because the history refuses)
+ const broken=boot({prepare(page){mark(page);page.window.reportError=error=>reported.push(error);page.window.history.replaceState=()=>{throw new Error('history refused');};},begin:options=>bootSite(options)});
+ try{
+  assert.equal(broken.app,null,'boot reports the failure instead of throwing');assert.equal(reported.length,1);assert.match(reported[0].message,/history refused/);
+  const root=broken.page.document.documentElement;
+  assert.equal(root.hasAttribute('data-js'),false,'the scripts-off rules apply again');assert.equal(root.hasAttribute('data-motion'),false,'nothing is left moved or moving');
+  assert.equal(broken.$('#announce'),null,'what start-up had added is removed');
+  assert.deepEqual(listening(broken.page.window),[],'no listener of the site is left on the window');assert.deepEqual(listening(broken.page.document),[],'nor on the document: links are ordinary links again');
+ }finally{broken.end();}
+ // 2. no reportError in this browser: the console hears it; and a browser with neither stays quiet
+ const said=[];
+ const older=boot({prepare(page){mark(page);page.window.console={error:error=>said.push(error)};},begin:options=>bootSite({...options,begin(){throw new Error('could not start');}})});
+ try{assert.equal(older.app,null);assert.equal(said.length,1);assert.equal(older.page.document.documentElement.hasAttribute('data-js'),false);}finally{older.end();}
+ const silent=boot({prepare:mark,begin:options=>bootSite({...options,begin(){throw new Error('could not start');}})});
+ try{assert.equal(silent.app,null);assert.equal(silent.page.document.documentElement.hasAttribute('data-motion'),false);}finally{silent.end();}
+ // 3. a start that succeeds keeps the marks (and sets the scripts-on mark if the shell could not)
+ const fine=boot({begin:options=>bootSite(options)});
+ try{assert.ok(fine.app);assert.equal(fine.page.document.documentElement.hasAttribute('data-js'),true);assert.equal(fine.page.document.documentElement.getAttribute('data-motion'),'on');assert.equal(fine.app.route(),'/');}finally{fine.end();}
+});
+
+test('taking the site down stops everything it started, even if one part refuses to stop',()=>{
+ const {page,app,$,end}=boot();
+ try{
+  assert.ok(listening(page.window).includes('popstate'));assert.ok(listening(page.document).includes('click'));
+  // the announcer refuses to be removed: everything else must still be stopped
+  $('#announce').remove=()=>{throw new Error('will not go');};
+ }finally{end();}
+ assert.deepEqual(listening(page.window),[]);assert.deepEqual(listening(page.document),[]);
+ app.dispose();
 });

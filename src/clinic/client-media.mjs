@@ -38,7 +38,7 @@ Object.assign(clinicPhotos,{
  'close-sanjay':crop('close-sanjay','In his consulting room',doctors.sanjay.name,'dr-sanjay-gupta-close-up',180,225,[180,360]),
  'close-parul':crop('close-parul','In her consulting room',doctors.parul.name,'dr-parul-gupta-close-up',180,225,[180,360]),
  frontage:crop('frontage','Clinic frontage','The clinic seen from Ring Road: a green wall, a blue board with both doctors’ names and the R. K. Medical Centre sign','frontage-from-ring-road',640,360,[640,1280]),
- waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,800])
+ waiting:crop('waiting','Waiting area','The covered waiting area with rows of chairs, the pharmacy counter and the glass doors','waiting-area-inside-gate',400,500,[400,520,800])
 });
 Object.assign(clinicPhotos,{
  // The wider "at work" portraits (Meet the doctors, profile covers). Never shown wider than 300 px.
