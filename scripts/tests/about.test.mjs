@@ -15,6 +15,7 @@ import {credentials,homeCertificates} from '../../src/clinic/page-content/home.m
 import {escapeHTML} from '../../src/clinic/model.mjs';
 import {checkPage,renderedPage,attributeValues,count,TEST_NOW} from './support/page-contract.mjs';
 import {pageContext} from '../../src/site/runtime/render.mjs';
+import {issuerLine} from '../../src/clinic/page-content/shared.mjs';
 
 const PATH='/about-clinic';
 const {cover,story,standards,walk,doctorsSection}=words;
@@ -163,7 +164,7 @@ test('About prints every word from the content module, escaped',()=>{
   standards.runningHead,standards.heading,...standards.rows.flatMap(row=>[row.name,row.kind,row.meaning]),
   walk.runningHead,walk.heading,...walk.steps.flatMap(step=>[step.title,step.line]),
   doctorsSection.runningHead,doctorsSection.heading,doctorsSection.certificates.label,doctorsSection.certificates.link,
-  ...doctorsSection.certificates.shown.flatMap(item=>[item.title,item.issuer])];
+  ...doctorsSection.certificates.shown.flatMap(item=>[item.title,issuerLine(item.issuer)])];
  for(const value of shown)assert.ok(page.includes(plain(value)),`the page shows: ${value}`);
  const html=renderedPage(PATH,'on');
  assert.ok(html.includes(escapeHTML('The gate is under the blue board with both doctors’ names.')));
