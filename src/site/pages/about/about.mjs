@@ -35,7 +35,7 @@ function coverSection(ctx){
   +`<div class="page-about__cover-actions">${callButton(ctx,{label:cover.call})}${textLink({label:way.label,href:way.href,external:true,note:way.opens})}</div></div>`
   +`<div class="page-about__stage"><div class="page-about__disc" aria-hidden="true" data-ambient><span class="page-about__shaft"></span></div>`
   +photoFigure(shot.photo,{ratio:shot.ratio,caption:shot.caption,captionKey:shot.key,sizes:COVER_SIZES,loading:'eager',className:'page-about__frontage'})
-  +image(clinicObjects[cover.object],{className:'page-about__pin'})
+  +image(clinicObjects[cover.object],{className:'page-about__pin',attributes:{'data-ambient':'float'}})
   +`</div></div></section>`;
 }
 
@@ -61,7 +61,7 @@ function standardsSection(){
   +sectionHead({runningHead:standards.runningHead,heading:standards.heading,id:'standards-title',tone:'on-deep'})
   // Wide screens only: a pale niche (far), a lined sheet standing in it and a pen laid across it (near).
   +`<div class="page-about__still" aria-hidden="true" data-enter="card"><span class="page-about__still-niche"></span>`
-  +image(clinicObjects[sheet],{className:'page-about__still-sheet'})+image(clinicObjects[pen],{className:'page-about__still-pen'})
+  +image(clinicObjects[sheet],{className:'page-about__still-sheet'})+image(clinicObjects[pen],{className:'page-about__still-pen',attributes:{'data-ambient':'float'}})
   +`</div></div><dl class="page-about__ledger">${rows}</dl></div></section>`;
 }
 

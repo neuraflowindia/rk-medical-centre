@@ -162,7 +162,11 @@ test('About’s first screen is still: the cover carries no entrance, and its ph
  assert.match(picture,/fetchpriority="high"/);assert.doesNotMatch(picture,/loading="lazy"/);
  assert.match(picture,new RegExp(`src="${clinicPhotos[cover.photo.photo].src}"`));
  assert.match(coverHtml,/sizes="\(min-width: 768px\) 640px, 92vw"/,'the frontage is never asked for wider than 640 px');
- assert.equal(count(coverHtml,/data-ambient/g),1,'one slow light on the page');
+ assert.equal(count(coverHtml,/data-ambient(?!="(?:minor|float)")/g),1,'one slow light on the page');
+ // The two paper-cut objects float (the motion module lets at most two things run in a laptop view, one on a phone).
+ assert.equal(count(coverHtml,/<img class="page-about__pin"[^>]*data-ambient="float"/g),1,'the pin over the photograph floats');
+ assert.equal(count(html,/<img class="page-about__still-pen"[^>]*data-ambient="float"/g),1,'the pen beside the ledger floats');
+ assert.equal(count(ownSections(html),/data-ambient="float"/g),2,'nothing else on the page floats');
  assert.equal(count(html,/data-ambient(?!="(?:minor|float)")/g),1,'the closing\'s floating handset and the open dot are not lights');
  // Call opens the call panel (with scripts off it leads to the footer's numbers); directions leave the site.
  assert.match(coverHtml,/<a href="#footer-calls"[^>]*data-open-call=""/);

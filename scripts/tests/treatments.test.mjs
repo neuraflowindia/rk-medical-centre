@@ -234,6 +234,8 @@ test('nothing that moves on entrance wraps a panel (a moved wrapper would captur
  assert.equal(count(index,/data-enter/g),11,'the two bylines and the nine objects enter; nothing else in the index does');
  assert.doesNotMatch(index,/<(?:li|ul|section|div|a)\b[^>]*data-enter/,'rows, lists and groups never move: the rhythm of the list stays even');
  assert.equal(count(html,/class="page-treatments__arch" data-ambient/g),9,'one slow light per panel; only the one that is shown runs');
+ assert.equal(count(html,/<span class="page-treatments__stage-float" data-ambient="float"><img class="page-treatments__stage-object"/g),9,'each panel\'s large object floats on a layer of its own (the object itself keeps transform for its arrival)');
+ assert.doesNotMatch(html,/<img class="page-treatments__stage-object"[^>]*data-ambient/,'never on the object itself');
  assert.equal(count(html,/<div class="page-treatments__panel"[^>]*><span class="page-treatments__alive" aria-hidden="true" data-ambient><\/span>/g),9,'each panel starts with the marker that lets the open row\'s object float on a phone');
  // the two doctors sit inside the same block as the index, so the laptop panel can travel on beside them
  assert.match(html,/<\/section><section class="page-treatments__doctors" aria-labelledby="treatments-doctors-title">/);
