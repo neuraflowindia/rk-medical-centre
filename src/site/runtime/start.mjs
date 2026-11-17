@@ -158,6 +158,9 @@ function begin({windowObject=window,documentObject=document,state=productState},
   intent++;
   // the page being left is still on screen: remember where it stood before the other is shown
   scrolls.save(entryKey,windowObject.scrollY);entryKey=history.state?.key;
+  // A part of the page that keeps its own history entries (the booking steps) may handle the move
+  // itself: it listens for `site:history` on the window and prevents it. Then nothing is drawn again.
+  if(!windowObject.dispatchEvent(new windowObject.CustomEvent('site:history',{cancelable:true})))return;
   show({restore:scrolls.read(entryKey)});
  },forLife);
  windowObject.addEventListener('pagehide',()=>{island.close();},forLife);

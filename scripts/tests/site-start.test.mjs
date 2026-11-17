@@ -152,3 +152,25 @@ test('taking the site down stops everything it started, even if one part refuses
  assert.deepEqual(listening(page.window),[]);assert.deepEqual(listening(page.document),[]);
  app.dispose();
 });
+
+test('Back and Forward: the place on each page is kept both ways; a part with its own history entries may handle a move itself',()=>{
+ const {page,app,$,end}=boot();
+ try{
+  // Forward lands where the page was left, as Back does
+  page.scroll(300);follow(page,$('.site-header__link[href="/treatment"]'));assert.equal(app.route(),'/treatment');
+  page.scroll(900);page.window.history.back();page.frames(2);assert.equal(app.route(),'/');assert.equal(page.window.scrollY,300);
+  const entries=[];
+  // (the test history has no forward(): the same move is made by hand, as the browser would)
+  const state=page.window.history.state;page.window.history.pushState({key:2},'','/treatment');page.window.dispatchEvent(new Event('popstate',{bubbles:false}));page.frames(2);
+  assert.equal(app.route(),'/treatment');assert.equal(page.window.scrollY,900,'the later page is found where it was left');assert.ok(state);
+  // a part of the page keeps its own entries (the booking steps): it is asked first, and may take the move
+  const before=app.view.generation();let asked=0,take=true;
+  const listener=event=>{asked++;entries.push(event.type);if(take)event.preventDefault();};
+  page.window.addEventListener('site:history',listener);
+  page.window.dispatchEvent(new Event('popstate',{bubbles:false}));page.frames(1);
+  assert.equal(asked,1);assert.equal(app.view.generation(),before,'the page is not drawn again');assert.deepEqual(entries,['site:history']);
+  take=false;page.window.dispatchEvent(new Event('popstate',{bubbles:false}));page.frames(1);
+  assert.equal(asked,2);assert.equal(app.view.generation(),before+1,'left alone, the router draws the page as before');
+  page.window.removeEventListener('site:history',listener);
+ }finally{end();}
+});
