@@ -1,11 +1,11 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {checkPage,renderedPage,renderedApp,attributeValues,count} from './support/page-contract.mjs';
-import {doctors as renderDoctors} from '../../src/site/pages/doctors/doctors.mjs';
+import {doctors as renderDoctors,pairShape} from '../../src/site/pages/doctors/doctors.mjs';
 import {bindDoctors} from '../../src/site/pages/doctors/doctors.behaviour.mjs';
 import {doctorsPage as words,meetCertificates,workPortrait} from '../../src/clinic/page-content/doctors.mjs';
 import {doctors} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
-import {clinicPhotos,doctorAvatars} from '../../src/clinic/client-media.mjs';
+import {clinicPhotos,clinicObjects,doctorAvatars,plainCertificates} from '../../src/clinic/client-media.mjs';
 import {text} from '../../src/site/lib/html.mjs';
 import {pageContext} from '../../src/site/runtime/render.mjs';
 import {pageFor} from '../../src/site/runtime/registry.mjs';
@@ -47,12 +47,35 @@ test('the opening is a double portrait: both doctors in the wider at-work crop, 
   assert.ok(html.includes(`src="${photo.src}"`),`${item.id}: the at-work portrait`);
   assert.ok(html.includes(`<strong>${text(item.name)}</strong> <span>${text(item.role)}</span> <em>${text(item.credit)}</em>`));
  }
- assert.equal(count(html,/<img\b/g),2);assert.equal(count(html,/photo-figure--arch photo-figure--4x5/g),2);
- assert.doesNotMatch(html,/loading="lazy"|data-enter/,'first-screen pictures load at once and nothing in the first screen enters');
- assert.equal(count(html,/data-ambient/g),1,'one light, owned by the stage');
- assert.equal(count(html,/page-doctors__shaft/g),2);
+ assert.equal(count(html,/photo-figure--arch photo-figure--4x5/g),2);
+ const portraits=html.match(/<figure\b.*?<\/figure>/g);
+ assert.equal(portraits.length,2);
+ for(const figure of portraits)assert.match(figure,/<img[^>]*fetchpriority="high"/,'a portrait of the first screen loads at once');
+ assert.doesNotMatch(html,/data-enter/,'nothing in the first screen enters');
  assert.doesNotMatch(html,/<a\b[^>]*>\s*<figure|<button/,'portraits are not links and never enlarge');
- assert.ok(html.includes(`href="${words.jump.href}"`)&&html.includes(text(words.jump.label)));
+});
+
+test('the opening in depth: a tone plate behind each portrait, each doctor\'s own instrument in front, and two slow movers',()=>{
+ const html=section(renderedPage(PATH,'on'),'opening');
+ assert.equal(count(html,/<span class="page-doctors__plate" aria-hidden="true"><span class="page-doctors__shaft"><\/span><\/span>/g),2);
+ // near: one paper-cut instrument per doctor, decorative, after the portrait in its frame, and never fetched before it is needed
+ const instruments=html.match(/<img class="page-doctors__instrument"[^>]*>/g);
+ assert.equal(instruments.length,2);
+ words.portraits.forEach((item,index)=>{
+  const object=clinicObjects[item.instrument];
+  assert.ok(object,`${item.id}: the instrument is a known object`);
+  assert.ok(instruments[index].includes(`src="${object.src}"`)&&/\salt=""/.test(instruments[index])&&/loading="lazy"/.test(instruments[index]));
+ });
+ assert.notEqual(words.portraits[0].instrument,words.portraits[1].instrument);
+ assert.equal(count(html,/<img\b/g),4,'two portraits and two instruments, nothing else');
+ // the light belongs to the stage; the two instruments' float to one marker (a light outranks a float, so a phone runs the light alone)
+ assert.equal(count(html,/data-ambient(?!=)/g),1);assert.match(html,/class="wrap page-doctors__stage" data-ambient>/);
+ assert.equal(count(html,/data-ambient="/g),1);assert.match(html,/<span class="page-doctors__alive" aria-hidden="true" data-ambient="float"><\/span>/);
+ assert.ok(html.indexOf('page-doctors__alive')<html.indexOf('page-doctors__pair'),'the marker comes before the pair it starts');
+ // the next step is a paper button that leads to the spread
+ const jump=html.match(/<p class="page-doctors__jump">(.*?)<\/p>/)[1];
+ assert.match(jump,/^<a href="#who" class="button button--second button--compact">/);
+ assert.ok(jump.includes(text(words.jump.label))&&jump.includes('#i-down'));
 });
 
 test('the spread: one page per doctor with a plain list, the formal facts and the actions',()=>{
@@ -63,16 +86,20 @@ test('the spread: one page per doctor with a plain list, the formal facts and th
   assert.ok(page.includes(`page-doctors__leaf--${item.tone}`));
   assert.ok(page.includes(`<h3 class="page-doctors__leaf-title" id="see-${item.id}">${text(item.heading)}</h3><p class="page-doctors__leaf-role">${text(item.role)}</p>`),'the heading comes before the line under it');
   assert.ok(page.includes(`src="${doctorAvatars[item.id].src}"`)&&/<img[^>]*alt=""/.test(page),'the small face is decorative');
-  const listed=[...page.matchAll(/<li><svg[^>]*><use href="#i-check"\/><\/svg><span>([^<]*)<\/span><\/li>/g)].map(match=>match[1]);
-  assert.deepEqual(listed,item.concerns.map(text));
-  assert.doesNotMatch(page.slice(page.indexOf('<ul'),page.indexOf('</ul>')),/<a\b/,'the list is plain: information, not controls');
-  assert.ok(page.includes(text(item.formalLine))&&page.includes(text(item.registration))&&page.includes(registrationNumbers[item.id]));
+  const list=page.slice(page.indexOf('<ul'),page.indexOf('</ul>'));
+  assert.deepEqual([...list.matchAll(/<li>([^<]*)<\/li>/g)].map(match=>match[1]),item.concerns.map(text));
+  assert.doesNotMatch(list,/<a\b|<svg/,'the list is plain: information, not controls, and ruled only by hairlines');
+  // degrees and registration, and nothing that names the field a third time
+  assert.ok(page.includes(`<p class="page-doctors__facts"><span>${text(item.degrees)}</span> <span class="page-doctors__registration">${text(item.registration)}</span></p>`));
+  assert.ok(page.includes(registrationNumbers[item.id])&&!page.includes(text(doctor.formal)));
   assert.ok(page.includes(`href="/booking?doctor=${item.id}"`)&&page.includes(`Book with ${text(item.name.replace(/\s+\S+$/u,''))}`));
   assert.ok(page.includes(`href="tel:${doctor.tel}"`)&&page.includes(`data-open-call="${item.id}"`));
   assert.match(page,/button--second button--lead/);
   assert.ok(page.includes(`href="${doctor.path}"`)&&page.includes(`aria-label="${item.profile.spoken}"`));
   assert.equal(page.includes('tag--gold'),!!item.tag);
-  if(item.tag)assert.ok(page.includes(text(item.tag)));
+  // the honour stands under the list, inside the list's own band
+  if(item.tag)assert.match(page,new RegExp(`</ul><p class="tag tag--gold">.*?${text(item.tag)}</p></div><p class="page-doctors__facts">`));
+  else assert.ok(page.includes('</ul></div><p class="page-doctors__facts">'));
  }
  assert.equal(count(html,/data-enter="card"/g),1,'the sheet enters as one');
  assert.ok(html.includes(`href="${words.choose.more.href}"`)&&html.includes(text(words.choose.more.label))&&html.includes(text(words.choose.more.lead)));
@@ -100,10 +127,25 @@ test('training and honours: the sentence, four framed certificates that open the
  const shown=attributeValues(html,'data-view-certificate');
  assert.deepEqual(shown,meetCertificates().map(item=>item.id));
  assert.equal(count(html,/data-certificate-wall/g),1);
+ assert.match(html,/data-certificate-wall data-settle/,'the documents settle as the section arrives');
  assert.ok(html.includes(`aria-label="${text(words.training.wallLabel)}"`));
  for(const item of meetCertificates())assert.ok(html.includes(text(item.title))&&html.includes(text(doctors[item.doctor].name)),'each label says what it is and whose');
  for(const link of words.training.links)assert.ok(html.includes(`href="${link.href}"`)&&html.includes(`aria-label="${link.spoken}"`));
  assert.ok(html.includes(text(words.training.linksLead)));
+ assert.ok(html.indexOf('data-certificate-wall')<html.indexOf('page-doctors__wall-links'),'the documents come before the two links, in the page as on screen');
+});
+
+test('each doctor\'s pair of documents is one row: the page prints what a row needs to fill its column',()=>{
+ const html=section(renderedPage(PATH,'on'),'training'),shown=meetCertificates();
+ const shape=item=>plainCertificates[item.id].width/plainCertificates[item.id].height;
+ const first=shape(shown[0])+shape(shown[1]),second=shape(shown[2])+shape(shown[3]);
+ assert.ok(Math.abs(pairShape(shown.slice(0,2))-first)<.001&&Math.abs(pairShape(shown.slice(2))-second)<.001);
+ assert.ok(html.includes(`<div class="page-doctors__wall" style="--pair-a:${pairShape(shown.slice(0,2))};--pair-b:${pairShape(shown.slice(2))}">`));
+ // each frame carries its own shape too, and the two agree
+ const shapes=attributeValues(html,'style').filter(value=>value.includes('--ar:')).map(value=>Number(/--ar:([\d.]+)/.exec(value)[1]));
+ assert.equal(shapes.length,4);
+ assert.ok(Math.abs(shapes[0]+shapes[1]-pairShape(shown.slice(0,2)))<.005&&Math.abs(shapes[2]+shapes[3]-pairShape(shown.slice(2)))<.005);
+ assert.equal(pairShape([]),0);
 });
 
 test('the page is the same for the same input and does not depend on the clock',()=>{
@@ -120,7 +162,9 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
  const tokens=names(read('styles/tokens.css'));
  // Not design tokens: --q is set by the motion styles on every entering part; --room is set by
  // the profile template on the room photograph's frame (the photograph's own width).
- const fromMotion=new Set(['--q','--room']);
+ // --pair-a and --pair-b are set by the Meet the doctors template on its wall (each pair's shapes);
+ // --ar by the shared certificate frame (one document's shape).
+ const fromMotion=new Set(['--q','--room','--pair-a','--pair-b','--ar']);
  for(const sheet of ['pages/doctors/doctors.css','pages/profile/profile.css']){
   const css=read(sheet),own=names(css);
   const used=[...new Set([...css.matchAll(/var\((--[a-z0-9-]+)/g)].map(match=>match[1]))];
@@ -128,5 +172,7 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
   assert.deepEqual(used.filter(name=>!tokens.has(name)&&!own.has(name)&&!fromMotion.has(name)),[],`${sheet} uses a token that does not exist`);
  }
  assert.match(read('motion/motion.css'),/--q:/,'the entrance progress still comes from the motion styles');
+ // Meet the doctors floats its two instruments with the site's own float.
+ assert.match(read('motion/motion.css'),/@keyframes motion-float\b/);assert.match(read('pages/doctors/doctors.css'),/animation: motion-float var\(--loop-float\)/);
  assert.match(read('pages/profile/profile.mjs'),/style="--room:\$\{/,'the profile template still sets the room photograph\'s width');
 });

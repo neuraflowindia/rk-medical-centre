@@ -3,14 +3,18 @@
 @layer pages {
 
   /* ---------- 1 · opening: a double portrait ---------- */
+  /* --band: how far a doctor's plate shows beside the frame, toward the other doctor
+     --crown: how far it stands above the frame · --inset: how far its other side hides behind the frame */
   .page-doctors__opening { position: relative; background: var(--ground-light); padding: var(--space-6) 0 40px; overflow-x: clip; }
-  .page-doctors__stage { display: grid; gap: 30px; }
+  .page-doctors__stage { --band: 12px; --crown: 22px; --inset: 14px; position: relative; display: grid; gap: 30px; }
+  /* owns the two instruments' float (one loop for the pair): on screen with the stage, nothing to see or to press */
+  .page-doctors__alive { position: absolute; inset: 0; pointer-events: none; }
   .page-doctors__centre .section-head { max-width: none; }
-  .page-doctors__jump { display: none; }
+  .page-doctors__jump, .page-doctors__instrument { display: none; }
 
   /* phones and tablets: a zig-zag. Each frame and its caption are placed separately, so the
      caption stands beside its portrait and the second portrait tucks under the first caption. */
-  .page-doctors__pair { --tuck: 62px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 18px; padding-top: var(--space-3); }
+  .page-doctors__pair { --tuck: 62px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; padding-top: var(--space-4); }
   .page-doctors__sitter { display: contents; }
   .page-doctors__frame { position: relative; }
   .page-doctors__frame .photo-figure { position: relative; z-index: 1; }
@@ -18,13 +22,14 @@
   .page-doctors__sitter--sanjay .page-doctors__caption { grid-column: 2; grid-row: 1; align-self: start; padding-top: 10px; }
   .page-doctors__sitter--parul .page-doctors__frame { grid-column: 2; grid-row: 2; margin-top: calc(-1 * var(--tuck)); }
   .page-doctors__sitter--parul .page-doctors__caption { grid-column: 1; grid-row: 2; align-self: center; justify-items: end; text-align: right; padding-top: var(--space-5); }
-  /* far: an arch plate in the doctor's own tone; one slow light crosses both */
-  .page-doctors__plate { position: absolute; z-index: 0; inset: -12px -12px auto 12px; aspect-ratio: 4 / 5; border-radius: var(--radius-arch); background: var(--mist-sage); overflow: hidden; }
-  .page-doctors__sitter--parul .page-doctors__plate { inset: -12px 12px auto -12px; background: var(--mist-rose); }
-  .page-doctors__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
+  /* far: an arch plate in the doctor's own tone. It stands above the frame and out toward the
+     other doctor, so a real band of sage or rose shows; its foot ends behind the photograph. */
+  .page-doctors__plate { position: absolute; z-index: 0; inset: calc(-1 * var(--crown)) calc(-1 * var(--band)) 16% var(--inset); border-radius: var(--radius-arch); background: var(--mist-sage); overflow: hidden; }
+  .page-doctors__sitter--parul .page-doctors__plate { inset: calc(-1 * var(--crown)) var(--inset) 16% calc(-1 * var(--band)); background: var(--mist-rose); }
+  /* one slow light: it leaves the outer edge of each plate and arrives on the two inner bands together */
+  .page-doctors__shaft { position: absolute; top: 0; bottom: 0; left: -100%; width: 300%; background: var(--shaft-light); will-change: transform; }
   html[data-motion="on"] .page-doctors__shaft { animation: page-doctors-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
-  /* the second plate is lit a moment after the first: one light, travelling left to right */
-  html[data-motion="on"] .page-doctors__sitter--parul .page-doctors__shaft { animation-delay: calc(var(--loop-light-start) + var(--loop-light) * .14); }
+  html[data-motion="on"] .page-doctors__sitter--parul .page-doctors__shaft { animation-direction: alternate-reverse; }
   html[data-motion="on"] .page-doctors__stage[data-running] .page-doctors__shaft { animation-play-state: running; }
   @keyframes page-doctors-shaft {
     from { transform: translateX(-13%); }
@@ -41,11 +46,11 @@
     from { transform: translateY(-12px); }
     to { transform: none; }
   }
-  /* near: the caption — who, what, and where the photograph was taken */
+  /* the caption: who, what, and where the photograph was taken */
   .page-doctors__caption { display: grid; align-content: start; gap: 3px; min-width: 0; }
   .page-doctors__caption strong { color: var(--ink); font: var(--type-name); letter-spacing: var(--tracking-display); }
   .page-doctors__caption span { color: var(--ink-body); font: var(--type-formal); }
-  .page-doctors__caption em { margin-top: 5px; color: var(--ink-muted); font: var(--type-caption-italic); }
+  .page-doctors__caption em { margin-top: 5px; color: var(--ink-body); font: var(--type-caption-italic); }
 
   /* ---------- 2 · who should I see: a split spread ---------- */
   .page-doctors__choose { position: relative; background: var(--ground-tint); padding: var(--section-pad) 0; box-shadow: inset 0 1px 0 var(--line); }
@@ -61,15 +66,15 @@
   .page-doctors__face { grid-row: 1 / 3; width: 56px; height: 56px; border-radius: var(--radius-control); box-shadow: 0 0 0 3px var(--surface), var(--elev-photo); }
   .page-doctors__leaf-role { grid-column: 2; grid-row: 2; color: var(--ink-body); font: var(--type-formal); }
   .page-doctors__leaf-title { grid-column: 2; grid-row: 1; font: var(--type-name); }
-  /* a plain list in the display face: information, so it is flat */
-  .page-doctors__concerns { display: grid; align-content: start; }
-  .page-doctors__concerns li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: var(--space-3); align-items: center; min-height: 44px; padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink); font: var(--type-ledger); }
+  /* a plain list in the display face, ruled with hairlines: information, so it is flat */
+  .page-doctors__for { display: grid; align-content: start; justify-items: start; }
+  .page-doctors__concerns { display: grid; align-content: start; width: 100%; }
+  .page-doctors__concerns li { display: flex; align-items: center; min-height: 44px; padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink); font: var(--type-ledger); }
   .page-doctors__concerns li:last-child { border-bottom: 1px solid var(--line); }
-  .page-doctors__concerns .icon { width: 18px; height: 18px; color: var(--action); }
-  .page-doctors__facts { display: grid; align-content: start; justify-items: start; gap: 3px; }
-  .page-doctors__formal { color: var(--ink-body); font: var(--type-formal); }
-  .page-doctors__registration { color: var(--ink-body); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
-  .page-doctors__facts .tag { margin-top: 9px; }
+  .page-doctors__for .tag { margin-top: 11px; }
+  .page-doctors__facts { display: grid; align-content: start; justify-content: start; gap: 2px; color: var(--ink-body); font: var(--type-formal); }
+  .page-doctors__registration { font-variant-numeric: tabular-nums lining-nums; }
+  /* Book and Call share a row, with "Full profile" under them */
   .page-doctors__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
   .page-doctors__actions .button--main { flex: 1 1 0; min-width: 0; padding-inline: var(--space-3); }
   .page-doctors__actions .button--second { flex: 0 0 auto; min-width: 92px; padding-inline: var(--space-4); }
@@ -81,12 +86,20 @@
   /* ---------- 3 · training and honours: a museum label and four documents ---------- */
   .page-doctors__training { background: var(--ground-light); padding: calc(var(--section-pad) - 8px) 0 var(--space-4); }
   .page-doctors__training-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .page-doctors__wall { --certificate-height: 132px; margin-top: var(--head-gap); }
+  /* phones: a row the visitor moves. Two whole documents and the edge of the third show at 390 px. */
+  .page-doctors__wall { --certificate-height: clamp(88px, 25.6vw, 118px); --certificate-mat: 7px; margin-top: var(--head-gap); }
+  .page-doctors__wall .certificate-wall { gap: var(--space-3); }
+  .page-doctors__wall .certificate-wall__item { min-width: 0; }
+  .page-doctors__wall .certificate-frame { align-content: start; width: max(calc(var(--certificate-height) * var(--ar, 1.4) + 2 * var(--certificate-mat)), 34vw); }
+  .page-doctors__wall .certificate-frame__label { width: auto; min-width: 0; }
   .page-doctors__wall-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-5); margin-top: var(--space-2); color: var(--ink-body); font: var(--type-formal); }
 
   @media (max-width: 359px) {
-    .page-doctors__pair { --tuck: 34px; column-gap: 14px; }
+    .page-doctors__pair { --tuck: 34px; column-gap: 18px; }
     .page-doctors__caption em { display: none; }
+    /* "Book with Dr. Sanjay" needs the whole row for its words; Call and "Full profile" share the next */
+    .page-doctors__actions .button--main, html[data-booking-state="off"] .page-doctors__actions .button--lead { flex: 1 1 100%; }
+    .page-doctors__profile { flex: 0 0 auto; margin-bottom: 0; }
   }
 
   @media (min-width: 480px) {
@@ -95,10 +108,8 @@
 
   @media (min-width: 768px) {
     .page-doctors__opening { padding: var(--space-8) 0 var(--space-9); }
-    .page-doctors__stage { gap: 44px; }
-    .page-doctors__pair { --tuck: 110px; max-width: 560px; column-gap: 40px; }
-    .page-doctors__plate { inset: -16px -16px auto 16px; }
-    .page-doctors__sitter--parul .page-doctors__plate { inset: -16px 16px auto -16px; }
+    .page-doctors__stage { --band: 32px; --crown: 30px; --inset: 20px; gap: 52px; }
+    .page-doctors__pair { --tuck: 110px; max-width: 560px; column-gap: 48px; }
     .page-doctors__sitter--sanjay .page-doctors__caption { padding-top: 26px; }
     .page-doctors__caption { gap: 4px; }
 
@@ -111,45 +122,74 @@
     .page-doctors__concerns li { min-height: 50px; }
     .page-doctors__more { margin-top: var(--space-6); }
 
-    /* the four documents stand two to a row: each doctor's pair together */
+    /* the four documents stand two to a row, each doctor's pair together */
     .page-doctors__training { padding: var(--section-pad) 0 var(--space-6); }
-    .page-doctors__wall { --certificate-height: 190px; --certificate-mat: 9px; width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; }
-    /* held narrow enough that a third document never joins a row */
-    .page-doctors__wall .certificate-wall { max-width: 720px; }
-    .page-doctors__wall .certificate-wall { flex-wrap: wrap; gap: 34px var(--space-5); overflow: visible; padding: 0; }
+    .page-doctors__wall { --certificate-height: 190px; --certificate-mat: 9px; container-type: inline-size; width: min(var(--content-width), 100% - 2 * var(--gutter)); max-width: 720px; margin-inline: auto; }
+    .page-doctors__wall .certificate-wall { flex-wrap: wrap; gap: 36px var(--space-5); overflow: visible; padding: 0; }
+    .page-doctors__wall .certificate-frame { width: auto; }
+    .page-doctors__wall .certificate-frame__label { width: 0; min-width: 100%; }
     .page-doctors__wall-links { margin-top: var(--space-4); }
+  }
+  /* Justified rows: a pair shares one height, chosen so that the two documents, their mats and the
+     gap fill the column exactly (--pair-a and --pair-b are each pair's shapes added up; the page's
+     template prints them). Both rows then end on the column's edge. */
+  @supports (width: 1cqw) {
+    @media (min-width: 768px) {
+      .page-doctors__wall .certificate-wall__item:nth-child(-n+2) { --certificate-height: calc((100cqw - var(--space-5) - 4 * var(--certificate-mat) - 2px) / var(--pair-a, 2.6)); }
+      .page-doctors__wall .certificate-wall__item:nth-child(n+3) { --certificate-height: calc((100cqw - var(--space-5) - 4 * var(--certificate-mat) - 2px) / var(--pair-b, 2.7)); }
+    }
   }
 
   @media (min-width: 1024px) {
-    /* a triptych: portrait · heading · portrait, the second set a little lower */
-    .page-doctors__opening { padding: 56px 0 80px; }
-    /* the middle column is never narrower than the heading's longer line (8.8 times its size);
-       the frames take what is left, up to their own limit */
-    .page-doctors__stage { --frame: 208px; grid-template-columns: minmax(0, var(--frame)) minmax(calc(var(--size-h1) * 8.8), 1fr) minmax(0, var(--frame)); gap: 0 40px; align-items: start; }
+    /* a triptych: portrait · heading · portrait, the second set a little lower. The middle column
+       is never narrower than the heading's longer line (8.7 times its size); the frames take what
+       is left, up to their own limit. Each plate's band and a little air stand between a frame
+       and the heading. */
+    .page-doctors__opening { --dome: 116px; --stage-foot: 76px; padding: 76px 0 var(--stage-foot); }
+    .page-doctors__stage { --frame: 200px; --band: 40px; --crown: 30px; --inset: 22px; --air: 22px;
+      grid-template-columns: minmax(0, var(--frame)) minmax(calc(var(--size-h1) * 8.7), 1fr) minmax(0, var(--frame)); gap: 0 calc(var(--band) + var(--air)); align-items: start; }
     .page-doctors__pair { display: contents; }
     .page-doctors__sitter { display: grid; align-content: start; gap: 22px; grid-row: 1; }
     .page-doctors__sitter--sanjay { grid-column: 1; }
     .page-doctors__sitter--parul { grid-column: 3; margin-top: 56px; }
     .page-doctors__sitter--sanjay .page-doctors__frame, .page-doctors__sitter--parul .page-doctors__frame { grid-column: auto; grid-row: auto; margin-top: 0; }
-    .page-doctors__sitter--sanjay .page-doctors__caption, .page-doctors__sitter--parul .page-doctors__caption { grid-column: auto; grid-row: auto; align-self: start; justify-items: start; text-align: left; padding: 0 0 0 10px; }
-    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 40px; }
-    .page-doctors__jump { display: block; margin-top: var(--space-5); }
+    /* the two captions mirror each other: each keeps to its own outer edge and may run on under its plate's band */
+    .page-doctors__sitter--sanjay .page-doctors__caption, .page-doctors__sitter--parul .page-doctors__caption { grid-column: auto; grid-row: auto; align-self: start; padding: 0 var(--space-2); white-space: nowrap; }
+    .page-doctors__sitter--sanjay .page-doctors__caption { justify-items: start; text-align: left; }
+    .page-doctors__sitter--parul .page-doctors__caption { justify-items: end; text-align: right; }
+    .page-doctors__centre { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; padding-bottom: 64px; }
+    /* the next step stands on the crown of the dome below (see .page-doctors__choose::before): the way into the next section */
+    .page-doctors__jump { display: block; position: absolute; z-index: 3; left: 50%; bottom: calc(var(--dome) - var(--stage-foot) - var(--tap) / 2); translate: -50% 0; }
+    /* near: each doctor's own instrument rests against the foot of the frame, on the heading's side */
+    .page-doctors__instrument { display: block; position: absolute; z-index: 2; bottom: -20px; height: auto; max-width: none; filter: var(--elev-object-strong); pointer-events: none; }
+    .page-doctors__sitter--sanjay .page-doctors__instrument { right: calc(-1 * var(--band) - 6px); width: 88px; transform: rotate(9deg); }
+    .page-doctors__sitter--parul .page-doctors__instrument { --float-phase: -2.6s; left: calc(-1 * var(--band) - 8px); width: 108px; transform: rotate(-7deg); }
+    /* they float as every paper-cut object on the site does (the float is drawn in motion.css and adds
+       to the tilt given here), a few seconds apart; the marker lets them run, so a phone runs the light alone */
+    html[data-motion="on"] .page-doctors__instrument { animation: motion-float var(--loop-float) var(--ease-drift) calc(var(--loop-float) * -.5 + var(--float-phase, 0s)) infinite alternate paused; }
+    html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__instrument { animation-play-state: running; }
+
+    /* far, between the two doctors: the next section's ground wells up as a low dome, under the
+       button that leads to it */
+    .page-doctors__choose::before { content: ""; position: absolute; z-index: 0; left: 50%; bottom: calc(100% - 1px); width: min(460px, 38vw); height: 117px; translate: -50% 0;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: linear-gradient(180deg, var(--ground-tint-light), var(--ground-tint)); box-shadow: inset 0 1px 0 var(--line); pointer-events: none; }
 
     .page-doctors__leaf { padding: 44px 48px 44px; }
     .page-doctors__leaf-head { column-gap: 18px; }
     .page-doctors__face { width: 64px; height: 64px; }
     .page-doctors__concerns li { min-height: 54px; }
-    .page-doctors__actions { flex-wrap: nowrap; gap: var(--space-3); }
-    .page-doctors__actions .button--main { flex: 0 0 auto; padding-inline: 22px; }
-    .page-doctors__actions .button--second { padding-inline: 22px; }
-    html[data-booking-state="off"] .page-doctors__actions .button--lead { flex: 0 0 auto; }
-    .page-doctors__profile { flex: 0 0 auto; margin: 0 0 0 auto; }
+    /* degrees and registration on one line */
+    .page-doctors__facts { grid-auto-flow: column; gap: 0; }
+    .page-doctors__registration::before { content: "·"; margin: 0 .5em; }
+    .page-doctors__actions { gap: var(--space-3); }
 
-    .page-doctors__training { padding-bottom: var(--space-7); }
-    .page-doctors__training-grid { width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); grid-template-rows: auto 1fr; column-gap: var(--space-9); align-items: start; }
-    .page-doctors__training-head { grid-column: 1; grid-row: 1; width: auto; margin: 0; }
-    .page-doctors__wall-links { grid-column: 1; grid-row: 2; width: auto; margin: var(--space-4) 0 0; }
-    .page-doctors__wall { --certificate-height: 176px; grid-column: 2; grid-row: 1 / 3; width: auto; margin: 6px 0 0; }
+    /* the label keeps the visitor company while the two rows of documents pass */
+    .page-doctors__training { padding-bottom: var(--space-8); }
+    .page-doctors__training-grid { width: min(var(--content-width), 100% - 2 * var(--gutter)); margin-inline: auto; grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: var(--space-9); align-items: start; }
+    .page-doctors__training-head { grid-column: 1; grid-row: 1 / 3; position: sticky; top: calc(var(--header-height) + var(--space-8)); width: auto; margin: 0; }
+    .page-doctors__wall { grid-column: 2; grid-row: 1; width: auto; max-width: none; margin: 6px 0 0; }
+    .page-doctors__wall .certificate-wall { row-gap: 44px; }
+    .page-doctors__wall-links { grid-column: 2; grid-row: 2; width: auto; margin: var(--space-6) 0 0; }
   }
   /* the two pages share their rows, so lists, facts and buttons line up across the fold */
   @supports (grid-template-rows: subgrid) {
@@ -160,7 +200,15 @@
   }
 
   @media (min-width: 1280px) {
-    .page-doctors__stage { --frame: 300px; column-gap: clamp(40px, 4.4vw, 72px); }
-    .page-doctors__wall { --certificate-height: 196px; --certificate-mat: 10px; }
+    .page-doctors__stage { --frame: 300px; --band: 56px; --crown: 36px; --inset: 24px; --air: 26px; }
+    .page-doctors__sitter--sanjay .page-doctors__instrument { width: 112px; bottom: -24px; }
+    .page-doctors__sitter--parul .page-doctors__instrument { width: 136px; bottom: -24px; }
+    /* one row from here: Book, Call, and "Full profile" at the far end */
+    .page-doctors__actions { flex-wrap: nowrap; }
+    .page-doctors__actions .button--main { flex: 0 0 auto; padding-inline: 22px; }
+    .page-doctors__actions .button--second { padding-inline: 22px; }
+    html[data-booking-state="off"] .page-doctors__actions .button--lead { flex: 0 0 auto; }
+    .page-doctors__profile { flex: 0 0 auto; margin: 0 0 0 auto; }
+    .page-doctors__wall { --certificate-mat: 10px; }
   }
 }
