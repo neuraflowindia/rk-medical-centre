@@ -6,17 +6,18 @@ import {doctors} from '../clinic/model.mjs';
 import {doctorOrder} from '../clinic/care-catalogue.mjs';
 import {doctorAvatars,closePortraits,clinicObjects} from '../clinic/client-media.mjs';
 import {bookForSomeoneElseAnswer} from '../clinic/standins.mjs';
-import {addressCard,actionLabels,clinicPlace,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
+import {addressCard,actionLabels,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
 import {dateRange,localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
 
 const NBSP=' ';
-/** Keep short pairs on one line, as the site's templates do: "Dr. Sanjay", "10:20 am", "94150 49410". */
+/** Keep short pairs on one line, as the site's templates do: "Dr. Sanjay", "10:20 am", "94150 49410", "UP - 226016". */
 export function keepTogether(value){
  return String(value)
   .replace(/\b(Dr|R|No|Reg)\. (?=\S)/gu,`$1.${NBSP}`)
   .replace(/(\d) (am|pm)\b/gu,`$1${NBSP}$2`)
-  .replace(/\b(\d{5}) (\d{5})\b/gu,`$1${NBSP}$2`);
+  .replace(/\b(\d{5}) (\d{5})\b/gu,`$1${NBSP}$2`)
+  .replace(/\b([A-Z]{2}) - (\d{6})\b/gu,`$1${NBSP}-${NBSP}$2`);
 }
 
 /** Every sentence the booking steps print themselves (the engine supplies its own error sentences). */
@@ -24,6 +25,8 @@ export const words=Object.freeze({
  formLabel:'Book an appointment',
  progressLabel:'Booking steps',
  stepCount:(step,total,label)=>`Step ${step} of ${total} · ${label}`,
+ // said to a screen reader after the name of a finished step (the eye sees a tick)
+ stepDone:'done',
  back:'Back',
  next:'Continue',
  change:'Change',
@@ -39,7 +42,10 @@ export const words=Object.freeze({
   today:'Today',
   later:'Later date',
   dateField:'Appointment date',
-  notOffered:'not available'
+  notOffered:'not available',
+  // phones show the days as one row that is moved sideways: these two move it for the visitor
+  more:'More days',
+  earlier:'Earlier days'
  }),
  time:Object.freeze({
   legend:'Starting time',
@@ -49,6 +55,8 @@ export const words=Object.freeze({
   noneInSession:session=>`No ${session} times are left.`,
   noSession:(session,weekday)=>`No ${session} appointments on ${weekday}s.`,
   retry:'Check available times again',
+  // the day's times could not be read (the engine's own sentence speaks of payments, which is wrong for this moment)
+  failed:'We could not load the times. Check again, or call the clinic.',
   gone:'That starting time is no longer free. Please choose another.',
   // booking was paused while the visitor was in the steps; nobody took the time
   again:'Please choose your starting time again.'
@@ -58,12 +66,13 @@ export const words=Object.freeze({
   failed:'We could not load the clinic’s appointment options.',
   retry:'Reload appointment options'
  }),
- missing:Object.freeze({doctor:'Choose a doctor',time:'Choose a starting time',checking:'Checking times…'}),
+ missing:Object.freeze({doctor:'Choose a doctor',time:'Choose a starting time',checking:'Checking times…',timeShort:'choose a time'}),
  details:Object.freeze({
   name:'Patient’s full name',
   // The stand-in answer to "Can I book for a parent or someone else?", without its leading "Yes."
   someoneElse:`Booking for a parent or someone else? ${bookForSomeoneElseAnswer.replace(/^Yes\.\s*/u,'')}`,
   phone:'Phone number',
+  // (a mobile number typed with a 0 in front is put right by the page, so the line need not forbid it)
   phoneHint:'10 digits. For a number outside India, start with + and the country code.',
   email:'Email address',
   emailHint:'Only if you would like a copy by email.',
@@ -223,6 +232,24 @@ export function dayTiles({first,last,hours=null,count=DAY_TILES}={}){
    month:dayPart(iso,{month:'short'}),spoken:dayLong(iso),available:sits&&(!isDay(last)||iso<=last)});
  });
 }
+/**
+ * The day tiles are one stop for the Tab key; the arrow keys move between the days that can be
+ * chosen (Home and End go to the first and last). Returns the day to move to, or "" to stay.
+ */
+export function tileMove(tiles,current,key){
+ const open=tiles.filter(tile=>tile.available).map(tile=>tile.iso),at=open.indexOf(current);
+ if(!open.length)return '';
+ const step={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[key];
+ if(key==='Home')return open[0]===current?'':open[0];
+ if(key==='End')return open.at(-1)===current?'':open.at(-1);
+ if(!step)return '';
+ if(at<0)return open[0];
+ return open[at+step]||'';
+}
+/** The tile that takes the Tab key: the chosen day when it is a tile, otherwise the first day that can be chosen. */
+export function tileStop(tiles,chosen){
+ return tiles.find(tile=>tile.available&&tile.iso===chosen)?.iso||tiles.find(tile=>tile.available)?.iso||'';
+}
 /** Is the chosen day one of the tiles? If not, the date box stays open so the choice can be seen. */
 export function dayBeyondTiles(tiles,iso){return isDay(iso)&&!tiles.some(tile=>tile.iso===iso);}
 
@@ -310,9 +337,18 @@ export function mustChooseAgain({step,state,usable}){
 }
 
 const EMAIL=/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/u;
-/** A phone number the engine can read: ten digits for India, or + and a country code. */
+/**
+ * Many people here type their mobile number with a 0 in front. The engine puts +91 before an
+ * Indian number exactly as typed, so the one 0 is taken off first: "098765 43210" → "98765 43210".
+ * Anything else is returned as it is.
+ */
+export function tidyPhone(value){
+ const raw=String(value??'');
+ return /^0[1-9][0-9]{9}$/u.test(raw.replace(/[\s()-]/gu,''))?raw.replace(/^\s*(?:\(0\)|0)[\s-]*/u,''):raw;
+}
+/** A phone number the engine can read: ten digits for India (one 0 in front is taken off), or + and a country code. */
 export function validPhone(value){
- const raw=String(value).trim();
+ const raw=tidyPhone(value).trim();
  if(!raw||!/^[+0-9 ()-]+$/u.test(raw))return false;
  const digits=raw.replace(/[\s()-]/gu,'');
  return digits.startsWith('+')?/^\+[1-9][0-9]{6,14}$/u.test(digits):/^[0-9]{10}$/u.test(digits);
@@ -547,8 +583,7 @@ export function visitSummary({state,usable,chosen=true,shown={},methodAvailable=
   waiting:!!service&&waiting&&!settled,
   fee:Number.isSafeInteger(amount)?money(amount):'',
   payment:methodAvailable&&state.payment_method==='at_clinic'?words.summary.atClinic:methodAvailable&&state.payment_method==='online'?words.summary.online:'',
-  // `short` is the clinic's own two-word place, shown on phones (the full address is on the appointment card)
-  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address,short:clinicPlace}):null,
+  place:policy?.location?Object.freeze({name:policy.location.name,address:policy.location.address}):null,
   // whose visit it is, as typed on step 2 (shown on the last step)
   patient:Object.freeze({name:String(state.details?.full_name??'').trim(),phone:String(state.details?.phone??'').trim(),email:String(state.details?.email??'').trim()})
  });
@@ -560,8 +595,28 @@ export function visitLine(summary){
 /** The two short lines of the phone bar: who, then the day and time (or what is still missing). */
 export function barLines(summary,missing=''){
  if(!summary.doctor)return Object.freeze({top:words.missing.doctor,bottom:''});
- const bottom=summary.time?[summary.dayShort,summary.time].filter(Boolean).join(' · '):words.missing[missing]||words.missing.time;
+ // the day is named as soon as it is chosen, also before a starting time is
+ const waitingFor=missing==='checking'?words.missing.checking:summary.dayShort?words.missing.timeShort:words.missing.time;
+ const bottom=[summary.dayShort,summary.time||waitingFor].filter(Boolean).join(' · ');
  return Object.freeze({top:summary.doctor.short,bottom});
+}
+/**
+ * What went wrong with the engine's reading on step 1, if anything: 'options' (the doctors and
+ * their hours could not be read: nothing can be chosen), 'times' (the chosen day's times could
+ * not be read), or ''. Each has one notice of the page's own, with the clinic's number.
+ */
+export function readFault({step,usable,chosen=false,held=null,state}){
+ if(step!==1)return '';
+ if(!usable)return state.loadingPolicy?'':'options';
+ return chosen&&!held&&state.slotsStatus==='error'?'times':'';
+}
+/**
+ * The doctor an address asks for: `?doctor=` wins when it names one of the clinic's doctors;
+ * otherwise the doctor the site worked out (from `?topic=`).
+ */
+export function askedDoctor(search,fallback=''){
+ const named=new URLSearchParams(search||'').get('doctor');
+ return doctorOrder.includes(named)?named:fallback;
 }
 /** "₹800 when you arrive." and the other payment rows' second lines. */
 export function paymentNote(method,{available,fee=''}){

@@ -2,7 +2,9 @@
    the place the steps are mounted, and the one panel shown while they cannot be used.
    The steps themselves are styled in src/booking/clinic-booking.css (the lazy booking bundle). */
 @layer pages {
-  .page-booking { min-height: calc(100svh - var(--header-height)); }
+  /* phones: the booking area fills the screen below the head, so the steps' bar rests at the foot of the screen in every state */
+  .page-booking { display: flex; flex-direction: column; min-height: calc(100svh - var(--header-height)); }
+  .page-booking > .wrap { flex: 1; display: flex; flex-direction: column; }
   .page-booking__head { padding: var(--space-2) 0; background: var(--ground-tint); }
   .page-booking__head-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--tap); }
   .page-booking__title { font: var(--type-h2); letter-spacing: var(--tracking-h2); white-space: nowrap; }
@@ -12,7 +14,7 @@
   .page-booking[data-booking-screen="receipt"] .page-booking__title-now { display: none; }
   .page-booking[data-booking-screen="receipt"] .page-booking__title-done { display: inline; }
   .page-booking[data-booking-screen="receipt"] .page-booking__link { visibility: hidden; }
-  .page-booking__root { padding-top: var(--space-4); min-width: 0; }
+  .page-booking__root { flex: 1; display: flex; flex-direction: column; padding-top: var(--space-4); min-width: 0; }
 
   /* ----- the panel: opening · checking · unavailable · could not open ----- */
   .page-booking__panel {
@@ -38,6 +40,8 @@
     .page-booking__title { font: var(--type-h3); letter-spacing: var(--tracking-display); }
   }
   @media (min-width: 768px) {
+    /* from tablets up the steps sit on their own paper panel, which ends where its bar ends */
+    .page-booking, .page-booking > .wrap, .page-booking__root { display: block; }
     .page-booking { padding-bottom: var(--space-8); }
     .page-booking__head { padding: var(--space-6) 0 calc(var(--space-6) + 40px); }
     .page-booking__panel { margin-block: 0; }

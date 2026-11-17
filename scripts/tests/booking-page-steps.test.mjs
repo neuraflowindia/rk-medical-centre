@@ -7,7 +7,7 @@ import {existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {doctors} from '../../src/clinic/model.mjs';
 import {bookForSomeoneElseAnswer} from '../../src/clinic/standins.mjs';
-import {addressCard,clinicPlace} from '../../src/clinic/page-content/shared.mjs';
+import {addressCard} from '../../src/clinic/page-content/shared.mjs';
 import {createBookingController} from '../../appointment-system/browser/booking/controller.mjs';
 import {createReceiptStore} from '../../appointment-system/browser/booking/credentials.mjs';
 import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
@@ -16,7 +16,8 @@ import {dateRange} from '../../appointment-system/browser/display-formatting.mjs
 import {createStubs,readSettings} from '../dev-preview.mjs';
 import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,serviceFor,doctorFor,doctorChoice,usablePolicy,doctorChoices,sittingHours,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
- stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
+ stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,tidyPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
+ tileMove,tileStop,readFault,askedDoctor,
  paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
  saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark,waitingView,visitLine,WAIT_GRACE,liftAboveBar} from '../../src/booking/booking-steps.mjs';
 
@@ -78,6 +79,7 @@ test('short pairs stay on one line',()=>{
  assert.equal(keepTogether('Wed 18 Nov · 10:20 am'),'Wed 18 Nov · 10:20 am');
  assert.equal(keepTogether('94150 49410'),'94150 49410');
  assert.equal(keepTogether(800),'800');
+ assert.equal(keepTogether(settings.location.address).slice(-11),'UP\u00a0-\u00a0226016','the state and the PIN code stay together');
 });
 
 test('doctors: the engine\'s services become the two doctor cards, each in its own wash',async()=>{
@@ -202,7 +204,14 @@ test('which screen, and when a step may go on',async()=>{
 
 test('details: only what a visitor can put right at once is caught',()=>{
  for(const good of ['9876543210','98765 43210','(98765) 43-210','+919876543210','+44 20 7946 0958','+1 (415) 555-0132'])assert.equal(validPhone(good),true,good);
- for(const bad of ['','12345','98765432101','+0123456789','+91','nine eight','98765x3210','++919876543210'])assert.equal(validPhone(bad),false,bad);
+ for(const bad of ['','12345','98765432101','+0123456789','+91','nine eight','98765x3210','++919876543210','009876543210'])assert.equal(validPhone(bad),false,bad);
+ // many people here type their mobile number with a 0 in front: the one 0 is taken off, the number is not refused
+ assert.equal(tidyPhone('09876543210'),'9876543210');assert.equal(tidyPhone('098765 43210'),'98765 43210');assert.equal(tidyPhone(' 0 98765-43210'),'98765-43210');
+ assert.equal(tidyPhone('(0)98765 43210'),'98765 43210');assert.equal(tidyPhone('0522 2345678'),'522 2345678','a landline with its city code');
+ for(const same of ['9876543210','98765 43210','+919876543210','+44 20 7946 0958','009876543210','0123','',' 0'])assert.equal(tidyPhone(same),same,same);
+ assert.equal(tidyPhone(undefined),'');assert.equal(tidyPhone(null),'');
+ assert.equal(validPhone('09876543210'),true);assert.equal(validPhone('098765 43210'),true);
+ assert.deepEqual(detailProblems({full_name:'Kamla Verma',phone:'09876543210'}),{});
  assert.equal(phoneCountry('+44 20 7946 0958'),'other');assert.equal(phoneCountry('  +91 98765 43210'),'other');assert.equal(phoneCountry('98765 43210'),'91');
  assert.equal(phoneCountry(''),'91');assert.equal(phoneCountry(undefined),'91');
  assert.deepEqual(DETAIL_FIELDS,['full_name','phone','email']);
@@ -275,15 +284,16 @@ test('the summary follows the engine: who, when, how much, where',async()=>{
  // before the visitor has chosen a doctor
  const blank=visitSummary({state:state(),usable,chosen:false});
  assert.equal(blank.doctor,null);assert.equal(blank.day,'');assert.equal(blank.time,'');assert.equal(blank.fee,'');assert.equal(blank.waiting,false);
- assert.deepEqual(blank.place,{name:settings.location.name,address:settings.location.address,short:clinicPlace});
- assert.ok(settings.location.address.includes(clinicPlace),'the short place is part of the engine\'s own address');
+ assert.deepEqual(blank.place,{name:settings.location.name,address:settings.location.address});
  assert.deepEqual(barLines(blank),{top:'Choose a doctor',bottom:''});
  // doctor chosen, no time yet
  const started=visitSummary({state:state(),usable});
  assert.equal(started.doctor.name,'Dr. Sanjay Gupta');assert.equal(started.day,'Monday 16 November');assert.equal(started.dayShort,'Mon 16 Nov');
  assert.equal(started.time,'');assert.equal(started.fee,'₹800');assert.equal(started.payment,'');
- assert.deepEqual(barLines(started,'time'),{top:'Dr. Sanjay',bottom:'Choose a starting time'});
- assert.deepEqual(barLines(started,'checking'),{top:'Dr. Sanjay',bottom:'Checking times…'});assert.deepEqual(barLines(started),{top:'Dr. Sanjay',bottom:'Choose a starting time'});
+ // the day is named as soon as it is chosen, before a starting time is
+ assert.deepEqual(barLines(started,'time'),{top:'Dr. Sanjay',bottom:'Mon 16 Nov · choose a time'});
+ assert.deepEqual(barLines(started,'checking'),{top:'Dr. Sanjay',bottom:'Mon 16 Nov · Checking times…'});assert.deepEqual(barLines(started),{top:'Dr. Sanjay',bottom:'Mon 16 Nov · choose a time'});
+ assert.deepEqual(barLines({...started,dayShort:''},'time'),{top:'Dr. Sanjay',bottom:'Choose a starting time'});
  // a time chosen
  controller.edit('slot',state().slots.find(slot=>slot.starts_at==='2026-11-16T12:30:00.000Z'));
  const timed=visitSummary({state:state(),usable});
@@ -525,4 +535,43 @@ test('a control that takes the cursor under the bar is lifted clear of it',()=>{
  assert.equal(liftAboveBar({box:{top:700,bottom:800,left:948,right:1340},bar:{top:680,left:100,right:900}}),0);
  // no bar held at the foot of the screen, nothing measured
  assert.equal(liftAboveBar({box:{top:700,bottom:800,left:0,right:10},bar:null}),0);assert.equal(liftAboveBar(),0);
+});
+
+test('the day tiles are one stop for the Tab key; the arrow keys move between the days that can be chosen',()=>{
+ // Dr. Sanjay does not sit on Sundays in this made-up week: that tile cannot take the cursor
+ const tiles=dayTiles({first:MONDAY,last:'2026-12-17',hours:[0,1,2,3,4,5].map(weekday=>({weekday,start:'10:00',end:'13:30'}))});
+ assert.equal(tiles.length,DAY_TILES);assert.equal(tiles[6].iso,SUNDAY);assert.equal(tiles[6].available,false);
+ assert.equal(tileStop(tiles,'2026-11-18'),'2026-11-18','the chosen day takes the Tab key');
+ assert.equal(tileStop(tiles,SUNDAY),MONDAY,'a day that cannot be chosen never does');assert.equal(tileStop(tiles,'2026-12-05'),MONDAY,'nor a day beyond the tiles');
+ assert.equal(tileStop(tiles,''),MONDAY);assert.equal(tileStop([],MONDAY),'');
+ assert.equal(tileMove(tiles,MONDAY,'ArrowRight'),'2026-11-17');assert.equal(tileMove(tiles,'2026-11-17','ArrowLeft'),MONDAY);
+ assert.equal(tileMove(tiles,MONDAY,'ArrowDown'),'2026-11-17');assert.equal(tileMove(tiles,'2026-11-17','ArrowUp'),MONDAY);
+ assert.equal(tileMove(tiles,'2026-11-21','ArrowRight'),'2026-11-23','Sunday is stepped over');assert.equal(tileMove(tiles,'2026-11-23','ArrowLeft'),'2026-11-21');
+ assert.equal(tileMove(tiles,MONDAY,'ArrowLeft'),'','the first day stays');assert.equal(tileMove(tiles,'2026-11-28','ArrowRight'),'','so does the last (the fourteenth tile is a Sunday)');
+ assert.equal(tileMove(tiles,'2026-11-20','Home'),MONDAY);assert.equal(tileMove(tiles,'2026-11-20','End'),'2026-11-28');
+ assert.equal(tileMove(tiles,MONDAY,'Home'),'');assert.equal(tileMove(tiles,'2026-11-28','End'),'');
+ assert.equal(tileMove(tiles,MONDAY,'Enter'),'');assert.equal(tileMove(tiles,MONDAY,'a'),'');
+ assert.equal(tileMove(tiles,'','ArrowRight'),MONDAY,'from "Later date" the arrows enter the days');
+ assert.equal(tileMove([],MONDAY,'ArrowRight'),'');
+ assert.equal(words.day.more,'More days');assert.equal(words.day.earlier,'Earlier days');assert.equal(words.stepDone,'done');
+});
+
+test('a reading that fails on step 1 has one notice of the page\'s own; an address that names a doctor gets that doctor',async()=>{
+ const {state}=await engine();
+ const usable=usablePolicy(state().policy);
+ assert.equal(readFault({step:1,usable,chosen:true,state:state()}),'');
+ // the doctors and their hours could not be read: nothing can be chosen
+ assert.equal(readFault({step:1,usable:false,chosen:false,state:{...state(),policy:null,loadingPolicy:false}}),'options');
+ assert.equal(readFault({step:1,usable:false,chosen:false,state:{...state(),policy:null,loadingPolicy:true}}),'','still reading');
+ // the chosen day's times could not be read
+ const failed={...state(),slotsStatus:'error',slotsFresh:false};
+ assert.equal(readFault({step:1,usable,chosen:true,state:failed}),'times');
+ assert.equal(readFault({step:1,usable,chosen:false,state:failed}),'','no doctor chosen: no times are shown');
+ assert.equal(readFault({step:1,usable,chosen:true,held:{day:SUNDAY},state:failed}),'','a new day is about to be read');
+ assert.equal(readFault({step:2,usable,chosen:true,state:failed}),'');assert.equal(readFault({step:3,usable:false,state:failed}),'');
+ assert.match(words.time.failed,/call the clinic/);assert.doesNotMatch(words.time.failed,/pay/i,'the engine\'s sentence about payments is wrong for this moment');
+ // `?doctor=` wins over the doctor a topic belongs to; anything that is not one of the clinic's doctors changes nothing
+ assert.equal(askedDoctor('?doctor=parul&topic=diabetes','sanjay'),'parul');assert.equal(askedDoctor('?topic=diabetes','sanjay'),'sanjay');
+ assert.equal(askedDoctor('?doctor=PARUL','sanjay'),'sanjay');assert.equal(askedDoctor('?doctor=dr-parul-gupta',''),'');assert.equal(askedDoctor('',''),'');
+ assert.equal(askedDoctor(undefined,'parul'),'parul');assert.equal(askedDoctor('?doctor=sanjay'),'sanjay');
 });

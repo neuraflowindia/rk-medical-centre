@@ -16,7 +16,7 @@ import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, 
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
   paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
   readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES,
-  waitingView, visitLine, WAIT_GRACE, liftAboveBar} from './booking-steps.mjs';
+  waitingView, visitLine, WAIT_GRACE, liftAboveBar, tidyPhone, tileMove, tileStop, readFault, askedDoctor} from './booking-steps.mjs';
 
 const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
@@ -82,7 +82,7 @@ function Progress({step}) {
         const state = item.id === step ? 'current' : item.id < step ? 'done' : 'ahead';
         return <li key={item.id} className={'booking-progress__step is-' + state} aria-current={state === 'current' ? 'step' : undefined}>
           <span className="booking-progress__mark">{state === 'done' ? <Icon name="check"/> : item.id}</span>
-          <span className="booking-progress__label">{item.label}</span>
+          <span className="booking-progress__label">{item.label}{state === 'done' && <span className="visually-hidden">, {words.stepDone}</span>}</span>
         </li>;
       })}
     </ol>
@@ -119,7 +119,7 @@ function VisitSummary({summary, id, onChange, onDetails = null, aside = false}) 
         ? <dd>{summary.fee}{summary.payment && <span className="visit-summary__pay"> · {summary.payment}</span>}</dd>
         : empty}</div>
       {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}
-        <small className="visit-summary__address">{kt(summary.place.address)}</small><small className="visit-summary__area">{summary.place.short}</small></dd></div>}
+        <small className="visit-summary__address">{kt(summary.place.address)}</small></dd></div>}
     </dl>
     {aside && onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
     {onDetails && <>
@@ -166,7 +166,7 @@ function AppointmentCard({receipt, titleRef, id}) {
       <span className="appointment-card__time">{kt(card.time)}</span></p>
     <div className="appointment-card__tear" aria-hidden="true"/>
     <div className="appointment-card__foot">
-      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}
+      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{kt(card.place.address)}
         <a className="appointment-card__directions" href={card.place.maps} target="_blank" rel="noopener noreferrer">{words.receipt.directions}<Icon name="out"/><span className="visually-hidden"> {words.receipt.opensMaps}</span></a></span></p>}
       {card.pay && <p className="appointment-card__line"><Icon name="banknote"/><strong>{card.pay}</strong></p>}
       {card.bring && <p className="appointment-card__line"><Icon name="file"/><span>{card.bring}</span></p>}
@@ -185,7 +185,7 @@ function Booking({draft = {}}) {
     if (kept) {
       Object.assign(draft, {name: kept.details.full_name, phone: kept.details.phone, email: kept.details.email, message: kept.details.notes});
       if (kept.chosen && doctorFor(kept.service)) draft.doctor = doctorFor(kept.service);
-    }
+    } else draft.doctor = askedDoctor(window.location.search, draft.doctor);
   }
   const initialService = useRef(boot.current.saved?.chosen && boot.current.saved.service ? boot.current.saved.service : serviceFor(draft.doctor));
   const flow = useBooking(initialService.current), {state: s, dispatch} = flow, id = useId();
@@ -206,7 +206,9 @@ function Booking({draft = {}}) {
   const [gone, setGone] = useState('');
   // The part of the step the visitor was shown after pressing the main button too early ("" = none).
   const [asked, setAsked] = useState('');
-  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({});
+  const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({}), dayRow = useRef(null);
+  // Phones show the days as one row moved sideways: has it been moved to its end?
+  const [daysEnd, setDaysEnd] = useState(false);
   const [act, waiting] = useHeldAction(flow.available && !s.busy, flow.viewAvailable);
   // What the page is waiting for after the last press: 'save', 'open' (a saved booking read again), 'check', or ''.
   const [wait, setWait] = useState(() => s.credential ? 'open' : '');
@@ -368,7 +370,33 @@ function Booking({draft = {}}) {
     root.current?.scrollIntoView({block: 'start'});
   }, [step, screen === 'receipt', waitView]);
 
-  const chooseDoctor = service => { setChosen(true); setChanging(false); edit('service', service); };
+  const settle = useRef(false);
+  const chooseDoctor = service => { settle.current = !chosen; setChosen(true); setChanging(false); edit('service', service); };
+  // The visitor has just chosen a doctor: where the times would start low on the screen, the days come to its top.
+  useEffect(() => {
+    if (!settle.current || !chosen) return;
+    settle.current = false;
+    requestAnimationFrame(() => {
+      const day = parts.current.day, time = parts.current.time;
+      if (day && time && time.getBoundingClientRect().top > window.innerHeight * 0.55) day.scrollIntoView({block: 'start'});
+    });
+  }, [chosen]);
+  // The chosen day is in sight in the row of days (after a refresh it may lie beyond the first few).
+  useEffect(() => {
+    const row = dayRow.current, tile = row?.querySelector('[aria-pressed="true"]');
+    if (!row || !tile || row.scrollWidth <= row.clientWidth) return;
+    const from = tile.getBoundingClientRect().left - row.getBoundingClientRect().left;
+    if (from < 0 || from + tile.offsetWidth > row.clientWidth) row.scrollTo({left: Math.max(0, row.scrollLeft + from - 24), behavior: 'instant'});
+  }, [shown.day, chosen, tiles.length]);
+  const moveDays = () => {
+    const row = dayRow.current; if (!row) return;
+    row.scrollTo({left: daysEnd ? 0 : row.scrollLeft + row.clientWidth * 0.8});
+  };
+  const dayKeys = event => {
+    const to = tileMove(tiles, event.target.dataset?.bookingDay || '', event.key);
+    if (!to) return;
+    event.preventDefault(); dayRow.current?.querySelector(`[data-booking-day="${to}"]`)?.focus();
+  };
   const openLater = () => {
     if (laterOpen) { if (!dayBeyondTiles(tiles, shown.day)) setLater(false); return; }
     setLater(true);
@@ -405,7 +433,10 @@ function Booking({draft = {}}) {
   const advance = () => {
     if (step === 1) { if (missing) pointTo(ask); else forward(2); return; }
     if (step === 2) {
-      const found = detailProblems(s.details, {requiredContacts: p?.required_contacts});
+      // a mobile number typed with a 0 in front is put right, not refused
+      const phone = tidyPhone(s.details.phone);
+      if (phone !== s.details.phone) detail('phone', phone);
+      const found = detailProblems({...s.details, phone}, {requiredContacts: p?.required_contacts});
       setProblems(found);
       const wrong = DETAIL_FIELDS.find(name => found[name]);
       if (wrong) { fieldNodes.current[wrong]?.focus(); return; }
@@ -425,7 +456,9 @@ function Booking({draft = {}}) {
       dangerouslySetInnerHTML={{__html: bookingUnavailable({state: product.checking ? 'checking' : 'unavailable', doctor: doctorFor(shown.service) || draft.doctor || '', kept: true})}}/>;
   }
 
-  const error = s.error && <Notice><p>{s.error}</p></Notice>;
+  // A reading that failed on step 1 has one notice of the page's own (with the number to call); the engine's sentence is for everything else.
+  const fault = screen === 'form' ? readFault({step, usable, chosen, held, state: s}) : '';
+  const error = s.error && !fault && <Notice><p>{s.error}</p></Notice>;
 
   if (screen === 'receipt') {
     const r = s.receipt, service = serviceFor(doctorFor(r.resource_id));
@@ -492,6 +525,7 @@ function Booking({draft = {}}) {
   const tickWaits = missingLast === 'payment' || missingLast === 'checking';
   // Flat until the step is complete, but never dead: a press shows what is missing (advance).
   const notReady = step === 1 ? !!missing : step === 3 ? !!missingLast && !sending : false;
+  const dayStop = tileStop(tiles, shown.day);
   const fields = [
     ['full_name', words.details.name, 'text', 'name', true, 100, words.details.someoneElse],
     ['phone', words.details.phone, 'tel', 'tel-national', p?.required_contacts.includes('phone') ?? true, 32, words.details.phoneHint],
@@ -509,8 +543,9 @@ function Booking({draft = {}}) {
 
           {step === 1 && <>
             {s.loadingPolicy && !usable && <p className="booking-wait" role="status">{words.options.checking}</p>}
-            {!s.loadingPolicy && !usable && <Notice><p>{words.options.failed}</p><ClinicContact bookingHelp/></Notice>}
-            {!s.policyFresh && !s.loadingPolicy && <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button>}
+            {fault === 'options' && <Notice><p>{words.options.failed}</p><ClinicContact bookingHelp/>
+              <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button></Notice>}
+            {usable && !s.policyFresh && !s.loadingPolicy && <button type="button" className="button button--second" disabled={waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.options.retry}</span></button>}
             {usable && <fieldset className={classes('doctor-choices', chosen && !changing && 'is-folded', asked === 'doctor' && 'is-asked')} disabled={disabled || optionsStale}
               ref={node => { parts.current.doctor = node; }}>
               <legend>{words.doctor.legend}</legend>
@@ -536,9 +571,13 @@ function Booking({draft = {}}) {
 
             {usable && chosen && <fieldset className={classes('booking-days', asked === 'day' && 'is-asked')} disabled={disabled || optionsStale} ref={node => { parts.current.day = node; }}>
               <legend>{words.day.legend}</legend>
+              {/* phones: a worded way to move the row of days, for a thumb that does not slide it */}
+              <button type="button" className="text-link booking-days__more" onClick={moveDays} tabIndex={-1} aria-hidden="true">
+                {daysEnd && <Icon name="left"/>}<span>{daysEnd ? words.day.earlier : words.day.more}</span>{!daysEnd && <Icon name="arrow"/>}</button>
               {asked === 'day' && <Ask>{words.ask.day}</Ask>}
-              <div className="booking-days__row">
+              <div className="booking-days__row" ref={dayRow} onKeyDown={dayKeys} onScroll={event => { const row = event.currentTarget; setDaysEnd(row.scrollLeft + row.clientWidth >= row.scrollWidth - 8); }}>
                 {tiles.map(tile => <button type="button" key={tile.iso} className="day-tile" data-booking-day={tile.iso} aria-pressed={shown.day === tile.iso} disabled={!tile.available}
+                  tabIndex={tile.iso === dayStop ? 0 : -1}
                   aria-label={tile.spoken + (tile.available ? '' : ', ' + words.day.notOffered)} onClick={() => edit('day', tile.iso)}>
                   <span className="day-tile__label">{tile.label}</span><span className="day-tile__number">{tile.number}</span><span className="day-tile__month">{tile.month}</span>
                 </button>)}
@@ -548,6 +587,8 @@ function Booking({draft = {}}) {
               <div className="booking-days__later" id={id + 'later'} ref={laterBox} hidden={!laterOpen}>
                 <DateField label={words.day.dateField} value={shown.day} required min={range?.first_date} max={range?.last_date}
                   available={flow.viewAvailable} disabled={disabled || optionsStale} onChange={value => edit('day', value)} theme="rk-date"/>
+                {/* the date box shows numerals only: the day in words, as on the tiles */}
+                {dayBeyondTiles(tiles, shown.day) && <p className="booking-days__chosen" role="status">{dayLong(shown.day)}</p>}
               </div>
             </fieldset>}
 
@@ -571,8 +612,8 @@ function Booking({draft = {}}) {
                 </div>)}
               </div>}
             </fieldset>}
-            {usable && chosen && s.slotsStatus === 'error' && !held && <button type="button" className="button button--second" disabled={disabled || s.loadingPolicy || waiting}
-              onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.time.retry}</span></button>}
+            {fault === 'times' && <Notice><p>{words.time.failed}</p><ClinicContact service={shown.service} bookingHelp/>
+              <button type="button" className="button button--second" disabled={disabled || s.loadingPolicy || waiting} onClick={() => act(flow.loadPolicy)}><span className="button__label">{words.time.retry}</span></button></Notice>}
           </>}
 
           {step === 2 && <div className="booking-fields">
@@ -585,7 +626,8 @@ function Booking({draft = {}}) {
               <input className="booking-input" id={id + name} ref={node => { fieldNodes.current[name] = node; }} type={type} autoComplete={auto} maxLength={maxLength} required={required}
                 inputMode={name === 'phone' ? 'tel' : undefined} aria-invalid={problems[name] ? 'true' : undefined} aria-describedby={id + name + (problems[name] ? '-error' : '-hint')}
                 value={s.details[name]} disabled={disabled} onChange={event => { detail(name, event.target.value);
-                  if (name === 'phone') detail('country', phoneCountry(event.target.value)); }}/>
+                  if (name === 'phone') detail('country', phoneCountry(event.target.value)); }}
+                onBlur={name === 'phone' ? event => { const tidy = tidyPhone(event.target.value); if (tidy !== event.target.value) detail('phone', tidy); } : undefined}/>
             </Field>)}
             <VerificationFields flow={flow} className="booking-verify" inputClassName="booking-input" buttonClassName="button button--second"/>
             <Field id={id + 'notes'} label={words.details.notes} optional>
@@ -612,11 +654,11 @@ function Booking({draft = {}}) {
               </div>
             </fieldset>
             {s.payment_method && !methodAvailable && <p role="status" className="booking-pay-note">{words.payment.chosenUnavailable}</p>}
-            <p className="booking-pay-note">{words.payment.later}</p>
+            <p className="booking-pay-note booking-pay-note--later">{words.payment.later}</p>
           </>}
         </section>
 
-        <div className={classes('booking-bar', 'booking-bar--' + step, step === 3 && 'booking-bar--last')} ref={bar}>
+        {fault !== 'options' && <div className={classes('booking-bar', 'booking-bar--' + step, step === 3 && 'booking-bar--last')} ref={bar}>
           {/* The last two presses stay together and in sight: the tick box and what it confirms, then the button. */}
           {step === 3 && <div className={classes('booking-last', asked === 'tick' && 'is-asked')} ref={node => { parts.current.tick = node; }}>
             <label className={classes('booking-ack', tickWaits && 'is-waiting')}>
@@ -625,15 +667,15 @@ function Booking({draft = {}}) {
               <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>
             <p className="booking-confirm-hint" id={id + 'last'} role="status">{confirmHint({missing: missingLast})}</p>
           </div>}
-          {step === 1 && <p className="booking-bar__summary"><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
+          {step === 1 && <p className="booking-bar__summary" id={id + 'need'}><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
           {step === 1 && missing && <p className="booking-bar__hint" aria-hidden="true">{words.missing[missing]}</p>}
           {step > 1 && <button type="button" className="text-link booking-bar__back" disabled={sending} onClick={() => backTo(step - 1)}><Icon name="left"/><span>{words.back}</span></button>}
           <button type="submit" className={classes('button button--main button--large booking-bar__main', notReady && 'is-not-ready', step === 3 && sending && 'is-busy')} data-booking-continue
-            disabled={step === 2 && disabled} aria-busy={step === 3 && sending ? 'true' : undefined} aria-describedby={step === 3 ? id + 'last' : undefined}>
+            disabled={step === 2 && disabled} aria-busy={step === 3 && sending ? 'true' : undefined} aria-describedby={step === 3 ? id + 'last' : step === 1 && missing ? id + 'need' : undefined}>
             <span className="button__label">{step === 3 ? confirmLabel({busy: sending, method: methodAvailable ? s.payment_method : '', offered: methods.filter(method => paymentAvailable(s.policy, method))}) : words.next}</span>
             {step < 3 && <Icon name="arrow"/>}
           </button>
-        </div>
+        </div>}
       </form>
     </div>
     <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => backTo(1) : null} onDetails={step === 3 ? () => backTo(2) : null} aside/></aside>

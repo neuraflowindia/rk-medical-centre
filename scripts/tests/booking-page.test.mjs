@@ -140,6 +140,22 @@ test('the package\'s own stylesheets sit in the vendor layer, and their forced d
  assert.match(read('src/booking/shared-fields.jsx'),/^import '\.\/vendor\.css';$/m);
 });
 
+test('the two rows put away in the package\'s list of facts are still where the stylesheet finds them, and still say nothing new',()=>{
+ // The rows have no names of their own, so the stylesheet hides the first ("Service") and the fourth ("Time zone") by their place.
+ const source=read('appointment-system/browser/booking/receipt-fields.mjs');
+ const list=source.slice(source.indexOf("h('dl',{className:'abs-receipt-facts'}"));
+ const rows=[...list.matchAll(/fact\((?:r\.meeting_mode==='in_person'\?)?'([^']+)'/g)].map(match=>match[1]);
+ assert.deepEqual(rows.slice(0,5),['Service','Doctor','Appointment','Time zone','Duration'],'the package changed the order of its facts: look at the hidden rows again');
+ assert.match(list,/fact\('Service',r\.service_name\),isV2\(r\)\?fact\('Doctor',r\.resource_name\):null,/,'"Doctor" follows "Service" in the clinic\'s kind of receipt');
+ const css=read('src/booking/clinic-booking.css');
+ assert.match(css,/\.clinic-booking \.abs-receipt-facts > div:nth-child\(1\), \.clinic-booking \.abs-receipt-facts > div:nth-child\(4\) \{ display: none; \}/);
+ // "Service" repeats "Doctor" only while every service carries its doctor's name; "Time zone" says nothing only while every visit is in person
+ const settings=JSON.parse(read('appointment-settings/business-settings.json'));
+ for(const service of settings.services.filter(item=>item.enabled))
+  assert.equal(service.name,settings.resources.find(item=>item.id===service.resource_id).name,`${service.id}: a service with a name of its own must show its "Service" row again`);
+ assert.equal(settings.meeting,'in_person');assert.equal(settings.display_duration,false,'a shown duration would move "Time zone" down a row');
+});
+
 test('the booking bundle stays lazy, keeps the hooks others read, and keeps the form usable during state checks',()=>{
  const island=read('src/booking/clinic-booking.jsx');
  // contract 2.6: reached only through a dynamic import
