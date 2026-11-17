@@ -24,7 +24,7 @@
     /* text */
     --ink: #1B2A27;                 /* headings, labels */
     --ink-body: #364541;            /* body text: 9.35 ivory, 8.00 sage, 9.91 paper */
-    --ink-muted: #566662;           /* captions, meta: 5.61 ivory, 4.80 sage */
+    --ink-muted: #566662;           /* captions, meta on ivory (5.61) and paper (5.95) only; on sage it is 4.80 and under a shadow below 4.5: use --ink-body there */
     --ink-on-deep: #FAF6EE;         /* 11.20 */
     --ink-on-deep-soft: #C5D3CB;    /* 7.79 */
     --ink-on-deep-muted: #A9BBB3;   /* 6.00 */
@@ -131,7 +131,9 @@
     --type-row-title: 500 var(--size-feature)/1.2 var(--font-display);  /* menu rows */
     --type-sub: 400 var(--size-body)/var(--leading-lead) var(--font-text);          /* a section's intro; lead size from tablets up */
     --type-strip-label: 500 var(--size-small)/1.5 var(--font-text);
-    --type-strip-value: 600 var(--size-body)/var(--leading-tight) var(--font-text);
+    /* the essentials strip's value line on phones: 15 px on a 360-wide screen, 16 px from 380, so its three cells keep 12 px each side */
+    --size-strip-value: clamp(15px, calc(15px + (100vw - 360px) / 20), 16px);
+    --type-strip-value: 600 var(--size-strip-value)/var(--leading-tight) var(--font-text);
     --type-strip-value-wide: 500 var(--size-h3)/1.2 var(--font-display);
     --type-caption-strong: 600 var(--size-label)/var(--leading-label) var(--font-text);
     --type-caption: 400 var(--size-small)/1.45 var(--font-text);
@@ -277,7 +279,7 @@
   }
 
   @media (max-width: 359px) {
-    :root { --size-h1: 31px; --gutter: 18px; }
+    :root { --size-h1: 31px; --gutter: 18px; --size-strip-value: var(--size-body); }
   }
   @media (min-width: 768px) {
     :root {

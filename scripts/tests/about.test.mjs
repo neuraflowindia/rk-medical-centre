@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as words from '../../src/clinic/page-content/about.mjs';
 import {about,walkSlide} from '../../src/site/pages/about/about.mjs';
-import {bindAbout,openWalkViewer,openAllCertificatesAt,stepIndex} from '../../src/site/pages/about/about.behaviour.mjs';
+import {bindAbout,openWalkViewer,stepIndex} from '../../src/site/pages/about/about.behaviour.mjs';
 import {doctors,address,locality,directions} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue} from '../../src/clinic/certificate-catalogue.mjs';
@@ -215,12 +215,12 @@ test('About names both doctors without buttons, and its certificates teaser lead
  assert.doesNotMatch(html,/doctor-mini-card__actions/,'the closing below carries Book and Call');
  for(const id of doctorOrder)assert.ok(html.includes(`href="${doctors[id].path}"`),`a link to ${doctors[id].name}’s profile`);
  assert.match(html,/<a class="text-link" href="\/meet-doctor" data-open-certificates="">/);
- // Each teaser certificate is printed for both worlds: a control that opens the viewer where scripts
- // run, and a plain framed picture where they do not (never a button that does nothing).
+ // Each teaser certificate is printed once: a frame that opens all the certificates at itself where
+ // scripts run, and leads to its own picture where they do not (never a button that does nothing).
  const shown=doctorsSection.certificates.shown.map(item=>item.id);
  assert.deepEqual(attributeValues(html,'data-view-certificate'),shown);
- assert.equal(count(html,/<div data-needs-script><figure class="certificate-frame[^"]*"[^>]*><button class="certificate-frame__mat certificate-frame__mat--view"/g),shown.length);
- assert.equal(count(html,/<div data-without-script><figure class="certificate-frame[^"]*"[^>]*><div class="certificate-frame__mat">/g),shown.length);
+ assert.equal(count(html,/<figure class="certificate-frame[^"]*"[^>]*><a class="certificate-frame__mat certificate-frame__mat--view" href="\/certificates\/[a-z0-9-]+\.webp" aria-label="View: [^"]+" data-view-certificate="[^"]+" data-view-set="all">/g),shown.length);
+ assert.doesNotMatch(html,/<button class="certificate-frame__mat/);
  assert.equal(count(html,/<ul class="page-about__documents"[^>]*data-about-documents>/g),1);
 });
 
@@ -331,43 +331,10 @@ test('binding About: each view button, and its photograph, opens the viewer on t
  assert.doesNotThrow(()=>bindAbout(null,{services:{viewer:fake.viewer}}));assert.doesNotThrow(()=>bindAbout({querySelectorAll:()=>[],querySelector:()=>null}));
 });
 
-test('one of the two framed certificates opens all the certificates, standing at itself',()=>{
- const fake=fakeViewer(),trigger={name:'frame'};
- const [first,second]=doctorsSection.certificates.shown;
- openAllCertificatesAt({viewer:fake.viewer},{id:second.id,trigger});
- const place=certificateCatalogue.findIndex(item=>item.id===second.id);
- assert.equal(fake.viewer.opened.title,'All certificates');assert.equal(fake.viewer.opened.trigger,trigger);
- assert.ok(fake.html().includes(`data-viewer-certificate="${second.id}"`));
- assert.ok(readable(fake.html()).includes(`${place+1} of ${certificateCatalogue.length}`),'the count is of the whole set');
- // An unknown certificate opens the set at its start; no viewer, nothing happens.
- openAllCertificatesAt({viewer:fake.viewer},{id:'nobody'});
- assert.ok(fake.html().includes(`data-viewer-certificate="${certificateCatalogue[0].id}"`));
- openAllCertificatesAt({viewer:fake.viewer});
- assert.ok(readable(fake.html()).includes(`1 of ${certificateCatalogue.length}`));
- assert.doesNotThrow(()=>openAllCertificatesAt({},{id:first.id}));
-});
-
-test('binding About: a click on a teaser certificate is heard first, and opens the ten instead of the two',()=>{
- const fake=fakeViewer(),scope=new AbortController();
- const [first]=doctorsSection.certificates.shown;
- const documents=target();
+test('binding About leaves the framed certificates to the shared frame: no listener of its own on them',()=>{
+ const documents=target(),scope=new AbortController();
  const root={querySelectorAll:()=>[],querySelector:selector=>selector==='[data-about-documents]'?documents:null};
- bindAbout(root,{signal:scope.signal,services:{viewer:fake.viewer}});
- const heard=documents.listeners.get('click');
- assert.equal(heard.length,1);assert.equal(heard[0].options.capture,true,'on the way down, before the frame’s own listener');
- // A click on the frame's control (or on the picture inside it).
- const control={getAttribute:name=>name==='data-view-certificate'?first.id:null};
- let stopped=0;
- documents.fire('click',{target:{closest:selector=>selector==='[data-view-certificate]'?control:null},stopPropagation(){stopped++;}});
- assert.equal(stopped,1,'the frame’s own listener never hears it');
- assert.equal(fake.viewer.opened.title,'All certificates');assert.equal(fake.viewer.opened.trigger,control);
- assert.ok(fake.html().includes(`data-viewer-certificate="${first.id}"`));
- assert.ok(readable(fake.html()).includes(`of ${certificateCatalogue.length}`));
- // A click beside the frames is left alone.
- fake.viewer.opened=null;
- documents.fire('click',{target:{closest:()=>null},stopPropagation(){stopped++;}});
- documents.fire('click',{target:null,stopPropagation(){stopped++;}});
- assert.equal(stopped,1);assert.equal(fake.viewer.opened,null);
+ bindAbout(root,{signal:scope.signal,services:{viewer:fakeViewer().viewer}});
+ assert.equal(documents.listeners.get('click')?.length||0,0);
  scope.abort();
- assert.equal(documents.listeners.get('click').length,0);
 });

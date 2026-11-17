@@ -5,5 +5,14 @@
   .menu__link .icon { color: var(--action); transition: transform var(--dur-hover) var(--ease-move); }
   .menu__link:active { color: var(--action); padding-left: 10px; }
   .menu__link[aria-current="page"] { color: var(--action); }
-  .menu__actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 22px; }
+  /* The two actions share a row from 360 px (the main one takes what Call leaves, and may shrink);
+     on narrower phones they stack, each across the sheet, so neither can run past its edge. */
+  .menu__actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-top: 22px; }
+  .menu__book { min-width: 0; }
+  /* Where the main action is itself a call (Contact, booking off), a second Call would say it twice. */
+  .menu__actions:has(.menu__book[data-open-call]) { grid-template-columns: minmax(0, 1fr); }
+  .menu__actions:has(.menu__book[data-open-call]) .menu__call { display: none; }
+  @media (max-width: 359px) {
+    .menu__actions { grid-template-columns: minmax(0, 1fr); }
+  }
 }

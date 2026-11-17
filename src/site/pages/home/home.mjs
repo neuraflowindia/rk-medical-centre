@@ -54,7 +54,7 @@ function credentialsPart(ctx){
   +`<h2 class="page-home__figure-title" id="credentials-title" data-enter><span class="page-home__numeral">${text(digits)}<span class="page-home__numeral-plus">+</span></span> `
   +`<span class="page-home__figure-words">${emphasise(credentials.numeralCaption,credentials.numeralEmphasis)}</span></h2></div>`
   +`<dl class="page-home__ledger">${rows}</dl></div>`
-  +`<div class="page-home__certificates"><div class="wrap page-home__certificates-wrap">${certificateWall(homeCertificates(),{label:credentials.certificatesLabel,settle:true})}`
+  +`<div class="page-home__certificates"><div class="wrap page-home__certificates-wrap">${certificateWall(homeCertificates(),{label:credentials.certificatesLabel,settle:true,view:true,set:'all'})}`
   +`<p class="page-home__certificates-more">${textLink({label:credentials.allCertificates.label,href:credentials.allCertificates.href,attributes:{'data-open-certificates':''}})}</p></div></div></section>`;
 }
 

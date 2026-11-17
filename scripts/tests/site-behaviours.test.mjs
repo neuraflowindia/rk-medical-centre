@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {headerTravel,bindSiteHeader,AWAY_AFTER,DOWN_TRAVEL,UP_TRAVEL} from '../../src/site/parts/site-header/site-header.behaviour.mjs';
-import {paintMotionToggle,noticeWords,detailsNoticeMarkup,privacyChoicesMarkup,bindSiteFooter} from '../../src/site/parts/site-footer/site-footer.behaviour.mjs';
+import {paintMotionToggle,noticeWords,detailsNoticeMarkup,privacyChoicesMarkup,linkPhones,bindSiteFooter} from '../../src/site/parts/site-footer/site-footer.behaviour.mjs';
 import {paintOpenSign,bindOpenSigns} from '../../src/site/parts/open-sign/open-sign.behaviour.mjs';
 import {paintClosing,bindClosing} from '../../src/site/parts/closing/closing.behaviour.mjs';
 import {rowHolds,paintToday,bindHoursTable} from '../../src/site/parts/hours-table/hours-table.behaviour.mjs';
@@ -11,7 +11,7 @@ import {callAction,bindCallPanel} from '../../src/site/parts/call-panel/call-pan
 import {nextChip,bindDoctorCards} from '../../src/site/parts/doctor-card/doctor-card.behaviour.mjs';
 import {nextTab,shelfPlan,selectTab,arrangeShelf,markClamped,bindReviewShelf,everyReview} from '../../src/site/parts/review-shelf/review-shelf.behaviour.mjs';
 import {shelfStep,shelfEnds,shelfIndex,shelfStill,bindStillShelf} from '../../src/site/parts/still-shelf/still-shelf.behaviour.mjs';
-import {viewerStep,viewerItems,viewerTitle,bindCertificates,openViewerWalk} from '../../src/site/parts/certificate-frame/certificate-frame.behaviour.mjs';
+import {viewerStep,viewerItems,viewerTitle,viewerPlan,swipeDirection,SWIPE_MIN,bindCertificates,openViewerWalk} from '../../src/site/parts/certificate-frame/certificate-frame.behaviour.mjs';
 import {rowsToClose,bindQuestions} from '../../src/site/parts/questions/questions.behaviour.mjs';
 import {bindEssentialsStrip} from '../../src/site/parts/essentials-strip/essentials-strip.behaviour.mjs';
 import {createSheets} from '../../src/site/parts/sheet/sheet.behaviour.mjs';
@@ -21,7 +21,7 @@ import {setBookingAddress} from '../../src/clinic/booking-links.mjs';
 import {liveSign} from '../../src/clinic/page-content/shared.mjs';
 import {shelfSelection} from '../../src/clinic/review-list.mjs';
 import {createMotion} from '../../src/site/motion/motion.mjs';
-import {renderedApp,TEST_NOW} from './support/page-contract.mjs';
+import {count,renderedApp,TEST_NOW} from './support/page-contract.mjs';
 import {createPage,installGlobals,Event} from './support/mini-dom.mjs';
 
 const shell=readFileSync(new URL('../../index.html',import.meta.url),'utf8');
@@ -74,6 +74,9 @@ test('header wiring: the menu button opens the menu; scrolling hides and returns
 
 test('the footer: Pause motion, "How your details are used" and the privacy choice',()=>{
  const {app,services,context,chosen,$,done}=homePage();
+ assert.equal($('.site-footer [data-privacy]'),null,'no choice is offered while nothing is measured');
+ // the day measurement is switched on, the footer prints the link again (siteFooter with privacy: true)
+ $('.site-footer__nav ul').innerHTML+='<li><button class="site-footer__link" type="button" data-privacy>Change privacy choices</button></li>';
  bindSiteFooter(app,context);
  const toggle=$('[data-motion-toggle]');
  assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(toggle.querySelector('[data-motion-label]').textContent,'Pause motion');
@@ -87,7 +90,12 @@ test('the footer: Pause motion, "How your details are used" and the privacy choi
  $('#reader [data-privacy-accept]').click();assert.deepEqual(chosen,[false]);assert.equal($('#reader').open,false);
  const full=noticeWords({title:'How your details are used',summary:['What we take.','Who sees it.'],more:{label:'Read the full notice',href:'/contact#privacy-notice'}});
  assert.deepEqual(full.paragraphs,['What we take.','Who sees it.']);assert.match(detailsNoticeMarkup(full),/<p>Who sees it\.<\/p><p class="sheet__actions"><a class="text-link" href="\/contact#privacy-notice">/);
- assert.equal(noticeWords({summary:[]}).more,null);assert.match(privacyChoicesMarkup(),/data-privacy-accept/);
+ assert.equal(noticeWords({summary:[]}).more,null);assert.match(privacyChoicesMarkup(),/data-privacy-accept>.*Close</);
+ // the clinic's numbers inside the notice dial; other digits and other numbers are left alone
+ const dialled=detailsNoticeMarkup({title:'t',paragraphs:['Call 94150 49410 or 98386 55095 before 2026, not 12345 67890.'],more:null});
+ assert.equal(dialled,'<p>Call <a class="sheet__tel" href="tel:+919415049410" aria-label="Call Dr.&nbsp;Sanjay Gupta at +91 94150&nbsp;49410">94150&nbsp;49410</a> or <a class="sheet__tel" href="tel:+919838655095" aria-label="Call Dr.&nbsp;Parul Gupta at +91 98386&nbsp;55095">98386&nbsp;55095</a> before 2026, not 12345&nbsp;67890.</p>');
+ assert.equal(linkPhones('<p>No numbers here.</p>'),'<p>No numbers here.</p>');assert.equal(linkPhones('<p>1 2</p>',[]),'<p>1 2</p>');
+ assert.equal(count(detailsNoticeMarkup(),/class="sheet__tel"/g),count(detailsNoticeMarkup(),/\d{5}&nbsp;\d{5}/g)/2,'every number the notice prints is one of the clinic\'s and dials');
  bindSiteFooter(app,{});bindEssentialsStrip();done();
 });
 
@@ -225,7 +233,7 @@ test('the certificate viewer walks through the documents, stops at the ends, and
  assert.deepEqual([viewerStep(0,1,10),viewerStep(9,1,10),viewerStep(0,-1,10),viewerStep(4,-1,10),viewerStep(0,1,0)],[1,9,0,3,-1]);
  assert.equal(viewerItems().length,10);assert.equal(viewerItems('parul').length,5);assert.equal(viewerTitle(),'All certificates');assert.equal(viewerTitle('sanjay'),'Certificates of Dr. Sanjay Gupta');assert.equal(viewerTitle('nobody'),'All certificates');
  const {page,app,context,$,done}=homePage();
- app.querySelector('.page-home__certificates-more').innerHTML+='<button data-view-certificate="parul-gupta-certificate-01"></button><button data-view-certificate="parul-gupta-certificate-02" id="second"></button>';
+ app.querySelector('.page-home__certificates-more').innerHTML+='<span data-certificate-wall><button data-view-certificate="parul-gupta-certificate-01"></button><button data-view-certificate="parul-gupta-certificate-02" id="second"></button></span>';
  bindCertificates(app,context);
  const link=$('[data-open-certificates]'),click=new Event('click');link.dispatchEvent(click);
  assert.ok(click.defaultPrevented&&$('#viewer').open);assert.equal($('#viewer-title').textContent,'All certificates');assert.match($('#viewer-content').textContent,/1 of 10/);
@@ -235,7 +243,35 @@ test('the certificate viewer walks through the documents, stops at the ends, and
  for(let step=0;step<12;step++)key($('#viewer'),'ArrowRight');assert.match($('#viewer-content').textContent,/10 of 10/);assert.ok($('#viewer [data-viewer-next]').disabled);
  context.services.viewer.close();
  $('#second').click();assert.equal($('#viewer-title').textContent,'Certificates of Dr. Parul Gupta');assert.match($('#viewer-content').textContent,/2 of 2/);context.services.viewer.close();
+ assert.equal($('#second').getAttribute('aria-haspopup'),'dialog');assert.equal($('#second').hasAttribute('role'),false,'a real button keeps its own role');
  const held=new Event('click',{shiftKey:true});link.dispatchEvent(held);assert.ok(!held.defaultPrevented&&!$('#viewer').open);
+ // Home's own four frames: printed as links to their pictures, bound as buttons that open all ten at themselves
+ const frames=[...app.querySelectorAll('.certificate-wall a[data-view-certificate]')];
+ assert.equal(frames.length,4);
+ for(const frame of frames){assert.equal(frame.getAttribute('role'),'button');assert.equal(frame.getAttribute('aria-haspopup'),'dialog');assert.match(frame.getAttribute('href'),/^\/certificates\/.+\.webp$/);assert.equal(frame.getAttribute('data-view-set'),'all');}
+ const third=frames[2],press=new Event('click');third.dispatchEvent(press);
+ assert.ok(press.defaultPrevented,'the picture file is not opened');assert.ok($('#viewer').open);assert.equal($('#viewer-title').textContent,'All certificates');
+ const place=viewerItems().findIndex(item=>item.id===third.getAttribute('data-view-certificate'));
+ assert.match($('#viewer-content').textContent,new RegExp(`${place+1} of 10`),'it stands at the certificate that was pressed, among all ten');
+ // a swipe turns the page: left = next, right = previous; a short or upright one does nothing
+ const touch=(type,x,y,count=1)=>$('#viewer').dispatchEvent(new Event(type,{touches:Array(type==='touchend'?0:count).fill({clientX:x,clientY:y}),changedTouches:[{clientX:x,clientY:y}]}));
+ touch('touchstart',300,400);touch('touchend',200,410);assert.match($('#viewer-content').textContent,new RegExp(`${place+2} of 10`));
+ touch('touchstart',100,400);touch('touchend',220,380);assert.match($('#viewer-content').textContent,new RegExp(`${place+1} of 10`));
+ touch('touchstart',300,400);touch('touchend',280,400);touch('touchstart',300,400);touch('touchend',240,600);assert.match($('#viewer-content').textContent,new RegExp(`${place+1} of 10`));
+ touch('touchstart',300,400,2);touch('touchend',100,400);assert.match($('#viewer-content').textContent,new RegExp(`${place+1} of 10`),'two fingers are a zoom, not a swipe');
+ touch('touchend',100,400);$('#viewer').dispatchEvent(new Event('touchend',{}));
+ context.services.viewer.close();
+ touch('touchstart',300,400);touch('touchend',100,400);assert.ok(!$('#viewer').open,'a closed viewer hears nothing');
+ // the space bar on a frame; a new-tab click is left to the browser (it opens the picture)
+ const space=new Event('keydown',{key:' '});frames[0].dispatchEvent(space);assert.ok(space.defaultPrevented&&$('#viewer').open);context.services.viewer.close();
+ frames[0].dispatchEvent(new Event('keydown',{key:'a'}));assert.ok(!$('#viewer').open);
+ const newTab=new Event('click',{ctrlKey:true});frames[0].dispatchEvent(newTab);assert.ok(!newTab.defaultPrevented&&!$('#viewer').open);
+ assert.deepEqual([swipeDirection({dx:-60,dy:5}),swipeDirection({dx:60,dy:-5}),swipeDirection({dx:-39,dy:0}),swipeDirection({dx:-60,dy:50}),swipeDirection({}),swipeDirection({dx:-10,dy:0},8)],[1,-1,0,0,0,1]);assert.equal(SWIPE_MIN,40);
+ // what a frame opens, as a plain decision
+ const plan=viewerPlan({id:'parul-gupta-certificate-02',set:'all'});assert.equal(plan.items.length,10);assert.equal(plan.title,'All certificates');assert.equal(plan.items[plan.index].id,'parul-gupta-certificate-02');
+ assert.equal(viewerPlan({id:'nobody',set:'all'}).index,0);
+ const own=viewerPlan({id:'sanjay-gupta-certificate-03',wallIds:['sanjay-gupta-certificate-08','sanjay-gupta-certificate-03','unknown']});assert.equal(own.items.length,2);assert.equal(own.index,1);assert.equal(own.title,'Certificates of Dr. Sanjay Gupta');
+ assert.equal(viewerPlan({id:'x',wallIds:['sanjay-gupta-certificate-08','parul-gupta-certificate-01']}).title,'All certificates');assert.equal(viewerPlan({id:'x'}).items.length,0);
  openViewerWalk(context.services,{total:0,draw:()=>''});openViewerWalk({}, {total:1,draw:()=>''});bindCertificates(app,{});done();
 });
 

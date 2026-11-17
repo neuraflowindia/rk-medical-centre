@@ -41,6 +41,8 @@ export function checkPageMarkup(html,{path}){
   if(/^(?:tel:|mailto:|https:\/\/)/.test(href))continue;
   if(href.startsWith('#')){assert.ok(href.length>1,`${path}: an empty #place link`);continue;}
   const address=href.split(/[?#]/)[0];
+  // a framed certificate leads to its own picture when scripts are off
+  if(publicImagePath.test(address)){assert.ok(existsSync(publicFolder+address),`${path}: the picture ${href} does not exist in public/`);continue;}
   assert.ok(knownPaths.includes(address)||bookingDestination(address),`${path}: "${href}" is not an address of this site`);
  }
  for(const use of attributeValues(html,'href').filter(href=>href.startsWith('#i-')))assert.ok(iconNames.includes(use.slice(3)),`${path}: unknown icon ${use}`);

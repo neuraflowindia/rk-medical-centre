@@ -66,15 +66,21 @@ test('booking links are ones the OFF build recognises and hides',()=>{
 
 test('the main booking control changes its words and address with the booking state',()=>{
  assert.deepEqual(shared.bookingEntryFor('header',true),{label:'Book an appointment',short:'Book',path:'/booking',spoken:'Book an appointment',hint:'Book an appointment online'});
- assert.equal(shared.bookingEntryFor('header',false).path,'/contact');
- assert.equal(shared.bookingEntryFor('header',false).spoken,'Book an appointment by calling the clinic');
  assert.equal(shared.bookingEntryFor('page',true).label,'Book an appointment');
- assert.deepEqual(shared.bookingEntryFor('page',false),{label:'Arrange a visit',path:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment'});
- for(const place of ['header','page']){
-  assert.equal(bookingDestination(shared.bookingEntryFor(place,true).path),true);
-  assert.equal(bookingDestination(shared.bookingEntryFor(place,false).path),false,'the OFF address must survive the OFF build');
+ const arrange={label:'Arrange a visit',path:'/contact',spoken:'Arrange a visit by calling the clinic',hint:'Call the clinic to arrange an appointment'};
+ assert.deepEqual(shared.bookingEntryFor('page',false),arrange);
+ assert.deepEqual(shared.bookingEntryFor('header',false),arrange,'one name while booking is off: the header never promises "Book"');
+ assert.deepEqual(shared.bookingEntryFor('header',false,'/treatment'),arrange);
+ for(const place of ['header','page'])for(const route of ['','/','/contact']){
+  assert.equal(bookingDestination(shared.bookingEntryFor(place,true,route).path),true);
+  assert.equal(shared.bookingEntryFor(place,true,route).label,'Book an appointment');
+  assert.equal(bookingDestination(shared.bookingEntryFor(place,false,route).path),false,'the OFF address must survive the OFF build');
+  assert.doesNotMatch(shared.bookingEntryFor(place,false,route).label,/\bBook\b/,'nothing says "Book" while booking is off');
  }
- assert.throws(()=>shared.bookingEntryFor('footer',true),RangeError);
+ // on Contact itself the header's control would lead to the page the visitor is on: there it calls
+ assert.deepEqual(shared.bookingEntryFor('header',false,'/contact'),{label:'Call the clinic',path:'/contact',spoken:'Call the clinic',hint:'Call the clinic to arrange an appointment',call:true});
+ assert.deepEqual(shared.bookingEntryFor('page',false,'/contact'),arrange,'a page\'s own first-screen control is not changed');
+ assert.throws(()=>shared.bookingEntryFor('footer',true),RangeError);assert.throws(()=>shared.bookingEntryFor('call',false),RangeError);
 });
 
 test('the live sign has three short states in India time',()=>{
@@ -172,7 +178,8 @@ test('the footer is complete: address, hours, phones, pages, registrations and t
  const footer=shared.footer;
  assert.equal(footer.name,'R. K. Medical Centre');assert.equal(footer.address,address);assert.equal(footer.hoursLine,shared.hoursLine);
  assert.deepEqual(footer.pages.map(page=>[page.path,page.label]),[['/treatment','Treatments'],['/meet-doctor','Meet the doctors'],['/about-clinic','About the clinic'],['/contact','Contact']]);
- assert.equal(shared.privacyChoices.title,'Your privacy choices');assert.ok(shared.privacyChoices.paragraphs.length>=1&&shared.privacyChoices.accept);
+ assert.equal(shared.privacyChoices.title,'Your privacy choices');assert.ok(shared.privacyChoices.paragraphs.length>=1);assert.equal(shared.privacyChoices.accept,'Close');
+ assert.equal(shared.privacyChoices.offered,false,'nothing is measured, so no choice is offered');
  assert.deepEqual(footer.registrations.map(row=>row.line),[standins.registrationLine('sanjay'),standins.registrationLine('parul')]);
  assert.deepEqual(footer.registrations.map(row=>row.path),['/dr-sanjay-gupta','/dr-parul-gupta']);
  assert.equal(footer.detailsNotice,'How your details are used');assert.equal(footer.privacyChoices,'Change privacy choices');

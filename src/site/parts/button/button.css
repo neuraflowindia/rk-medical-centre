@@ -13,6 +13,9 @@
   .button__state-icon { display: inline-flex; }
   /* The calendar mark exists for the booking state's bookkeeping; the filled button reads without it. */
   .button__state-icon[data-home-entry-icon="calendar"] { display: none; }
+  /* "Arrange a visit" leads to a page: its arrow follows the words, and steps forward under the pointer. */
+  .button__state-icon--after { order: 2; margin-left: -2px; }
+  .button__state-icon--after .icon { transition: transform var(--dur-hover) var(--ease-move); }
   .button--main { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
   .button--second { color: var(--action); background: linear-gradient(180deg, var(--surface-top) 0%, var(--surface) 100%); box-shadow: var(--ring), var(--elev-raised); }
   .button--on-deep { color: var(--ground-deep); background: var(--action-on-deep); box-shadow: var(--elev-on-deep); }
@@ -39,6 +42,7 @@
   html[data-booking-state="off"] .button--lead { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
   html[data-booking-state="off"] .button--lead:active { background: var(--action-pressed); box-shadow: var(--elev-main-pressed); }
   @media (hover: hover) and (pointer: fine) {
+    .button:hover .button__state-icon--after .icon { transform: translateX(3px); }
     .button--main:hover { transform: translateY(var(--lift)); background: linear-gradient(180deg, var(--action) 0%, var(--action-hover) 70%); box-shadow: var(--elev-main-hover); }
     .button--second:hover { transform: translateY(var(--lift)); color: var(--action-hover); box-shadow: var(--ring-hover), var(--elev-raised-hover); }
     .button--on-deep:hover { transform: translateY(var(--lift)); background: var(--surface-top); }

@@ -106,7 +106,7 @@ test('a browser that refuses site storage gets the whole site; choices hold whil
   page.window.dispatchEvent(new Event('storage',{bubbles:false,key:MOTION_KEY}));assert.equal(app.services.motion.state(),'paused');
   // the privacy choice cannot be kept, and says so without throwing
   assert.equal(app.services.privacy.choose(false),null);
-  $('[data-privacy]').click();assert.ok($('#reader').open);$('#reader [data-privacy-accept]').click();assert.ok(!$('#reader').open,'the privacy dialog still closes');
+  $('[data-collection-notice]').click();assert.ok($('#reader').open,'the notice opens');$('#reader [data-close]').click();assert.ok(!$('#reader').open);
  }finally{end();}
 });
 
