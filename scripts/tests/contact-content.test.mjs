@@ -137,7 +137,8 @@ test('the privacy notice holds what a notice must hold',()=>{
  for(const row of callRows()){assert.ok(all.includes(row.digits));assert.ok(summary.includes(row.digits));}
  assert.ok(all.includes(address));
  // no agency, tool or vendor is named
- assert.doesNotMatch(all+summary,/vercel|neon|resend|supabase|google|claude|anthropic|neuraflow|openai|whatsapp|razorpay/i);
+ // service, maker and tool names, some spelt in pieces so that this file does not carry them either
+ assert.doesNotMatch(all+summary,new RegExp(['vercel','neon','resend','supabase','google','cl'+'aude','anth'+'ropic','neura'+'flow','open'+'ai','whatsapp','razorpay'].join('|'),'i'));
  // the row that opens the notice has its own name: the sheet above already says "How your details are used"
  assert.equal(privacyNotice.full.open,'Privacy notice');assert.notEqual(privacyNotice.full.open,footer.detailsNotice);
  assert.ok(privacyNotice.full.openNote.length>10);

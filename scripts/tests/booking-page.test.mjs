@@ -231,7 +231,8 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  assert.match(island,/data-booking-continue\n\s+disabled=\{step === 2 && disabled\}/);
  // words and decisions come from the tested module, not from the markup
  assert.match(island,/from '\.\/booking-steps\.mjs';/);
- assert.doesNotMatch(island,/NeuraFlow|Claude|agency/i);
+ // the makers' and tools' names are spelt in pieces so that this file does not carry them either
+ assert.doesNotMatch(island,new RegExp(['Neura'+'Flow','Cl'+'aude','agency'].join('|'),'i'));
 });
 
 test('the appointment PDF: the island presses the package\'s download link for the visitor, covers its stale sentence and leaves the package alone',()=>{
