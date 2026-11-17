@@ -13,8 +13,8 @@
   html[data-motion="on"] .page-about__shaft { animation: page-about-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-about__disc[data-running] .page-about__shaft { animation-play-state: running; }
   @keyframes page-about-shaft {
-    from { transform: translateX(-12%); }
-    to { transform: translateX(12%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   /* subject: the frontage in the postcard frame, its caption below */
   .page-about__frontage { position: relative; z-index: 1; }

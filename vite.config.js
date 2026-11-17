@@ -38,11 +38,6 @@ export default defineConfig({
     preloadFontsPlugin(),
     surfaceManifestPlugin({bookingModules:['src/booking/clinic-booking.jsx']}),
   ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   server: {
     watch: { usePolling: true, interval: 1000, ignored: ['**/public/**','**/appointment-system/**','**/node_modules/**','**/dist/**'] },
     host: '127.0.0.1',
