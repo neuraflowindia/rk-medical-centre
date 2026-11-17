@@ -161,11 +161,15 @@
     .page-home__visiting-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-6); }
     .page-home__frontage { display: block; grid-column: 1 / 10; grid-row: 2; }
     .page-home__frontage .photo-figure__caption { padding: var(--space-4) 0 0 var(--space-2); max-width: 30ch; }
-    .page-home__waiting { display: block; grid-column: 9 / 13; grid-row: 2; align-self: end; margin: 0 0 -96px; }
+    .page-home__waiting { display: block; grid-column: 9 / 13; grid-row: 2; align-self: end; margin: 0; }
     .page-home__waiting .photo-figure__frame { margin: 0; }
     .page-home__waiting .photo-figure__caption { padding: 14px 0 0 var(--space-2); }
-    .page-home__address { grid-column: 1 / 8; grid-row: 3; margin-top: 40px; padding: 30px 32px 32px; }
-    .page-home__directions { width: auto; }
+    /* tablets: the card runs the whole row under the two photographs: the address and the timetable
+       on its left, directions and the two notes on its right, so no part of the row stands empty */
+    .page-home__address { grid-column: 1 / -1; grid-row: 3; margin-top: 44px; padding: 30px 32px 32px; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: var(--space-8); align-items: start; }
+    .page-home__address h3, .page-home__address address, .page-home__hours { grid-column: 1; }
+    .page-home__directions { grid-column: 2; grid-row: 1 / span 2; align-self: end; justify-self: start; width: auto; margin-top: 0; }
+    .page-home__notes { grid-column: 2; grid-row: 3; margin-top: var(--space-5); }
     .page-home__address-line { display: block; }
     .page-home__visiting .photo-figure__key { display: block; margin: 0 0 2px; }
     .page-home__address .hours-table__today { display: block; width: fit-content; margin: 3px 0 0; }
@@ -207,7 +211,9 @@
     .page-home__frontage .photo-figure__caption { margin-left: 126px; padding-top: 18px; max-width: 27ch; font-size: var(--size-label); }
     .page-home__waiting { grid-column: 10 / 13; grid-row: 1 / 4; align-self: start; margin: 248px 0 0; }
     .page-home__waiting .photo-figure__caption { font-size: var(--size-label); padding-top: 18px; }
-    .page-home__address { grid-column: 1 / 6; grid-row: 2 / 4; align-self: start; margin: 40px 0 0; width: min(468px, 41vw); padding: 34px 36px 36px; }
+    .page-home__address { display: block; grid-column: 1 / 6; grid-row: 2 / 4; align-self: start; margin: 40px 0 0; width: min(468px, 41vw); padding: 34px 36px 36px; }
+    .page-home__directions { margin-top: var(--space-4); }
+    .page-home__notes { margin-top: var(--space-4); }
     .page-home__address-pin { width: 88px; top: -50px; right: 26px; }
 
     .page-home__questions { padding-top: var(--section-pad); }
