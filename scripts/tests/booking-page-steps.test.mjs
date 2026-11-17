@@ -58,7 +58,6 @@ test('the words are complete, warm and typed with proper marks; the three steps 
  // the stage headings the engine's own form has always carried
  assert.deepEqual(STEPS.map(step=>step.title),['Your doctor and starting time','Your details','Check your visit and payment']);
  assert.equal(words.stepCount(2,3,STEPS[1].label),'Step 2 of 3 · Your details');
- assert.equal(words.backToStep(1,STEPS[0].label),'Back to step 1: Doctor and time');
  // the "someone else" line is the stand-in answer, without its leading "Yes."
  assert.ok(bookForSomeoneElseAnswer.startsWith('Yes. '));
  assert.equal(words.details.someoneElse,'Booking for a parent or someone else? '+bookForSomeoneElseAnswer.slice(5));

@@ -23,7 +23,6 @@ export const words=Object.freeze({
  formLabel:'Book an appointment',
  progressLabel:'Booking steps',
  stepCount:(step,total,label)=>`Step ${step} of ${total} · ${label}`,
- backToStep:(step,label)=>`Back to step ${step}: ${label}`,
  back:'Back',
  next:'Continue',
  change:'Change',
@@ -66,8 +65,7 @@ export const words=Object.freeze({
   email:'Email address',
   emailHint:'Only if you would like a copy by email.',
   notes:'Anything the doctor should know?',
-  optional:'optional',
-  verification:'Email verification'
+  optional:'optional'
  }),
  errors:Object.freeze({
   summary:'Check the details marked below.',
@@ -80,7 +78,7 @@ export const words=Object.freeze({
  summary:Object.freeze({
   title:'Your visit',
   pending:'Not confirmed yet',
-  doctor:'Doctor',day:'Day',time:'Starting time',fee:'Fee',place:'Where',
+  day:'Day',time:'Starting time',fee:'Fee',place:'Where',
   empty:'Not chosen yet',
   checking:'Checking…',
   change:'Change doctor or time',

@@ -411,7 +411,7 @@
   @media (min-width: 768px) {
     /* the steps sit on a paper panel that overlaps the sage head */
     .clinic-booking__main { padding: var(--space-7) var(--space-7) 0; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
-    .clinic-booking__step, .clinic-booking__step--3 { gap: var(--space-7); margin-top: var(--space-5); }
+    .clinic-booking__step, .clinic-booking__step--3 { gap: var(--space-6); margin-top: var(--space-5); }
     /* progress: numbered markers with their names and a hairline between them */
     .booking-progress { display: flex; align-items: center; gap: var(--space-3); }
     .booking-progress__step { display: flex; align-items: center; gap: 10px; height: auto; border-radius: 0; background: none; color: var(--ink-muted); font: var(--type-label); font-weight: 500; white-space: nowrap; }
@@ -436,7 +436,7 @@
 
     /* two weeks as a small calendar: each column is a weekday */
     .booking-days__row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; overflow: visible; }
-    .day-tile { width: auto; min-height: 80px; }
+    .day-tile { width: auto; min-height: 74px; }
     .day-tile--later { grid-column: 1 / -1; justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); width: auto; min-height: var(--tap); padding: 0 var(--space-4) 0 14px; border-radius: var(--radius-pill); font: var(--type-control-small); }
     .day-tile--later .icon { width: 20px; height: 20px; }
     .slot-group__pills { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
