@@ -139,6 +139,8 @@
     .page-about__pin { right: 54px; top: 34px; width: 88px; }
 
     .page-about__story-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 96px; align-items: start; }
+    /* the year stays in view while the column is read */
+    .page-about__story-head { position: sticky; top: calc(var(--header-height) + 40px); }
     .page-about__story-column { gap: var(--space-5); padding-top: 34px; }
     .page-about__pulled { margin: 12px 0; }
 
