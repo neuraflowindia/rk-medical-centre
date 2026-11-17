@@ -214,7 +214,9 @@ test('the screen follows the engine\'s state (pure)',()=>{
 
  const expired=view({started:true,receipt:receipt('awaiting_verification'),expired:true});
  assert.deepEqual([expired.name,expired.codeEntry,expired.codeTitle,expired.codeText,expired.showResend,expired.showCheck],['expired',false,words.code.expiredTitle,words.code.expiredText,true,false]);
- assert.equal(view({started:true,receipt:receipt('expired',{sends_remaining:0,generation:3})}).codeText,words.code.noneLeft);
+ const spent=view({started:true,receipt:receipt('expired',{sends_remaining:0,generation:3})});
+ assert.deepEqual([spent.codeText,spent.remaining,spent.showResend],[words.code.noneLeft,'',false],'said once: the screen\'s own sentence');
+ assert.equal(expired.remaining,words.code.remaining(2));
  const locked=view({started:true,receipt:receipt('locked')});
  assert.deepEqual([locked.name,locked.codeTitle,locked.codeText,locked.status],['locked',words.code.lockedTitle,words.code.lockedText,words.status.locked]);
  assert.equal(view({started:true,receipt:receipt('locked',{sends_remaining:0,generation:3})}).codeText,words.code.noneLeft);

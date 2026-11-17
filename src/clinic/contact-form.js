@@ -135,7 +135,8 @@ export function formView({policy='pending',state,submitted=false,sentTo=''}){
   showResend:codeScreen&&left>0,
   resendDisabled:waiting||state.resendWait>0||left<=0,
   countdown:codeScreen&&left>0&&state.resendWait>0?words.code.countdown(state.resendWait):'',
-  remaining:codeScreen?words.code.remaining(left):'',
+  // "No more codes" is already the screen's own sentence once a code has expired or been locked.
+  remaining:codeScreen&&(left>0||name==='code')?words.code.remaining(left):'',
   panel:name==='received'||INSTEAD_SCREENS.includes(name)?name:'',
   instead:INSTEAD_SCREENS.includes(name),
   showRetry:retry,

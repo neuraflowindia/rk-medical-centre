@@ -79,7 +79,7 @@ export function messageForm(ctx){
   +`<fieldset class="message-form__fields" data-contact-fields disabled><legend class="visually-hidden">${text(words.legend)}</legend>`
   +words.fields.map(field).join('')
   +`<div class="message-form__field"><label class="message-form__label" for="contact-message">${text(message.label)}</label>`
-  +`<textarea class="message-form__input message-form__input--message" id="contact-message" name="message" rows="4" required minlength="2" maxlength="${message.maxlength}" aria-describedby="contact-message-error"></textarea>`
+  +`<textarea class="message-form__input message-form__input--message" id="contact-message" name="message" rows="3" required minlength="2" maxlength="${message.maxlength}" aria-describedby="contact-message-error"></textarea>`
   +`${fieldError('message')}</div></fieldset>`
   +`<div class="message-form__compose" data-contact-compose>`
   +`<p class="message-form__consent" id="contact-collection">${text(words.consent)} <button class="text-link message-form__notice" type="button" aria-haspopup="dialog" data-collection-notice>${text(words.notice)}</button></p>`

@@ -143,6 +143,12 @@
   .message-form__alert .icon { margin-top: 1px; color: var(--error); }
   /* the alert row takes the focus when it is the next thing to read; its own ring already marks it */
   .message-form__alert:focus-visible { outline: none; }
+  /* A message that is still waiting: its alert stands beside the button that tries again (the foot of the
+     sheet is what the visitor is looking at), not at the sheet's head, which may be off the screen. */
+  .message-form[data-state="stalled"] .message-form__alert { order: 1; }
+  .message-form[data-state="stalled"] .message-form__compose { order: 2; }
+  /* whatever takes the focus in the sheet comes to rest clear of the phone bar, with its whole height on screen */
+  .message-form__input, .message-form__alert, .message-form__panel-title, .message-form__sheet .button, .message-form__sheet .text-link { scroll-margin-bottom: calc(var(--bar-height) + var(--space-7)); }
 
   .message-form__fields { display: grid; gap: var(--space-3); }
   .message-form__field { display: grid; gap: 6px; }
@@ -153,7 +159,8 @@
   .message-form__input { display: block; width: 100%; min-height: var(--control-height-large); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-control); appearance: none;
     background: var(--ground-light); box-shadow: var(--ring-quiet), var(--elev-pressed); color: var(--ink); font: var(--type-body);
     transition: box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move); }
-  .message-form__input--message { min-height: 88px; padding: 14px var(--space-4); resize: vertical; }
+  /* three lines to begin with; where the browser can, the field grows with what is written (up to about ten lines) */
+  .message-form__input--message { min-height: 104px; max-height: 284px; padding: 14px var(--space-4); resize: vertical; field-sizing: content; }
   /* the six digits: as wide as the button below on phones, centred, evenly spaced */
   .message-form__input--code { font: var(--type-digits); font-variant-numeric: tabular-nums lining-nums; letter-spacing: .3em; text-align: center; padding-left: calc(var(--space-4) + .3em); }
   .message-form__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--radius-control); background: var(--surface-top); box-shadow: var(--ring), var(--elev-pressed); }
@@ -181,6 +188,8 @@
   .message-form__code-entry { display: grid; gap: var(--space-4); margin-top: var(--space-2); }
   .message-form__confirm { width: 100%; }
   .message-form__resend { display: grid; justify-items: start; gap: 10px; margin-top: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  /* nothing left to offer (no further code, nothing to count): the row and its hairline go */
+  .message-form__resend:has(> [hidden]):not(:has(.message-form__meta span:not(:empty))) { display: none; }
   .message-form__meta { color: var(--ink-muted); font: var(--type-meta); font-variant-numeric: tabular-nums lining-nums; }
   .message-form__help { color: var(--ink-muted); font: var(--type-meta); max-width: 46ch; }
   .message-form__instead { display: grid; gap: 10px; }
@@ -286,10 +295,12 @@
     .message-form { margin-top: var(--space-5); }
     .message-form__sheet { margin-top: var(--space-5); padding: var(--space-7); gap: var(--space-5); }
     .message-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); align-items: start; }
-    .message-form__field:first-of-type, .message-form__field:last-of-type { grid-column: 1 / -1; }
+    /* the name and the message run the sheet's full width; the email and the phone number share a row */
+    .message-form__fields > .message-form__field:first-of-type, .message-form__fields > .message-form__field:last-of-type { grid-column: 1 / -1; }
     .message-form__compose { grid-template-columns: 1fr auto; align-items: center; gap: var(--space-4); }
     .message-form__instead { grid-template-columns: repeat(3, auto); justify-content: start; }
     .message-form__instead > :last-child { grid-column: auto; }
+    /* the six digits and their button stand side by side; the button is level with the field, under the label's line */
     .message-form__code-entry { grid-template-columns: 264px auto; align-items: start; justify-content: start; }
     .message-form__code-entry .message-form__confirm { margin-top: 27px; }
     .page-contact__notice { margin-top: var(--space-8); }
