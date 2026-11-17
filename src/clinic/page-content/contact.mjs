@@ -263,7 +263,7 @@ export const privacyNotice=Object.freeze({
      // True of this site's engine (its request limits read the caller's address and store only a keyed
      // digest of it, never the address itself) and of any web server (the request itself carries both).
      'As with any website, the servers that run this one also receive your device’s internet address and basic technical details, such as the kind of browser, when you open a page or send a form. The message and booking service uses the address only to limit misuse, and keeps it only in a scrambled form.',
-     'This website does not measure your visits or show advertising. All it keeps on your own device are your choices here (privacy and motion) and a private reference to a message or booking you are in the middle of.'
+     'This website does not measure your visits or show advertising. All it keeps on your own device are your choices here (privacy and motion), a private reference to a message or booking of yours, and, while you are filling in a booking, what you have chosen and typed so far: the doctor, day, time and payment choice, and the name, phone number, email address and note. That unfinished booking stays only in the browser tab you are using, so that going back or refreshing does not lose your work. It is removed as soon as the booking is sent, is not used after 30 minutes, and goes when you close the tab.'
     ])
    }),
    Object.freeze({

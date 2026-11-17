@@ -31,7 +31,7 @@ export const pageMetadata=Object.freeze({
   },
   "/dr-sanjay-gupta": {
     "title": "Dr. Sanjay Gupta, Physician in Lucknow | R. K. Medical Centre",
-    "description": `${sanjay.name}, physician and diabetologist in ${place}, in practice since ${since}: what he treats, his next clinic session, how to reach him.`
+    "description": `${sanjay.name}, physician and diabetologist in ${place}, in practice since ${since}: what he treats, clinic hours, how to reach him.`
   },
   "/dr-parul-gupta": {
     "title": "Dr. Parul Gupta, Women's Health in Lucknow | R. K. Medical Centre",
