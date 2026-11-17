@@ -8,7 +8,13 @@
   .closing__calls .call-row { min-height: 68px; padding: 8px 14px 8px var(--row-start, 8px); row-gap: 0; }
   /* without the faces (a page whose last section already shows them) a row is the name and, at its
      right edge, the number: the words keep clear of the row's edge and the two numbers line up */
-  .closing__calls .call-row:not(:has(.call-row__avatar)) { --row-start: 14px; grid-template-columns: minmax(0, 1fr) auto; }
+  .closing__calls .call-row:not(:has(.call-row__avatar)) { --row-start: 14px; grid-template-columns: minmax(0, 1fr); align-content: center; row-gap: 2px; }
+  .closing__calls .call-row:not(:has(.call-row__avatar)) .call-row__digits { justify-self: start; }
+  /* on phones the name stands above the number, as in the rows with faces; from 480 px they share a line */
+  @media (min-width: 480px) {
+    .closing__calls .call-row:not(:has(.call-row__avatar)) { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0; }
+    .closing__calls .call-row:not(:has(.call-row__avatar)) .call-row__digits { justify-self: auto; }
+  }
   .closing__calls .call-row__need { display: none; }
   .closing__sign { margin-top: var(--space-3); min-height: 28px; }
   .closing__action { margin-top: var(--space-5); width: 100%; }

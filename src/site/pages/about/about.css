@@ -124,6 +124,9 @@
     .page-about__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
     .page-about__documents { --certificate-height: 132px; --overlap: 22px; position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); margin-top: calc(-1 * var(--overlap)); }
     .page-about__documents > li { padding-inline: var(--card-pad); }
+    /* the row is pulled up over the cards: only the certificate and its caption take the pointer, so the cards' links under the row's empty parts stay reachable */
+    .page-about__documents { pointer-events: none; }
+    .page-about__documents .certificate-frame__mat, .page-about__documents .certificate-frame__label { pointer-events: auto; }
     .page-about__certificates { margin-top: 30px; }
   }
 
