@@ -3,7 +3,7 @@ import * as words from '../../src/clinic/page-content/doctors.mjs';
 import {doctors,doctorFacts,locality} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue,certificatesFor} from '../../src/clinic/certificate-catalogue.mjs';
-import {clinicPhotos,doctorAvatars,archPortraits} from '../../src/clinic/client-media.mjs';
+import {clinicPhotos,clinicObjects,doctorAvatars,archPortraits} from '../../src/clinic/client-media.mjs';
 import {NEUTRAL} from '../../src/clinic/open-status.mjs';
 import {registrationLine,registrationNumbers,STAND_IN_NOTE} from '../../src/clinic/standins.mjs';
 import {hero,doctorChips,doctorsSection,homeCertificates} from '../../src/clinic/page-content/home.mjs';
@@ -32,19 +32,17 @@ test('no markup, no stand-in marker and no missing value in any word of these pa
  }
 });
 
-test('short roles, honour tags, formal lines and degrees are read from their one home',()=>{
+test('short roles, honour tags and degrees are read from their one home',()=>{
  for(const id of doctorOrder){
   assert.equal(words.shortRole(id),hero.portraits.find(item=>item.id===id).role);
   const card=doctorsSection.cards.find(item=>item.id===id);
   assert.equal(words.honourTag(id),card.tag||null);
-  assert.equal(words.formalLine(id),card.formalLine);
-  assert.ok(words.formalLine(id).startsWith(doctors[id].formal));
   assert.ok(degreesOf(id).startsWith(words.degreesLine(id)),'the degrees line is the recorded degrees, without a bracket that repeats the specialty');
   assert.doesNotMatch(words.degreesLine(id),new RegExp(doctors[id].formal.replace(/[&]/g,'\\$&')));
  }
  assert.equal(words.honourTag('sanjay'),null);assert.equal(words.honourTag('parul'),'KGMU gold medalist');
  assert.deepEqual(words.doctorTone,{sanjay:'sage',parul:'rose'});
- for(const read of [words.shortRole,words.honourTag,words.formalLine,words.degreesLine,words.workPortrait,words.roomPicture,words.avatarOf,words.careTopics,words.profilePage])assert.throws(()=>read('nobody'),/Unknown doctor/);
+ for(const read of [words.shortRole,words.honourTag,words.degreesLine,words.workPortrait,words.roomPicture,words.avatarOf,words.careTopics,words.profilePage])assert.throws(()=>read('nobody'),/Unknown doctor/);
 });
 
 test('photographs: the wider at-work portraits, the room pictures and the small faces all exist, and none is Home\'s tight crop',()=>{
@@ -79,7 +77,11 @@ test('Meet the doctors: the heading names both doctors, a line each',()=>{
  assert.ok(page.heading.endsWith(page.emphasis)&&page.emphasis.includes(doctors.parul.name));
  assert.ok(page.heading.includes(doctorShortName('sanjay')));
  assert.deepEqual(page.portraits.map(item=>item.id),doctorOrder);
- for(const item of page.portraits){assert.equal(item.name,doctors[item.id].name);assert.equal(item.role,words.shortRole(item.id));assert.equal(item.credit,words.portraitCredit[item.id]);}
+ for(const item of page.portraits){assert.equal(item.name,doctors[item.id].name);assert.equal(item.role,words.shortRole(item.id));assert.equal(item.credit,words.portraitCredit[item.id]);assert.equal(item.instrument,words.doctorInstrument[item.id]);}
+ // each doctor's own instrument is one of the paper-cut objects, and the two differ
+ assert.deepEqual(Object.keys(words.doctorInstrument),doctorOrder);
+ for(const id of doctorOrder)assert.ok(Object.hasOwn(clinicObjects,words.doctorInstrument[id]),`${id}: a known object`);
+ assert.notEqual(words.doctorInstrument.sanjay,words.doctorInstrument.parul);
  assert.equal(page.jump.href,'#'+page.choose.id);assert.equal(page.jump.label,page.choose.heading);
  assert.ok(Object.isFrozen(page)&&Object.isFrozen(page.choose)&&Object.isFrozen(page.choose.leaves)&&Object.isFrozen(page.training));
 });
@@ -92,7 +94,8 @@ test('Meet the doctors: each page of the spread carries what differs between the
   assert.equal(leaf.name,doctor.name);assert.equal(leaf.role,doctor.role);
   assert.equal(leaf.heading,`See ${doctorShortName(leaf.id)} for`);
   assert.deepEqual(leaf.concerns,doctorChips(leaf.id).map(chip=>chip.label));
-  assert.equal(leaf.formalLine,words.formalLine(leaf.id));
+  assert.equal(leaf.degrees,words.degreesLine(leaf.id));assert.ok(!leaf.degrees.includes(doctor.formal),'the field is not named a third time');
+  assert.ok(!Object.hasOwn(leaf,'formalLine'));
   assert.equal(leaf.registration,registrationLine(leaf.id));assert.ok(leaf.registration.endsWith(registrationNumbers[leaf.id]));
   assert.equal(leaf.tone,words.doctorTone[leaf.id]);
   assert.deepEqual({label:leaf.profile.label,href:leaf.profile.href},{label:actionLabels.fullProfile,href:doctor.path});

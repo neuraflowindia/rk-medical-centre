@@ -33,8 +33,6 @@ export function shortRole(id){return hero.portraits.find(item=>item.id===known(i
 const homeCard=id=>doctorsSection.cards.find(card=>card.id===known(id));
 /** "KGMU gold medalist" for Dr. Parul Gupta; null for a doctor without an honour tag. */
 export function honourTag(id){return homeCard(id).tag||null;}
-/** "Physician & Diabetology · MBBS, DGO": the formal specialty and the degrees, exactly as on the Home card. */
-export function formalLine(id){return homeCard(id).formalLine;}
 /** The degrees alone, for a place where the formal specialty already stands beside them. */
 export function degreesLine(id){return degreesBeside(doctors[known(id)].formal,degreesOf(id));}
 
@@ -45,6 +43,11 @@ export function workPortrait(id){return workPortraits[known(id)];}
 export function roomPicture(id){return roomCrops[known(id)];}
 /** A doctor's small square face (decorative: the name is always beside it). */
 export function avatarOf(id){return doctorAvatars[known(id)];}
+/**
+ * Each doctor's own instrument, a paper-cut object (clinicObjects): the stethoscope for the
+ * physician, the scan probe for the gynaecologist. An accent beside the portrait, never a person.
+ */
+export const doctorInstrument=Object.freeze({sanjay:'stethoscope-general',parul:'ultrasound-probe'});
 /** What each portrait shows, as its credit: a moment at work, and where. */
 export const portraitCredit=Object.freeze(Object.fromEntries(doctorOrder.map(id=>[id,`In ${pronouns[id].possessive} consulting room`])));
 /** Where: added to the credit where there is room for it. */
@@ -77,7 +80,8 @@ function leaf(id){
   role:doctor.role,
   heading:`See ${doctorShortName(id)} for`,
   concerns:Object.freeze(careTopics(id).map(topic=>topic.label)),
-  formalLine:formalLine(id),
+  // The field is named under the portrait and under "See Dr. … for"; this line adds only what they do not say.
+  degrees:degreesLine(id),
   registration:registrationLine(id),
   tag:honourTag(id),
   profile:Object.freeze({label:actionLabels.fullProfile,href:doctor.path,spoken:`${actionLabels.fullProfile} of ${doctor.name}`})
@@ -90,7 +94,7 @@ export const doctorsPage=Object.freeze({
  runningHead:'The doctors',
  heading:`Meet ${doctorShortName('sanjay')} ${MEET_EMPHASIS}`,
  emphasis:MEET_EMPHASIS,
- portraits:Object.freeze(doctorOrder.map(id=>Object.freeze({id,name:doctors[id].name,role:shortRole(id),credit:portraitCredit[id]}))),
+ portraits:Object.freeze(doctorOrder.map(id=>Object.freeze({id,name:doctors[id].name,role:shortRole(id),credit:portraitCredit[id],instrument:doctorInstrument[id]}))),
  jump:Object.freeze({label:'Who should I see?',href:'#who'}),
 
  // 2 · who should I see: a split spread, one page per doctor
