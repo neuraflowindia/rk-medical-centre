@@ -45,6 +45,8 @@
     position: relative; z-index: 1; background: var(--ground-tint); padding: calc(var(--section-pad) + var(--strip-out) - 20px) 0 var(--section-pad); }
   .page-profile__care-grid { display: grid; gap: var(--head-gap); }
   .page-profile__topics { display: grid; gap: 10px; }
+  /* rows that share a line share its height */
+  .page-profile__topics li { display: grid; }
   /* a row: the topic's object on its plate, its name, one line, and the way in */
   .page-profile__topic {
     display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3); min-height: 72px; padding: 8px 10px 8px 10px;
