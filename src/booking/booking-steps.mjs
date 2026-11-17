@@ -95,7 +95,9 @@ export const words=Object.freeze({
   onlineNote:'Continue to secure payment after this step.',
   // The engine's own words for a method it reports as unavailable.
   unavailable:'Temporarily unavailable',
-  chosenUnavailable:'This payment option is unavailable. Please choose another available option.'
+  chosenUnavailable:'This payment option is unavailable. Please choose another available option.',
+  // Before the last press only the fact is said; the number to call is on the appointment card and in the header.
+  later:'You can change or cancel later by calling the clinic.'
  }),
  confirm:Object.freeze({
   ack:'I have checked the doctor, day, starting time and my details.',

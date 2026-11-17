@@ -32,9 +32,8 @@ function Notice({calm = false, icon, role = 'alert', children}) {
 
 /** "To change or cancel, call Dr. Sanjay Gupta: 94150 49410" (one doctor if known, otherwise both). */
 function ClinicContact({service, bookingHelp = false}) {
-  return <p className="booking-contact">{bookingHelp ? words.contact.help : words.contact.change}{' '}
-    {contactRows(service).map((row, index) => <React.Fragment key={row.id}>{index > 0 ? ' · ' : ''}
-      <a href={row.href} aria-label={row.spoken}>{kt(row.name)}: {kt(row.digits)}</a></React.Fragment>)}</p>;
+  return <p className="booking-contact"><span className="booking-contact__lead">{bookingHelp ? words.contact.help : words.contact.change}</span>
+    {contactRows(service).map(row => <a key={row.id} className="booking-contact__link" href={row.href} aria-label={row.spoken}><Icon name="phone"/><span>{kt(row.name)}: {kt(row.digits)}</span></a>)}</p>;
 }
 
 /**
@@ -73,9 +72,9 @@ function Progress({step}) {
 
 /** "Your visit": who, when, how much, where. The same card serves the side column and step 3. */
 function VisitSummary({summary, id, onChange, aside = false}) {
-  const value = (text, waiting = false) => text
-    ? <dd>{kt(text)}</dd>
-    : <dd className="is-empty">{waiting ? words.summary.checking : words.summary.empty}</dd>;
+  // A fact not chosen yet is a dash for the eye and words for a screen reader.
+  const empty = <dd className="is-empty"><span aria-hidden="true">—</span><span className="visually-hidden">{words.summary.empty}</span></dd>;
+  const value = (text, waiting = false) => text ? <dd>{kt(text)}</dd> : waiting ? <dd className="is-empty">{words.summary.checking}</dd> : empty;
   return <section className="visit-summary" aria-labelledby={id}>
     {aside && <img className="visit-summary__object" src={calendarObject.src} width={calendarObject.width} height={calendarObject.height} alt="" loading="lazy" decoding="async"/>}
     <div className="visit-summary__head"><h3 className="visit-summary__title" id={id}>{words.summary.title}</h3>
@@ -95,7 +94,7 @@ function VisitSummary({summary, id, onChange, aside = false}) {
       <div><dt>{words.summary.time}</dt>{value(summary.time, summary.waiting)}</div>
       <div><dt>{words.summary.fee}</dt>{summary.fee
         ? <dd>{summary.fee}{summary.payment && <span className="visit-summary__pay"> · {summary.payment}</span>}</dd>
-        : <dd className="is-empty">{words.summary.empty}</dd>}</div>
+        : empty}</div>
       {summary.place && <div><dt>{words.summary.place}</dt><dd>{kt(summary.place.name)}<small>{summary.place.address}</small></dd></div>}
     </dl>
     {aside && onChange && <button type="button" className="text-link visit-summary__change" onClick={onChange}><Icon name="edit"/><span>{words.summary.change}</span></button>}
@@ -132,7 +131,7 @@ function AppointmentCard({receipt, titleRef, id}) {
       <span className="appointment-card__time">{kt(card.time)}</span></p>
     <div className="appointment-card__tear" aria-hidden="true"/>
     <div className="appointment-card__foot">
-      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}{' '}
+      {card.place && <p className="appointment-card__place"><Icon name="pin"/><span><strong>{kt(card.place.name)}</strong>{card.place.address}
         <a className="appointment-card__directions" href={card.place.maps} target="_blank" rel="noopener noreferrer">{words.receipt.directions}<Icon name="out"/><span className="visually-hidden"> {words.receipt.opensMaps}</span></a></span></p>}
       {card.pay && <p className="appointment-card__line"><Icon name="banknote"/><strong>{card.pay}</strong></p>}
       {card.bring && <p className="appointment-card__line"><Icon name="file"/><span>{card.bring}</span></p>}
@@ -419,7 +418,7 @@ function Booking({draft = {}}) {
               </div>
             </fieldset>
             {s.payment_method && !methodAvailable && <p role="status" className="booking-pay-note">{words.payment.chosenUnavailable}</p>}
-            <ClinicContact service={s.service}/>
+            <p className="booking-pay-note">{words.payment.later}</p>
             <div className="booking-last"><label className="booking-ack"><input type="checkbox" checked={s.ack} disabled={disabled || !s.slot || !methodAvailable}
               onChange={event => dispatch({type: 'ack', value: event.target.checked})}/>
               <span className="booking-ack__box" aria-hidden="true"><Icon name="check"/></span><span className="booking-ack__words">{words.confirm.ack}</span></label>

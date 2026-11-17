@@ -19,6 +19,7 @@
   .clinic-booking legend + * { clear: both; }
   .clinic-booking__step { display: grid; gap: var(--space-5); margin-top: var(--space-3); }
   .clinic-booking__step > * { min-width: 0; }
+  .clinic-booking__step--3 { gap: var(--space-4); }
   /* on phones the bar is the last thing of the steps; the other screens keep air above the footer */
   .clinic-booking--receipt, .clinic-booking--waiting, .clinic-booking--paused, .clinic-booking--find { padding-bottom: var(--space-7); }
 
@@ -38,9 +39,12 @@
   .booking-notice--calm > .icon { color: var(--action); }
   .booking-notice .button { justify-self: start; margin-top: var(--space-1); }
   .clinic-booking__step .booking-notice { margin-top: 0; }
-  .booking-contact { color: var(--ink-body); font: var(--type-notes); }
-  .booking-contact a { color: var(--action); font-weight: 600; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
-  .booking-contact a:active { color: var(--action-pressed); }
+  /* who to call: the words, then each number as a row a thumb can press */
+  .booking-contact { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-4); color: var(--ink-body); font: var(--type-notes); }
+  .booking-contact__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); color: var(--action); font-weight: 600; white-space: nowrap; }
+  .booking-contact__link .icon { width: 18px; height: 18px; }
+  .booking-contact__link span { text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
+  .booking-contact__link:active { color: var(--action-pressed); }
   .booking-wait { color: var(--ink-body); font: var(--type-label); font-weight: 500; }
   .booking-prompt { padding: var(--space-4); border-radius: var(--radius-row); color: var(--ink-body); background: var(--flat-fill); font: var(--type-label); font-weight: 500; }
 
@@ -50,7 +54,7 @@
   .doctor-choices__list { display: grid; gap: var(--space-2); clear: both; }
   .doctor-choice { display: block; cursor: pointer; }
   .doctor-choice__card {
-    position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center; gap: var(--space-3); min-height: 72px; padding: 10px 44px 10px 10px;
+    position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center; gap: var(--space-3); min-height: 72px; padding: 10px var(--space-4) 10px 10px;
     border-radius: var(--radius-row); color: var(--ink); background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised);
     transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move);
   }
@@ -58,7 +62,7 @@
   .doctor-choice--rose .doctor-choice__card { background: linear-gradient(180deg, var(--surface-top), var(--wash-rose) 70%); }
   .doctor-choice__face { width: 52px; height: 52px; border-radius: var(--radius-control); object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
   .doctor-choice__who { display: grid; gap: 1px; min-width: 0; }
-  .doctor-choice__name { color: var(--ink); font: var(--type-h3); letter-spacing: var(--tracking-display); }
+  .doctor-choice__name { padding-right: 28px; color: var(--ink); font: var(--type-h3); letter-spacing: var(--tracking-display); }
   .doctor-choice__role { color: var(--ink-body); font: var(--type-formal); }
   .doctor-choice__tick { position: absolute; right: 12px; top: 12px; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-round); color: transparent; background: var(--surface-top); box-shadow: var(--ring-quiet); }
   .doctor-choice__tick .icon { width: 15px; height: 15px; stroke-width: 2.2; }
@@ -187,7 +191,7 @@
   .payment-choice.payment-unavailable .payment-choice__dot { background: transparent; box-shadow: var(--ring-faint); }
   .payment-choice.payment-unavailable .payment-choice__card { min-height: var(--control-height); }
   .payment-choice.payment-unavailable .payment-choice__words { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
-  .booking-pay-note { color: var(--ink-body); font: var(--type-notes); }
+  .booking-pay-note { margin-top: calc(-1 * var(--space-2)); color: var(--ink-body); font: var(--type-notes); }
   .booking-last { display: grid; gap: var(--space-1); }
 
   /* ----- the tick box: a 24 px box inside a 48 px row; the real box stays focusable ----- */
@@ -253,7 +257,7 @@
   .appointment-card__place { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--space-1) var(--space-3); color: var(--ink-body); font: var(--type-notes); }
   .appointment-card__place .icon { width: 20px; height: 20px; margin-top: 2px; color: var(--action); }
   .appointment-card__place strong { display: block; color: var(--ink); font: var(--type-row-strong); }
-  .appointment-card__directions { display: inline-flex; align-items: center; gap: var(--space-1); min-height: 28px; color: var(--action); font-weight: 600; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
+  .appointment-card__directions { display: flex; align-items: center; gap: var(--space-1); width: fit-content; min-height: var(--tap); margin-bottom: calc(-1 * var(--space-3)); color: var(--action); font-weight: 600; white-space: nowrap; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
   .appointment-card__directions .icon { width: 16px; height: 16px; margin: 0; }
   .appointment-card__directions:active { color: var(--action-pressed); }
   .appointment-card__line { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--space-3); color: var(--ink-body); font: var(--type-notes); }
@@ -264,7 +268,7 @@
      The package prints the list before the actions; here the actions come first, so its box is
      dissolved and the three parts are ordered as one column ----- */
   .booking-record { display: grid; gap: var(--space-3); }
-  .booking-record .abs-receipt { display: contents; }
+  .clinic-booking .booking-record .abs-receipt { display: contents; }
   .booking-record .abs-receipt-actions { order: 1; }
   .booking-record__toggle { order: 2; justify-self: start; }
   .booking-record .abs-receipt-facts { order: 3; margin-bottom: var(--space-3); }
@@ -285,7 +289,7 @@
   .clinic-booking .abs-receipt-facts > div:first-child { border-top: 0; }
   .clinic-booking .abs-receipt-facts dt { margin: 0; color: var(--ink-muted); font: var(--type-meta); }
   .clinic-booking .abs-receipt-facts dd { margin: 0; color: var(--ink); font: var(--type-label); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; overflow-wrap: anywhere; }
-  .clinic-booking .abs-receipt-facts a { color: var(--action); font-weight: 600; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
+  .clinic-booking .abs-receipt-facts a { display: inline-flex; align-items: center; min-height: var(--tap); margin-bottom: calc(-1 * var(--space-3)); color: var(--action); font-weight: 600; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 3px; }
   .clinic-booking .abs-receipt-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: 0; padding: 0; border: 0; font: var(--type-label); font-weight: 400; }
   .clinic-booking .abs-receipt-actions p { width: 100%; margin: 0; color: var(--ink-body); font: var(--type-notes); }
   .clinic-booking .abs-receipt-actions button, .clinic-booking .abs-receipt-actions .abs-download { flex: 1 1 100%; width: auto; min-height: var(--tap); }
@@ -316,7 +320,7 @@
   .clinic-booking .abs-lookup-intro { max-width: 34em; margin: 0; color: var(--ink-body); font: var(--type-sub); }
   .clinic-booking .abs-lookup-inputs { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
   .clinic-booking .abs-lookup-field, .clinic-booking .abs-lookup-phone { display: grid; gap: var(--space-2); min-width: 0; }
-  .clinic-booking .abs-lookup-phone { gap: var(--space-4); }
+  .clinic-booking .abs-lookup-phone .abs-lookup-field { margin-top: var(--space-3); }
   .clinic-booking .abs-booking-details select { margin: 0; }
   .clinic-booking .abs-lookup-hint { margin: 0; color: var(--ink-muted); font: var(--type-meta); }
   .clinic-booking .abs-booking-details .abs-action-error { margin: 0; color: var(--ink); font: var(--type-small); font-weight: 600; }
@@ -339,8 +343,9 @@
   .clinic-booking .abs-lookup-list .abs-lookup-state { grid-column: 1; color: var(--ink-body); font: var(--type-small); font-weight: 600; }
   .clinic-booking .abs-lookup-list button > span:last-child { grid-column: 2; grid-row: 1 / span 3; align-self: center; color: var(--action); font: var(--type-row-strong); }
   /* forced by the package to be see-through with --abs-fg as its colour: a text button in the action colour */
-  .clinic-booking .abs-lookup-back { --abs-fg: var(--action); min-height: var(--tap); padding: 0 var(--space-2); box-shadow: none; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 4px; }
-  .clinic-booking .abs-lookup-back:active:not(:disabled) { box-shadow: none; }
+  .clinic-booking .abs-lookup-back { --abs-fg: var(--action); }
+  .clinic-booking .abs-receipt .abs-lookup-back { min-height: var(--tap); padding: 0 var(--space-2); box-shadow: none; text-decoration: underline; text-decoration-color: var(--line-action); text-underline-offset: 4px; }
+  .clinic-booking .abs-receipt .abs-lookup-back:active:not(:disabled) { box-shadow: none; transform: none; }
 
   /* ----- the package's date box and its calendar ----- */
   .rk-date { --abs-bg: var(--surface); --abs-text: var(--ink); --abs-border: var(--control-border); --abs-action: var(--action); --abs-error: var(--error); --abs-font: var(--font-text); }
@@ -372,18 +377,20 @@
     .slot-choices:not(:disabled) .time-pill:not(.selected):hover .time-pill__face { box-shadow: var(--ring), var(--halo), var(--elev-raised); }
     .payment-choices:not(:disabled) .payment-choice:not(.selected):not(.payment-unavailable):hover .payment-choice__card { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
     .booking-ack:hover input:not(:disabled):not(:checked) + .booking-ack__box { box-shadow: inset 0 0 0 1.5px var(--action), var(--halo); }
-    .booking-contact a:hover { color: var(--action-hover); text-decoration-color: currentColor; }
+    .booking-contact__link:hover { color: var(--action-hover); }
+    .booking-contact__link:hover span { text-decoration-color: currentColor; }
+    .appointment-card__directions:hover { color: var(--action-hover); text-decoration-color: currentColor; }
     .clinic-booking .abs-receipt button:hover:not(:disabled), .clinic-booking .abs-receipt .abs-download:hover { transform: translateY(var(--lift)); box-shadow: var(--ring-hover), var(--elev-raised-hover); }
     .clinic-booking .abs-lookup-form > button:hover:not(:disabled) { background: linear-gradient(180deg, var(--action) 0%, var(--action-hover) 70%); box-shadow: var(--elev-main-hover); }
     .clinic-booking .abs-lookup-list button:hover:not(:disabled) { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
-    .clinic-booking .abs-lookup-back:hover:not(:disabled) { transform: none; box-shadow: none; text-decoration-color: currentColor; }
+    .clinic-booking .abs-receipt .abs-lookup-back:hover:not(:disabled) { transform: none; box-shadow: none; text-decoration-color: currentColor; }
     .rk-date.abs-booking-picker button:hover:not(:disabled) { box-shadow: var(--ring), var(--elev-raised); }
     .rk-date .abs-calendar-cell:hover:not([data-disabled]):not([data-selected]) { background: var(--chosen-soft); box-shadow: var(--ring-action-faint); }
   }
 
   /* ===================== narrow phones ===================== */
   @media (max-width: 359px) {
-    .doctor-choice__card { grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding-right: 40px; }
+    .doctor-choice__card { grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding-right: var(--space-3); }
     .doctor-choice__face { width: 44px; height: 44px; }
     .slot-group__pills { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
     .visit-summary__facts > div { grid-template-columns: 82px minmax(0, 1fr); gap: var(--space-2); }
@@ -404,7 +411,7 @@
   @media (min-width: 768px) {
     /* the steps sit on a paper panel that overlaps the sage head */
     .clinic-booking__main { padding: var(--space-7) var(--space-7) 0; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--elev-card); }
-    .clinic-booking__step { gap: var(--space-7); margin-top: var(--space-5); }
+    .clinic-booking__step, .clinic-booking__step--3 { gap: var(--space-7); margin-top: var(--space-5); }
     /* progress: numbered markers with their names and a hairline between them */
     .booking-progress { display: flex; align-items: center; gap: var(--space-3); }
     .booking-progress__step { display: flex; align-items: center; gap: 10px; height: auto; border-radius: 0; background: none; color: var(--ink-muted); font: var(--type-label); font-weight: 500; white-space: nowrap; }
@@ -421,7 +428,7 @@
 
     .doctor-choices__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
     .doctor-choice { display: grid; }
-    .doctor-choice__card { grid-template-columns: 60px minmax(0, 1fr); min-height: 88px; padding: 14px 40px 14px 14px; gap: 14px; }
+    .doctor-choice__card { grid-template-columns: 60px minmax(0, 1fr); min-height: 88px; padding: 14px var(--space-4) 14px 14px; gap: 14px; }
     .doctor-choice__face { width: 60px; height: 60px; }
     .doctor-choices.is-folded .doctor-choice:not(.selected) { display: grid; }
     .doctor-choices.is-folded legend { width: 100%; }
@@ -457,7 +464,7 @@
     .clinic-booking--steps { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; gap: var(--space-7); }
     .clinic-booking__main { padding: var(--space-8) var(--space-8) 0; }
     /* the summary rides beside the steps and stays in view */
-    .clinic-booking__aside { position: sticky; top: calc(var(--header-height) + var(--space-6)); display: block; margin-top: var(--space-8); }
+    .clinic-booking__aside { position: sticky; top: calc(var(--header-height) + var(--space-9)); display: block; margin-top: var(--space-8); }
     .clinic-booking__step .visit-summary { display: none; }
     .visit-summary__object { position: absolute; right: -18px; top: -46px; display: block; width: 92px; height: auto; transform: rotate(7deg); filter: var(--elev-object-small); pointer-events: none; }
     .visit-summary__head { padding-right: var(--space-9); }

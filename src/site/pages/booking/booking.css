@@ -4,7 +4,7 @@
 @layer pages {
   .page-booking { min-height: calc(100svh - var(--header-height)); }
   .page-booking__head { padding: var(--space-2) 0; background: var(--ground-tint); }
-  .page-booking__head-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .page-booking__head-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: var(--tap); }
   .page-booking__title { font: var(--type-h2); letter-spacing: var(--tracking-h2); white-space: nowrap; }
   .page-booking__link { flex: none; }
   .page-booking__root { padding-top: var(--space-4); min-width: 0; }
