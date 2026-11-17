@@ -184,6 +184,14 @@ test('the closing: one decision, true at any hour and in either booking state',(
  const one=closing(on,{doctor:'parul'});
  assert.match(one,/data-closing-doctor="parul"/);assert.equal(count(one,/class="call-row"/g),1);assert.match(one,/href="\/booking\?doctor=parul"[^>]*>.*Book with Dr\.&nbsp;Parul/);
  assert.throws(()=>closing(on,{doctor:'nobody'}),/Unknown doctor/);
+ // a call row reads need first, then the name, as the call sheet and Contact do
+ assert.match(both,/<span class="call-row__who"><span class="call-row__need">General health and diabetes<\/span><strong class="call-row__name">Dr\.&nbsp;Sanjay Gupta<\/strong><\/span>/);
+ // the faces can be left out where the section above already shows them; names and numbers stay
+ assert.equal(count(both,/class="call-row__avatar"/g),2);
+ const plain=closing(on,{avatars:false});
+ assert.equal(count(plain,/class="call-row__avatar"/g),0);assert.equal(count(plain,/class="call-row"/g),2);assert.match(plain,/94150&nbsp;49410/);assert.match(plain,/98386&nbsp;55095/);
+ // the handset floats (laptops)
+ assert.match(both,/<img class="closing__object"[^>]*data-ambient="float">/);
 });
 
 test('the phone bar, the call rows and the call sheet',()=>{
@@ -309,6 +317,7 @@ test('options a page may ask for: roomy call rows and timetable, a button that s
  assert.match(callRow(row,{roomy:true}),/^<a class="call-row call-row--roomy" /);assert.match(callRow(row),/^<a class="call-row" /);
  assert.match(whatsappRow(on,{roomy:true}),/^<a class="call-row call-row--whatsapp call-row--roomy" /);assert.match(whatsappRow(on),/^<a class="call-row call-row--whatsapp" /);
  assert.match(hoursTable(on,{roomy:true,className:'k'}),/^<table class="hours-table hours-table--roomy k" /);assert.match(hoursTable(on),/^<table class="hours-table" /);
+ assert.match(hoursTable(on,{roomy:true,band:true}),/^<table class="hours-table hours-table--roomy hours-table--band" /,'today\'s row may lie on a soft band');assert.doesNotMatch(hoursTable(on,{roomy:true}),/hours-table--band/);
  const map=button({label:'Open in Google Maps',href:'https://maps.app.goo.gl/x',variant:'second',external:true,iconAfter:'out',labelHidden:'narrow'});
  assert.match(map,/class="button button--second button--icon-narrow"/);assert.match(map,/<span class="button__label">Open in Google Maps<\/span>/,'the words stay for assistive technology');
  assert.throws(()=>button({label:'x',labelHidden:'narrow'}),/needs an icon/);assert.throws(()=>button({label:'x',icon:'pin',labelHidden:'wide'}),/hidden label/);

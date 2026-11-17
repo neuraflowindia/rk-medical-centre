@@ -6,7 +6,7 @@
   .site-header__row { display: flex; align-items: center; gap: var(--space-3); min-height: var(--header-height); }
 
   .lockup { display: inline-flex; align-items: center; gap: 10px; min-height: var(--tap); margin-right: auto; color: var(--ink); }
-  .lockup img { width: 31px; height: 36px; object-fit: contain; }
+  .lockup img { width: 31px; height: 36px; object-fit: contain; transition: transform var(--dur-underline) var(--ease-move); }
   .lockup__text { display: grid; gap: 1px; }
   .lockup__name { font: var(--type-lockup); letter-spacing: -.005em; color: var(--ink); white-space: nowrap; }
   .lockup__place { font: var(--type-lockup-place); color: var(--ink-muted); white-space: nowrap; }
@@ -49,6 +49,8 @@
     .site-header__link { position: relative; display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 13px; border-radius: var(--radius-link); color: var(--ink); font: var(--type-nav); transition: color var(--dur-hover); }
     .site-header__link::after { content: ""; position: absolute; left: 13px; right: 13px; bottom: 11px; height: 1.5px; background: var(--action); transform: scaleX(0); transform-origin: left center; transition: transform var(--dur-underline) var(--ease-move); }
     .site-header__link:hover, .site-header__link[aria-current="page"] { color: var(--action); }
+    /* the mark turns a little under the pointer: the way home */
+    .lockup:hover img { transform: rotate(-8deg) scale(1.05); }
     .site-header__link:hover::after, .site-header__link:focus-visible::after, .site-header__link[aria-current="page"]::after { transform: scaleX(1); }
     .site-header__link:active { color: var(--action-pressed); }
     .site-header__sign { display: inline-flex; margin-left: var(--space-2); padding-left: var(--space-5); min-height: 28px; box-shadow: -1px 0 0 var(--line); white-space: nowrap; }

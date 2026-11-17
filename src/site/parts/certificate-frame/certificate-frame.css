@@ -10,11 +10,13 @@
   .certificate-frame__mat img { height: var(--certificate-height, 124px); width: auto; max-width: none; border-radius: var(--radius-hair); box-shadow: 0 0 0 1px var(--line-ink); }
   .certificate-frame--small { --certificate-height: 96px; }
   .certificate-frame--large { --certificate-height: 180px; }
-  .certificate-frame__mat--view { cursor: zoom-in; transition: transform var(--dur-hover) var(--ease-move); }
+  .certificate-frame__mat--view { cursor: zoom-in; transition: transform var(--dur-swap) var(--ease-move), box-shadow var(--dur-swap) var(--ease-move); }
   .certificate-frame__mat--view:active { transform: translateY(var(--press)); }
   .certificate-frame__mat--view:focus-visible { outline-offset: 4px; border-radius: var(--radius-frame); }
   @media (hover: hover) and (pointer: fine) {
-    .certificate-frame__mat--view:hover { transform: translateY(var(--lift)); }
+    /* a document is picked up: it comes forward and tips a little, each way by turns along a row */
+    .certificate-frame__mat--view:hover { transform: translateY(-4px) rotate(-.9deg); }
+    .certificate-wall__item:nth-child(even) .certificate-frame__mat--view:hover { transform: translateY(-4px) rotate(.9deg); }
   }
   /* the label takes its document's width and wraps inside it */
   .certificate-frame__label { display: grid; gap: 1px; margin-top: 14px; width: 0; min-width: 100%; }

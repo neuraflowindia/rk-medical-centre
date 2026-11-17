@@ -3,6 +3,7 @@
 // buttons move between documents.
 import {certificateCatalogue} from '../../../clinic/certificate-catalogue.mjs';
 import {doctors} from '../../../clinic/model.mjs';
+import {keepFocusInView} from '../still-shelf/still-shelf.behaviour.mjs';
 import {certificateViewer} from './certificate-frame.mjs';
 
 export const viewerWords=Object.freeze({all:'All certificates',of:name=>`Certificates of ${name}`});
@@ -95,6 +96,8 @@ export function viewerPlan({id,set='',wallIds=[]},catalogue=certificateCatalogue
 }
 
 export function bindCertificates(root,{signal,services}={}){
+ // on phones a wall is a row the visitor moves: whatever takes the focus is brought wholly into view
+ for(const wall of root.querySelectorAll('[data-certificate-wall]'))keepFocusInView(wall,{signal,smooth:()=>services?.motion?.allowed?.()??false});
  if(!services?.viewer)return;
  const plain=event=>!(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button>0);
  // "All certificates": a link to Meet the doctors that, with scripts, opens the viewer instead.

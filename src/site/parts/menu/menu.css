@@ -4,6 +4,7 @@
   .menu__link { display: flex; align-items: center; justify-content: space-between; min-height: 64px; padding: 0 4px; border-bottom: 1px solid var(--line); color: var(--ink); font: var(--type-row-title); transition: color var(--dur-hover), padding var(--dur-hover) var(--ease-move); }
   .menu__link .icon { color: var(--action); transition: transform var(--dur-hover) var(--ease-move); }
   .menu__link:active { color: var(--action); padding-left: 10px; }
+  .menu__link:active .icon { transform: translateX(4px); }
   .menu__link[aria-current="page"] { color: var(--action); }
   /* The two actions share a row from 360 px (the main one takes what Call leaves, and may shrink);
      on narrower phones they stack, each across the sheet, so neither can run past its edge. */

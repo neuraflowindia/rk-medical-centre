@@ -42,7 +42,7 @@ export const menuNavigation=Object.freeze([
 export const navigationLabels=Object.freeze({
  home:`${clinicName} home`,
  main:'Main navigation',
- menu:'Pages',
+ menu:'Menu',
  openMenu:'Open menu',
  closeMenu:'Close menu',
  menuButton:'Menu',
@@ -297,8 +297,8 @@ export function reviewsTitle(filter,count){
 }
 /** Spoken after "Read more" so each such link names its review. */
 export const readMoreOf=name=>`of the review by ${name}`;
-/** "3 of 8": where the shelf stands. */
-export const shelfPosition=(index,total)=>`${index} of ${total}`;
+/** "3 of 8": where the shelf stands. Where several cards show at once: "3–5 of 8". */
+export const shelfPosition=(index,total,last=index)=>last>index?`${index}–${last} of ${total}`:`${index} of ${total}`;
 export const ratingSpoken=rating=>`Rated ${Number.isInteger(Number(rating))?Number(rating):Number(rating).toFixed(1)} out of 5`;
 
 /** The notice opened by "How your details are used". */

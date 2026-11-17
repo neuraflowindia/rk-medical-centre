@@ -9,13 +9,13 @@
     font: var(--type-control); letter-spacing: .004em; white-space: nowrap; cursor: pointer; user-select: none;
     transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move), background-color var(--dur-hover) var(--ease-move), color var(--dur-hover) var(--ease-move);
   }
-  .button .icon { width: 19px; height: 19px; }
+  .button .icon { width: 19px; height: 19px; transition: transform var(--dur-hover) var(--ease-move); }
   .button__state-icon { display: inline-flex; }
   /* The calendar mark exists for the booking state's bookkeeping; the filled button reads without it. */
   .button__state-icon[data-home-entry-icon="calendar"] { display: none; }
   /* "Arrange a visit" leads to a page: its arrow follows the words, and steps forward under the pointer. */
   .button__state-icon--after { order: 2; margin-left: -2px; }
-  .button__state-icon--after .icon { transition: transform var(--dur-hover) var(--ease-move); }
+
   .button--main { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
   .button--second { color: var(--action); background: linear-gradient(180deg, var(--surface-top) 0%, var(--surface) 100%); box-shadow: var(--ring), var(--elev-raised); }
   .button--on-deep { color: var(--ground-deep); background: var(--action-on-deep); box-shadow: var(--elev-on-deep); }
@@ -42,7 +42,11 @@
   html[data-booking-state="off"] .button--lead { color: var(--on-action); background: linear-gradient(180deg, var(--action-top) 0%, var(--action) 58%); box-shadow: var(--elev-main); }
   html[data-booking-state="off"] .button--lead:active { background: var(--action-pressed); box-shadow: var(--elev-main-pressed); }
   @media (hover: hover) and (pointer: fine) {
-    .button:hover .button__state-icon--after .icon { transform: translateX(3px); }
+    /* a button lifts; its mark adds its own small answer: a phone tips (every Call), an arrow after
+       the words steps on, and the arrow of a link that leaves the site steps up and out */
+    .button:hover .button__state-icon--after .icon, .button:hover .button__label + .icon { transform: translateX(3px); }
+    .button[data-open-call]:hover > .icon:first-child, .button:hover .button__state-icon:not(.button__state-icon--after) .icon { transform: rotate(-14deg); }
+    .button[target="_blank"]:hover .button__label + .icon { transform: translate(2px, -2px); }
     .button--main:hover { transform: translateY(var(--lift)); background: linear-gradient(180deg, var(--action) 0%, var(--action-hover) 70%); box-shadow: var(--elev-main-hover); }
     .button--second:hover { transform: translateY(var(--lift)); color: var(--action-hover); box-shadow: var(--ring-hover), var(--elev-raised-hover); }
     .button--on-deep:hover { transform: translateY(var(--lift)); background: var(--surface-top); }
@@ -70,12 +74,17 @@
     background: linear-gradient(180deg, var(--surface-top), var(--surface)); box-shadow: var(--ring-quiet), var(--elev-raised);
     transition: transform var(--dur-hover) var(--ease-move), box-shadow var(--dur-hover) var(--ease-move), color var(--dur-hover);
   }
+  .round-button .icon { transition: transform var(--dur-hover) var(--ease-move); }
   .round-button:active { transform: translateY(var(--press)); background: var(--chosen); box-shadow: var(--ring), var(--elev-pressed); transition-duration: var(--dur-press); }
   .round-button:disabled { color: var(--flat-ink); background: var(--flat-fill); box-shadow: var(--ring-faint); cursor: default; }
   .round-button:focus-visible { border-radius: var(--radius-round); }
   .round-button--quiet { box-shadow: var(--ring-quiet), var(--elev-raised-quiet); }
   @media (hover: hover) and (pointer: fine) {
-    .round-button:not(:disabled):hover { transform: translateY(var(--lift)); box-shadow: var(--ring), var(--elev-raised-hover); }
+    /* a round button does not lift: its ring firms up and its sign moves the way it leads (back, on, or a quarter turn to close) */
+    .round-button:not(:disabled):hover { box-shadow: var(--ring), var(--halo), var(--elev-raised); }
+    .round-button[data-shelf-previous]:not(:disabled):hover .icon, .round-button[data-viewer-previous]:not(:disabled):hover .icon { transform: translateX(-3px); }
+    .round-button[data-shelf-next]:not(:disabled):hover .icon, .round-button[data-viewer-next]:not(:disabled):hover .icon { transform: translateX(3px); }
+    .round-button[data-close]:hover .icon { transform: rotate(90deg); }
     .round-button:not(:disabled):active { transform: translateY(var(--press)); }
   }
 

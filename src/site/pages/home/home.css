@@ -20,13 +20,14 @@
   html[data-motion="on"] .page-home__shaft { animation: page-home-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-home__shaft--deep { animation-name: page-home-shaft-wide; animation-duration: var(--loop-light-slow); animation-delay: var(--loop-light-slow-start); }
   html[data-motion="on"] .page-home__arch[data-running] .page-home__shaft, html[data-motion="on"] .page-home__credentials-light[data-running] .page-home__shaft { animation-play-state: running; }
+  /* the light crosses three fifths of its arch each way: its movement is plain within two or three seconds */
   @keyframes page-home-shaft {
-    from { transform: translateX(-11%); }
-    to { transform: translateX(11%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   @keyframes page-home-shaft-wide {
-    from { transform: translateX(-14%); }
-    to { transform: translateX(14%); }
+    from { transform: translateX(-17%); }
+    to { transform: translateX(17%); }
   }
   /* subject: the two frames */
   .page-home__pair { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding-top: var(--space-3); }
@@ -60,6 +61,8 @@
   .page-home__credentials-running::after { background: var(--line-on-deep); }
   .page-home__figure-title { display: flex; align-items: center; gap: var(--space-4); color: var(--ink-on-deep); }
   .page-home__numeral { display: inline-flex; align-items: flex-start; color: var(--ink-on-deep); font: var(--type-numeral); letter-spacing: -.035em; font-variant-numeric: lining-nums; margin-left: -.03em; }
+  /* the digits keep the final number's width while they count up, so nothing beside them shifts */
+  .page-home__numeral-digits { display: inline-block; min-width: calc(var(--digits, 2) * 1ch); text-align: right; font-variant-numeric: tabular-nums lining-nums; }
   .page-home__numeral-plus { color: var(--gold-on-deep); font: var(--type-numeral-plus); margin: .1em 0 0 .06em; letter-spacing: 0; }
   .page-home__figure-words { max-width: 8.2em; font: var(--type-figure-words); }
   .page-home__figure-words em { color: var(--ink-on-deep); }
@@ -81,7 +84,8 @@
   .page-home__certificates .certificate-frame { align-content: start; width: max(calc(var(--certificate-height) * var(--ar, 1.4) + 2 * var(--certificate-mat)), 40vw); }
   .page-home__certificates .certificate-frame__label { width: auto; min-width: 0; margin-top: var(--space-3); padding-right: 6px; }
   .page-home__certificates .certificate-frame__label strong, .page-home__certificates .certificate-frame__label span { text-wrap: balance; }
-  .page-home__certificates-more { padding-inline: var(--gutter); }
+  .page-home__certificates-more { padding-inline: var(--gutter); margin-top: var(--space-2); }
+  .page-home__certificates-more .button { padding-inline: 18px; }
 
   /* ---------- 4 · reviews: a still shelf led by one pull-quote ---------- */
   .page-home__reviews { background: var(--ground-light); padding: var(--space-7) 0 calc(var(--section-pad) - 6px); }
@@ -119,12 +123,14 @@
 
   @media (min-width: 480px) {
     .page-home__hero-grid { gap: 28px; }
+    /* between phone and tablet the two buttons keep a hand's width; they are not stretched across the screen */
+    .page-home__hero-actions { max-width: 420px; }
   }
 
   @media (min-width: 768px) {
     .page-home__hero { padding-top: 40px; }
     .page-home__lead { margin-top: 18px; }
-    .page-home__hero-actions { margin-top: 26px; gap: var(--space-3); }
+    .page-home__hero-actions { margin-top: 26px; gap: var(--space-3); max-width: none; }
     .page-home__hero-actions .button--main { flex: 0 0 auto; }
     .page-home__arch { left: 0; right: 0; bottom: 52px; }
     .page-home__pair { padding: var(--space-4) 18px 0; gap: 10px; }
@@ -148,7 +154,7 @@
     .page-home__certificates .certificate-wall__item:nth-child(2) { min-width: 150px; }
     .page-home__certificates .certificate-frame { width: auto; }
     .page-home__certificates .certificate-frame__label { width: 0; min-width: 100%; margin-top: 14px; padding-right: 0; }
-    .page-home__certificates-more { padding-inline: 0; }
+    .page-home__certificates-more { padding-inline: 0; margin-top: var(--space-3); }
 
     .page-home__reviews { padding: 56px 0 var(--section-pad); }
 

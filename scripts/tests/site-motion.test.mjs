@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {MOTION_KEY,ENTER_START,ENTER_END,FOLLOW_MS,LOOP_LIMIT,readPreference,writePreference,motionState,soften,partRange,partProgress,followShare,
- alreadyOnScreen,chooseRunning,loopLimit,toggleFace,pageTop,createMotion} from '../../src/site/motion/motion.mjs';
+import {MOTION_KEY,ENTER_START,ENTER_END,FOLLOW_MS,LOOP_LIMIT,LOOP_WEIGHT,COUNT_MS,COUNT_SHOWN,readPreference,writePreference,motionState,soften,partRange,partProgress,followShare,
+ alreadyOnScreen,chooseRunning,loopLimit,loopWeight,countValue,countTarget,toggleFace,pageTop,createMotion} from '../../src/site/motion/motion.mjs';
+const motionSheet=readFileSync(new URL('../../src/site/motion/motion.css',import.meta.url),'utf8');
+const tokenSheet=readFileSync(new URL('../../src/site/styles/tokens.css',import.meta.url),'utf8');
 import {createPage} from './support/mini-dom.mjs';
 import {safeStorage} from '../../src/site/lib/storage.mjs';
 
@@ -149,4 +151,90 @@ test('motion starts and works in a browser that refuses site storage; the choice
  // a choice the browser could not keep is reported as not kept
  const memoryOnly=safeStorage(()=>{throw new Error('closed');});
  assert.equal(writePreference(memoryOnly,'paused'),false);assert.equal(readPreference(memoryOnly),'paused');
+});
+
+test('when movers compete for a view, a light outranks a floating object, and a floating object a small pulse',()=>{
+ assert.deepEqual(LOOP_WEIGHT,{light:2,float:1.5,minor:1});
+ assert.deepEqual([loopWeight(''),loopWeight(null),loopWeight('float'),loopWeight('minor'),loopWeight('anything')],[2,2,1.5,1,2]);
+ const view=[{key:'dot',ratio:1,weight:loopWeight('minor')},{key:'object',ratio:.8,weight:loopWeight('float')},{key:'light',ratio:.4,weight:loopWeight('')},{key:'object2',ratio:1,weight:loopWeight('float')}];
+ assert.deepEqual(chooseRunning(view,2),['light','object2'],'a laptop view: the light and the more visible object');
+ assert.deepEqual(chooseRunning(view,1),['light'],'a phone view: the light alone');
+ assert.deepEqual(chooseRunning(view.filter(item=>item.key!=='light'),1),['object2'],'without a light, an object floats before the dot pulses');
+ // on a page: the module reads the kind from data-ambient
+ const page=createPage({width:1440,body:'<div id="app"><span id="light" data-ambient></span><img id="object" data-ambient="float"><span id="dot" data-ambient="minor"></span></div>'});
+ const $=id=>page.document.getElementById(id),motion=createMotion({documentObject:page.document,windowObject:page.window});
+ motion.observe($('app'));
+ page.observers[0].trigger([{target:$('dot'),intersectionRatio:1},{target:$('object'),intersectionRatio:.3},{target:$('light'),intersectionRatio:.2}]);
+ assert.deepEqual(motion.running().map(node=>node.id),['light','object']);
+ page.observers[0].trigger([{target:$('light'),isIntersecting:false}]);
+ assert.deepEqual(motion.running().map(node=>node.id),['object','dot']);
+ motion.dispose();
+});
+
+test('a counting number: whole numbers, quick at first, never past its end, and always reaching it',()=>{
+ assert.equal(COUNT_MS,1100);assert.equal(COUNT_SHOWN,.6);
+ assert.equal(countValue(30,0),0);assert.equal(countValue(30,COUNT_MS),30);assert.equal(countValue(30,99999),30);assert.equal(countValue(30,-50),0);
+ const steps=Array.from({length:23},(_,index)=>countValue(30,index*50));
+ assert.ok(steps.every((value,index)=>Number.isInteger(value)&&value>=0&&value<=30&&(index===0||value>=steps[index-1])),'it only rises');
+ assert.ok(countValue(30,275)>15,'more than half way after a quarter of the time');assert.equal(countValue(30,50,0),30);assert.equal(countValue(0,10),0);
+ assert.equal(countTarget({textContent:' 30 '}),30);assert.equal(countTarget({textContent:'1992'}),1992);
+ for(const words of ['30+','thirty','','3.5','-4','1234567'])assert.equal(countTarget({textContent:words}),null,words);
+ assert.equal(countTarget(null),null);
+});
+
+function countPage({reduced=false}={}){
+ const page=createPage({width:1440,height:800,media:{'(prefers-reduced-motion: reduce)':reduced},
+  body:'<div id="app"><h2 id="title" data-enter><span id="number" data-enter="count">30</span><span>+</span></h2><p id="words" data-enter="count">30+</p><span id="seen" data-enter="count">12</span></div>'});
+ const $=id=>page.document.getElementById(id);
+ $('title').offsetTop=2000;$('number').offsetTop=2000;$('number').offsetHeight=100;$('words').offsetTop=2600;$('seen').offsetTop=300;
+ for(const id of ['title','number','words','seen'])$(id).offsetParent=page.document.body;
+ page.document.documentElement.scrollHeight=6000;
+ return {page,$,motion:createMotion({documentObject:page.document,windowObject:page.window})};
+}
+
+test('a number counts up once as it arrives, on the clock, and ends on its own number',()=>{
+ const {page,$,motion}=countPage();
+ motion.observe($('app'));
+ assert.equal($('number').textContent,'0','below the screen it waits at nought');assert.equal($('seen').textContent,'12','a number already on screen is left alone');
+ assert.equal($('words').textContent,'30+','what is not a whole number does not count');assert.equal($('number').style.getPropertyValue('--p'),'','a counting number is never moved');
+ // not yet arrived: three fifths of its own height (100 px here) must have come into view
+ page.scroll(2000-800+40);page.frames(3);assert.equal($('number').textContent,'0');
+ page.scroll(2000-800+62);page.frames(1);assert.equal($('number').textContent,'0','the count begins on this frame');
+ const seen=[];for(let frame=0;frame<30;frame++){page.frames(1);seen.push(Number($('number').textContent));}
+ assert.ok(seen[5]>0&&seen[5]<30,`it is on its way (${seen[5]})`);assert.ok(seen.every((value,index)=>index===0||value>=seen[index-1]));
+ // the visitor scrolls away at once: the count carries on and reaches its number
+ page.scroll(0);page.frames(80);assert.equal($('number').textContent,'30');
+ page.scroll(5000);page.frames(140);assert.equal(motion.waiting(),0);assert.equal(page.pending().frames,0);
+ page.scroll(1000);page.scroll(1400);page.frames(5);assert.equal($('number').textContent,'30','it never counts twice');
+ motion.dispose();
+});
+
+test('a counting number shows its own number whenever motion is not running',()=>{
+ // paused in the middle of a count
+ const midway=countPage();midway.motion.observe(midway.$('app'));
+ midway.page.scroll(1400);midway.page.frames(8);assert.notEqual(midway.$('number').textContent,'30');
+ midway.motion.set('paused');assert.equal(midway.$('number').textContent,'30');midway.motion.dispose();
+ // reduced motion: it never leaves its number
+ const still=countPage({reduced:true});still.motion.observe(still.$('app'));assert.equal(still.$('number').textContent,'30');still.motion.dispose();
+ // the page is taken away while a number still waits at nought
+ const leaving=countPage(),abort=new AbortController();leaving.motion.observe(leaving.$('app'),{signal:abort.signal});
+ assert.equal(leaving.$('number').textContent,'0');abort.abort();assert.equal(leaving.$('number').textContent,'30');leaving.motion.dispose();
+ // a number near the very end of a short page still counts by the time the page can scroll no further
+ const short=countPage();short.page.document.documentElement.scrollHeight=2500;short.motion.observe(short.$('app'));
+ short.page.scroll(1700);short.page.frames(90);assert.equal(short.$('number').textContent,'30');short.motion.dispose();
+});
+
+test('the motion stylesheet: words and cards move through transform; frames and objects add to what they have',()=>{
+ assert.match(motionSheet,/\[data-enter\]:not\(\[data-enter="rule"\], \[data-enter="photo"\], \[data-enter="count"\]\) \{ transform: translateY\(/,'a counting number is not moved');
+ assert.match(motionSheet,/\[data-enter="photo"\] \.photo-figure__frame \{[^}]*clip-path:[^}]*translate:[^}]*scale:/s,'a photograph rises, grows and unrolls without replacing its own transform');
+ assert.match(motionSheet,/\[data-ambient="float"\] \{ animation: motion-float var\(--loop-float\) var\(--ease-drift\) calc\(var\(--loop-float\) \* -\.5 \+ var\(--float-phase, 0s\)\) infinite alternate paused; \}/,'it starts from rest and waits to be let run');
+ assert.match(motionSheet,/\[data-ambient="float"\]\[data-running\] \{ animation-play-state: running; \}/);
+ assert.match(motionSheet,/@keyframes motion-float \{\s*from \{ translate: 0 calc\(-1 \* var\(--float-rise\)\); rotate: calc\(-1 \* var\(--float-turn\)\); \}\s*to \{ translate: 0 var\(--float-rise\); rotate: var\(--float-turn\); \}/);
+ for(const line of motionSheet.split('\n').filter(row=>/animation|transform|translate|scale|clip-path/.test(row)&&row.includes('{')&&!row.trim().startsWith('from')&&!row.trim().startsWith('to')&&!row.includes('@keyframes')&&!row.trim().startsWith('/*')))assert.match(line,/html\[data-motion="on"\]/,`only while motion is on: ${line.trim().slice(0,70)}`);
+ // the agreed budget: loops of 12 to 18 seconds with plainly visible travel; everything is nought when motion is paused
+ const token=name=>new RegExp(`--${name}:\\s*([^;]+);`).exec(tokenSheet)[1].trim();
+ assert.equal(token('loop-light'),'12s');assert.equal(token('loop-light-slow'),'14s');assert.equal(token('loop-float'),'7s','seven seconds each way: a fourteen-second loop');
+ assert.equal(token('float-rise'),'6px');assert.equal(token('float-turn'),'1.5deg');
+ const paused=/:root\[data-motion="paused"\] \{([^}]+)\}/.exec(tokenSheet)[1];
+ for(const name of ['--rise: 0px','--rise-card: 0px','--settle-scale: 0','--float-rise: 0px','--float-turn: 0deg'])assert.ok(paused.includes(name),name);
 });

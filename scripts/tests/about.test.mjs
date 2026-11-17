@@ -162,7 +162,7 @@ test('About’s first screen is still: the cover carries no entrance, and its ph
  assert.match(picture,new RegExp(`src="${clinicPhotos[cover.photo.photo].src}"`));
  assert.match(coverHtml,/sizes="\(min-width: 768px\) 640px, 92vw"/,'the frontage is never asked for wider than 640 px');
  assert.equal(count(coverHtml,/data-ambient/g),1,'one slow light on the page');
- assert.equal(count(html,/data-ambient(?!="minor")/g),1);
+ assert.equal(count(html,/data-ambient(?!="(?:minor|float)")/g),1,'the closing\'s floating handset and the open dot are not lights');
  // Call opens the call panel (with scripts off it leads to the footer's numbers); directions leave the site.
  assert.match(coverHtml,/<a href="#footer-calls"[^>]*data-open-call=""/);
  const way=new RegExp(`<a class="text-link" href="${directions.replaceAll('.','\\.')}" target="_blank" rel="noopener">`);

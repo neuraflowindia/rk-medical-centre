@@ -209,7 +209,7 @@ test('the main heading is the clinic\'s headline with its last three words set a
 });
 
 test('each doctor\'s chips are the agreed ones, each with a short answer and its own object',()=>{
- assert.deepEqual(home.doctorChips('sanjay').map(chip=>chip.label),['Diabetes','Blood pressure','Thyroid','Fever & infections','General check-up']);
+ assert.deepEqual(home.doctorChips('sanjay').map(chip=>chip.label),['Diabetes','Blood pressure','Thyroid','Fever & infections','General health']);
  assert.deepEqual(home.doctorChips('parul').map(chip=>chip.label),['Periods & PCOS','Pregnancy','After childbirth','Ultrasound']);
  const all=['sanjay','parul'].flatMap(id=>home.doctorChips(id).map(chip=>({...chip,doctor:id})));
  assert.equal(new Set(all.map(chip=>chip.id)).size,9,'nine chips, nine different places on the Treatments page');
@@ -234,7 +234,7 @@ test('each doctor\'s chips are the agreed ones, each with a short answer and its
 test('the doctor cards carry only what differs between the doctors',()=>{
  const section=home.doctorsSection,[sanjay,parul]=section.cards;
  assert.equal(section.runningHead,'The doctors');assert.equal(section.heading,'Two doctors. One family practice.');
- assert.equal(section.intro,'Both trained at King George’s Medical University and have practised in Lucknow since 1992.');
+ assert.equal(section.intro,'Both trained at King George’s Medical University, Lucknow.','"since 1992" is said once, in the first screen');
  assert.equal(section.chipPrompt,'What would you like help with?');
  assert.deepEqual(section.cards.map(card=>card.id),['sanjay','parul']);
  assert.equal(sanjay.formalLine,'Physician & Diabetology · MBBS, DGO','his degrees are the clinic\'s confirmed ones');

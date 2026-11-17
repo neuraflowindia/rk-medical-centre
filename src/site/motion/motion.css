@@ -1,11 +1,29 @@
 /* Entrances. Each part marked data-enter carries one number from the motion module: --p, from 0
    (not yet arrived) to 1 (at rest). It follows the scroll, runs once and never goes back. Without
    that number a part is simply at rest, so a page without scripts, or with motion paused, is still.
-   Words move and never fade; cards travel further; photographs unroll downward; hairlines draw from the left. */
+   Words move and never fade; cards travel further; a photograph's frame rises, grows its last few
+   per cent and unrolls downward; hairlines draw from the left; a counting number only changes its digits.
+   Words and cards move through `transform` (so an entering part's own hover may use `translate`);
+   a photograph's frame and a floating object move through the separate translate / scale / rotate
+   properties, so they add to whatever `transform` a part or page gave them (a tilted frame stays tilted). */
 @layer motion {
   [data-enter] { --q: var(--p, 1); }
-  html[data-motion="on"] [data-enter]:not([data-enter="rule"], [data-enter="photo"]) { transform: translateY(calc((1 - var(--q)) * var(--rise))); }
+  html[data-motion="on"] [data-enter]:not([data-enter="rule"], [data-enter="photo"], [data-enter="count"]) { transform: translateY(calc((1 - var(--q)) * var(--rise))); }
   html[data-motion="on"] [data-enter="card"] { transform: translateY(calc((1 - var(--q)) * var(--rise-card))); }
   html[data-motion="on"] [data-enter="rule"]::before, html[data-motion="on"] [data-enter="rule"]::after { transform: scaleX(var(--q)); }
-  html[data-motion="on"] [data-enter="photo"] .photo-figure__frame { clip-path: inset(0 0 calc((1 - var(--q)) * 34%) 0 round var(--radius-media)); }
+  html[data-motion="on"] [data-enter="photo"] .photo-figure__frame {
+    clip-path: inset(0 0 calc((1 - var(--q)) * 34%) 0 round var(--radius-media));
+    translate: 0 calc((1 - var(--q)) * var(--rise-card)); scale: calc(1 - (1 - var(--q)) * var(--settle-scale)); transform-origin: 50% 0;
+  }
+
+  /* Ambient: a paper-cut object floats, slowly and plainly: a few pixels up and down and a small
+     turn, there and back in about fourteen seconds. It is held still until the motion module lets
+     it run (data-running), and it starts from its resting pose, half way through a pass.
+     --float-phase shifts one object's beat against another's in the same view. */
+  html[data-motion="on"] [data-ambient="float"] { animation: motion-float var(--loop-float) var(--ease-drift) calc(var(--loop-float) * -.5 + var(--float-phase, 0s)) infinite alternate paused; }
+  html[data-motion="on"] [data-ambient="float"][data-running] { animation-play-state: running; }
+  @keyframes motion-float {
+    from { translate: 0 calc(-1 * var(--float-rise)); rotate: calc(-1 * var(--float-turn)); }
+    to { translate: 0 var(--float-rise); rotate: var(--float-turn); }
+  }
 }

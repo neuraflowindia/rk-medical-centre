@@ -76,6 +76,9 @@ function begin({windowObject=window,documentObject=document,state=productState},
 
  history.scrollRestoration='manual';
  history.replaceState({...history.state,key:scrolls.next()},'');
+ // The history entry now on screen: its scroll position is kept whenever the visitor leaves it,
+ // by a link or by Back and Forward, so either way of returning lands where the page was left.
+ let entryKey=history.state?.key;
 
  function show({focus=false,restore=null,hash='',firstLoad=false}={}){
   const resolved=resolveAddress(location.pathname,knownPaths);
@@ -109,7 +112,7 @@ function begin({windowObject=window,documentObject=document,state=productState},
  function goToPlace(hash,{push=false}={}){
   const target=placeFor(hash);
   if(!target)return false;
-  if(push)history.pushState({key:scrolls.next()},'',location.pathname+location.search+hash);
+  if(push){scrolls.save(entryKey,windowObject.scrollY);history.pushState({key:scrolls.next()},'',location.pathname+location.search+hash);entryKey=history.state?.key;}
   target.scrollIntoView({behavior:motion.allowed()?'smooth':'instant',block:'start'});
   focusPlace(target);
   return true;
@@ -121,9 +124,10 @@ function begin({windowObject=window,documentObject=document,state=productState},
   const url=new URL(path,location.origin);
   const resolved=resolveAddress(url.pathname,knownPaths);
   if(!resolved.found)return false;
-  scrolls.save(history.state?.key,windowObject.scrollY);
+  scrolls.save(entryKey,windowObject.scrollY);
   const address=resolved.path+url.search+url.hash,entry={key:scrolls.next()};
   if(replace)history.replaceState(entry,'',address);else history.pushState(entry,'',address);
+  entryKey=entry.key;
   show({focus:true,hash:url.hash});
   return true;
  }
@@ -150,7 +154,12 @@ function begin({windowObject=window,documentObject=document,state=productState},
   else navigate(action.path+(action.hash||''));
  },forLife);
 
- windowObject.addEventListener('popstate',()=>{intent++;show({restore:scrolls.read(history.state?.key)});},forLife);
+ windowObject.addEventListener('popstate',()=>{
+  intent++;
+  // the page being left is still on screen: remember where it stood before the other is shown
+  scrolls.save(entryKey,windowObject.scrollY);entryKey=history.state?.key;
+  show({restore:scrolls.read(entryKey)});
+ },forLife);
  windowObject.addEventListener('pagehide',()=>{island.close();},forLife);
  // A page brought back from the browser's back/forward store is bound again where it stood.
  windowObject.addEventListener('pageshow',event=>{if(event.persisted)show({restore:windowObject.scrollY});},forLife);

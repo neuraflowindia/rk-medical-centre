@@ -9,8 +9,9 @@ import {rowHolds,paintToday,bindHoursTable} from '../../src/site/parts/hours-tab
 import {barVisible,bindActionBar} from '../../src/site/parts/action-bar/action-bar.behaviour.mjs';
 import {callAction,bindCallPanel} from '../../src/site/parts/call-panel/call-panel.behaviour.mjs';
 import {nextChip,bindDoctorCards} from '../../src/site/parts/doctor-card/doctor-card.behaviour.mjs';
-import {nextTab,shelfPlan,selectTab,arrangeShelf,markClamped,bindReviewShelf,everyReview} from '../../src/site/parts/review-shelf/review-shelf.behaviour.mjs';
-import {shelfStep,shelfEnds,shelfIndex,shelfStill,bindStillShelf} from '../../src/site/parts/still-shelf/still-shelf.behaviour.mjs';
+import {nextTab,shelfPlan,selectTab,arrangeShelf,markClamped,bindReviewShelf,openReviewReader,everyReview} from '../../src/site/parts/review-shelf/review-shelf.behaviour.mjs';
+import {readerList,reviewReader,labelRepeats} from '../../src/site/parts/review-shelf/review-shelf.mjs';
+import {shelfStep,shelfEnds,shelfIndex,shelfStill,shelfLast,revealShift,keepFocusInView,bindShelf,bindStillShelf} from '../../src/site/parts/still-shelf/still-shelf.behaviour.mjs';
 import {viewerStep,viewerItems,viewerTitle,viewerPlan,swipeDirection,SWIPE_MIN,bindCertificates,openViewerWalk} from '../../src/site/parts/certificate-frame/certificate-frame.behaviour.mjs';
 import {rowsToClose,bindQuestions} from '../../src/site/parts/questions/questions.behaviour.mjs';
 import {bindEssentialsStrip} from '../../src/site/parts/essentials-strip/essentials-strip.behaviour.mjs';
@@ -18,8 +19,8 @@ import {createSheets} from '../../src/site/parts/sheet/sheet.behaviour.mjs';
 import {bindDialog} from '../../src/clinic/dialog.js';
 import {savePreference,parsePreference,preferenceKey} from '../../src/clinic/visitor-preferences.mjs';
 import {setBookingAddress} from '../../src/clinic/booking-links.mjs';
-import {liveSign} from '../../src/clinic/page-content/shared.mjs';
-import {shelfSelection} from '../../src/clinic/review-list.mjs';
+import {liveSign,shelfPosition} from '../../src/clinic/page-content/shared.mjs';
+import {shelfSelection,readerOrder} from '../../src/clinic/review-list.mjs';
 import {createMotion} from '../../src/site/motion/motion.mjs';
 import {count,renderedApp,TEST_NOW} from './support/page-contract.mjs';
 import {createPage,installGlobals,Event} from './support/mini-dom.mjs';
@@ -54,7 +55,7 @@ test('the phone header leaves after 48 px of travel down and returns after 24 px
 });
 
 test('header wiring: the menu button opens the menu; scrolling hides and returns the header on phones',()=>{
- const {page,app,services,context,$,done}=homePage({width:390,media:{'(max-width: 1023px)':true}});
+ const {page,app,services,context,$,done}=homePage({width:390,media:{'(max-width: 1023px)':true,'(max-width: 767px)':true}});
  const restore=installGlobals(page);
  try{
   bindSiteHeader(app,context);
@@ -66,6 +67,11 @@ test('header wiring: the menu button opens the menu; scrolling hides and returns
   const click=new Event('click');button.dispatchEvent(click);
   assert.ok(click.defaultPrevented&&$('#menu').open);assert.equal(button.getAttribute('aria-expanded'),'true');
   page.scroll(900);page.frames(1);assert.ok(!header.classList.contains('is-away'),'the header stays while a dialog is open');
+  // a tablet keeps the menu button but its header carries the booking button, so it stays in view
+  services.menu.close();page.scroll(0);page.frames(1);for(let y=0;y<=400;y+=40){page.scroll(y);page.frames(1);}assert.ok(header.classList.contains('is-away'));
+  page.media('(max-width: 767px)').set(false);page.frames(1);assert.ok(!header.classList.contains('is-away'),'from 768 px the header does not leave');
+  page.scroll(900);page.frames(1);assert.ok(!header.classList.contains('is-away'));
+  button.dispatchEvent(new Event('click'));assert.ok($('#menu').open);
   page.media('(max-width: 1023px)').set(false);assert.equal($('#menu').open,false,'the menu belongs to the phone layout');assert.equal(button.getAttribute('aria-expanded'),'false');
   key(button,' ');assert.equal($('#menu').open,true);services.menu.close();
   bindSiteHeader(page.document.createElement('div'),context);
@@ -307,4 +313,63 @@ test('the privacy choice is kept as one small record',()=>{
  const record=savePreference(storage,false,1000);
  assert.deepEqual(record,{version:1,measurement:false,savedAt:1000});assert.deepEqual(parsePreference(map.get(preferenceKey),2000),record);
  assert.equal(savePreference({setItem(){throw new Error('closed');}},true),null);
+});
+
+test('a shelf says which cards stand in view, gives up its tab stop when it cannot move, and keeps a focused card whole',()=>{
+ // the last card wholly inside the row, counted from the first one in view
+ assert.equal(shelfLast({rights:[340,700,1060,1420],end:1100}),2);assert.equal(shelfLast({rights:[340,700,1060,1420],end:1100,from:1}),2);
+ assert.equal(shelfLast({rights:[340,700],end:300}),0,'a card wider than the row still counts as the one in view');assert.equal(shelfLast({rights:[],end:300}),0);
+ assert.equal(shelfLast({rights:[340,701.5],end:700}),1,'a pixel or two of rounding is forgiven');
+ // how far the row must move for a card to be wholly in view
+ assert.equal(revealShift({itemLeft:-40,itemRight:300,start:20,end:380}),-60);assert.equal(revealShift({itemLeft:300,itemRight:640,start:20,end:380}),260);
+ assert.equal(revealShift({itemLeft:20,itemRight:360,start:20,end:380}),0);assert.equal(revealShift({itemLeft:60,itemRight:600,start:20,end:380}),40,'a card wider than the row is brought to its start, never past it');
+ assert.equal(shelfPosition(3,8),'3 of 8');assert.equal(shelfPosition(3,8,5),'3–5 of 8');assert.equal(shelfPosition(8,8,8),'8 of 8');
+ const page=createPage({body:'<div data-still-shelf><ul data-shelf tabindex="0"><li id="a"><button id="in-a">a</button></li><li id="b"><button id="in-b">b</button></li><li id="c"><a id="in-c" href="/x">c</a></li></ul><div><button data-shelf-previous></button><button data-shelf-next></button></div><p id="count"></p></div>'});
+ const restore=installGlobals(page);
+ try{
+  const $=id=>page.document.getElementById(id),row=page.document.querySelector('[data-shelf]');
+  row.rect={left:0,right:700,width:700};row.scrollWidth=1100;row.clientWidth=700;
+  const place=()=>{[$('a'),$('b'),$('c')].forEach((card,index)=>{const left=index*360-row.scrollLeft;card.rect={left,right:left+340,width:340};});};
+  place();row.addEventListener('scroll',place);
+  const seen=[];
+  bindShelf(row,{previous:page.document.querySelector('[data-shelf-previous]'),next:page.document.querySelector('[data-shelf-next]'),smooth:()=>false,onMove:where=>seen.push(where)});
+  assert.deepEqual(seen.at(-1),{index:0,last:1,total:3},'two cards stand wholly in view');assert.equal(row.getAttribute('tabindex'),'0');
+  // the third card's link takes the focus: the row moves so the whole card shows
+  $('in-c').focus();assert.equal(row.scrollLeft,360,'720 + 340 − 700');page.frames(1);assert.deepEqual(seen.at(-1),{index:1,last:2,total:3},'the second and third now stand in view');
+  $('in-a').focus();assert.equal(row.scrollLeft,0);$('in-a').focus();assert.equal(row.scrollLeft,0,'already in view: the row stays');
+  row.focus();assert.equal(row.scrollLeft,0,'the row itself taking the focus moves nothing');
+  // every card fits: the arrows go, and the row is no longer a stop of its own
+  row.scrollWidth=700;page.window.dispatchEvent(new Event('resize',{bubbles:false}));page.frames(1);
+  assert.equal(row.hasAttribute('tabindex'),false);assert.ok(page.document.querySelector('[data-shelf-previous]').parentElement.hidden);
+  row.scrollWidth=1100;page.window.dispatchEvent(new Event('resize',{bubbles:false}));page.frames(1);assert.equal(row.getAttribute('tabindex'),'0','it is a stop again when it can move');
+  // anything that is not a card of the row is left alone; a missing row is no error
+  const loose=createPage({body:'<ul id="row"><li><span><button id="deep">x</button></span></li></ul><button id="outside">y</button>'}),looseRow=loose.document.getElementById('row');
+  keepFocusInView(looseRow,{});loose.document.getElementById('deep').focus();assert.equal(looseRow.scrollLeft,0);
+  looseRow.dispatchEvent(new Event('focusin',{target:loose.document.getElementById('outside')}));looseRow.dispatchEvent(new Event('focusin',{target:null}));
+  keepFocusInView(null);assert.equal(typeof bindShelf(null),'function');
+ }finally{restore();}
+});
+
+test('the reader opens at its top every time; one doctor\'s list does not repeat the doctor on each review',()=>{
+ const {context,$,done}=homePage();
+ const content=$('#reader-content');
+ context.services.reader.open({title:'Notice',html:'<p>one</p>'});content.scrollTop=1500;context.services.reader.close();
+ // the next opening starts at the top, whatever was left behind
+ let seenWhileOpening=null;const node=$('#reader'),showModal=node.showModal.bind(node);
+ node.showModal=()=>{showModal();seenWhileOpening=content.scrollTop;};
+ context.services.reader.open({title:'Reviews',html:'<p>two</p>',kind:'reviews'});
+ assert.equal(seenWhileOpening,1500,'a closed dialog keeps its old place …');assert.equal(content.scrollTop,0,'… so it is brought to the top once it is open');
+ context.services.reader.close();
+ // labels: under "All", every review says whom it is about; under one doctor, only a review that names both keeps its label
+ const all=readerList(readerOrder('all')),sanjay=readerList(readerOrder('sanjay'),{filter:'sanjay'});
+ assert.equal(count(all,/class="review-reader__about/g),26);
+ const both=readerOrder('sanjay').filter(review=>review.doctors.length!==1);
+ assert.equal(count(sanjay,/class="review-reader__about/g),both.length);assert.equal(count(sanjay,/<li /g),9);
+ for(const review of readerOrder('sanjay')){assert.equal(labelRepeats(review,'sanjay'),review.doctors.length===1&&review.doctors[0]==='sanjay');assert.equal(labelRepeats(review,'all'),false);}
+ assert.doesNotMatch(reviewReader(readerOrder('parul'),{filter:'parul',filters:['parul']}),/review-reader__about--parul/,'a profile\'s reader is headed by the doctor already');
+ // inside the reader, moving to a doctor's tab drops the repeating labels too
+ openReviewReader(context.services,{filter:'all'});assert.equal($('#reader').querySelectorAll('.review-reader__about').length,26);
+ $('#reader [data-filter="parul"]').click();assert.equal($('#reader').querySelectorAll('.review-reader__about--parul').length,0);
+ $('#reader [data-filter="all"]').click();assert.equal($('#reader').querySelectorAll('.review-reader__about').length,26);
+ context.services.reader.close();done();
 });

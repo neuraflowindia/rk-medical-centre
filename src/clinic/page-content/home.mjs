@@ -4,7 +4,7 @@
 // Facts come from model.mjs, care-catalogue.mjs and certificate-catalogue.mjs; stand-ins come
 // from standins.mjs; words shared with other pages come from shared.mjs. No markup lives in
 // this file: emphasis, links and line breaks are separate fields and the template chooses the tags.
-import {doctors,homeHeadline,locality} from '../model.mjs';
+import {city,doctors,homeHeadline,locality} from '../model.mjs';
 import {topicById,doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
 import {closePortraits,deskPortraits,clinicPhotos} from '../client-media.mjs';
@@ -58,7 +58,7 @@ const chipPlan=Object.freeze({
   {id:'blood-pressure',label:'Blood pressure',topic:'blood-pressure',object:'blood-pressure-cuff',more:'More about blood pressure',answer:'Bring the readings you take at home and talk through what they mean for you.'},
   {id:'thyroid',label:'Thyroid',topic:'thyroid',object:'report-clipboard',more:'More about thyroid concerns',answer:'Bring your thyroid reports and prescriptions, and discuss your follow-up care.'},
   {id:'fever-infections',label:'Fever & infections',topic:'fever-infections',object:'thermometer',more:'More about fever and infections',answer:'For fever and common infections, including dengue, malaria and typhoid.'},
-  {id:'general-health',label:'General check-up',topic:'general-health',object:'stethoscope-general',more:'More about general health',answer:'Everyday health concerns, an illness that keeps returning, or a follow-up visit.'}
+  {id:'general-health',label:'General health',topic:'general-health',object:'stethoscope-general',more:'More about general health',answer:'Everyday health concerns, an illness that keeps returning, or a follow-up visit.'}
  ],
  parul:[
   {id:'womens-health',label:'Periods & PCOS',topic:'womens-health',object:'desk-calendar',more:'More about women’s health',answer:'Talk through period problems, PCOS or another women’s health concern.'},
@@ -126,7 +126,8 @@ export const doctorsSection=Object.freeze({
  runningHead:'The doctors',
  heading:'Two doctors. One family practice.',
  emphasis:'One family practice.',
- intro:`Both trained at King George’s Medical University and have practised in Lucknow since ${since}.`,
+ // "since 1992" is said once, in the first screen; here: where both trained.
+ intro:`Both trained at King George’s Medical University, ${city}.`,
  chipPrompt:'What would you like help with?',
  cards:Object.freeze(doctorOrder.map(doctorCard))
 });

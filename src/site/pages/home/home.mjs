@@ -11,7 +11,7 @@ import {hero,doctorsSection,credentials,yearsNumeral,homeCertificates,reviewsSec
 import {clinicName,essentials} from '../../../clinic/page-content/shared.mjs';
 import {attrs,emphasise,image,text} from '../../lib/html.mjs';
 import {icon} from '../../icons/icons.mjs';
-import {bookingEntry,button,callButton,textLink} from '../../parts/button/button.mjs';
+import {bookingEntry,button,callButton} from '../../parts/button/button.mjs';
 import {sectionHead,runningHead} from '../../parts/section-head/section-head.mjs';
 import {essentialsStrip} from '../../parts/essentials-strip/essentials-strip.mjs';
 import {archPortrait,photoFigure} from '../../parts/photo-figure/photo-figure.mjs';
@@ -32,7 +32,8 @@ function heroSection(ctx){
   +`<div class="page-home__hero-actions" data-bar-lead>${bookingEntry(ctx,{place:'page',hook:'data-home-appointment-entry'})}${callButton(ctx,{label:hero.call})}</div></div>`
   +`<div class="page-home__stage"><div class="page-home__arch" aria-hidden="true" data-ambient><span class="page-home__shaft"></span></div>`
   +`<div class="page-home__pair">${hero.portraits.map(portrait).join('')}`
-  +image(clinicObjects[hero.object],{className:'page-home__hero-object'})+`</div>`
+  // the stethoscope floats: with the light it is the first screen's second mover on laptops
+  +image(clinicObjects[hero.object],{className:'page-home__hero-object',attributes:{'data-ambient':'float'}})+`</div>`
   +`<p class="page-home__credit">${text(hero.credit)}</p></div></div>`
   +`<div class="wrap page-home__strip">${essentialsStrip(ctx)}</div></section>`;
 }
@@ -51,11 +52,15 @@ function credentialsPart(ctx){
   +`<div class="page-home__credentials-light" aria-hidden="true" data-ambient><span class="page-home__shaft page-home__shaft--deep"></span></div>`
   +`<div class="wrap page-home__credentials-grid"><div class="page-home__figure">`
   +runningHead(credentials.runningHead,{className:'page-home__credentials-running'})
-  +`<h2 class="page-home__figure-title" id="credentials-title" data-enter><span class="page-home__numeral">${text(digits)}<span class="page-home__numeral-plus">+</span></span> `
+  // The numeral counts up once as it arrives. What is read out is the number itself, said once;
+  // the counting digits are for the eye only and keep the width of the final number.
+  +`<h2 class="page-home__figure-title" id="credentials-title" data-enter><span class="page-home__numeral"><span class="visually-hidden">${text(numeral)}</span>`
+  +`<span class="page-home__numeral-digits" aria-hidden="true" data-enter="count" style="--digits:${digits.length}">${text(digits)}</span><span class="page-home__numeral-plus" aria-hidden="true">+</span></span> `
   +`<span class="page-home__figure-words">${emphasise(credentials.numeralCaption,credentials.numeralEmphasis)}</span></h2></div>`
   +`<dl class="page-home__ledger">${rows}</dl></div>`
   +`<div class="page-home__certificates"><div class="wrap page-home__certificates-wrap">${certificateWall(homeCertificates(),{label:credentials.certificatesLabel,settle:true,view:true,set:'all'})}`
-  +`<p class="page-home__certificates-more">${textLink({label:credentials.allCertificates.label,href:credentials.allCertificates.href,attributes:{'data-open-certificates':''}})}</p></div></div></section>`;
+  // It opens the viewer, so it is drawn as the quiet button that opens a dialog (as "Read all reviews" is), not as a link to a page.
+  +`<p class="page-home__certificates-more">${button({label:credentials.allCertificates.label,href:credentials.allCertificates.href,variant:'second',attributes:{'data-open-certificates':''}})}</p></div></div></section>`;
 }
 
 function reviewsPart(ctx){
@@ -70,8 +75,8 @@ function visitingPart(ctx){
  return `<section class="page-home page-home__visiting" id="visiting" aria-labelledby="visiting-title"><div class="wrap page-home__visiting-grid">`
   +sectionHead({runningHead:visitingSection.runningHead,heading:visitingSection.heading,emphasis:visitingSection.emphasis,id:'visiting-title',className:'page-home__visiting-head'})
   +photoFigure(frontage.photo,{ratio:frontage.ratio,caption:frontage.caption,captionKey:frontage.key,sizes:'(min-width: 1024px) 694px, 92vw',className:'page-home__frontage'})
-  +photoFigure(waiting.photo,{ratio:waiting.ratio,caption:waiting.caption,captionKey:waiting.key,sizes:'(min-width: 1024px) 300px, 44vw',className:'page-home__waiting'})
-  +`<div class="page-home__address" data-enter="card">${image(clinicObjects[visitingSection.object],{className:'page-home__address-pin'})}`
+  +photoFigure(waiting.photo,{ratio:waiting.ratio,caption:waiting.caption,captionKey:waiting.key,sizes:'(min-width: 1024px) 300px, (min-width: 768px) 31vw, 40vw',className:'page-home__waiting'})
+  +`<div class="page-home__address" data-enter="card">${image(clinicObjects[visitingSection.object],{className:'page-home__address-pin',attributes:{'data-ambient':'float'}})}`
   +`<h3>${text(clinicName)}</h3><address>${card.addressLines.map((line,index,all)=>{const words=text(line+(index<all.length-1?', ':''));return index?`<span class="page-home__address-line">${words}</span>`:words;}).join('')}</address>${hoursTable(ctx,{className:'page-home__hours'})}`
   // Outline at every width: the view already holds a filled Book button (the header's, or the phone bar's).
   +button({label:card.directions.label,href:card.directions.href,variant:'second',external:true,iconAfter:'out',note:essentials.place.opens,className:'page-home__directions'})
@@ -84,7 +89,7 @@ function questionsPart(){
  return `<section class="page-home page-home__questions" id="questions" aria-labelledby="questions-title"><div class="wrap page-home__questions-grid">`
   +`<div class="page-home__questions-head">`
   +sectionHead({runningHead:questionsSection.runningHead,heading:questionsSection.heading,emphasis:questionsSection.emphasis,id:'questions-title'})
-  +`<div class="page-home__still-life" aria-hidden="true">${image(clinicObjects[list],{className:'page-home__still-list'})}${image(clinicObjects[pen],{className:'page-home__still-pen'})}</div></div>`
+  +`<div class="page-home__still-life" aria-hidden="true">${image(clinicObjects[list],{className:'page-home__still-list'})}${image(clinicObjects[pen],{className:'page-home__still-pen',attributes:{'data-ambient':'float'}})}</div></div>`
   +questions(questionsSection.rows,{name:'home-questions'})+`</div></section>`;
 }
 

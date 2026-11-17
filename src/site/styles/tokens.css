@@ -267,13 +267,17 @@
     --dur-rule: 1100ms;
     --dur-settle: 900ms;
     --stagger: 90ms;
-    --loop-light: 14s;              /* the first screen's light, each way */
-    --loop-light-start: -6s;        /* it begins mid-way, so the first movement is seen at once */
-    --loop-light-slow: 16s;         /* the credentials light, each way */
-    --loop-light-slow-start: -7s;
+    --loop-light: 12s;              /* a light crossing its arch or plate, each way: plainly seen to move within two or three seconds */
+    --loop-light-start: -5s;        /* it begins mid-way, so the first movement is seen at once */
+    --loop-light-slow: 14s;         /* the credentials light, each way */
+    --loop-light-slow-start: -6s;
     --loop-dot: 2.4s;               /* the ring around the open dot */
+    --loop-float: 7s;               /* a paper-cut object's float, each way (a fourteen-second loop) */
+    --float-rise: 6px;              /* how far it drifts above and below its place … */
+    --float-turn: 1.5deg;           /* … and how far it turns each way */
     --rise: 16px;                   /* how far words travel on entrance; they never fade */
     --rise-card: 28px;
+    --settle-scale: .035;           /* how much smaller a photograph's frame is as it starts to arrive */
     --lift: -2px;                   /* a raised control under the pointer */
     --press: 1px;                   /* and under the finger */
   }
@@ -303,7 +307,7 @@
 
   /* Motion is paused by the footer control, or by the device setting unless the visitor chose to play. */
   :root[data-motion="paused"] {
-    --rise: 0px; --rise-card: 0px; --stagger: 0ms;
+    --rise: 0px; --rise-card: 0px; --settle-scale: 0; --float-rise: 0px; --float-turn: 0deg; --stagger: 0ms;
     --dur-enter: 1ms; --dur-rule: 1ms; --dur-settle: 1ms; --dur-arrive: 1ms; --dur-swap: 1ms; --dur-sheet: 1ms; --dur-sheet-move: 1ms; --dur-header: 1ms; --dur-bar: 1ms; --dur-underline: 1ms; --dur-portrait: 1ms; --dur-question: 1ms; --dur-object-fade: 1ms;
   }
 }
