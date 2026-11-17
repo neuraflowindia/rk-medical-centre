@@ -94,3 +94,18 @@ test('in the browser a page change brings the new page\'s title, description and
  assert.equal(page.document.title,'Book your visit | R. K. Medical Centre');assert.equal(meta('meta[name="robots"]'),'noindex, nofollow');
  assert.equal(page.document.head.querySelector('link[rel="canonical"]'),null);assert.equal(page.document.head.querySelector('script[data-site-graph]'),null);assert.equal(page.document.head.querySelector('meta[property="og:url"]'),null);
 });
+
+test('the structured data names the clinic, its hours and each doctor with their own number',async()=>{
+ const {publicGraph,openingHours,serializeGraph}=await import('../../src/clinic/page-schema.mjs');
+ const graph=publicGraph(siteOrigin,'/contact',pageMetadata['/contact'])['@graph'];
+ const clinic=graph.find(item=>item['@type']==='MedicalClinic'),people=graph.filter(item=>item['@type']==='Person'),page=graph.find(item=>item['@type']==='WebPage');
+ assert.equal(clinic.name,'R. K. Medical Centre');assert.equal(clinic.address.postalCode,'226016');assert.equal(clinic.telephone,doctors.sanjay.tel);
+ // Monday to Saturday twice a day, Sunday mornings: the same times the live sign reads
+ assert.deepEqual(clinic.openingHoursSpecification.map(item=>[item.dayOfWeek.length,item.opens,item.closes]),[[6,'10:00','13:30'],[6,'18:00','20:30'],[1,'10:00','13:30']]);
+ assert.deepEqual(clinic.openingHoursSpecification[2].dayOfWeek,['Sunday']);
+ assert.deepEqual(openingHours({weekday:[[545,790]],sunday:[]}).map(item=>[item.opens,item.closes]),[['09:05','13:10']]);
+ assert.deepEqual(people.map(person=>[person.name,person.telephone]).sort(),[[doctors.parul.name,doctors.parul.tel],[doctors.sanjay.name,doctors.sanjay.tel]]);
+ for(const person of people)assert.equal(person.worksFor['@id'],clinic['@id']);
+ assert.equal(page.url,siteOrigin+'/contact');assert.equal(page.description,pageMetadata['/contact'].description);
+ assert.equal(serializeGraph({a:'</script>'}),'{"a":"\\u003c/script>"}');
+});

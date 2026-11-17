@@ -293,7 +293,10 @@ test('certificates: one frame for all ten, a wall that may settle, a viewer that
  assert.match(certificateFrame(certificateCatalogue[0]),/<div class="certificate-frame__mat">/);
  assert.throws(()=>certificateFrame(first,{size:'giant'}),/Unknown certificate size/);assert.throws(()=>certificateFrame(first,{tone:'pink'}),/Unknown certificate tone/);
  const wall=certificateWall(homeCertificates(),{label:'Certificates',settle:true});
- assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item">/g),4);
+ assert.match(wall,/^<ul class="certificate-wall" aria-label="Certificates" data-certificate-wall data-settle>/);assert.equal(count(wall,/<li class="certificate-wall__item"/g),4);
+ // a settling wall's documents also carry the ordinary entrance, staggered: what a browser without scroll-linked animation shows
+ assert.match(wall,/<li class="certificate-wall__item" data-enter="card">.*<li class="certificate-wall__item" data-enter="card" data-enter-after="0\.12">.*data-enter-after="0\.36">/);
+ assert.doesNotMatch(certificateWall(homeCertificates()),/data-enter/);
  assert.match(wall,/style="--tilt:-2\.2deg;--lag:0;--ar:1\.517".*style="--tilt:1\.6deg;--lag:0\.12;--ar:0\.708".*--lag:0\.24.*--lag:0\.36/);
  assert.doesNotMatch(certificateWall(homeCertificates()),/data-settle|--tilt:-|data-view-certificate/);
  assert.equal(count(certificateWall(homeCertificates(),{view:true,set:'all'}),/data-view-set="all"/g),4);
