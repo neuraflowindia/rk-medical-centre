@@ -146,6 +146,15 @@ test('the booking bundle stays lazy, keeps the hooks others read, and keeps the 
  assert.match(island,/<DateField[^>]*\n?[^>]*available=\{flow\.viewAvailable\}/);
  assert.doesNotMatch(island,/disabled=\{[^}]*!flow\.available/,'no control is switched off by the state check');
  assert.match(island,/useHeldAction\(flow\.available, flow\.viewAvailable\)/,'actions that need admission wait for it instead');
+ // Back, Forward and refresh: the steps are history entries the flow marks itself, and what is kept
+ // lives in the tab's own storage only (never in storage that outlasts the tab)
+ assert.match(island,/window\.history\.pushState\(withMark\(window\.history\.state, mark\), ''\)/);
+ assert.match(island,/window\.addEventListener\('popstate', onPop, true\)/,'before the site\'s router, so the page is not drawn again');
+ assert.match(island,/if \(!mark\) return;/,'an entry outside the flow is left to the site\'s router');
+ assert.equal(island.match(/sessionStorage/g).length,1);assert.doesNotMatch(island,/localStorage|indexedDB|document\.cookie/);
+ assert.match(island,/if \(s\.credential \|\| s\.receipt\) \{ dropDraft\(\); return; \}/,'removed the moment the booking is sent');
+ // no dead press: the main button is switched off only while step 2 is being sent
+ assert.match(island,/data-booking-continue\n\s+disabled=\{step === 2 && disabled\}/);
  // words and decisions come from the tested module, not from the markup
  assert.match(island,/from '\.\/booking-steps\.mjs';/);
  assert.doesNotMatch(island,/NeuraFlow|Claude|agency/i);

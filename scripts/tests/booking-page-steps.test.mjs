@@ -17,7 +17,8 @@ import {createStubs,readSettings} from '../dev-preview.mjs';
 import {words,STEPS,DETAIL_FIELDS,DAY_TILES,SESSIONS,SESSION_SPLIT,keepTogether,serviceFor,doctorFor,doctorChoice,usablePolicy,doctorChoices,sittingHours,
  addDays,weekdayOf,dayLong,dayShort,dayTiles,dayBeyondTiles,clinicMinutes,sessionsOn,slotGroups,waitsForAdmission,holdEdit,releaseEdits,screenFor,
  stepOneMissing,stepThreeMissing,askFor,mustChooseAgain,validPhone,phoneCountry,detailProblems,paymentOrder,confirmLabel,confirmHint,visitSummary,barLines,
- paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject} from '../../src/booking/booking-steps.mjs';
+ paymentNote,contactRows,receiptDoctor,appointmentCard,calendarObject,HISTORY_MARK,DRAFT_KEY,DRAFT_MINUTES,DRAFT_DETAILS,readMark,withMark,draftRecord,parseDraft,
+ saveDraft,loadDraft,clearDraft,flowStart,restoreNext,furthestStep,arrival,retreat,advanceMark} from '../../src/booking/booking-steps.mjs';
 
 const settings=readSettings();
 const NOW=Date.parse('2026-11-16T05:30:00Z'); // Monday 16 November 2026, 11:00 am in India
@@ -341,4 +342,153 @@ test('the appointment card is drawn from the engine\'s own receipt',async()=>{
  assert.equal(contactRows('dr-sanjay-gupta')[0].spoken,'Call Dr. Sanjay Gupta at +91 94150 49410');
  // the one paper-cut object of these screens
  assert.ok(existsSync(fileURLToPath(new URL('../../public'+calendarObject.src,import.meta.url))));assert.equal(calendarObject.alt,'');
+});
+
+// ---------- Back, Forward and refresh ----------
+
+const WEDNESDAY='2026-11-18';
+/** A tab's storage, as the browser gives it. */
+function tabStorage(){
+ const values=new Map();
+ return {values,storage:()=>({getItem:key=>values.get(key)??null,setItem:(key,value)=>{values.set(key,String(value));},removeItem:key=>{values.delete(key);}})};
+}
+/** A booking taken as far as the last step, and the record kept of it. */
+async function keptBooking(){
+ const {controller,state}=await engine({initialService:'dr-parul-gupta'});
+ controller.edit('day',WEDNESDAY);await tick();
+ const slot=state().slots[3];
+ controller.edit('slot',slot);
+ controller.details('full_name','Kamla Devi Srivastava');controller.details('phone','98765 43210');controller.details('email','kamla@example.com');controller.details('notes','Takes insulin.');
+ controller.edit('payment_method','at_clinic');controller.acknowledge(true);
+ return {state:state(),slot,record:draftRecord({state:state(),chosen:true,now:NOW})};
+}
+
+test('what is kept of an unfinished booking: the choices and the four boxes of step 2, nothing else, for half an hour',async()=>{
+ const {state,slot,record}=await keptBooking();
+ assert.deepEqual(record,{v:1,at:NOW,chosen:true,service:'dr-parul-gupta',day:WEDNESDAY,slot:{starts_at:slot.starts_at,ends_at:slot.ends_at},payment_method:'at_clinic',
+  details:{full_name:'Kamla Devi Srivastava',phone:'98765 43210',email:'kamla@example.com',notes:'Takes insulin.'}});
+ assert.deepEqual(DRAFT_DETAILS,['full_name','phone','email','notes'],'the boxes of step 2: no more personal detail than the page already holds');
+ assert.equal(state.ack,true);assert.equal(Object.hasOwn(record,'ack'),false,'the tick is never kept');
+ assert.equal(JSON.stringify(record).includes('country'),false);assert.equal(JSON.stringify(record).includes('birth'),false);
+ assert.equal(DRAFT_MINUTES,30);
+ // nothing chosen, nothing typed
+ const blank=draftRecord({state:{service:'',day:'',slot:null,payment_method:'',details:undefined},now:5});
+ assert.deepEqual(blank,{v:1,at:5,chosen:false,service:'',day:'',slot:null,payment_method:'',details:{full_name:'',phone:'',email:'',notes:''}});
+ assert.equal(draftRecord({state:{...state,details:{...state.details,notes:'x'.repeat(2500)}},now:NOW}).details.notes.length,2000,'no longer than the box allows');
+
+ // kept in the tab's storage, read back whole
+ const tab=tabStorage();
+ assert.equal(loadDraft(tab.storage,NOW),null);
+ assert.equal(saveDraft(tab.storage,record),true);assert.deepEqual([...tab.values.keys()],[DRAFT_KEY]);
+ assert.deepEqual(loadDraft(tab.storage,NOW+60000),record);
+ assert.deepEqual(loadDraft(tab.storage,NOW+DRAFT_MINUTES*60000),record,'half an hour: still read');
+ // older than that: not read, and removed as it is found
+ assert.equal(loadDraft(tab.storage,NOW+DRAFT_MINUTES*60000+1),null);assert.equal(tab.values.size,0);
+ saveDraft(tab.storage,record);assert.equal(clearDraft(tab.storage),true);assert.equal(tab.values.size,0);
+ // a record from the future (a clock that moved), a damaged one, another version: not read
+ const text=JSON.stringify(record);
+ assert.equal(parseDraft(text,NOW-1),null);assert.equal(parseDraft('{',NOW),null);assert.equal(parseDraft('null',NOW),null);assert.equal(parseDraft('"x"',NOW),null);
+ const broken=change=>parseDraft(JSON.stringify({...record,...change}),NOW);
+ for(const change of [{v:2},{at:'now'},{chosen:'yes'},{service:7},{service:'x'.repeat(81)},{day:'18 November'},{slot:{starts_at:slot.starts_at}},{slot:{starts_at:'soon',ends_at:slot.ends_at}},
+  {payment_method:'cheque'},{details:null},{details:{...record.details,phone:5}},{details:{...record.details,full_name:'x'.repeat(101)}},{details:{full_name:'A'}}])
+  assert.equal(broken(change),null,JSON.stringify(change).slice(0,60));
+ assert.deepEqual(broken({day:'',slot:null,payment_method:''}),{...record,day:'',slot:null,payment_method:''});
+ assert.deepEqual(parseDraft(JSON.stringify({...record,extra:'x',details:{...record.details,birth_place:'Lucknow'}}),NOW),record,'anything else in the record is left behind');
+ tab.values.set(DRAFT_KEY,'{');assert.equal(loadDraft(tab.storage,NOW),null);assert.equal(tab.values.size,0,'a damaged record is removed');
+ // a browser that refuses storage keeps nothing and breaks nothing
+ const refused=()=>{throw new Error('denied');};
+ assert.equal(saveDraft(refused,record),false);assert.equal(loadDraft(refused,NOW),null);assert.equal(clearDraft(refused),false);
+});
+
+test('the flow marks its own history entries; only a marked entry reads what was kept',async()=>{
+ const {record}=await keptBooking();
+ assert.equal(readMark(null),null);assert.equal(readMark({key:4}),null);assert.equal(readMark('x'),null);
+ for(const bad of [{step:0,depth:0},{step:4,depth:0},{step:2,depth:-1},{step:2,depth:1.5},{step:2,depth:100},{step:'2',depth:1},'2',null])assert.equal(readMark({[HISTORY_MARK]:bad}),null,JSON.stringify(bad));
+ assert.deepEqual(readMark({key:4,[HISTORY_MARK]:{step:2,depth:1,extra:true}}),{step:2,depth:1});
+ // the site's own state (its scroll key) is kept beside the mark
+ assert.deepEqual(withMark({key:4},{step:3,depth:2}),{key:4,[HISTORY_MARK]:{step:3,depth:2}});
+ assert.deepEqual(withMark(null,{step:1,depth:0}),{[HISTORY_MARK]:{step:1,depth:0}});
+ assert.deepEqual(withMark({key:4,[HISTORY_MARK]:{step:3,depth:2}},{step:1,depth:2}),{key:4,[HISTORY_MARK]:{step:1,depth:2}});
+ assert.doesNotMatch(JSON.stringify(withMark({key:4},{step:2,depth:1})),/Kamla|98765|example/,'nothing personal in the history entry');
+ // a fresh arrival (a link, a typed address): step 1, nothing read
+ assert.deepEqual(flowStart(),{step:1,depth:0,saved:null});
+ assert.deepEqual(flowStart({mark:null,saved:record}),{step:1,depth:0,saved:null});
+ // Back, Forward or a refresh onto a marked entry: its step, with what was kept
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:record}),{step:3,depth:2,saved:record});
+ // a marked entry whose record has gone (too old, or the booking was sent): step 1; the entries before it are still there
+ assert.deepEqual(flowStart({mark:{step:3,depth:2},saved:null}),{step:1,depth:2,saved:null});
+});
+
+test('the kept choices are handed back to the engine one edit at a time, and only as far as it still offers them',async()=>{
+ const {record}=await keptBooking();
+ // after a refresh the engine starts again: its own first doctor, today, no time, no payment option
+ const again=await engine({initialService:'dr-sanjay-gupta'});
+ const usable=()=>usablePolicy(again.state().policy);
+ const handed=[];
+ for(let turn=0;turn<12;turn++){
+  const next=restoreNext({saved:record,state:again.state(),usable:usable()});
+  for(const [name,value] of next.edits){handed.push(name);again.controller.edit(name,value);}
+  if(next.done){assert.deepEqual([next.kept,next.gone],[true,false]);break;}
+  await tick();
+ }
+ assert.deepEqual(handed,['service','day','slot','payment_method'],'the doctor, then the day, then the time the engine offers, then the payment option');
+ const state=again.state();
+ assert.deepEqual([state.service,state.day,state.slot.starts_at,state.payment_method],[record.service,record.day,record.slot.starts_at,'at_clinic']);
+ assert.equal(state.ack,false,'the tick is the visitor\'s to make again');
+ assert.deepEqual(restoreNext({saved:record,state,usable:true}),{edits:[],done:true,kept:true,gone:false});
+
+ // nothing kept: nothing to do
+ assert.deepEqual(restoreNext({saved:null,state,usable:true}),{edits:[],done:true,kept:true,gone:false});
+ // the options are still being read: wait; they could not be read: stop
+ assert.deepEqual(restoreNext({saved:record,state:{...state,policyFresh:false,loadingPolicy:true},usable:true}),{edits:[],done:false,kept:false,gone:false});
+ assert.deepEqual(restoreNext({saved:record,state:{...state,policy:null,loadingPolicy:true},usable:false}),{edits:[],done:false,kept:false,gone:false});
+ assert.deepEqual(restoreNext({saved:record,state:{...state,policyFresh:false,loadingPolicy:false},usable:true}),{edits:[],done:true,kept:false,gone:false});
+ // the visitor had not chosen a doctor yet
+ assert.deepEqual(restoreNext({saved:{...record,chosen:false,slot:null},state,usable:true}),{edits:[],done:true,kept:true,gone:false});
+ assert.equal(restoreNext({saved:{...record,chosen:false},state,usable:true}).kept,false);
+ // a doctor the clinic no longer offers online
+ assert.deepEqual(restoreNext({saved:{...record,service:'dr-nobody'},state,usable:true}),{edits:[],done:true,kept:false,gone:false});
+ // a day outside the booking window
+ assert.deepEqual(restoreNext({saved:{...record,day:'2027-03-01'},state,usable:true}),{edits:[],done:true,kept:false,gone:true});
+ assert.deepEqual(restoreNext({saved:{...record,day:'2026-11-01'},state,usable:true}),{edits:[],done:true,kept:false,gone:true});
+ // doctor and day chosen, no time yet
+ assert.deepEqual(restoreNext({saved:{...record,slot:null},state,usable:true}),{edits:[],done:true,kept:true,gone:false});
+ // the day's times are being read: wait; they could not be read: stop
+ assert.equal(restoreNext({saved:record,state:{...state,slot:null,slotsStatus:'loading',slotsFresh:false},usable:true}).done,false);
+ assert.equal(restoreNext({saved:record,state:{...state,slot:null,slotsStatus:'idle',slotsFresh:false},usable:true}).done,false);
+ assert.deepEqual(restoreNext({saved:record,state:{...state,slot:null,slotsStatus:'error',slotsFresh:false},usable:true}),{edits:[],done:true,kept:false,gone:false});
+ // the time is no longer offered (someone else took it)
+ assert.deepEqual(restoreNext({saved:{...record,slot:{starts_at:'2026-11-18T03:00:00.000Z',ends_at:'2026-11-18T03:20:00.000Z'}},state:{...state,slot:null},usable:true}),{edits:[],done:true,kept:false,gone:true});
+ // a payment option the engine cannot offer is not handed back
+ assert.deepEqual(restoreNext({saved:{...record,payment_method:'online'},state:{...state,payment_method:''},usable:true}),{edits:[],done:true,kept:true,gone:false});
+ assert.deepEqual(restoreNext({saved:{...record,payment_method:''},state:{...state,payment_method:''},usable:true}),{edits:[],done:true,kept:true,gone:false});
+});
+
+test('Back and Forward move between the steps; a step that cannot be shown is never shown',()=>{
+ // the furthest step that may be shown
+ assert.equal(furthestStep({missing:'doctor'}),1);assert.equal(furthestStep({missing:'time',problems:{}}),1);assert.equal(furthestStep({missing:'checking'}),1);
+ assert.equal(furthestStep({missing:'',problems:{phone:'Enter a phone number.'}}),2);assert.equal(furthestStep({missing:'',problems:{}}),3);assert.equal(furthestStep(),3);
+ // Continue: one entry deeper
+ assert.deepEqual(advanceMark({step:1,depth:0},2),{step:2,depth:1});assert.deepEqual(advanceMark({step:2,depth:1},3),{step:3,depth:2});
+ assert.equal(advanceMark({step:2,depth:99},3).depth,99);
+ // the page's own "Back" and "Change" travel through the browser's history when those entries are there
+ assert.deepEqual(retreat({from:{step:3,depth:2},target:2}),{go:-1});assert.deepEqual(retreat({from:{step:3,depth:2},target:1}),{go:-2});
+ // … and re-label the entry when they are not (a refresh restored step 3 on an entry with nothing of the flow before it)
+ assert.deepEqual(retreat({from:{step:3,depth:0},target:1}),{mark:{step:1,depth:0}});assert.deepEqual(retreat({from:{step:3,depth:1},target:1}),{mark:{step:1,depth:1}});
+ assert.deepEqual(retreat({from:{step:1,depth:2},target:1}),{mark:{step:1,depth:2}});
+ // the browser's Back from step 3 arrives on the entry of step 2
+ assert.deepEqual(arrival({mark:{step:2,depth:1},from:{step:3,depth:2}}),{step:2});
+ assert.deepEqual(arrival({mark:{step:1,depth:0},from:{step:2,depth:1},allowed:3}),{step:1});
+ // Forward onto a step that is not ready: the browser moves back to the step that is
+ assert.deepEqual(arrival({mark:{step:2,depth:1},from:{step:1,depth:0},allowed:1}),{step:1,go:-1});
+ assert.deepEqual(arrival({mark:{step:3,depth:2},from:{step:2,depth:1},allowed:2}),{step:2,go:-1});
+ assert.deepEqual(arrival({mark:{step:3,depth:2},from:{step:1,depth:0},allowed:1}),{step:1,go:-2});
+ // … or, with no entries of the flow before it, the entry is re-labelled
+ assert.deepEqual(arrival({mark:{step:3,depth:0},from:{step:1,depth:0},allowed:1}),{step:1,mark:{step:1,depth:0}});
+ assert.deepEqual(arrival({mark:{step:3,depth:1},from:{step:1,depth:0},allowed:1}),{step:1,mark:{step:1,depth:1}});
+ // once the booking is being saved or is saved there are no steps to go back into: Back leaves the booking page
+ assert.deepEqual(arrival({mark:{step:2,depth:1},from:{step:3,depth:2},steps:false}),{go:-2});
+ assert.deepEqual(arrival({mark:{step:1,depth:0},from:{step:3,depth:2},steps:false}),{go:-1});
+ assert.deepEqual(arrival({mark:{step:3,depth:2},from:{step:2,depth:1},steps:false}),{},'Forward onto it changes nothing');
+ assert.equal(words.time.again,'Please choose your starting time again.');
 });

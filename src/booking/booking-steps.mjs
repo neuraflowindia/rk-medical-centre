@@ -7,7 +7,8 @@ import {doctorOrder} from '../clinic/care-catalogue.mjs';
 import {doctorAvatars,closePortraits,clinicObjects} from '../clinic/client-media.mjs';
 import {bookForSomeoneElseAnswer} from '../clinic/standins.mjs';
 import {addressCard,actionLabels,clinicPlace,doctorShortName,localPhone,pagePaths} from '../clinic/page-content/shared.mjs';
-import {localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
+import {dateRange,localDate,money,timeLabel} from '../../appointment-system/browser/display-formatting.mjs';
+import {paymentAvailable} from '../../appointment-system/browser/booking/experience-contract.mjs';
 
 const NBSP=' ';
 /** Keep short pairs on one line, as the site's templates do: "Dr. Sanjay", "10:20 am", "94150 49410". */
@@ -48,7 +49,9 @@ export const words=Object.freeze({
   noneInSession:session=>`No ${session} times are left.`,
   noSession:(session,weekday)=>`No ${session} appointments on ${weekday}s.`,
   retry:'Check available times again',
-  gone:'That starting time is no longer free. Please choose another.'
+  gone:'That starting time is no longer free. Please choose another.',
+  // booking was paused while the visitor was in the steps; nobody took the time
+  again:'Please choose your starting time again.'
  }),
  options:Object.freeze({
   checking:'Checking the doctors’ schedules…',
@@ -351,6 +354,141 @@ export function askFor({step,missing='',timesShown=true}={}){
  if(step===3)return missing==='payment'||missing==='tick'?missing:'';
  return '';
 }
+
+// ---------- Back, Forward and refresh ----------
+//
+// Each step is an entry in the browser's history, so Back means "the step before" and leaves the
+// page only from step 1. What the visitor has chosen and typed is kept so that Back, Forward and a
+// refresh bring it back:
+//   - in the history entry: the step's number and how many entries of the flow lie before it.
+//     Nothing personal;
+//   - in the tab's own storage (sessionStorage, where the engine keeps its booking reference): one
+//     record with the doctor, day, starting time, payment option and the four boxes of step 2: the
+//     same details the page already holds while it is open, and nothing more. The tick is never
+//     kept. The record is removed the moment the booking is sent, is not read once it is
+//     DRAFT_MINUTES old, and goes with the tab.
+// A fresh arrival (a link, a typed address) never reads the record: only an entry the flow itself
+// marked does.
+
+/** The name under which the flow marks its own history entries. */
+export const HISTORY_MARK='rkBooking';
+/** The name of the kept record in the tab's storage. */
+export const DRAFT_KEY='rk-booking-draft-v1';
+/** How long the kept record may be read after its last change. */
+export const DRAFT_MINUTES=30;
+/** The boxes of step 2: the only personal details kept. */
+export const DRAFT_DETAILS=Object.freeze(['full_name','phone','email','notes']);
+const DRAFT_LIMITS=Object.freeze({full_name:100,phone:32,email:254,notes:2000});
+const isInstant=value=>typeof value==='string'&&value.length<=40&&Number.isFinite(Date.parse(value));
+
+/** The flow's mark on a history entry: {step, depth}, or null when the entry is not one of the flow's. */
+export function readMark(historyState){
+ const mark=historyState&&typeof historyState==='object'?historyState[HISTORY_MARK]:null;
+ return mark&&typeof mark==='object'&&STEPS.some(step=>step.id===mark.step)&&Number.isInteger(mark.depth)&&mark.depth>=0&&mark.depth<=99
+  ?Object.freeze({step:mark.step,depth:mark.depth}):null;
+}
+/** The history state for an entry of the flow: whatever the site keeps there, plus the mark. */
+export function withMark(historyState,mark){
+ return {...(historyState&&typeof historyState==='object'?historyState:{}),[HISTORY_MARK]:{step:mark.step,depth:mark.depth}};
+}
+/** What is kept of an unfinished booking. `chosen` says the visitor chose the doctor (the engine starts with one of its own). */
+export function draftRecord({state,chosen=false,now}){
+ return Object.freeze({v:1,at:now,chosen:!!chosen,service:state.service||'',day:state.day||'',
+  slot:state.slot?Object.freeze({starts_at:state.slot.starts_at,ends_at:state.slot.ends_at}):null,
+  payment_method:state.payment_method||'',
+  details:Object.freeze(Object.fromEntries(DRAFT_DETAILS.map(name=>[name,String(state.details?.[name]??'').slice(0,DRAFT_LIMITS[name])])))});
+}
+/** A kept record read back: null unless it is whole, of this version and not older than DRAFT_MINUTES. */
+export function parseDraft(text,now){
+ let value;
+ try{value=JSON.parse(text);}catch{return null;}
+ if(!value||typeof value!=='object'||value.v!==1||typeof value.at!=='number'||!(now-value.at>=0&&now-value.at<=DRAFT_MINUTES*60000))return null;
+ if(typeof value.chosen!=='boolean'||typeof value.service!=='string'||value.service.length>80||!(value.day===''||isDay(value.day)))return null;
+ if(!(value.slot===null||value.slot&&isInstant(value.slot.starts_at)&&isInstant(value.slot.ends_at)))return null;
+ if(!['','at_clinic','online'].includes(value.payment_method)||!value.details||typeof value.details!=='object')return null;
+ if(!DRAFT_DETAILS.every(name=>typeof value.details[name]==='string'&&value.details[name].length<=DRAFT_LIMITS[name]))return null;
+ return Object.freeze({v:1,at:value.at,chosen:value.chosen,service:value.service,day:value.day,
+  slot:value.slot?Object.freeze({starts_at:value.slot.starts_at,ends_at:value.slot.ends_at}):null,payment_method:value.payment_method,
+  details:Object.freeze(Object.fromEntries(DRAFT_DETAILS.map(name=>[name,value.details[name]])))});
+}
+/** `storage` is a function that returns the tab's storage; a browser that refuses it simply keeps nothing. */
+export function saveDraft(storage,record){
+ try{storage().setItem(DRAFT_KEY,JSON.stringify(record));return true;}catch{return false;}
+}
+/** The kept record, or null. One that is too old or damaged is removed as it is found. */
+export function loadDraft(storage,now){
+ try{
+  const store=storage(),text=store.getItem(DRAFT_KEY);
+  if(text===null)return null;
+  const record=parseDraft(text,now);
+  if(!record)store.removeItem(DRAFT_KEY);
+  return record;
+ }catch{return null;}
+}
+export function clearDraft(storage){
+ try{storage().removeItem(DRAFT_KEY);return true;}catch{return false;}
+}
+/**
+ * How the steps begin on this history entry: at the entry's own step with the kept record when the
+ * flow marked the entry earlier (Back, Forward, refresh), otherwise at step 1 with nothing read.
+ */
+export function flowStart({mark=null,saved=null}={}){
+ const returning=!!(mark&&saved);
+ return Object.freeze({step:returning?mark.step:1,depth:mark?mark.depth:0,saved:returning?saved:null});
+}
+/**
+ * Bringing the kept choices back, one engine edit at a time (the engine reads a day's times after
+ * each change of doctor or day, and accepts only a starting time it is offering now).
+ * Returns {edits, done, kept}: the edits to hand over next; `done` when nothing more will follow;
+ * `kept` is false when the starting time could not be brought back (`gone` when it is no longer offered).
+ */
+export function restoreNext({saved,state,usable}){
+ const wait=Object.freeze({edits:Object.freeze([]),done:false,kept:false,gone:false});
+ const stop=(kept,gone=false)=>Object.freeze({edits:Object.freeze([]),done:true,kept,gone});
+ if(!saved)return stop(true);
+ if(!usable||!state.policyFresh)return state.loadingPolicy?wait:stop(false);
+ const one=(name,value)=>Object.freeze({edits:Object.freeze([Object.freeze([name,value])]),done:false,kept:false,gone:false});
+ if(!saved.chosen||!saved.service)return stop(!saved.slot);
+ if(state.service!==saved.service)return state.policy.policy.services.some(item=>item.id===saved.service&&item.enabled)?one('service',saved.service):stop(false);
+ if(saved.day&&state.day!==saved.day){
+  const range=dateRange(state.policy);
+  return saved.day>=range.first_date&&saved.day<=range.last_date?one('day',saved.day):stop(false,!!saved.slot);
+ }
+ if(!saved.slot)return stop(true);
+ if(state.slotsStatus==='loading'||state.slotsStatus==='idle')return wait;
+ if(state.slotsStatus!=='ready'||!state.slotsFresh)return stop(false);
+ const slot=state.slots.find(item=>item.starts_at===saved.slot.starts_at&&item.ends_at===saved.slot.ends_at);
+ if(!slot)return stop(false,true);
+ if(state.slot?.starts_at!==slot.starts_at)return one('slot',slot);
+ if(saved.payment_method&&state.payment_method!==saved.payment_method&&paymentAvailable(state.policy,saved.payment_method))return one('payment_method',saved.payment_method);
+ return stop(true);
+}
+/** The furthest step that may be shown: 1 until step 1 is complete, 2 until the details pass, then 3. */
+export function furthestStep({missing='',problems={}}={}){
+ if(missing)return 1;
+ return Object.keys(problems).length?2:3;
+}
+/**
+ * The browser arrived on one of the flow's own entries (Back or Forward).
+ *   mark, from  the entry arrived on and the entry left ({step, depth})
+ *   steps       false when no step can be shown: the booking is being saved, is saved, or booking is paused
+ *   allowed     the furthest step that may be shown now
+ * Returns {step} to show; with {go: n} the browser must move again (this entry's step cannot be
+ * shown, or a finished booking is being left); with {mark} this entry is re-labelled instead.
+ */
+export function arrival({mark,from,steps=true,allowed=3}){
+ if(!steps)return Object.freeze(mark.depth<from.depth?{go:-(mark.depth+1)}:{});
+ const step=Math.min(mark.step,allowed),short=mark.step-step;
+ if(!short)return Object.freeze({step});
+ return Object.freeze(short<=mark.depth?{step,go:-short}:{step,mark:Object.freeze({step,depth:mark.depth})});
+}
+/** Going back to an earlier step from inside the page: through the browser's own history when those entries are there. */
+export function retreat({from,target}){
+ const back=from.step-target;
+ return Object.freeze(back>0&&back<=from.depth?{go:-back}:{mark:Object.freeze({step:target,depth:from.depth})});
+}
+/** Continue: the next step is a new entry, one deeper. */
+export function advanceMark(from,target){return Object.freeze({step:target,depth:Math.min(from.depth+1,99)});}
 
 // ---------- the summary ("Your visit") ----------
 

@@ -14,10 +14,23 @@ import {bookingUnavailable} from '../site/pages/booking/booking.mjs';
 import {archPortrait} from '../site/parts/photo-figure/photo-figure.mjs';
 import {words, STEPS, DETAIL_FIELDS, keepTogether as kt, serviceFor, doctorFor, usablePolicy, doctorChoices, sittingHours, dayTiles, dayBeyondTiles, dayLong,
   slotGroups, waitsForAdmission, holdEdit, releaseEdits, screenFor, stepOneMissing, stepThreeMissing, askFor, mustChooseAgain, phoneCountry, detailProblems,
-  paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject} from './booking-steps.mjs';
+  paymentOrder, confirmLabel, confirmHint, visitSummary, barLines, paymentNote, contactRows, appointmentCard, calendarObject,
+  readMark, withMark, draftRecord, saveDraft, loadDraft, clearDraft, flowStart, restoreNext, furthestStep, arrival, retreat, advanceMark, DRAFT_MINUTES} from './booking-steps.mjs';
 
 const useBooking = createUseBooking(React, bookingBrowser);
 const classes = (...names) => names.filter(Boolean).join(' ');
+
+// The tab's own storage: where the engine keeps its booking reference, and where an unfinished
+// booking is kept so that Back, Forward and a refresh bring it back (booking-steps.mjs says
+// exactly what is kept and for how long). While the page stays open the record is also removed
+// by the clock, not only when it is next read.
+const tabStorage = () => window.sessionStorage;
+let draftClock = 0;
+function keepDraft(record) {
+  saveDraft(tabStorage, record);
+  clearTimeout(draftClock); draftClock = setTimeout(() => clearDraft(tabStorage), DRAFT_MINUTES * 60000);
+}
+function dropDraft() { clearTimeout(draftClock); clearDraft(tabStorage); }
 
 function Icon({name}) {
   return <svg className="icon" aria-hidden="true" focusable="false"><use href={'#i-' + name}/></svg>;
@@ -146,18 +159,35 @@ function AppointmentCard({receipt, titleRef, id}) {
 }
 
 function Booking({draft = {}}) {
-  const initialService = useRef(serviceFor(draft.doctor));
+  // Back, Forward and a refresh return to a history entry this flow marked: its step and the kept
+  // choices come back. A fresh arrival starts at step 1 and reads nothing that was kept.
+  const boot = useRef(null);
+  if (!boot.current) {
+    const mark = readMark(window.history.state);
+    boot.current = flowStart({mark, saved: mark ? loadDraft(tabStorage, Date.now()) : null});
+    const kept = boot.current.saved;
+    if (kept) {
+      Object.assign(draft, {name: kept.details.full_name, phone: kept.details.phone, email: kept.details.email, message: kept.details.notes});
+      if (kept.chosen && doctorFor(kept.service)) draft.doctor = doctorFor(kept.service);
+    }
+  }
+  const initialService = useRef(boot.current.saved?.chosen && boot.current.saved.service ? boot.current.saved.service : serviceFor(draft.doctor));
   const flow = useBooking(initialService.current), {state: s, dispatch} = flow, id = useId();
   const product = useSyncExternalStore(productState.subscribe, productState.getSnapshot, productState.getServerSnapshot);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(boot.current.step);
+  // The kept choices still being handed back to the engine after a refresh or a return (null = none).
+  const [restoring, setRestoring] = useState(boot.current.saved);
+  // What this history entry says: its step, and how many entries of the flow lie before it.
+  const here = useRef({step: boot.current.step, depth: boot.current.depth});
   // The engine starts with its first doctor; the page waits for the visitor's own choice unless they came for one.
-  const [chosen, setChosen] = useState(!!initialService.current);
+  const [chosen, setChosen] = useState(boot.current.saved ? boot.current.saved.chosen : !!initialService.current);
   const [changing, setChanging] = useState(false);
   const [later, setLater] = useState(false);
   const [held, setHeld] = useState(null);
   const [problems, setProblems] = useState({});
   const [record, setRecord] = useState(false);
-  const [gone, setGone] = useState(false);
+  // Why the visitor is back on step 1 without a starting time: 'taken' (it is no longer offered), 'again' (booking was paused), or ''.
+  const [gone, setGone] = useState('');
   // The part of the step the visitor was shown after pressing the main button too early ("" = none).
   const [asked, setAsked] = useState('');
   const root = useRef(null), title = useRef(null), laterBox = useRef(null), first = useRef(true), fieldNodes = useRef({}), parts = useRef({});
@@ -219,11 +249,82 @@ function Booking({draft = {}}) {
   // Once the missing thing is there (or the step has moved on), nothing is pointed at any more.
   useEffect(() => { if (asked && asked !== ask) setAsked(''); }, [asked, ask]);
 
-  // The chosen time has gone (someone else took it, or the day's times changed): back to step 1 to choose again.
+  // ----- the steps as history entries -----
+  const relabel = mark => { here.current = mark; window.history.replaceState(withMark(window.history.state, mark), ''); };
+  const forward = next => {
+    setProblems({}); setStep(next);
+    const mark = advanceMark(here.current, next);
+    window.history.pushState(withMark(window.history.state, mark), ''); here.current = mark;
+  };
+  // An earlier step: through the browser's own history, so its Back and Forward stay true to the steps.
+  const backTo = target => {
+    setProblems({}); setStep(target);
+    const move = retreat({from: here.current, target});
+    if (move.go) window.history.go(move.go); else relabel(move.mark);
+  };
+  useEffect(() => { relabel(here.current); }, []);
+  const requiredContacts = p?.required_contacts;
+  const allowed = restoring ? STEPS.length : furthestStep({missing, problems: detailProblems(s.details, {requiredContacts})});
+  // The browser's Back or Forward arrived on an entry of this flow: the steps move; the page is not drawn again.
+  const onArrival = useRef(null);
+  onArrival.current = mark => {
+    const from = here.current; here.current = mark;
+    const move = arrival({mark, from, steps: screen === 'form', allowed});
+    if (move.mark) relabel(move.mark);
+    if (move.step) {
+      if (move.step < mark.step) {
+        // this entry's step cannot be shown yet: say why, as "Continue" would
+        if (move.step === 1) pointTo(askFor({step: 1, missing, timesShown}));
+        else setProblems(detailProblems(s.details, {requiredContacts}));
+      } else setProblems({});
+      setStep(move.step);
+    }
+    if (move.go) window.history.go(move.go);
+  };
   useEffect(() => {
-    if (screen === 'form' && !held && mustChooseAgain({step, state: s, usable})) { setGone(!s.error); setStep(1); }
-  }, [screen, step, s.slot, s.slotsStatus, s.policyFresh, usable, held]);
-  useEffect(() => { if (s.slot) setGone(false); }, [s.slot]);
+    // Listening in the capture phase puts this before the site's own router, which would draw the whole page again.
+    const onPop = event => {
+      const mark = readMark(window.history.state);
+      if (!mark) return; // an entry outside the flow: the site's router shows that page
+      event.stopImmediatePropagation();
+      onArrival.current(mark);
+    };
+    window.addEventListener('popstate', onPop, true);
+    return () => window.removeEventListener('popstate', onPop, true);
+  }, []);
+
+  // ----- what is kept for Back, Forward and refresh -----
+  useEffect(() => {
+    if (!restoring) return;
+    if (!flow.viewAvailable || s.credential || s.phase === 'blocked') { setRestoring(null); return; }
+    if (!flow.available || held) return; // the engine reads a day's times only while booking is admitted
+    const next = restoreNext({saved: restoring, state: s, usable});
+    for (const [name, value] of next.edits) dispatch({type: 'edit', name, value});
+    if (!next.done) return;
+    setRestoring(null);
+    // the starting time could not be brought back: step 1, with the reason when it is no longer offered
+    if (!next.kept && step > 1) { setGone(next.gone ? 'taken' : ''); backTo(1); }
+  }, [restoring, s, usable, flow.available, flow.viewAvailable, held]);
+  useEffect(() => {
+    if (s.credential || s.receipt) { dropDraft(); return; } // sent: nothing is kept any more
+    if (restoring || screen !== 'form' || !usable) return;
+    keepDraft(draftRecord({state: s, chosen, now: Date.now()}));
+  }, [restoring, screen, usable, chosen, s.credential, s.receipt, s.service, s.day, s.slot, s.payment_method, s.details]);
+
+  // The chosen time has gone (someone else took it, or the day's times changed): back to step 1 to choose again.
+  const paused = useRef(false);
+  if (screen === 'unavailable') paused.current = true;
+  useEffect(() => {
+    if (screen !== 'form' || held || restoring || !mustChooseAgain({step, state: s, usable})) return;
+    setGone(s.error ? '' : paused.current ? 'again' : 'taken'); paused.current = false; backTo(1);
+  }, [screen, step, s.slot, s.slotsStatus, s.policyFresh, usable, held, restoring]);
+  useEffect(() => { if (s.slot) { setGone(''); paused.current = false; } }, [s.slot]);
+  // A new booking after a finished one starts at step 1.
+  const wasReceipt = useRef(false);
+  useEffect(() => {
+    if (screen === 'form' && wasReceipt.current && step > 1) backTo(1);
+    wasReceipt.current = screen === 'receipt';
+  }, [screen]);
 
   // A new step (or the card after the last press) starts at its heading.
   useEffect(() => {
@@ -232,7 +333,6 @@ function Booking({draft = {}}) {
     root.current?.scrollIntoView({block: 'start'});
   }, [step, screen === 'receipt', screen === 'checking']);
 
-  const go = next => { setProblems({}); setStep(next); };
   const chooseDoctor = service => { setChosen(true); setChanging(false); edit('service', service); };
   const openLater = () => {
     if (laterOpen) { if (!dayBeyondTiles(tiles, shown.day)) setLater(false); return; }
@@ -256,13 +356,13 @@ function Booking({draft = {}}) {
     });
   };
   const advance = () => {
-    if (step === 1) { if (missing) pointTo(ask); else go(2); return; }
+    if (step === 1) { if (missing) pointTo(ask); else forward(2); return; }
     if (step === 2) {
       const found = detailProblems(s.details, {requiredContacts: p?.required_contacts});
       setProblems(found);
       const wrong = DETAIL_FIELDS.find(name => found[name]);
       if (wrong) { fieldNodes.current[wrong]?.focus(); return; }
-      go(3); return;
+      forward(3); return;
     }
     if (s.busy || waiting) return;
     if (missingLast) { pointTo(ask); return; }
@@ -346,7 +446,7 @@ function Booking({draft = {}}) {
     <div className="clinic-booking__main">
       <Progress step={step}/>
       {error}
-      {gone && !s.error && <Notice icon="clock"><p>{words.time.gone}</p></Notice>}
+      {gone && !s.error && <Notice icon="clock" calm={gone === 'again'}><p>{gone === 'again' ? words.time.again : words.time.gone}</p></Notice>}
       <form className="booking-form" aria-label={words.formLabel} noValidate onSubmit={event => { event.preventDefault(); advance(); }}>
         <section className={'clinic-booking__step clinic-booking__step--' + step} aria-labelledby={id + 'step'}>
           <h2 className="clinic-booking__title" id={id + 'step'} ref={title} tabIndex={-1}>{stepInfo.title}</h2>
@@ -420,6 +520,10 @@ function Booking({draft = {}}) {
           </>}
 
           {step === 2 && <div className="booking-fields">
+            <div className="visit-strip">
+              <p className="visit-strip__words"><span className="visit-strip__who">{kt(lines.top)}</span><span className="visit-strip__when">{kt(lines.bottom)}</span></p>
+              <button type="button" className="text-link visit-strip__change" onClick={() => backTo(1)} aria-label={words.summary.change}><Icon name="edit"/><span>{words.change}</span></button>
+            </div>
             {Object.keys(problems).length > 0 && <Notice><p>{words.errors.summary}</p></Notice>}
             {fields.map(([name, label, type, auto, required, maxLength, hint]) => <Field key={name} id={id + name} label={label} optional={!required} hint={hint} error={problems[name]}>
               <input className="booking-input" id={id + name} ref={node => { fieldNodes.current[name] = node; }} type={type} autoComplete={auto} maxLength={maxLength} required={required}
@@ -435,7 +539,7 @@ function Booking({draft = {}}) {
           </div>}
 
           {step === 3 && <>
-            <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => go(1)}/>
+            <VisitSummary summary={summary} id={id + 'visit-step'} onChange={() => backTo(1)}/>
             <fieldset className={classes('payment-choices', asked === 'payment' && 'is-asked')} disabled={disabled || optionsStale} ref={node => { parts.current.payment = node; }}>
               <legend>{words.payment.legend}</legend>
               {asked === 'payment' && <Ask>{words.ask.payment}</Ask>}
@@ -456,7 +560,7 @@ function Booking({draft = {}}) {
           </>}
         </section>
 
-        <div className={classes('booking-bar', step === 3 && 'booking-bar--last')}>
+        <div className={classes('booking-bar', 'booking-bar--' + step, step === 3 && 'booking-bar--last')}>
           {/* The last two presses stay together and in sight: the tick box and what it confirms, then the button. */}
           {step === 3 && <div className={classes('booking-last', asked === 'tick' && 'is-asked')} ref={node => { parts.current.tick = node; }}>
             <label className={classes('booking-ack', tickWaits && 'is-waiting')}>
@@ -467,9 +571,7 @@ function Booking({draft = {}}) {
           </div>}
           {step === 1 && <p className="booking-bar__summary"><span className="booking-bar__top">{kt(lines.top)}</span>{lines.bottom && <span className="booking-bar__bottom">{kt(lines.bottom)}</span>}</p>}
           {step === 1 && missing && <p className="booking-bar__hint" aria-hidden="true">{words.missing[missing]}</p>}
-          {step === 2 && <button type="button" className="booking-bar__summary" onClick={() => go(1)} aria-label={`${words.summary.change}: ${lines.top}, ${lines.bottom}`}>
-            <span className="booking-bar__top">{kt(lines.top)}</span><span className="booking-bar__bottom">{kt(lines.bottom)}</span><Icon name="edit"/></button>}
-          {step > 1 && <button type="button" className={classes('text-link booking-bar__back', step === 2 && 'booking-bar__back--laptop')} disabled={sending} onClick={() => go(step - 1)}><span>{words.back}</span></button>}
+          {step > 1 && <button type="button" className="text-link booking-bar__back" disabled={sending} onClick={() => backTo(step - 1)}><Icon name="left"/><span>{words.back}</span></button>}
           <button type="submit" className={classes('button button--main button--large booking-bar__main', notReady && 'is-not-ready', step === 3 && sending && 'is-busy')} data-booking-continue
             disabled={step === 2 && disabled} aria-busy={step === 3 && sending ? 'true' : undefined} aria-describedby={step === 3 ? id + 'last' : undefined}>
             <span className="button__label">{step === 3 ? confirmLabel({busy: sending, method: methodAvailable ? s.payment_method : '', offered: methods.filter(method => paymentAvailable(s.policy, method))}) : words.next}</span>
@@ -478,7 +580,7 @@ function Booking({draft = {}}) {
         </div>
       </form>
     </div>
-    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => go(1) : null} aside/></aside>
+    <aside className="clinic-booking__aside"><VisitSummary summary={summary} id={id + 'visit'} onChange={step > 1 ? () => backTo(1) : null} aside/></aside>
   </div>;
 }
 
