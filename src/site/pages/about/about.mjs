@@ -18,11 +18,11 @@ import {doctorMiniCard} from '../../parts/doctor-mini-card/doctor-mini-card.mjs'
 import {certificateFrame} from '../../parts/certificate-frame/certificate-frame.mjs';
 import {closing} from '../../parts/closing/closing.mjs';
 
-// The frontage is never shown wider than 640 px, a walk photograph never wider than 344 px.
+// The frontage is never shown wider than 640 px, a walk photograph never wider than 300 px.
 const COVER_SIZES='(min-width: 768px) 640px, 92vw';
-const STEP_SIZES='(min-width: 1280px) 328px, (min-width: 768px) 284px, 266px';
+const STEP_SIZES='(min-width: 1024px) 300px, (min-width: 768px) 284px, 250px';
 const VIEWER_SIZES='(min-width: 768px) 480px, 82vw';
-const DOCUMENT_SIZES='160px';
+const DOCUMENT_SIZES='220px';
 /** How much later each following part of a group starts to arrive, as a share of its own travel. */
 const AFTER=.14;
 const after=index=>index?{'data-enter-after':(index*AFTER).toFixed(2)}:{};
@@ -55,11 +55,14 @@ function standardsSection(){
  const rows=standards.rows.map((row,index)=>`<div${attrs({class:'page-about__standard','data-standard':row.id,'data-enter':'rule',...after(index)})}>`
   +`<dt><span class="page-about__standard-name">${text(row.name)}</span> <span class="page-about__standard-kind">${text(row.kind)}</span></dt>`
   +`<dd>${text(row.meaning)}</dd></div>`).join('');
+ const [sheet,pen]=standards.objects;
  return `<section class="page-about page-about__standards" id="standards" aria-labelledby="standards-title"><div class="wrap page-about__standards-grid">`
   +`<div class="page-about__standards-head">`
-  +sectionHead({runningHead:standards.runningHead,heading:standards.heading,emphasis:standards.emphasis,id:'standards-title',tone:'on-deep'})
-  +image(clinicObjects[standards.object],{className:'page-about__standards-object'})
-  +`</div><dl class="page-about__ledger">${rows}</dl></div></section>`;
+  +sectionHead({runningHead:standards.runningHead,heading:standards.heading,id:'standards-title',tone:'on-deep'})
+  // Wide screens only: a pale niche (far), a lined sheet standing in it and a pen laid across it (near).
+  +`<div class="page-about__still" aria-hidden="true" data-enter="card"><span class="page-about__still-niche"></span>`
+  +image(clinicObjects[sheet],{className:'page-about__still-sheet'})+image(clinicObjects[pen],{className:'page-about__still-pen'})
+  +`</div></div><dl class="page-about__ledger">${rows}</dl></div></section>`;
 }
 
 /** One step of the walk: its photograph (with the button that opens it large), its number, title and line. */
@@ -82,17 +85,28 @@ function walkSection(){
   +`</section>`;
 }
 
+/**
+ * One certificate of the teaser. With scripts it is a control that opens the viewer; without, a
+ * plain framed picture, so nothing on the page is a button that does nothing.
+ * WAITING: request about-09 — the shared frame will not be a dead button without scripts; then
+ * one frame is printed, not two.
+ */
+function teaserDocument(item){
+ return `<div data-needs-script>${certificateFrame(item,{view:true,sizes:DOCUMENT_SIZES})}</div>`
+  +`<div data-without-script>${certificateFrame(item,{sizes:DOCUMENT_SIZES})}</div>`;
+}
+
 function doctorsPart(ctx){
  const more=doctorsSection.certificates;
  return `<section class="page-about page-about__doctors" id="doctors" aria-labelledby="doctors-title"><div class="wrap page-about__doctors-grid">`
-  +sectionHead({runningHead:doctorsSection.runningHead,heading:doctorsSection.heading,emphasis:doctorsSection.emphasis,id:'doctors-title'})
+  +sectionHead({runningHead:doctorsSection.runningHead,heading:doctorsSection.heading,id:'doctors-title'})
   +`<div class="page-about__credits"><ul class="page-about__cards">`
   // The cards say who; the closing directly below says act, so they carry no buttons here.
   +doctorsSection.cards.map((id,index)=>`<li${attrs({'data-enter':'card',...after(index)})}>${doctorMiniCard(id,ctx,{actions:false})}</li>`).join('')
   +`</ul>`
-  // The teaser: one framed document under each doctor (each opens large), then the way to all of them.
-  +`<ul class="page-about__documents" aria-label="${text(more.shownLabel)}">`
-  +more.shown.map((item,index)=>`<li${attrs({'data-enter':'card',...after(index)})}>${certificateFrame(item,{view:true,sizes:DOCUMENT_SIZES})}</li>`).join('')
+  // The teaser: one framed document under each doctor, overlapping the card's lower edge, then the way to all of them.
+  +`<ul class="page-about__documents" aria-label="${text(more.shownLabel)}" data-about-documents>`
+  +more.shown.map((item,index)=>`<li${attrs({'data-enter':'card',...after(index)})}>${teaserDocument(item)}</li>`).join('')
   +`</ul><p class="page-about__certificates" data-enter="rule"><span class="page-about__certificates-label">${text(more.label)}</span>`
   // With scripts the link opens every certificate in the shared viewer; without, it leads to Meet the doctors.
   +textLink({label:more.link,href:more.href,attributes:{'data-open-certificates':''}})+`</p></div></div></section>`;

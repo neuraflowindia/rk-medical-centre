@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as words from '../../src/clinic/page-content/about.mjs';
 import {about,walkSlide} from '../../src/site/pages/about/about.mjs';
-import {bindAbout,openWalkViewer,stepIndex} from '../../src/site/pages/about/about.behaviour.mjs';
+import {bindAbout,openWalkViewer,openAllCertificatesAt,stepIndex} from '../../src/site/pages/about/about.behaviour.mjs';
 import {doctors,address,locality,directions} from '../../src/clinic/model.mjs';
 import {doctorOrder} from '../../src/clinic/care-catalogue.mjs';
 import {certificateCatalogue} from '../../src/clinic/certificate-catalogue.mjs';
@@ -67,12 +67,19 @@ test('About words: the three standards are the shared list (the one Home’s led
  }
  assert.equal(standards.rows[2].meaning,observationCareSentence);
  assert.deepEqual(standards.rows.map(row=>row.source),['derived','derived','stand-in']);
- assert.ok(standards.heading.endsWith(standards.emphasis)&&Object.hasOwn(clinicObjects,standards.object));
+ assert.equal(standards.emphasis,undefined,'this heading stands upright');
+ assert.equal(standards.objects.length,2);for(const name of standards.objects)assert.ok(Object.hasOwn(clinicObjects,name),`the still life names an object that exists: ${name}`);
 });
 
 test('About words: the walk has three steps in order, each with a photograph that exists',()=>{
  assert.deepEqual(walk.steps.map(step=>step.id),['arrive','doors','waiting']);
- assert.deepEqual(walk.steps.map(step=>step.photo),['walk-gate','walk-doors','waiting'],'the cover’s frontage is not shown again');
+ // Step 1 shows the name board on the green wall once that crop exists; until then the gate, with the gate's own line.
+ const first=words.arrival();
+ assert.deepEqual(walk.steps.map(step=>step.photo),[first.photo,'walk-doors','waiting']);
+ assert.equal(walk.steps[0].line,first.line);
+ assert.ok(!walk.steps.some(step=>step.photo===cover.photo.photo),'the cover’s photograph is not shown again');
+ assert.deepEqual(words.arrival({'walk-wall':{},'walk-gate':{}}),{photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'});
+ assert.deepEqual(words.arrival({'walk-gate':{}}),{photo:'walk-gate',line:'The gate is under the blue board with both doctors’ names.'});
  for(const step of walk.steps){
   assert.ok(Object.hasOwn(clinicPhotos,step.photo),`${step.id} names a photograph`);
   assert.ok(step.title.length<=40&&step.line.endsWith('.'));
@@ -89,7 +96,7 @@ test('About words: the walk has three steps in order, each with a photograph tha
 
 test('About words: the doctors section names both doctors and teases two certificates Home does not show',()=>{
  assert.deepEqual(doctorsSection.cards,doctorOrder);
- assert.ok(doctorsSection.heading.endsWith(doctorsSection.emphasis));
+ assert.equal(doctorsSection.emphasis,undefined,'this heading stands upright');
  const teaser=doctorsSection.certificates;
  assert.equal(teaser.link,`All ${certificateCatalogue.length} certificates`);
  assert.equal(teaser.href,pagePaths.doctors);
@@ -130,6 +137,12 @@ test('About prints its five sections in order, then the shared closing, with one
  // Each section is labelled by a heading that exists.
  for(const id of attributeValues(ownSections(html),'aria-labelledby'))assert.match(html,new RegExp(`<h[12][^>]* id="${id}"`));
  assert.equal(count(ownSections(html),/<h2\b/g),4);assert.equal(count(ownSections(html),/<h3\b/g),walk.steps.length+doctorOrder.length);
+ // The italic phrase is kept for three headings: the page's own, the story and the walk.
+ assert.deepEqual([...ownSections(html).matchAll(/<em>([^<]*)<\/em>/g)].map(match=>match[1].replaceAll('&nbsp;',' ')),[cover.emphasis,story.emphasis,walk.emphasis]);
+ // The still life beside the ledger is decoration: hidden from assistive technology, pictures without words.
+ const still=/<div class="page-about__still" aria-hidden="true"[^>]*>.*?<\/div>/s.exec(html)[0];
+ assert.equal(count(still,/<img\b[^>]*alt=""/g),standards.objects.length);
+ for(const name of standards.objects)assert.ok(still.includes(clinicObjects[name].src));
 });
 
 test('About’s own sections are the same in both booking states and print no booking address',()=>{
@@ -167,7 +180,8 @@ test('About prints every word from the content module, escaped',()=>{
   ...doctorsSection.certificates.shown.flatMap(item=>[item.title,issuerLine(item.issuer)])];
  for(const value of shown)assert.ok(page.includes(plain(value)),`the page shows: ${value}`);
  const html=renderedPage(PATH,'on');
- assert.ok(html.includes(escapeHTML('The gate is under the blue board with both doctors’ names.')));
+ // Escaped as it is printed (the line holds an apostrophe).
+ assert.ok(html.includes(escapeHTML(walk.steps[0].line)));
  for(const label of [walk.label,walk.previous,walk.next,doctorsSection.certificates.shownLabel])assert.ok(html.includes(`aria-label="${escapeHTML(label)}"`),label);
 });
 
@@ -190,8 +204,8 @@ test('About’s ledger has three ruled rows, and the walk three numbered steps t
  }
  assert.equal(count(html,/class="page-about__step-number" aria-hidden="true"/g),3);
  // A walk photograph is never asked for wider than its frame.
- const widest=Math.max(...[...html.matchAll(/sizes="([^"]*266px)"/g)].flatMap(match=>[...match[1].matchAll(/(\d+)px(?=,|$)/g)].map(size=>Number(size[1]))));
- assert.ok(widest<=344);
+ const asked=[...html.matchAll(/sizes="([^"]*250px)"/g)].flatMap(match=>[...match[1].matchAll(/(\d+)px(?=,|$)/g)].map(size=>Number(size[1])));
+ assert.equal(asked.length,3*walk.steps.length);assert.ok(Math.max(...asked)<=300,'a walk photograph is never asked for wider than 300 px');
  assert.equal(count(html,/data-still-shelf/g),1);
 });
 
@@ -201,7 +215,13 @@ test('About names both doctors without buttons, and its certificates teaser lead
  assert.doesNotMatch(html,/doctor-mini-card__actions/,'the closing below carries Book and Call');
  for(const id of doctorOrder)assert.ok(html.includes(`href="${doctors[id].path}"`),`a link to ${doctors[id].name}’s profile`);
  assert.match(html,/<a class="text-link" href="\/meet-doctor" data-open-certificates="">/);
- assert.deepEqual(attributeValues(html,'data-view-certificate'),doctorsSection.certificates.shown.map(item=>item.id));
+ // Each teaser certificate is printed for both worlds: a control that opens the viewer where scripts
+ // run, and a plain framed picture where they do not (never a button that does nothing).
+ const shown=doctorsSection.certificates.shown.map(item=>item.id);
+ assert.deepEqual(attributeValues(html,'data-view-certificate'),shown);
+ assert.equal(count(html,/<div data-needs-script><figure class="certificate-frame[^"]*"[^>]*><button class="certificate-frame__mat certificate-frame__mat--view"/g),shown.length);
+ assert.equal(count(html,/<div data-without-script><figure class="certificate-frame[^"]*"[^>]*><div class="certificate-frame__mat">/g),shown.length);
+ assert.equal(count(html,/<ul class="page-about__documents"[^>]*data-about-documents>/g),1);
 });
 
 test('a walk photograph in the viewer: the picture, its step’s words, and the way to its neighbours',()=>{
@@ -246,7 +266,7 @@ function fakeViewer(){
   get innerHTML(){return this.html;},
   querySelector:selector=>selector==='button:not(:disabled)'?Object.values(arrows).find(arrow=>!arrow.disabled)||null:arrows[selector]||null};
  const viewer={opened:null,node:()=>node,content:()=>content,open(options){this.opened=options;content.innerHTML=options.html;}};
- return {viewer,node,page,arrow:name=>content.querySelector(`[data-viewer-${name}]`),step:()=>Number(/data-viewer-step="(\d)"/.exec(content.html)[1])};
+ return {viewer,node,page,html:()=>content.html,arrow:name=>content.querySelector(`[data-viewer-${name}]`),step:()=>Number(/data-viewer-step="(\d)"/.exec(content.html)[1])};
 }
 
 test('the walk’s one decision: which step a control names',()=>{
@@ -294,7 +314,7 @@ test('binding About: each view button, and its photograph, opens the viewer on t
  });
  // One button stands alone (no photograph wrapper): it still works.
  const lone=target({getAttribute:()=>'1',closest:()=>null});
- const root={querySelectorAll:selector=>selector==='[data-view-step]'?[...controls,lone]:[]};
+ const root={querySelectorAll:selector=>selector==='[data-view-step]'?[...controls,lone]:[],querySelector:()=>null};
  bindAbout(root,{signal:scope.signal,services:{viewer:fake.viewer}});
  controls[2].fire('click');
  assert.equal(fake.step(),2);assert.equal(fake.viewer.opened.trigger,controls[2]);
@@ -306,7 +326,48 @@ test('binding About: each view button, and its photograph, opens the viewer on t
  assert.equal((controls[1].listeners.get('click')||[]).length,0);assert.equal((controls[1].frame.listeners.get('click')||[]).length,0);
  // Without the viewer service, or without a page, nothing is bound.
  const idle=target({getAttribute:()=>'0',closest:()=>null});
- bindAbout({querySelectorAll:()=>[idle]},{services:{}});
+ bindAbout({querySelectorAll:()=>[idle],querySelector:()=>null},{services:{}});
  assert.equal(idle.listeners.size,0);
- assert.doesNotThrow(()=>bindAbout(null,{services:{viewer:fake.viewer}}));assert.doesNotThrow(()=>bindAbout({querySelectorAll:()=>[]}));
+ assert.doesNotThrow(()=>bindAbout(null,{services:{viewer:fake.viewer}}));assert.doesNotThrow(()=>bindAbout({querySelectorAll:()=>[],querySelector:()=>null}));
+});
+
+test('one of the two framed certificates opens all the certificates, standing at itself',()=>{
+ const fake=fakeViewer(),trigger={name:'frame'};
+ const [first,second]=doctorsSection.certificates.shown;
+ openAllCertificatesAt({viewer:fake.viewer},{id:second.id,trigger});
+ const place=certificateCatalogue.findIndex(item=>item.id===second.id);
+ assert.equal(fake.viewer.opened.title,'All certificates');assert.equal(fake.viewer.opened.trigger,trigger);
+ assert.ok(fake.html().includes(`data-viewer-certificate="${second.id}"`));
+ assert.ok(readable(fake.html()).includes(`${place+1} of ${certificateCatalogue.length}`),'the count is of the whole set');
+ // An unknown certificate opens the set at its start; no viewer, nothing happens.
+ openAllCertificatesAt({viewer:fake.viewer},{id:'nobody'});
+ assert.ok(fake.html().includes(`data-viewer-certificate="${certificateCatalogue[0].id}"`));
+ openAllCertificatesAt({viewer:fake.viewer});
+ assert.ok(readable(fake.html()).includes(`1 of ${certificateCatalogue.length}`));
+ assert.doesNotThrow(()=>openAllCertificatesAt({},{id:first.id}));
+});
+
+test('binding About: a click on a teaser certificate is heard first, and opens the ten instead of the two',()=>{
+ const fake=fakeViewer(),scope=new AbortController();
+ const [first]=doctorsSection.certificates.shown;
+ const documents=target();
+ const root={querySelectorAll:()=>[],querySelector:selector=>selector==='[data-about-documents]'?documents:null};
+ bindAbout(root,{signal:scope.signal,services:{viewer:fake.viewer}});
+ const heard=documents.listeners.get('click');
+ assert.equal(heard.length,1);assert.equal(heard[0].options.capture,true,'on the way down, before the frame’s own listener');
+ // A click on the frame's control (or on the picture inside it).
+ const control={getAttribute:name=>name==='data-view-certificate'?first.id:null};
+ let stopped=0;
+ documents.fire('click',{target:{closest:selector=>selector==='[data-view-certificate]'?control:null},stopPropagation(){stopped++;}});
+ assert.equal(stopped,1,'the frame’s own listener never hears it');
+ assert.equal(fake.viewer.opened.title,'All certificates');assert.equal(fake.viewer.opened.trigger,control);
+ assert.ok(fake.html().includes(`data-viewer-certificate="${first.id}"`));
+ assert.ok(readable(fake.html()).includes(`of ${certificateCatalogue.length}`));
+ // A click beside the frames is left alone.
+ fake.viewer.opened=null;
+ documents.fire('click',{target:{closest:()=>null},stopPropagation(){stopped++;}});
+ documents.fire('click',{target:null,stopPropagation(){stopped++;}});
+ assert.equal(stopped,1);assert.equal(fake.viewer.opened,null);
+ scope.abort();
+ assert.equal(documents.listeners.get('click').length,0);
 });

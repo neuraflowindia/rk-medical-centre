@@ -18,7 +18,8 @@
   }
   /* subject: the frontage in the postcard frame, its caption below */
   .page-about__frontage { position: relative; z-index: 1; }
-  .page-about__frontage .photo-figure__caption { max-width: 36ch; }
+  /* the caption stands clear of the photograph's shadow */
+  .page-about__frontage .photo-figure__caption { max-width: 36ch; padding-top: 20px; }
   /* once, as the page opens, the photograph is laid down */
   html[data-motion="on"] .page-about__frontage .photo-figure__frame { animation: page-about-lay var(--dur-settle) var(--ease-enter) both; }
   @keyframes page-about-lay {
@@ -44,7 +45,7 @@
 
   /* ---------- 3 · standards: a quiet ledger ---------- */
   .page-about__standards { background: var(--ground-deep); color: var(--ink-on-deep-soft); padding: calc(var(--section-pad) - 10px) 0 calc(var(--section-pad) - 12px); }
-  .page-about__standards-object { display: none; }
+  .page-about__still { display: none; }
   .page-about__standards-grid { display: grid; gap: 24px; }
   .page-about__ledger { display: grid; }
   .page-about__standard { position: relative; display: grid; gap: 6px; padding: 18px 0 20px; }
@@ -87,7 +88,8 @@
   .page-about__doctors-grid { display: grid; gap: 24px; }
   .page-about__cards { display: grid; gap: var(--space-3); }
   .page-about__cards > li { display: grid; }
-  /* the certificates teaser: two framed documents from tablet width, then one ruled line to all of them */
+  /* the certificates teaser: from tablet width one framed document under each doctor, overlapping the
+     card's lower edge (near); then one ruled line to all of them */
   .page-about__documents { display: none; }
   .page-about__certificates { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--space-4); margin-top: 20px; padding-top: 6px; }
   .page-about__certificates::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line-strong); transform-origin: left center; }
@@ -98,6 +100,7 @@
     .page-about__cover-grid { gap: 36px; }
     /* the picture hangs to the right of the words above it */
     .page-about__stage { justify-self: end; width: min(100%, 656px); padding-top: 84px; }
+    .page-about__frontage .photo-figure__caption { padding-top: 22px; }
     .page-about__pin { right: 40px; top: 22px; width: 70px; }
 
     .page-about__story { padding: var(--section-pad) 0; }
@@ -119,9 +122,9 @@
     .page-about__doctors { padding: var(--section-pad) 0; }
     .page-about__doctors-grid { gap: var(--head-gap); }
     .page-about__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
-    .page-about__documents { --certificate-height: 104px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); margin-top: 30px; }
+    .page-about__documents { --certificate-height: 132px; --overlap: 22px; position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); margin-top: calc(-1 * var(--overlap)); }
     .page-about__documents > li { padding-inline: var(--card-pad); }
-    .page-about__certificates { margin-top: 26px; }
+    .page-about__certificates { margin-top: 30px; }
   }
 
   @media (min-width: 1024px) {
@@ -140,21 +143,35 @@
     .page-about__pulled { margin: 12px 0; }
 
     .page-about__standards-grid { grid-template-columns: minmax(0, 4.6fr) minmax(0, 6.4fr); gap: 96px; align-items: stretch; }
-    .page-about__standards-head { display: grid; align-content: space-between; gap: 40px; }
-    /* near: a written record, set down beside the ledger */
-    .page-about__standards-object { display: block; width: 148px; height: auto; margin: 0 0 6px 10px; transform: rotate(-7deg); filter: var(--elev-object-on-deep); }
+    .page-about__standards-head { display: grid; align-content: space-between; gap: 44px; }
+    /* a still life beside the ledger, standing on the ledger's last rule.
+       far: a pale niche · near: a lined sheet standing in it, and a pen laid across the sheet */
+    .page-about__still { display: block; position: relative; width: 336px; height: 300px; }
+    .page-about__still-niche { position: absolute; left: 28px; bottom: 0; width: 244px; height: 284px; border-radius: var(--radius-arch-open); background: var(--wash-on-deep); box-shadow: inset 0 1px 0 var(--line-on-deep); }
+    .page-about__still-sheet { position: absolute; left: 56px; bottom: 24px; width: 188px; height: auto; transform: rotate(-6deg); filter: var(--elev-object-on-deep); }
+    .page-about__still-pen { position: absolute; left: 166px; bottom: 34px; width: 118px; height: auto; transform: rotate(8deg); filter: var(--elev-object-on-deep); }
     .page-about__standard { padding: 28px 0 30px; }
 
     /* all three steps fit (the shelf then hides its own arrows), and each step stands a little lower than the one before */
     .page-about__walk { padding-bottom: var(--section-pad); }
     .page-about__walk .still-shelf__row { justify-content: space-between; overflow: visible; }
-    .page-about__walk .still-shelf__item { width: min(344px, (100% - 96px) / 3); }
+    .page-about__walk { --walk-row: min(var(--content-width), 100vw - 2 * var(--gutter)); --walk-card: min(316px, (var(--walk-row) - 96px) / 3); --walk-gap: calc((var(--walk-row) - 3 * var(--walk-card)) / 2); }
+    .page-about__walk .still-shelf__item { width: var(--walk-card); }
     .page-about__walk .still-shelf__item:nth-child(2) { margin-top: 36px; }
     .page-about__walk .still-shelf__item:nth-child(3) { margin-top: 72px; }
+    /* the path runs on across the gap, toward the next step's photograph */
+    .page-about__walk .still-shelf__item:not(:last-child) .page-about__step-number { width: calc(100% + var(--walk-gap) - 22px); }
 
+    /* each doctor: the card, and their document tucked over its lower right corner; the caption below the card */
+    .page-about__cards { gap: var(--space-7); }
+    .page-about__documents { --overlap: 52px; gap: var(--space-7); }
+    .page-about__documents .certificate-frame { grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--space-6); }
+    .page-about__documents .certificate-frame__mat { grid-column: 2; grid-row: 1; }
+    .page-about__documents .certificate-frame__label { grid-column: 1; grid-row: 1; align-self: start; width: auto; min-width: 0; max-width: 26ch; margin-top: calc(var(--overlap) + 22px); }
+    .page-about__certificates { margin-top: 34px; }
   }
 
   @media (min-width: 1280px) {
-    .page-about__doctors-grid { grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); gap: var(--space-9); align-items: start; }
+    .page-about__documents { --certificate-height: 148px; --overlap: 58px; }
   }
 }

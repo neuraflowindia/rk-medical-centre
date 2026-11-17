@@ -9,6 +9,7 @@
 import {doctors,locality,directions} from '../model.mjs';
 import {doctorOrder} from '../care-catalogue.mjs';
 import {certificateCatalogue} from '../certificate-catalogue.mjs';
+import {clinicPhotos} from '../client-media.mjs';
 import {observationCareSentence} from '../standins.mjs';
 import {pagePaths,actionLabels,essentials,practisingSince,clinicStandards} from './shared.mjs';
 import {homeCertificates} from './home.mjs';
@@ -94,15 +95,28 @@ const meanings=Object.freeze({
  */
 export const standards=Object.freeze({
  runningHead:'Standards',
+ // Upright: the italic phrase is kept for the page's heading, the story and the walk.
  heading:'Standards you can hold us to.',
- emphasis:'hold us to.',
- // A paper-cut accent beside the heading on wide screens: a written record.
- object:'report-clipboard',
+ // A small still life beside the ledger on wide screens: a lined sheet and a pen, for "written down".
+ objects:Object.freeze(['question-list','pen']),
  rows:Object.freeze(clinicStandards.map(item=>{
   if(!Object.hasOwn(meanings,item.id))throw new Error('No plain line is written for the standard: '+item.name);
   return Object.freeze({...item,...meanings[item.id]});
  }))
 });
+
+/**
+ * The first step's picture and the line that describes it. The cover already shows the whole
+ * street, so this step shows a detail of it with no car and nobody in it: the clinic's name
+ * board on the green wall.
+ * WAITING: request about-07 — until that crop exists the step shows the gate, with the line that
+ * describes the gate; both go when it lands.
+ */
+export function arrival(photos=clinicPhotos){
+ return Object.hasOwn(photos,'walk-wall')
+  ?{photo:'walk-wall',line:'The clinic’s name is on the wall; the gate is to its left.'}
+  :{photo:'walk-gate',line:'The gate is under the blue board with both doctors’ names.'};
+}
 
 /**
  * A walk through the clinic: the one place on the site where numbering is real. Each line under
@@ -120,7 +134,7 @@ export const walk=Object.freeze({
  nextPhoto:'Next photograph',
  ratio:'4:5',
  steps:Object.freeze([
-  Object.freeze({id:'arrive',title:`Arrive at the green wall on ${ROAD}`,line:'The gate is under the blue board with both doctors’ names.',photo:'walk-gate'}),
+  Object.freeze({id:'arrive',title:`Arrive at the green wall on ${ROAD}`,...arrival()}),
   Object.freeze({id:'doors',title:'Through the glass doors',line:'Glass doors marked with red crosses, under the white canopy.',photo:'walk-doors'}),
   Object.freeze({id:'waiting',title:'The covered waiting area',line:'Chairs under a high roof, beside the pharmacy counter.',photo:'waiting'})
  ])
@@ -158,7 +172,6 @@ export function teaserCertificates(catalogue=certificateCatalogue,shownOnHome=ho
 export const doctorsSection=Object.freeze({
  runningHead:'The doctors',
  heading:'And the doctors you will meet.',
- emphasis:'you will meet.',
  cards:Object.freeze([...doctorOrder]),
  certificates:Object.freeze({
   label:'Their training',
