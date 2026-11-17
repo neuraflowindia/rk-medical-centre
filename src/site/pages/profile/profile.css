@@ -17,9 +17,10 @@
   .page-profile__shaft { position: absolute; top: 0; bottom: 0; left: -50%; width: 200%; background: var(--shaft-light); will-change: transform; }
   html[data-motion="on"] .page-profile__shaft { animation: page-profile-shaft var(--loop-light) var(--ease-drift) var(--loop-light-start) infinite alternate paused; }
   html[data-motion="on"] .page-profile__plate[data-running] .page-profile__shaft { animation-play-state: running; }
+  /* as on Home, the light crosses three fifths of its plate each way */
   @keyframes page-profile-shaft {
-    from { transform: translateX(-13%); }
-    to { transform: translateX(13%); }
+    from { transform: translateX(-15%); }
+    to { transform: translateX(15%); }
   }
   /* near: the honour, pinned over the foot of the frame like the plate on a picture */
   .page-profile__honour { position: absolute; z-index: 2; left: 50%; bottom: -15px; transform: translateX(-50%); }
@@ -85,6 +86,11 @@
   .page-profile__art-frame { padding: 5px; border-radius: var(--radius-media); background: var(--surface); box-shadow: var(--elev-photo); }
   .page-profile__art-frame img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius-media-inner); box-shadow: 0 0 0 1px var(--line-faint); }
   .page-profile__art-caption { padding: 14px 0 0 4px; color: var(--ink-body); font: var(--type-caption); }
+  /* it arrives as the shared frame does: it rises, grows its last few per cent and unrolls downward */
+  html[data-motion="on"] .page-profile__art[data-enter="photo"] .page-profile__art-frame {
+    clip-path: inset(0 0 calc((1 - var(--q)) * 34%) 0 round var(--radius-media));
+    translate: 0 calc((1 - var(--q)) * var(--rise-card)); scale: calc(1 - (1 - var(--q)) * var(--settle-scale)); transform-origin: 50% 0;
+  }
   .page-profile__lede { color: var(--ink); font: var(--type-lead); max-width: 34em; }
   .page-profile__body { margin-top: 14px; max-width: 60ch; }
   .page-profile__bring { margin-top: var(--space-3); }

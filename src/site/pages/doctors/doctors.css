@@ -7,7 +7,7 @@
      --crown: how far it stands above the frame · --inset: how far its other side hides behind the frame */
   .page-doctors__opening { position: relative; background: var(--ground-light); padding: var(--space-6) 0 40px; overflow-x: clip; }
   .page-doctors__stage { --band: 12px; --crown: 22px; --inset: 14px; position: relative; display: grid; gap: 30px; }
-  /* owns the instruments' slow float: on screen with the stage, nothing to see or to press */
+  /* owns the two instruments' float (one loop for the pair): on screen with the stage, nothing to see or to press */
   .page-doctors__alive { position: absolute; inset: 0; pointer-events: none; }
   .page-doctors__centre .section-head { max-width: none; }
   .page-doctors__jump, .page-doctors__instrument { display: none; }
@@ -162,10 +162,12 @@
     .page-doctors__jump { display: block; position: absolute; z-index: 3; left: 50%; bottom: calc(var(--dome) - var(--stage-foot) - var(--tap) / 2); translate: -50% 0; }
     /* near: each doctor's own instrument rests against the foot of the frame, on the heading's side */
     .page-doctors__instrument { display: block; position: absolute; z-index: 2; bottom: -20px; height: auto; max-width: none; filter: var(--elev-object-strong); pointer-events: none; }
-    .page-doctors__sitter--sanjay .page-doctors__instrument { right: calc(-1 * var(--band) - 6px); width: 88px; rotate: 9deg; }
-    .page-doctors__sitter--parul .page-doctors__instrument { left: calc(-1 * var(--band) - 8px); width: 108px; rotate: -7deg; }
-    html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__instrument { animation: page-doctors-float calc(var(--loop-light) / 2) var(--ease-drift) calc(var(--loop-light-start) / 2) infinite alternate; }
-    html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__sitter--parul .page-doctors__instrument { animation-direction: alternate-reverse; }
+    .page-doctors__sitter--sanjay .page-doctors__instrument { right: calc(-1 * var(--band) - 6px); width: 88px; transform: rotate(9deg); }
+    .page-doctors__sitter--parul .page-doctors__instrument { --float-phase: -2.6s; left: calc(-1 * var(--band) - 8px); width: 108px; transform: rotate(-7deg); }
+    /* they float as every paper-cut object on the site does (the float is drawn in motion.css and adds
+       to the tilt given here), a few seconds apart; the marker lets them run, so a phone runs the light alone */
+    html[data-motion="on"] .page-doctors__instrument { animation: motion-float var(--loop-float) var(--ease-drift) calc(var(--loop-float) * -.5 + var(--float-phase, 0s)) infinite alternate paused; }
+    html[data-motion="on"] .page-doctors__alive[data-running] ~ .page-doctors__pair .page-doctors__instrument { animation-play-state: running; }
 
     /* far, between the two doctors: the next section's ground wells up as a low dome, under the
        button that leads to it */
@@ -188,10 +190,6 @@
     .page-doctors__wall { grid-column: 2; grid-row: 1; width: auto; max-width: none; margin: 6px 0 0; }
     .page-doctors__wall .certificate-wall { row-gap: 44px; }
     .page-doctors__wall-links { grid-column: 2; grid-row: 2; width: auto; margin: var(--space-6) 0 0; }
-  }
-  @keyframes page-doctors-float {
-    from { translate: 0 0; }
-    to { translate: 0 -7px; }
   }
   /* the two pages share their rows, so lists, facts and buttons line up across the fold */
   @supports (grid-template-rows: subgrid) {

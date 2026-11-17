@@ -28,9 +28,10 @@ function sitter(item){
 
 function opening(){
  // Two things move by themselves here, both slowly: the light across the two plates (the stage owns
- // it) and, on laptops only, the two instruments (the small marker owns them, so a phone runs one).
+ // it) and, on laptops only, the two instruments' float (the marker owns it as one loop; a light
+ // outranks a float, so a phone runs the light alone).
  return `<section class="page-doctors page-doctors__opening" aria-labelledby="doctors-title"><div class="wrap page-doctors__stage" data-ambient>`
-  +`<span class="page-doctors__alive" aria-hidden="true" data-ambient="minor"></span>`
+  +`<span class="page-doctors__alive" aria-hidden="true" data-ambient="float"></span>`
   +`<div class="page-doctors__centre">`
   +sectionHead({runningHead:words.runningHead,heading:words.heading,emphasis:words.emphasis,level:1,id:'doctors-title'})
   +`<p class="page-doctors__jump">${button({label:words.jump.label,href:words.jump.href,variant:'second',size:'compact',iconAfter:'down'})}</p></div>`

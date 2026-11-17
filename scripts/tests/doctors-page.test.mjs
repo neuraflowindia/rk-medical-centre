@@ -68,9 +68,9 @@ test('the opening in depth: a tone plate behind each portrait, each doctor\'s ow
  });
  assert.notEqual(words.portraits[0].instrument,words.portraits[1].instrument);
  assert.equal(count(html,/<img\b/g),4,'two portraits and two instruments, nothing else');
- // the light belongs to the stage; the instruments' float to a small marker, so a phone runs the light alone
+ // the light belongs to the stage; the two instruments' float to one marker (a light outranks a float, so a phone runs the light alone)
  assert.equal(count(html,/data-ambient(?!=)/g),1);assert.match(html,/class="wrap page-doctors__stage" data-ambient>/);
- assert.equal(count(html,/data-ambient="minor"/g),1);assert.match(html,/<span class="page-doctors__alive" aria-hidden="true" data-ambient="minor"><\/span>/);
+ assert.equal(count(html,/data-ambient="/g),1);assert.match(html,/<span class="page-doctors__alive" aria-hidden="true" data-ambient="float"><\/span>/);
  assert.ok(html.indexOf('page-doctors__alive')<html.indexOf('page-doctors__pair'),'the marker comes before the pair it starts');
  // the next step is a paper button that leads to the spread
  const jump=html.match(/<p class="page-doctors__jump">(.*?)<\/p>/)[1];
@@ -172,5 +172,8 @@ test('the stylesheets of both pages use only tokens that exist',async()=>{
   assert.deepEqual(used.filter(name=>!tokens.has(name)&&!own.has(name)&&!fromMotion.has(name)),[],`${sheet} uses a token that does not exist`);
  }
  assert.match(read('motion/motion.css'),/--q:/,'the entrance progress still comes from the motion styles');
+ // Meet the doctors floats its two instruments with the site's own float; the profile's paper-cut picture arrives as a photograph does.
+ assert.match(read('motion/motion.css'),/@keyframes motion-float\b/);assert.match(read('pages/doctors/doctors.css'),/animation: motion-float var\(--loop-float\)/);
+ assert.match(read('motion/motion.css'),/\[data-enter="photo"\] \.photo-figure__frame/);assert.match(read('pages/profile/profile.css'),/\.page-profile__art\[data-enter="photo"\] \.page-profile__art-frame/);
  assert.match(read('pages/profile/profile.mjs'),/style="--room:\$\{/,'the profile template still sets the room photograph\'s width');
 });

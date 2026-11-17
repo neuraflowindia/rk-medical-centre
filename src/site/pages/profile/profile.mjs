@@ -63,7 +63,7 @@ function aboutFigure(picture,caption){
  const sizes='(min-width: 768px) 420px, 92vw';
  if(picture.photo)return photoFigure(picture.photo,{ratio:'3:2',caption,sizes});
  // WAITING: request doctors-06 — once the picture is a record the shared frame knows, this is photoFigure() too.
- return `<figure class="page-profile__art" data-enter><div class="page-profile__art-frame">${image(picture.art,{sizes})}</div>`
+ return `<figure class="page-profile__art" data-enter="photo"><div class="page-profile__art-frame">${image(picture.art,{sizes})}</div>`
   +`<figcaption class="page-profile__art-caption">${text(caption)}</figcaption></figure>`;
 }
 

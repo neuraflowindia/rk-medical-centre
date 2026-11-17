@@ -123,7 +123,7 @@ test('about the doctor: the heading first, a framed picture with its caption, an
  assert.ok(his.includes(`<figcaption class="photo-figure__caption">${text(profilePage('sanjay').about.caption)}</figcaption>`));
  // Dr. Parul Gupta: the paper-cut picture, in a frame of the same make, with its own caption.
  const hers=section(renderedPage(pathOf('parul'),'on'),'about'),art=aboutPicture('parul').art;
- assert.ok(hers.includes(`<figure class="page-profile__art" data-enter><div class="page-profile__art-frame"><img src="${art.src}"`));
+ assert.ok(hers.includes(`<figure class="page-profile__art" data-enter="photo"><div class="page-profile__art-frame"><img src="${art.src}"`));
  assert.ok(hers.includes(`<div class="page-profile__room" style="--room:${art.width}px">`));
  assert.ok(hers.includes(`alt="${text(art.alt)}"`)&&hers.includes(` width="${art.width}" height="${art.height}"`));
  for(const source of art.sources)assert.ok(hers.includes(`${source.src} ${source.width}w`));
