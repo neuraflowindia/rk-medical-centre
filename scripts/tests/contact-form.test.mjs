@@ -2,7 +2,7 @@
 // is driven against the real template (read into small stand-in elements) and a pretend engine.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalisePhone,checkContact,validateContact,engineAnswer,formView,paintForm,paintFieldError,focusAfter,bindContactForm,contactFormMarkup} from '../../src/clinic/contact-form.js';
+import {normalisePhone,checkContact,validateContact,engineAnswer,formView,paintForm,paintFieldError,focusTarget,focusNode,controlGone,setOff,isOff,bindContactForm,contactFormMarkup} from '../../src/clinic/contact-form.js';
 import {messageForm as words} from '../../src/clinic/page-content/contact.mjs';
 import {messageFor} from '../../appointment-system/browser/enquiry/messages.mjs';
 import {messageForm} from '../../src/site/pages/contact/message-form.mjs';
@@ -18,9 +18,10 @@ function matcher(selector){
  });
  return node=>tests.some(match=>match(node));
 }
-function element(tag,attributes,focusLog){
+const FOCUSABLE=new Set(['input','textarea','button','a','summary']);
+function element(tag,attributes,focusLog,doc){
  const listeners=[];
- return {tag,attributes,children:[],parent:null,textContent:'',value:'',
+ return {tag,attributes,children:[],parent:null,textContent:'',value:'',ownerDocument:doc,
   get hidden(){return Object.hasOwn(attributes,'hidden');},
   set hidden(on){if(on)attributes.hidden='';else delete attributes.hidden;},
   get disabled(){return Object.hasOwn(attributes,'disabled');},
@@ -41,7 +42,12 @@ function element(tag,attributes,focusLog){
    for(const entry of listeners.filter(item=>item.type===type))await entry.handler(full);
    return full;
   },
-  focus(){focusLog.push(this);},
+  // As in a browser: only something that can take the focus, is switched on and is on screen takes it.
+  focus(){
+   if(!FOCUSABLE.has(tag)&&!Object.hasOwn(attributes,'tabindex'))return;
+   for(let node=this;node;node=node.parent)if(node.hidden||(node.disabled&&(node===this||node.tag==='fieldset')))return;
+   doc.activeElement=this;focusLog.push(this);
+  },
   all(){return this.children.flatMap(child=>[child,...child.all()]);},
   querySelector(selector){const match=matcher(selector);return this.all().find(match)||null;},
   querySelectorAll(selector){const match=matcher(selector);return this.all().filter(match);},
@@ -50,15 +56,15 @@ function element(tag,attributes,focusLog){
  };
 }
 /** Read markup into stand-in elements. Returns the root's first element. */
-function build(html,focusLog=[]){
- const root=element('root',{},focusLog);let current=root;
+function build(html,focusLog=[],doc={activeElement:null}){
+ const root=element('root',{},focusLog,doc);let current=root;
  for(const token of html.match(/<[^>]+>|[^<]+/g)){
   if(token.startsWith('</')){current=current.parent;continue;}
   if(!token.startsWith('<')){if(!current.children.length)current.textContent+=token;continue;}
   const [,tag,rest]=/^<([a-z0-9]+)([^>]*?)\/?>$/i.exec(token);
   const attributes={};
   for(const [,name,value] of rest.matchAll(/([\w:-]+)(?:="([^"]*)")?/g))attributes[name]=value??'';
-  const node=element(tag.toLowerCase(),attributes,focusLog);
+  const node=element(tag.toLowerCase(),attributes,focusLog,doc);
   node.parent=current;current.children.push(node);
   if(!VOID.has(node.tag))current=node;
  }
@@ -66,29 +72,34 @@ function build(html,focusLog=[]){
 }
 /** The real message form as stand-in elements: {shell, form, focusLog}. */
 function realForm(){
- const focusLog=[],shell=build(messageForm(pageContext({path:'/contact',mode:'on',now:new Date('2026-11-16T05:30:00Z')})),focusLog);
+ const focusLog=[],doc={activeElement:null},shell=build(messageForm(pageContext({path:'/contact',mode:'on',now:new Date('2026-11-16T05:30:00Z')})),focusLog,doc);
  const form=shell.querySelector('[data-contact-form]');
  form.elements=Object.fromEntries(form.all().filter(node=>(node.tag==='input'||node.tag==='textarea')&&node.name).map(node=>[node.name,node]));
- return {shell,form,focusLog};
+ return {shell,form,focusLog,doc};
 }
 const IDLE=Object.freeze({receipt:null,busy:false,error:'',started:false,blocked:false,retry:null,waiting:0,resendWait:0,expired:false});
 /** A pretend engine controller: the test sets its state and sees what was asked of it. */
 function pretendEngine(initial={}){
- let state={...IDLE,...initial};const listeners=new Set(),calls=[];
+ let state={...IDLE,...initial};const listeners=new Set(),calls=[],asked=[];
+ const set=change=>{state={...state,...change};for(const listener of [...listeners])listener();};
+ // Like the real engine, each request is answered later: its promise settles when the test calls answer().
+ const ask=call=>{calls.push(call);return new Promise(resolve=>asked.push(resolve));};
  const controller={
   getSnapshot:()=>state,
   subscribe(listener){listeners.add(listener);return()=>{listeners.delete(listener);calls.push('unsubscribe');};},
   start(){calls.push('start');return()=>calls.push('stop');},
-  submit(payload){calls.push(['submit',payload]);},
-  check(){calls.push('check');},
-  verify(code){calls.push(['verify',code]);},
-  resend(){calls.push('resend');},
-  retryRequest(){calls.push('retryRequest');},
-  restart(){calls.push('restart');return Promise.resolve(controller.restartAnswer);},
+  submit:payload=>ask(['submit',payload]),
+  check:()=>ask('check'),
+  verify:code=>ask(['verify',code]),
+  resend:()=>ask('resend'),
+  retryRequest:()=>ask('retryRequest'),
+  // "Write another message": when the engine agrees, the finished message is let go.
+  restart(){calls.push('restart');if(controller.restartAnswer)set({receipt:null,started:false,retry:null,error:''});return Promise.resolve(controller.restartAnswer);},
   restartAnswer:true
  };
- return {controller,calls,browser:{controller:()=>controller},
-  set(change){state={...state,...change};for(const listener of [...listeners])listener();},listeners};
+ return {controller,calls,browser:{controller:()=>controller},set,listeners,
+  /** The engine has answered: its state changes, it is idle again, and whoever asked is told. */
+  async answer(change={}){set({...change,busy:false});for(const resolve of asked.splice(0))resolve();await settle();}};
 }
 const receipt=(state,more={})=>({code:'ok',request_id:'r',state,generation:1,sends_remaining:2,verification_delivery:'accepted',
  server_now:'2026-11-16T05:30:00Z',code_expires_at:'2026-11-16T05:40:00Z',resend_after:'2026-11-16T05:31:00Z',...more});
@@ -136,6 +147,7 @@ test('the four fields are checked, and each fault has its own words',()=>{
 
 test('validateContact shows each fault under its field, moves to the first, and builds the engine\'s payload',()=>{
  const {form,focusLog}=realForm();
+ form.querySelector('[data-contact-fields]').disabled=false; // the fields are open, as they are once messages are taken
  fill(form,{name:'',email:'nope',phone:'12',message:''});
  assert.equal(validateContact(form),null);
  for(const key of ['name','email','phone','message']){
@@ -175,9 +187,14 @@ test('the screen follows the engine\'s state (pure)',()=>{
  assert.deepEqual([ready.name,ready.step,ready.showFields,ready.fieldsDisabled,ready.canSend,ready.sendLabel,ready.status],['ready','write',true,false,true,words.send,'']);
  const sending=view({busy:true});
  assert.deepEqual([sending.name,sending.fieldsDisabled,sending.canSend,sending.sendLabel,sending.status],['sending',true,false,words.sending,words.status.sending]);
+ assert.deepEqual([ready.busy,sending.busy],[false,true]);
  assert.equal(view({busy:true,started:true},{submitted:true}).name,'sending');
  const stalled=view({started:true,retry:'start',error:messageFor({code:'contact_unavailable'})},{submitted:true});
- assert.deepEqual([stalled.name,stalled.showFields,stalled.fieldsDisabled,stalled.showRetry,stalled.retryLabel,stalled.alert,stalled.showCheck],['stalled',true,true,true,words.retry,words.engine.contact_unavailable,false]);
+ // A message still waiting with its fields showing: the main button itself reads "Try again", in Send's place.
+ assert.deepEqual([stalled.name,stalled.showFields,stalled.fieldsDisabled,stalled.showRetry,stalled.canSend,stalled.sendRetries,stalled.sendLabel,stalled.alert,stalled.showCheck],
+  ['stalled',true,true,false,true,true,words.retry,words.engine.contact_unavailable,false]);
+ assert.equal(view({started:true,retry:'start',waiting:9},{submitted:true}).canSend,false,'not while the engine asks for a wait');
+ assert.equal(ready.sendRetries,false);
  const resuming=view({started:true});
  assert.deepEqual([resuming.name,resuming.showFields,resuming.showCheck,resuming.status],['resuming',false,true,words.status.resuming]);
  assert.equal(view({started:true,busy:true}).checkDisabled,true);
@@ -215,17 +232,68 @@ test('the screen follows the engine\'s state (pure)',()=>{
  assert.equal(formView({policy:'closed',state:{...IDLE,started:true,receipt:receipt('awaiting_verification')}}).name,'code');
 });
 
-test('the focus moves only when the visitor\'s own action changed the screen (pure)',()=>{
- assert.equal(focusAfter('','code'),'');
- assert.equal(focusAfter('code','code'),'');
- assert.equal(focusAfter('sending','code'),'code');
- assert.equal(focusAfter('expired','code'),'code');
- assert.equal(focusAfter('locked','code'),'code');
- assert.equal(focusAfter('resuming','code'),'');
- assert.equal(focusAfter('code','received'),'received');
- assert.equal(focusAfter('code','expired'),'code-title');
- assert.equal(focusAfter('code','locked'),'code-title');
- assert.equal(focusAfter('opening','ready'),'');
+test('where the focus belongs on each screen: the next thing the visitor needs (pure)',()=>{
+ const view=(state,more={})=>formView({policy:'open',state:{...IDLE,...state},...more});
+ assert.equal(focusTarget(formView({state:IDLE})),'','opening: nothing to move to yet');
+ assert.equal(focusTarget(view({busy:true})),'','sending: the focus waits on the button');
+ assert.equal(focusTarget(view({})),'name');
+ assert.equal(focusTarget(view({error:messageFor({code:'invalid_request'})})),'alert','the engine sent the details back: the error');
+ assert.equal(focusTarget(view({started:true,retry:'start',error:messageFor({code:'contact_unavailable'})},{submitted:true})),'send','stalled: the button that tries again');
+ const waiting=receipt('awaiting_verification');
+ assert.equal(focusTarget(view({started:true,receipt:waiting})),'code');
+ assert.equal(focusTarget(view({started:true,receipt:waiting,error:messageFor({code:'verification_incorrect'}),retry:'status'})),'code','a wrong code: the code field again');
+ assert.equal(focusTarget(view({started:true,receipt:waiting,waiting:20,error:messageFor({code:'please_wait'})})),'code');
+ assert.equal(focusTarget(view({started:true,receipt:waiting,error:messageFor({code:'nothing_known'}),retry:'status'})),'retry','a lost connection: Try again');
+ assert.equal(focusTarget(view({started:true,receipt:waiting,expired:true})),'code-title');
+ assert.equal(focusTarget(view({started:true,receipt:receipt('locked')})),'code-title');
+ assert.equal(focusTarget(view({started:true,receipt:receipt('locked'),error:messageFor({code:'nothing_known'}),retry:'resend'})),'retry');
+ assert.equal(focusTarget(view({started:true,receipt:receipt('received')})),'panel-title','the confirmation');
+ assert.equal(focusTarget(view({started:true})),'check');
+ assert.equal(focusTarget(view({started:true,retry:'status',error:messageFor({code:'nothing_known'})})),'retry');
+ assert.equal(focusTarget(formView({policy:'failed',state:IDLE})),'retry');
+ assert.equal(focusTarget(formView({policy:'closed',state:IDLE})),'panel-title');
+ assert.equal(focusTarget(formView({policy:'open',state:{...IDLE,blocked:true}})),'panel-title');
+});
+
+test('every focus target is a real, reachable element of the printed form',()=>{
+ const {form,focusLog}=realForm();
+ const view=(state,more={})=>formView({policy:'open',state:{...IDLE,...state},...more});
+ const cases=[
+  [view({}),form.elements.name],
+  [view({error:messageFor({code:'invalid_request'})}),form.querySelector('[data-contact-alert]')],
+  [view({started:true,retry:'start',error:messageFor({code:'contact_unavailable'})},{submitted:true}),form.querySelector('[data-contact-send]')],
+  [view({started:true,receipt:receipt('awaiting_verification')}),form.elements.code],
+  [view({started:true,receipt:receipt('awaiting_verification'),error:messageFor({code:'nothing_known'}),retry:'status'}),form.querySelector('[data-contact-retry]')],
+  [view({started:true,receipt:receipt('awaiting_verification'),expired:true}),form.querySelector('[data-contact-code-title]')],
+  [view({started:true,receipt:receipt('received')}),form.querySelector('[data-contact-panel="received"]').querySelector('[data-contact-panel-title]')],
+  [view({started:true}),form.querySelector('[data-contact-check]')],
+  [formView({policy:'failed',state:IDLE}),form.querySelector('[data-contact-retry]')],
+  [formView({policy:'closed',state:IDLE}),form.querySelector('[data-contact-panel="closed"]').querySelector('[data-contact-panel-title]')],
+  [formView({policy:'open',state:{...IDLE,blocked:true}}),form.querySelector('[data-contact-panel="blocked"]').querySelector('[data-contact-panel-title]')]
+ ];
+ for(const [shown,node] of cases){
+  paintForm(form,shown);
+  assert.ok(node,shown.name);assert.equal(focusNode(form,shown),node,shown.name);
+  node.focus();assert.equal(focusLog.at(-1),node,`${shown.name}: its target can take the focus`);
+ }
+ assert.equal(focusNode(form,formView({state:IDLE})),null);
+ // A control has gone when it is hidden, switched off, or inside the switched-off fields.
+ paintForm(form,view({busy:true}));
+ assert.equal(controlGone(form.elements.name),true);assert.equal(controlGone(form.querySelector('[data-contact-send]')),false,'a button that is only switched off keeps its place');
+ paintForm(form,view({started:true,receipt:receipt('awaiting_verification')}));
+ assert.equal(controlGone(form.querySelector('[data-contact-send]')),true);assert.equal(controlGone(form.elements.code),false);
+ paintForm(form,view({started:true,receipt:receipt('received')}));
+ assert.equal(controlGone(form.elements.code),true);
+});
+
+test('a button is switched off without leaving the keyboard\'s path',()=>{
+ const node=build('<button data-x></button>');
+ assert.equal(isOff(node),false);
+ setOff(node,true);setOff(node,true);
+ assert.equal(node.getAttribute('aria-disabled'),'true');assert.equal(node.disabled,false);assert.equal(isOff(node),true);
+ setOff(node,false);setOff(node,false);
+ assert.equal(node.hasAttribute('aria-disabled'),false);
+ setOff(null,true);assert.equal(isOff(null),true);
 });
 
 // ---------- the wiring, against the real template ----------
@@ -248,13 +316,14 @@ test('opening, then ready: the fields open when the engine says messages are tak
  assert.equal(form.form.querySelectorAll('[data-unbound-control]').length,0);
  assert.equal(form.form.elements.name.disabled,false,'released; the disabled fieldset still holds it');
  assert.equal(form.form.querySelector('[data-contact-fields]').disabled,true);
- assert.equal(form.form.querySelector('[data-contact-send]').disabled,true);
+ assert.equal(isOff(form.form.querySelector('[data-contact-send]')),true);
  assert.equal(form.form.querySelector('[data-contact-status]').textContent,words.status.opening);
  assert.deepEqual(engine.calls,['start']);
  allow();await settle();
  assert.equal(form.shell.getAttribute('data-state'),'ready');
  assert.equal(form.form.querySelector('[data-contact-fields]').disabled,false);
- assert.equal(form.form.querySelector('[data-contact-send]').disabled,false);
+ assert.equal(isOff(form.form.querySelector('[data-contact-send]')),false);
+ assert.equal(form.focusLog.length,0,'the page opening never moves the focus');
  assert.equal(form.form.querySelector('[data-contact-status]').textContent,'');
  assert.equal(form.shell.querySelector('[data-message-step="write"]').getAttribute('aria-current'),'step');
  assert.equal(form.shell.querySelector('[data-message-step="code"]').hasAttribute('aria-current'),false);
@@ -283,77 +352,189 @@ test('Send: faults stop it and are shown; a good message goes to the engine once
  assert.equal(sent.length,1);assert.equal(sent[0][1].phone,'+919415049410');assert.equal(sent[0][1].kind,'contact');
 });
 
-test('sending, the code, a wrong code, another code, then received',async()=>{
+test('sending, the code, a wrong code, another code, then received: the focus follows each step',async()=>{
  const page=await bound();
- fill(page.form,good);await page.form.dispatch('submit');
+ fill(page.form,good);
+ // Enter pressed inside a field: the field is about to be switched off, so the button takes the focus.
+ page.form.elements.message.focus();
+ await page.form.dispatch('submit');
+ assert.equal(page.doc.activeElement,page.find('send'));
  page.engine.set({busy:true});
  assert.equal(page.state(),'sending');
- assert.equal(page.find('send').disabled,true);assert.equal(page.find('send-label').textContent,words.sending);
+ assert.equal(isOff(page.find('send')),true);assert.equal(page.find('send').disabled,false,'switched off, but still in the keyboard\'s path');
+ assert.equal(page.find('send-label').textContent,words.sending);
  assert.equal(page.find('fields').disabled,true);assert.equal(page.find('status').textContent,words.status.sending);
+ assert.equal(page.doc.activeElement,page.find('send'),'the focus waits on "Sending…"');
  // Send pressed again while sending does nothing.
  await page.form.dispatch('submit');
  assert.equal(page.engine.calls.filter(call=>call[0]==='submit').length,1);
 
- page.engine.set({busy:false,started:true,receipt:receipt('awaiting_verification'),resendWait:60});
+ // The engine's answer arrives while it is still busy; the focus moves once it is idle.
+ page.engine.set({started:true,receipt:receipt('awaiting_verification'),resendWait:60});
  assert.equal(page.state(),'code');
+ await page.engine.answer();
  assert.equal(page.find('fields').hidden,true);assert.equal(page.find('compose').hidden,true);
  assert.equal(page.find('verification').hidden,false);assert.equal(page.find('code-entry').hidden,false);
  assert.equal(page.find('sent-to').textContent,words.code.sentTo('asha@example.com'));
  assert.equal(page.find('countdown').textContent,words.code.countdown(60));
  assert.equal(page.find('remaining').textContent,words.code.remaining(2));
- assert.equal(page.find('resend').disabled,true);
- assert.equal(page.focusLog.at(-1),page.form.elements.code,'the code field takes the focus');
+ assert.equal(isOff(page.find('resend')),true);
+ assert.equal(page.doc.activeElement,page.form.elements.code,'after Send the code field holds the focus');
  assert.equal(page.shell.querySelector('[data-message-step="code"]').getAttribute('aria-current'),'step');
 
- // A short code is stopped here, with words under the field.
+ // A short code is stopped here, with words under the field; the focus stays in the field.
  page.form.elements.code.value='123';
  await page.find('verify').dispatch('click');
  assert.equal(page.form.querySelector('[data-contact-error="code"]').hidden,false);
  assert.equal(page.form.elements.code.getAttribute('aria-invalid'),'true');
  assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,0);
+ assert.equal(page.doc.activeElement,page.form.elements.code);
  page.form.elements.code.value='12345';await page.form.dispatch('input',{target:page.form.elements.code});
  assert.equal(page.form.querySelector('[data-contact-error="code"]').hidden,false);
  page.form.elements.code.value='123456';await page.form.dispatch('input',{target:page.form.elements.code});
  assert.equal(page.form.querySelector('[data-contact-error="code"]').hidden,true);
+
+ // Confirm by the button (the focus is on it); the engine says the code did not match.
+ page.find('verify').focus();
  await page.find('verify').dispatch('click');
  assert.deepEqual(page.engine.calls.filter(call=>call[0]==='verify'),[['verify','123456']]);
  assert.equal(page.form.elements.code.value,'','the code is never kept');
-
- // The engine says it did not match.
- page.engine.set({error:messageFor({code:'verification_incorrect'}),retry:'status'});
+ page.engine.set({busy:true});
+ assert.equal(isOff(page.find('verify')),true);
+ assert.equal(page.form.elements.code.disabled,false,'the code field stays open while the engine is asked');
+ assert.equal(page.doc.activeElement,page.find('verify'),'the focus is not lost while the engine is asked');
+ // Pressed again while the engine is asked: nothing.
+ page.form.elements.code.value='654321';await page.find('verify').dispatch('click');
+ assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,1);assert.equal(page.form.elements.code.value,'654321');
+ page.form.elements.code.value='';
+ await page.engine.answer({error:messageFor({code:'verification_incorrect'}),retry:'status'});
  assert.equal(page.find('error-summary').textContent,words.engine.verification_incorrect);
  assert.equal(page.find('alert').hidden,false);assert.equal(page.find('error-summary').hidden,false);
  assert.equal(page.form.elements.code.getAttribute('aria-invalid'),'true');
  assert.equal(page.find('retry').hidden,true,'the code is typed again on this screen: no "Try again"');
- // A lost connection on this screen does offer it, and it repeats what the engine was asked.
- page.engine.set({error:messageFor({code:'nothing_known'}),retry:'status'});
+ assert.equal(page.doc.activeElement,page.form.elements.code,'after a wrong code the code field holds the focus');
+
+ // A lost connection on this screen does offer "Try again"; it takes the focus and repeats what the engine was asked.
+ page.form.elements.code.value='123456';
+ await page.form.elements.code.dispatch('keydown',{key:'Enter'});
+ await page.engine.answer({error:messageFor({code:'nothing_known'}),retry:'status'});
  assert.equal(page.find('retry').hidden,false);
+ assert.equal(page.doc.activeElement,page.find('retry'));
  await page.find('retry').dispatch('click');
  assert.equal(page.engine.calls.at(-1),'retryRequest');
 
- // Another code, once the wait is over.
- page.engine.set({error:'',retry:null,resendWait:0});
- assert.equal(page.find('resend').disabled,false);assert.equal(page.find('countdown').textContent,'');
+ // Another code, once the wait is over; then the code field again.
+ await page.engine.answer({error:'',retry:null,resendWait:0});
+ assert.equal(isOff(page.find('resend')),false);assert.equal(page.find('countdown').textContent,'');
  assert.equal(page.form.elements.code.hasAttribute('aria-invalid'),false);
  page.form.elements.code.value='99';
+ page.find('resend').focus();
  await page.find('resend').dispatch('click');
  assert.equal(page.engine.calls.at(-1),'resend');assert.equal(page.form.elements.code.value,'');
+ page.engine.set({busy:true});
+ assert.equal(page.doc.activeElement,page.find('resend'));
+ await page.engine.answer({receipt:receipt('awaiting_verification',{generation:2,sends_remaining:1}),resendWait:60});
+ assert.equal(page.find('remaining').textContent,words.code.remaining(1));
+ assert.equal(isOff(page.find('resend')),true);
+ assert.equal(page.doc.activeElement,page.form.elements.code,'after another code is sent the code field holds the focus');
+ // "Send another code" does nothing while its countdown runs.
+ await page.find('resend').dispatch('click');
+ assert.equal(page.engine.calls.filter(call=>call==='resend').length,1);
 
- page.engine.set({receipt:receipt('received')});
+ // The right code, by Enter: received, and the thank-you heading takes the focus.
+ page.form.elements.code.value='222222';
+ await page.form.elements.code.dispatch('keydown',{key:'Enter'});
+ await page.engine.answer({receipt:receipt('received')});
  assert.equal(page.state(),'received');
  assert.equal(page.find('verification').hidden,true);
- assert.equal(page.form.querySelector('[data-contact-panel="received"]').hidden,false);
+ const thanks=page.form.querySelector('[data-contact-panel="received"]');
+ assert.equal(thanks.hidden,false);
  assert.equal(page.find('restart').hidden,false);
- assert.equal(page.focusLog.at(-1),page.find('received-title'));
+ assert.equal(page.doc.activeElement,thanks.querySelector('[data-contact-panel-title]'),'the confirmation holds the focus');
  assert.equal(page.shell.querySelector('[data-message-step="sent"]').getAttribute('aria-current'),'step');
 
- // Write another message: only when the engine agrees.
+ // Write another message: only when the engine agrees; then the first field takes the focus.
  page.engine.controller.restartAnswer=false;
- await page.find('restart').dispatch('click');
+ page.find('restart').focus();
+ await page.find('restart').dispatch('click');await settle();
  assert.equal(page.form.wasReset,undefined);
  page.engine.controller.restartAnswer=true;
- await page.find('restart').dispatch('click');
- assert.equal(page.form.wasReset,true);assert.equal(page.focusLog.at(-1),page.form.elements.name);
+ await page.find('restart').dispatch('click');await settle();
+ assert.equal(page.form.wasReset,true);assert.equal(page.state(),'ready');
+ assert.equal(page.doc.activeElement,page.form.elements.name);
+});
+
+test('Enter on the code screen confirms the code: in the field, and by the form\'s own submit',async()=>{
+ const page=await bound({initial:{started:true,receipt:receipt('awaiting_verification')}});
+ assert.equal(page.state(),'code');
+ assert.equal(page.focusLog.length,0,'a page reopened on the code screen does not move the focus');
+ const code=page.form.elements.code;
+ // Other keys, and Enter while a word is still being composed, are left alone.
+ code.value='123456';
+ assert.equal((await code.dispatch('keydown',{key:'5'})).defaultPrevented,undefined);
+ assert.equal((await code.dispatch('keydown',{key:'Enter',isComposing:true})).defaultPrevented,undefined);
+ assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,0);
+ // Enter in the field.
+ code.focus();
+ const pressed=await code.dispatch('keydown',{key:'Enter'});
+ assert.equal(pressed.defaultPrevented,true);
+ assert.deepEqual(page.engine.calls.at(-1),['verify','123456']);assert.equal(code.value,'');
+ page.engine.set({busy:true});
+ assert.equal(page.doc.activeElement,code,'the field keeps the focus while the code is checked');
+ // Enter again while the engine is asked does nothing.
+ code.value='111111';await code.dispatch('keydown',{key:'Enter'});
+ assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,1);
+ code.value='';
+ await page.engine.answer({error:messageFor({code:'verification_incorrect'}),retry:'status'});
+ assert.equal(page.doc.activeElement,code);
+ // A short code by Enter: words under the field, nothing sent.
+ code.value='12';await code.dispatch('keydown',{key:'Enter'});
+ assert.equal(page.form.querySelector('[data-contact-error="code"]').hidden,false);
+ assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,1);
+ // A phone keyboard's send key submits the form: on this screen that checks the code, never the hidden fields.
+ code.value='654321';
+ const submitted=await page.form.dispatch('submit');
+ assert.equal(submitted.defaultPrevented,true);
+ assert.deepEqual(page.engine.calls.at(-1),['verify','654321']);
+ assert.equal(page.engine.calls.filter(call=>call[0]==='submit').length,0);
+ await page.engine.answer({receipt:receipt('received')});
+ assert.equal(page.state(),'received');
+ // Enter on a screen without the code entry does nothing.
+ code.value='123456';await code.dispatch('keydown',{key:'Enter'});
+ assert.equal(page.engine.calls.filter(call=>call[0]==='verify').length,2);
+});
+
+test('the focus is handed on when the control that held it leaves the screen, and is otherwise left alone',async()=>{
+ // The code runs out while the visitor is in the code field: the heading that says so takes the focus.
+ const page=await bound({initial:{started:true,receipt:receipt('awaiting_verification')}});
+ page.form.elements.code.focus();
+ page.engine.set({expired:true});
+ assert.equal(page.state(),'expired');
+ assert.equal(page.doc.activeElement,page.find('code-title'));
+ // On "Send another code" (still on the screen) nothing moves.
+ const other=await bound({initial:{started:true,receipt:receipt('awaiting_verification')}});
+ other.find('resend').focus();
+ other.engine.set({expired:true});
+ assert.equal(other.doc.activeElement,other.find('resend'));
+ // The visitor is somewhere else on the page: the form never takes the focus from there.
+ const away=await bound({initial:{started:true,receipt:receipt('awaiting_verification')}});
+ const elsewhere={closest:()=>null};away.doc.activeElement=elsewhere;
+ away.engine.set({expired:true});away.engine.set({expired:false,receipt:receipt('received')});
+ assert.equal(away.doc.activeElement,elsewhere);assert.equal(away.focusLog.length,0);
+ // A background check of the message does not interrupt typing: the code field is never switched off on its screen.
+ const typing=await bound({initial:{started:true,receipt:receipt('awaiting_verification')}});
+ typing.form.elements.code.focus();
+ typing.engine.set({busy:true});
+ assert.equal(typing.form.elements.code.disabled,false);assert.equal(isOff(typing.find('verify')),true);
+ typing.engine.set({busy:false});
+ assert.equal(typing.doc.activeElement,typing.form.elements.code);assert.equal(typing.focusLog.length,1);
+ // The form closes while the visitor is on "How your details are used": the closed screen's heading takes the focus.
+ let refuse;const closing=realForm(),engine=pretendEngine();
+ bindContactForm(closing.form,{browser:engine.browser,api:{policy:()=>new Promise((resolve,reject)=>{refuse=()=>{const error=new Error('contact_unavailable');error.code='contact_unavailable';reject(error);};})}});
+ const notice=closing.form.querySelector('[data-collection-notice]');notice.focus();
+ refuse();await settle();
+ assert.equal(closing.shell.getAttribute('data-state'),'closed');
+ assert.equal(closing.doc.activeElement,closing.form.querySelector('[data-contact-panel="closed"]').querySelector('[data-contact-panel-title]'));
 });
 
 test('expired and locked codes each have their own screen',async()=>{
@@ -363,13 +544,19 @@ test('expired and locked codes each have their own screen',async()=>{
  assert.equal(page.state(),'expired');
  assert.equal(page.find('code-title').textContent,words.code.expiredTitle);
  assert.equal(page.find('code-entry').hidden,true);assert.equal(page.find('resend').hidden,false);
+ assert.equal(page.form.elements.code.disabled,true,'a field that is not shown takes nothing');
  assert.equal(page.find('check').hidden,true);
- assert.equal(page.focusLog.at(-1),page.find('code-title'));
- page.engine.set({expired:false,receipt:receipt('locked',{generation:3,sends_remaining:0})});
+ // "Send another code" from here: the new code's field takes the focus.
+ page.find('resend').focus();
+ await page.find('resend').dispatch('click');
+ await page.engine.answer({expired:false,receipt:receipt('awaiting_verification',{generation:2,sends_remaining:1}),resendWait:60});
+ assert.equal(page.state(),'code');assert.equal(page.doc.activeElement,page.form.elements.code);
+ page.engine.set({receipt:receipt('locked',{generation:3,sends_remaining:0})});
  assert.equal(page.state(),'locked');
  assert.equal(page.find('code-title').textContent,words.code.lockedTitle);
  assert.equal(page.find('sent-to').textContent,words.code.noneLeft);
  assert.equal(page.find('resend').hidden,true);
+ assert.equal(page.doc.activeElement,page.find('code-title'),'the field has gone: the heading that says why takes the focus');
 });
 
 test('switched off: an honest closed screen with Call and WhatsApp, and no Send anywhere',async()=>{
@@ -404,20 +591,50 @@ test('could not open, and a browser that will not keep the reference',async()=>{
  assert.equal(blocked.find('alert').hidden,true);
 });
 
-test('a lost connection keeps what was typed and offers Try again; a reopened page finds its message',async()=>{
+test('a lost connection keeps what was typed and the main button reads Try again; a reopened page finds its message',async()=>{
  const page=await bound();
- fill(page.form,good);await page.form.dispatch('submit');
- page.engine.set({started:true,retry:'start',error:messageFor({code:'not_a_known_code'})});
+ fill(page.form,good);page.find('send').focus();await page.form.dispatch('submit');
+ page.engine.set({busy:true,started:true});
+ await page.engine.answer({retry:'start',error:messageFor({code:'not_a_known_code'})});
  assert.equal(page.state(),'stalled');
  assert.equal(page.find('fields').hidden,false);assert.equal(page.find('fields').disabled,true);
  assert.equal(page.form.elements.message.value,good.message);
  assert.equal(page.find('error-summary').textContent,words.engine.interrupted);
- await page.find('retry').dispatch('click');assert.equal(page.engine.calls.at(-1),'retryRequest');
+ // "Try again" stands in Send's place (the same filled button); the small one is not shown beside it.
+ assert.equal(page.find('send-label').textContent,words.retry);assert.equal(isOff(page.find('send')),false);
+ assert.equal(page.find('compose').hidden,false);assert.equal(page.find('retry').hidden,true);
+ assert.equal(page.doc.activeElement,page.find('send'),'the button that tries again holds the focus');
+ await page.form.dispatch('submit');
+ assert.equal(page.engine.calls.at(-1),'retryRequest');
+ assert.equal(page.engine.calls.filter(call=>call[0]==='submit').length,1,'the message is not sent a second time');
+ // The engine asks for a wait: the button is switched off and pressing it does nothing.
+ await page.engine.answer({waiting:5,error:messageFor({code:'please_wait'})});
+ assert.equal(isOff(page.find('send')),true);
+ await page.form.dispatch('submit');
+ assert.equal(page.engine.calls.filter(call=>call==='retryRequest').length,1);
+ // It goes through: the code screen, with the focus in the code field.
+ await page.engine.answer({waiting:0,error:'',retry:null,receipt:receipt('awaiting_verification')});
+ assert.equal(page.state(),'code');
+ // The engine sends the details back (first try only): the fields open again and the error takes the focus.
+ const sentBack=await bound();
+ fill(sentBack.form,good);sentBack.find('send').focus();await sentBack.form.dispatch('submit');
+ sentBack.engine.set({busy:true,started:true});
+ await sentBack.engine.answer({started:false,error:messageFor({code:'invalid_request'})});
+ assert.equal(sentBack.state(),'ready');assert.equal(sentBack.find('fields').disabled,false);
+ assert.equal(sentBack.find('error-summary').textContent,words.engine.invalid_request);
+ assert.equal(sentBack.doc.activeElement,sentBack.find('alert'));
  const reopened=await bound({initial:{started:true}});
  assert.equal(reopened.state(),'resuming');
  assert.equal(reopened.find('status').textContent,words.status.resuming);
  assert.equal(reopened.find('check').hidden,false);assert.equal(reopened.find('fields').hidden,true);
+ assert.equal(reopened.focusLog.length,0);
+ reopened.find('check').focus();
  await reopened.find('check').dispatch('click');assert.equal(reopened.engine.calls.at(-1),'check');
+ reopened.engine.set({busy:true});
+ assert.equal(isOff(reopened.find('check')),true);
+ await reopened.find('check').dispatch('click');assert.equal(reopened.engine.calls.filter(call=>call==='check').length,1);
+ await reopened.engine.answer({receipt:receipt('awaiting_verification')});
+ assert.equal(reopened.state(),'code');assert.equal(reopened.doc.activeElement,reopened.form.elements.code);
 });
 
 test('leaving the page stops everything; a missing form is passed over',async()=>{

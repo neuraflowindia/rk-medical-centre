@@ -5,7 +5,13 @@
 //   validateContact   reads and checks the four fields; an Indian number typed the ordinary way is accepted
 //   engineAnswer      the engine's sentence → the engine's code → the site's sentence
 //   formView          pure: everything the form shows, from the engine's state
+//   focusTarget       pure: where the focus belongs on a screen (the next thing the visitor needs)
 //   bindContactForm   the wiring: listens, paints, and stops when `signal` aborts
+//
+// The focus never falls to the page. A button that cannot be used just now is marked
+// `aria-disabled` (it keeps its place in the keyboard's path and its handler does nothing); only
+// the fields are truly switched off. After each thing the visitor does, and whenever the control
+// they were on leaves the screen, the focus goes to `focusTarget`.
 import {createEnquiryBrowser} from '../../appointment-system/browser/enquiry/index.mjs';
 import {createEnquiryAPI} from '../../appointment-system/browser/enquiry/protocol.mjs';
 import {messageFor} from '../../appointment-system/browser/enquiry/messages.mjs';
@@ -104,19 +110,22 @@ export function formView({policy='pending',state,submitted=false,sentTo=''}){
  else name=state.busy?'sending':'ready';
 
  const waiting=state.busy||state.waiting>0,left=receipt?receipt.sends_remaining:0;
- const codeScreen=CODE_SCREENS.includes(name);
+ const codeScreen=CODE_SCREENS.includes(name),stalled=name==='stalled';
  // "Try again" repeats what the engine was last asked, or asks again whether the form may be opened.
- // A form that is switched off offers Call and WhatsApp, not another try.
- const retry=name==='failed'||(!!state.retry&&name!=='received'&&name!=='closed'&&!(codeScreen&&SETTLED_ON_SCREEN.includes(answer?.code)));
+ // A form that is switched off offers Call and WhatsApp, not another try. While a message waits
+ // with its fields still showing (stalled), the sheet's main button itself reads "Try again".
+ const retry=!stalled&&(name==='failed'||(!!state.retry&&name!=='received'&&name!=='closed'&&!(codeScreen&&SETTLED_ON_SCREEN.includes(answer?.code))));
  return Object.freeze({
   name,
+  busy:!!state.busy,
   step:codeScreen?'code':name==='received'?'sent':INSTEAD_SCREENS.includes(name)?'':'write',
   status:words.status[name==='stalled'?'ready':name],
   alert:name==='blocked'?'':answer?.words||'',
   showFields:FIELD_SCREENS.includes(name),
   fieldsDisabled:name!=='ready',
-  canSend:name==='ready',
-  sendLabel:name==='sending'?words.sending:words.send,
+  canSend:name==='ready'||(stalled&&!waiting),
+  sendRetries:stalled,
+  sendLabel:name==='sending'?words.sending:stalled?words.retry:words.send,
   showCode:codeScreen,
   codeEntry:name==='code',
   codeTitle:name==='expired'?words.code.expiredTitle:name==='locked'?words.code.lockedTitle:words.code.title,
@@ -135,13 +144,24 @@ export function formView({policy='pending',state,submitted=false,sentTo=''}){
   showCheck:!retry&&name==='resuming',
   checkDisabled:waiting,
   showRestart:name==='received',
-  restartDisabled:state.busy
+  restartDisabled:waiting
  });
 }
 
 const setText=(node,value)=>{if(node&&node.textContent!==value)node.textContent=value;};
 const setHidden=(node,hidden)=>{if(node&&node.hidden!==hidden)node.hidden=hidden;};
 const setDisabled=(node,disabled)=>{if(node&&node.disabled!==disabled)node.disabled=disabled;};
+/**
+ * Switch a button off, or back on, without taking it out of the keyboard's path: a button that
+ * holds the focus keeps it while the engine is asked, so the focus never falls to the page.
+ */
+export function setOff(node,off){
+ if(!node)return;
+ if(off){if(node.getAttribute('aria-disabled')!=='true')node.setAttribute('aria-disabled','true');}
+ else if(node.hasAttribute('aria-disabled'))node.removeAttribute('aria-disabled');
+}
+/** Is this button switched off just now? A missing button counts as off. */
+export const isOff=node=>!node||node.getAttribute('aria-disabled')==='true';
 
 /** Put the form into a view. Writes only what changed, so nothing is announced twice. */
 export function paintForm(form,view){
@@ -156,27 +176,50 @@ export function paintForm(form,view){
  setText(find('status'),view.status);
  setText(find('error-summary'),view.alert);setHidden(find('error-summary'),!view.alert);setHidden(find('alert'),!view.alert);
  setHidden(find('fields'),!view.showFields);setDisabled(find('fields'),view.fieldsDisabled);
- setHidden(find('compose'),!view.showFields);setDisabled(find('send'),!view.canSend);setText(find('send-label'),view.sendLabel);
+ setHidden(find('compose'),!view.showFields);setOff(find('send'),!view.canSend);setText(find('send-label'),view.sendLabel);
  setHidden(find('verification'),!view.showCode);
  setText(find('code-title'),view.codeTitle);setText(find('sent-to'),view.codeText);
  setHidden(find('code-entry'),!view.codeEntry);
- setDisabled(find('verify'),view.verifyDisabled);setDisabled(form.elements.code,view.verifyDisabled);
- setHidden(find('resend'),!view.showResend);setDisabled(find('resend'),view.resendDisabled);
+ // The code field takes digits whenever its screen is shown, also while the engine is being asked.
+ setOff(find('verify'),view.verifyDisabled);setDisabled(form.elements.code,!view.codeEntry);
+ setHidden(find('resend'),!view.showResend);setOff(find('resend'),view.resendDisabled);
  setText(find('countdown'),view.countdown);setText(find('remaining'),view.remaining);
  for(const panel of form.querySelectorAll('[data-contact-panel]'))setHidden(panel,panel.getAttribute('data-contact-panel')!==view.panel);
  setHidden(find('instead'),!view.instead);
- setHidden(find('retry'),!view.showRetry);setDisabled(find('retry'),view.retryDisabled);setText(find('retry-label'),view.retryLabel);
- setHidden(find('check'),!view.showCheck);setDisabled(find('check'),view.checkDisabled);
- setHidden(find('restart'),!view.showRestart);setDisabled(find('restart'),view.restartDisabled);
+ setHidden(find('retry'),!view.showRetry);setOff(find('retry'),view.retryDisabled);setText(find('retry-label'),view.retryLabel);
+ setHidden(find('check'),!view.showCheck);setOff(find('check'),view.checkDisabled);
+ setHidden(find('restart'),!view.showRestart);setOff(find('restart'),view.restartDisabled);
 }
 
-/** Where the focus goes when the form moves from one screen to another (pure): a hook name or ''. */
-export function focusAfter(previous,next){
- if(previous===next||!previous)return '';
- if(next==='code'&&(previous==='sending'||previous==='expired'||previous==='locked'))return 'code';
- if(next==='received')return 'received';
- if((next==='expired'||next==='locked')&&previous==='code')return 'code-title';
- return '';
+/**
+ * Where the focus belongs on a screen (pure): the next thing the visitor needs. A name for
+ * `focusNode`, or '' while there is nothing to move to yet (opening, sending).
+ */
+export function focusTarget(view){
+ switch(view.name){
+  case 'code':return view.showRetry?'retry':'code';
+  case 'expired':case 'locked':return view.showRetry?'retry':'code-title';
+  case 'stalled':return 'send';
+  case 'ready':return view.alert?'alert':'name';
+  case 'resuming':return view.showRetry?'retry':'check';
+  case 'failed':return 'retry';
+  case 'received':case 'closed':case 'blocked':return 'panel-title';
+  default:return '';
+ }
+}
+
+/** The element a focus target names, on this form and this screen (or null). */
+export function focusNode(form,view){
+ const target=focusTarget(view);
+ if(!target)return null;
+ if(target==='code'||target==='name')return form.elements[target]||null;
+ if(target==='panel-title')return form.querySelector(`[data-contact-panel="${view.panel}"]`)?.querySelector('[data-contact-panel-title]')||null;
+ return form.querySelector(`[data-contact-${target}]`);
+}
+
+/** Has this control left the visitor's reach: hidden, switched off, or inside the switched-off fields? */
+export function controlGone(node){
+ return !!(node.disabled||node.closest('[hidden]')||node.closest('[data-contact-fields]')?.disabled);
 }
 
 /** The engine for this installation. `__BOOKING_PROFILE__` is put in by the build (vite.config.js). */
@@ -188,21 +231,33 @@ export function bindContactForm(form,{signal,profile,browser,api=createEnquiryAP
  if(!form)return()=>{};
  const controller=(browser||installedEngine(profile)).controller('contact');
  const find=key=>form.querySelector(`[data-contact-${key}]`),code=form.elements.code;
- let policy='pending',alive=true,checking=false,submitted=false,sentTo='',shown='',codeShort=false;
+ let policy='pending',alive=true,checking=false,submitted=false,sentTo='',codeShort=false,wants=false;
  const dispose=()=>{if(!alive)return;alive=false;unsubscribe();stop();};
+ const viewNow=()=>formView({policy,state:controller.getSnapshot(),submitted,sentTo});
+ /** What holds the focus, if it is inside this form. */
+ const held=()=>{const node=form.ownerDocument?.activeElement;return node&&node.closest?.('[data-contact-form]')===form?node:null;};
  function update(){
   if(!alive)return;
-  const view=formView({policy,state:controller.getSnapshot(),submitted,sentTo});
+  const before=held(),view=viewNow();
   paintForm(form,view);
   // The code field is in question when it was sent short, or when the engine says it did not match
   // (those words are in the alert row; under the field only "enter all six digits" is said).
   paintFieldError(form,'code',codeShort&&view.codeEntry?words.errors.code:'');
   if(view.codeInvalid)code.setAttribute('aria-invalid','true');
-  const target=focusAfter(shown,view.name);shown=view.name;
-  if(target==='code')code.focus();
-  else if(target)find(target==='received'?'received-title':target)?.focus();
+  // The focus follows the visitor: after something they did (`wants`), and when the control they
+  // were on has just left the screen. It waits until the engine has answered.
+  if(before&&controlGone(before))wants=true;
+  if(!wants||view.busy)return;
+  wants=false;
+  const next=focusNode(form,view);
+  if(next&&next!==held())next.focus();
  }
  const unsubscribe=controller.subscribe(update),stop=controller.start();
+ /** One thing the visitor did. When it has run its course the focus goes to the next thing they need. */
+ async function act(work){
+  wants=true;
+  try{await work();}finally{update();}
+ }
  /** Ask the engine whether messages are being taken. "Not being taken" is an answer, not a failure. */
  async function prepare(){
   if(checking||!alive)return;
@@ -211,13 +266,33 @@ export function bindContactForm(form,{signal,profile,browser,api=createEnquiryAP
   catch(error){if(alive)policy=error?.code==='contact_unavailable'?'closed':'failed';}
   finally{checking=false;update();}
  }
+ /** "Confirm and send": by its button, or by Enter in the code field. A short code is stopped here. */
+ function confirmCode(){
+  if(!viewNow().codeEntry||isOff(find('verify')))return undefined;
+  if(!/^[0-9]{6}$/.test(code.value)){codeShort=true;update();code.focus();return undefined;}
+  codeShort=false;
+  const value=code.value;code.value='';
+  return act(()=>controller.verify(value));
+ }
  form.addEventListener('submit',event=>{
   event.preventDefault();
-  if(policy!=='open'||find('fields').disabled)return;
+  const view=viewNow();
+  // On the code screen the form's own submit (Enter, or a phone keyboard's send key) checks the code.
+  if(view.codeEntry)return void confirmCode();
+  if(!view.canSend)return undefined;
+  // A message that is still waiting: the main button reads "Try again" and repeats the request.
+  if(view.sendRetries)return void act(()=>controller.retryRequest());
   const payload=validateContact(form);
-  if(!payload)return;
+  if(!payload)return undefined;
   submitted=true;sentTo=payload.email;
-  void controller.submit(payload);
+  // The fields are switched off while the message is sent: a field that holds the focus hands it to the button.
+  if(held()?.closest('[data-contact-fields]'))find('send').focus();
+  return void act(()=>controller.submit(payload));
+ },{signal});
+ // Enter in the code field always means "Confirm and send".
+ code.addEventListener('keydown',event=>{
+  if(event.key!=='Enter'||event.isComposing)return;
+  event.preventDefault();void confirmCode();
  },{signal});
  // An error under a field goes as soon as the field is corrected.
  form.addEventListener('input',event=>{
@@ -228,19 +303,16 @@ export function bindContactForm(form,{signal,profile,browser,api=createEnquiryAP
   const {errors}=checkContact(values,{emailValid:form.elements.email.validity?.valid!==false});
   if(!errors[key])paintFieldError(form,key,'');
  },{signal});
- find('verify').addEventListener('click',async()=>{
-  if(!/^[0-9]{6}$/.test(code.value)){codeShort=true;update();code.focus();return;}
-  codeShort=false;
-  const value=code.value;code.value='';
-  await controller.verify(value);
- },{signal});
- find('resend').addEventListener('click',()=>{code.value='';codeShort=false;void controller.resend();},{signal});
- find('check').addEventListener('click',()=>void controller.check(),{signal});
+ /** A button of the form: it does nothing while it is switched off. */
+ const press=(key,work)=>find(key).addEventListener('click',()=>{if(!isOff(find(key)))void work();},{signal});
+ press('verify',()=>confirmCode());
+ press('resend',()=>{code.value='';codeShort=false;return act(()=>controller.resend());});
+ press('check',()=>act(()=>controller.check()));
  // "Try again" repeats what the engine was last asked; when the form itself could not be opened, it asks again.
- find('retry').addEventListener('click',()=>controller.getSnapshot().retry?void controller.retryRequest():void prepare(),{signal});
- find('restart').addEventListener('click',async()=>{
-  if(await controller.restart()){form.reset();submitted=false;sentTo='';update();form.elements.name.focus();}
- },{signal});
+ press('retry',()=>act(()=>controller.getSnapshot().retry?controller.retryRequest():prepare()));
+ press('restart',()=>act(async()=>{
+  if(await controller.restart()){form.reset();submitted=false;sentTo='';}
+ }));
  signal?.addEventListener('abort',dispose,{once:true});
  // Handlers now own these controls; the fieldset and update() keep them unavailable until the
  // engine's answer and the controller's state permit their use.
